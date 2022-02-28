@@ -1,0 +1,20 @@
+{% load static %}
+<div class="navbar-custom topnav-navbar topnav-navbar-dark">
+    <div class="container-fluid">
+
+        <!-- LOGO -->
+        <a href="/index/" class="topnav-logo text-center">
+            <h2 style="margin-bottom:0px; color:#3f81e7">CMS</h2>
+            <h6 style="margin-top:0px; color:#b3dcf7">C.C.S. Maintenance Service</h6>
+        </a>
+
+        <div class="app-search float-end" style="margin-top:13px;">
+            <div class="input-group">
+                  <input type="text" class="form-control" id="top-search" oninput="let p=this.selectionStart;this.value=this.value.toUpperCase();this.setSelectionRange(p, p);">
+                  <span class="mdi mdi-music-accidental-sharp search-icon"></span>
+                  <button class="input-group-text btn-primary" type="button"><span class="mdi mdi-magnify"></span></button>
+            </div>
+        </div>
+
+    </div>
+</div>
