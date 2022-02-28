@@ -28,24 +28,20 @@
 
     <body class="loading" data-layout="detached" data-layout-config='{"leftSidebarCondensed":false,"darkMode":false, "showRightSidebarOnStart": false}'>
 
-        <!-- Topbar Start -->
+        <!-- ========== Header Bar ========== -->
         {% include 'header.html' %}
-        <!-- end Topbar -->
 
-        <!-- Start Content-->
         <div class="container-fluid">
-
-            <!-- Begin page -->
             <div class="wrapper">
 
-                <!-- ========== Left Sidebar Start ========== -->
+                <!-- ========== Left Sidebar ========== -->
                 {% include 'sidebar.html' %}
-                <!-- Left Sidebar End -->
 
+                <!-- ========== Page Content ========== -->
                 <div class="content-page">
                     <div class="content">
 
-                        <!-- PAGE TITLE -->
+                        <!-- ========== Inner Top Bar ========== -->
                         <div class="row">
                             <div class="col-12">
                                 <div class="page-title-box">
@@ -59,58 +55,81 @@
 
                         <div class="row">
 
-                            <!-- LEFT CONTENT -->
+                            <!-- ========== Left Content ========== -->
                             <div class="col-xxl-3 col-lg-6 order-lg-1 order-xxl-1">
-                              <!-- Pending -->
+                              <!-- ========== Pending ========== -->
                               <div class="card bg-warning text-white">
                                   <div class="card-body p-2">
                                       <h3 class="mb-2 mt-2 text-center"><i class='mdi mdi-clock-time-eight-outline'></i> Pending</h3>
                                   </div>
                               </div>
 
-                              <!-- Rejected -->
+                              <!-- ========== Rejected ========== -->
                               <div class="card bg-danger text-white">
                                   <div class="card-body p-2">
                                       <h3 class="mb-2 mt-2 text-center"><i class='uil-times'></i> Rejected</h3>
+                                      <p class="mb-2 mt-2 text-center">"เหตุผลที่ไม่รับ"</p>
                                   </div>
                               </div>
 
-                              <!-- On Progress  -->
+                              <!-- ========== On Progress ========== -->
                               <div class="card bg-primary text-white">
                                   <div class="card-body p-2">
                                       <h3 class="mb-2 mt-2 text-center"><i class='mdi mdi-hammer-wrench'></i> On Pogress</h3>
                                   </div>
                               </div>
 
-                              <!-- On Hold  -->
+                              <!-- ========== On Hold ========== -->
                               <div class="card bg-dark text-white">
                                   <div class="card-body p-2">
                                       <h3 class="mb-2 mt-2 text-center"><i class='mdi mdi-motion-pause-outline'></i> On Hold</h3>
+                                      <p class="mb-2 mt-2 text-center">"เหตุผลที่รอ"</p>
                                   </div>
                               </div>
 
-                              <!-- Completed  -->
+                              <!-- ========== Completed ========== -->
                               <div class="card bg-success text-white">
                                   <div class="card-body p-2">
                                       <h3 class="mb-2 mt-2 text-center"><i class='mdi mdi-check-all'></i> Completed</h3>
                                   </div>
                               </div>
 
-                              <!-- Canceled -->
+                              <!-- ========== Canceled ========== -->
                               <div class="card bg-danger text-white">
                                   <div class="card-body p-2">
                                       <h3 class="mb-2 mt-2 text-center"><i class='mdi mdi-cancel'></i> Canceled</h3>
+                                      <p class="mb-2 mt-2 text-center">"เหตุผลที่ยกเลิก"</p>
                                   </div>
                               </div>
 
-                              <!-- Request Detail -->
+                              <!-- ========== Request Detail (From Operator) ========== -->
                               <div class="card">
                                   <div class="card-body">
                                       <div class="d-flex align-self-start">
                                           <div class="w-100 overflow-hidden">
-                                              <h4 class="mb-2 mt-0">เครื่องจักรมีปัญหา</h4>
+                                              <h4 class="mb-2 mt-0">Request Detail (From Operator)</h4>
                                               <p class="mb-2 mt-0 text-muted small">เครื่องสั่นขณะเปิดรอบ และมีเสียงกระชากดังตึกขณะวิ่งด้วยความเร็ว Goo , ไฟส่องสว่างในเครื่องไม่สว่าง</p>
-                                              <p class="mb-0 mt-0 small"><i class="uil-location-point"></i> MCA</p>
+                                              <p class="mb-0 mt-0 small"><i class="mdi mdi-clock-time-eight-outline"></i> 10:51 13/01/2022</p>
+                                              <p class="mb-0 mt-0 small"><b><i class="mdi mdi-cash-register"></i> <u>Machine Info</u></b></p>
+                                              <p class="mb-0 mt-0 small">Name : MCA-01</p>
+                                              <p class="mb-0 mt-0 small">Model : MB-46VAE-R</p>
+                                              <p class="mb-0 mt-0 small">Manufacture : OKUMA</p>
+                                              <p class="mb-0 mt-0 small"><b><i class="uil-user"></i> <u>Operator Info</u></b></p>
+                                              <p class="mb-0 mt-0 small">ID : 9999</p>
+                                              <p class="mb-0 mt-0 small">Section : MA</p>
+                                              <p class="mb-0 mt-0 small"><i class="uil-phone"></i> 9999</p>
+                                          </div>
+                                      </div>
+                                  </div>
+                              </div>
+
+                              <!-- ========== Request Detail (From Requester) ========== -->
+                              <div class="card">
+                                  <div class="card-body">
+                                      <div class="d-flex align-self-start">
+                                          <div class="w-100 overflow-hidden">
+                                              <h4 class="mb-2 mt-0">Request Detail (From Requester)</h4>
+                                              <p class="mb-2 mt-0 text-muted small">เครื่องสั่นขณะเปิดรอบ และมีเสียงกระชากดังตึกขณะวิ่งด้วยความเร็ว Goo , ไฟส่องสว่างในเครื่องไม่สว่าง</p>
                                               <p class="mb-0 mt-0 small"><i class="mdi mdi-clock-time-eight-outline"></i> 10:51 13/01/2022</p>
                                               <p class="mb-0 mt-0 small"><b><i class="mdi mdi-cash-register"></i> <u>Machine Info</u></b></p>
                                               <p class="mb-0 mt-0 small">Name : MCA-01</p>
@@ -118,12 +137,8 @@
                                               <p class="mb-0 mt-0 small">Manufacture : OKUMA</p>
                                               <p class="mb-0 mt-0 small"><b><i class="uil-user"></i> <u>Requester Info</u></b></p>
                                               <p class="mb-0 mt-0 small">ID : 5731</p>
-                                              <p class="mb-0 mt-0 small">Name : Yashawantatul Mangalmurti</p>
                                               <p class="mb-0 mt-0 small">Section : MIS</p>
-                                              <p class="mb-0 mt-0 small">Position : IT Programmer</p>
                                               <p class="mb-0 mt-0 small"><i class="uil-phone"></i> 6624</p>
-                                              <p class="mb-0 mt-0 small"><i class="uil-envelope"></i> yashawantatul.man@ccsadvancetech.co.th</p>
-                                              <p class="mb-0 mt-0 small"><i class="uil-line"></i> @pingtest</p>
                                           </div>
                                       </div>
                                   </div>
@@ -132,9 +147,9 @@
 
                             </div>
 
-                            <!-- MIDDLE CONTENT -->
+                            <!-- ========== Middle Content ========== -->
                             <div class="col-xxl-6 col-lg-12 order-lg-2 order-xxl-1">
-                                <!-- MAIN TAB -->
+                                <!-- ========== Main Tab ========== -->
                                 <div class="card">
                                     <div class="card-body p-0">
                                         <ul class="nav nav-tabs nav-bordered">
@@ -153,9 +168,9 @@
                                         </ul>
 
                                         <div class="tab-content">
-                                            <!-- COMMENT TAB -->
+                                            <!-- ========== Comment Tab ========== -->
                                             <div class="tab-pane show active p-3" id="comment">
-                                                <!-- NEW COMMENTS -->
+                                                <!-- ========== New Comment ========== -->
                                                 <div class="border rounded">
                                                     <form action="#" class="comment-area-box">
                                                         <textarea rows="4" class="form-control border-0 resize-none" placeholder=""></textarea>
@@ -166,7 +181,7 @@
                                                     </form>
                                                 </div>
                                                 <br>
-                                                <!-- COMMENT LIST -->
+                                                <!-- ========== Comment List ========== -->
                                                 <div class="card">
                                                     <div class="card-body pb-1">
                                                         <div class="d-flex">
@@ -196,7 +211,7 @@
                                                 </div>
                                             </div>
 
-                                            <!-- COSTING -->
+                                            <!-- ========== Costing Tab ========== -->
                                             <div class="tab-pane p-3" id="costing">
 
                                               <h3 class="text-center">Total Cost 1520 Bath</h3>
@@ -243,9 +258,9 @@
 
                             </div>
 
-                            <!-- RIGHT CONTENT -->
+                            <!-- ========== Right Content ========== -->
                             <div class="col-xxl-3 col-lg-6 order-lg-1 order-xxl-2">
-                                <!-- Function -->
+                                <!-- ========== Functions ========== -->
                                 <div class="card">
                                     <div class="card-body p-2">
                                         <div class="list-group list-group-flush my-2">
@@ -260,7 +275,7 @@
                                     </div>
                                 </div>
 
-                                <!-- TEAM -->
+                                <!-- ========== Team ========== -->
                                 <div class="card">
                                     <div class="card-body pb-0">
                                         <div class="dropdown float-end">
@@ -297,86 +312,18 @@
                                         </div>
                                     </div>
                                 </div>
-
                             </div>
                         </div>
+                    </div>
 
-                    </div> <!-- End Content -->
-
-                    <!-- Footer Start -->
+                    <!-- ========== Footer ========== -->
                     {% include 'footer.html' %}
-                    <!-- end Footer -->
 
-                </div> <!-- content-page -->
-
-            </div> <!-- end wrapper-->
-        </div>
-        <!-- END Container -->
-
-
-        <!-- Right Sidebar -->
-        <div class="end-bar">
-
-            <div class="rightbar-title">
-                <a href="javascript:void(0);" class="end-bar-toggle float-end">
-                    <i class="dripicons-cross noti-icon"></i>
-                </a>
-                <h5 class="m-0">Settings</h5>
-            </div>
-
-            <div class="rightbar-content h-100" data-simplebar>
-
-                <div class="p-3">
-                    <div class="alert alert-warning" role="alert">
-                        <strong>Customize </strong> the overall color scheme, sidebar menu, etc.
-                    </div>
-
-                    <!-- Settings -->
-                    <h5 class="mt-3">Color Scheme</h5>
-                    <hr class="mt-1" />
-
-                    <div class="form-check form-switch mb-1">
-                        <input type="checkbox" class="form-check-input" name="color-scheme-mode" value="light"
-                            id="light-mode-check" checked />
-                        <label class="form-check-label" for="light-mode-check">Light Mode</label>
-                    </div>
-
-                    <div class="form-check form-switch mb-1">
-                        <input type="checkbox" class="form-check-input" name="color-scheme-mode" value="dark"
-                            id="dark-mode-check" />
-                        <label class="form-check-label" for="dark-mode-check">Dark Mode</label>
-                    </div>
-
-                    <!-- Left Sidebar-->
-                    <h5 class="mt-4">Left Sidebar</h5>
-                    <hr class="mt-1" />
-
-                    <div class="form-check form-switch mb-1">
-                        <input type="checkbox" class="form-check-input" name="compact" value="fixed" id="fixed-check"
-                            checked />
-                        <label class="form-check-label" for="fixed-check">Scrollable</label>
-                    </div>
-
-                    <div class="form-check form-switch mb-1">
-                        <input type="checkbox" class="form-check-input" name="compact" value="condensed"
-                            id="condensed-check" />
-                        <label class="form-check-label" for="condensed-check">Condensed</label>
-                    </div>
-
-                   <div class="d-grid mt-4">
-                    <button class="btn btn-primary" id="resetBtn">Reset to Default</button>
-
-                    <a href="https://themes.getbootstrap.com/product/hyper-responsive-admin-dashboard-template/"
-                        class="btn btn-danger mt-3" target="_blank"><i class="mdi mdi-basket me-1"></i> Purchase
-                        Now</a>
-                   </div>
-                </div> <!-- end padding-->
-
+                </div>
             </div>
         </div>
 
-        <div class="rightbar-overlay"></div>
-        <!-- /End-bar -->
+        <!-- ========== Right Side Bar ========== -->
 
 
         <!-- bundle -->

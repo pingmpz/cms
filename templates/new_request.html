@@ -4,7 +4,7 @@
 <html lang="en">
     <head>
         <meta charset="utf-8" />
-        <title>C.C.S. Maintenance Service</title>
+        <title>New Request | C.C.S. Maintenance Service</title>
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <meta content="A fully featured admin theme which can be used to build CRM, CMS, etc." name="description" />
         <meta content="Coderthemes" name="author" />
@@ -20,24 +20,20 @@
 
     <body class="loading" data-layout="detached" data-layout-config='{"leftSidebarCondensed":false,"darkMode":false, "showRightSidebarOnStart": false}'>
 
-        <!-- Topbar Start -->
+        <!-- ========== Header Bar ========== -->
         {% include 'header.html' %}
-        <!-- end Topbar -->
 
-        <!-- Start Content-->
         <div class="container-fluid">
-
-            <!-- Begin page -->
             <div class="wrapper">
 
-                <!-- ========== Left Sidebar Start ========== -->
+                <!-- ========== Left Sidebar ========== -->
                 {% include 'sidebar.html' %}
-                <!-- Left Sidebar End -->
 
+                <!-- ========== Page Content ========== -->
                 <div class="content-page">
                     <div class="content">
 
-                        <!-- start page title -->
+                        <!-- ========== Inner Top Bar ========== -->
                         <div class="row">
                             <div class="col-12">
                                 <div class="page-title-box">
@@ -48,68 +44,55 @@
                                 </div>
                             </div>
                         </div>
-                        <!-- end page title -->
 
+                        <!-- ========== Main Content ========== -->
                         <div class="row">
                             <div class="col-12">
                                 <div class="card">
                                     <div class="card-body">
-
                                         <div class="row">
+                                            <!-- ========== Left Content ========== -->
                                             <div class="col-xl-6">
                                               <div class="mb-3">
-                                                  <label for="project-overview" class="form-label">Requester ID <i class="mdi mdi-asterisk text-danger small"></i></label>
-                                                  <select class="form-control select2" data-toggle="select2">
+                                                <label class="form-label">Request To.. <i class="mdi mdi-asterisk text-danger small"></i></label><br>
+                                                <div class="form-check form-check-inline">
+                                                    <input type="radio" id="customRadio3" name="customRadio1" class="form-check-input" checked>
+                                                    <label class="form-check-label" for="customRadio3">Maintenance (MA)</label>
+                                                </div>
+                                                <div class="form-check form-check-inline">
+                                                    <input type="radio" id="customRadio3" name="customRadio1" class="form-check-input">
+                                                    <label class="form-check-label" for="customRadio3">Admin Service (AD-SEC)</label>
+                                                </div>
+                                              </div>
+
+                                              <div class="mb-3">
+                                                  <label class="form-label">Description <i class="mdi mdi-asterisk text-danger small"></i></label>
+                                                  <textarea class="form-control" name="description" id="description" rows="5"></textarea>
+                                              </div>
+
+                                              <div class="form-check mb-3">
+                                                  <input type="checkbox" class="form-check-input" id="customCheckcolor1">
+                                                  <label class="form-check-label" for="customCheckcolor1">Machine Problem</label>
+                                              </div>
+
+                                              <div class="mb-0">
+                                                  <label class="form-label">Machine Number</label>
+                                                  <select class="form-control select2" data-toggle="select2" name="mc_no" id="mc_no">
                                                       <option>Select</option>
-                                                      <option value="">5731 | Yashawantatul Mangalmurti (MIS - IT Programmer)</option>
-                                                      <option value="">0000 | John (AS - Engineer)</option>
-                                                      <option value="">9999 | David (HR - Officer)</option>
+                                                      <option value="">MCA-01</option>
+                                                      <option value="">MCA-02</option>
+                                                      <option value="">MCA-03</option>
                                                   </select>
                                               </div>
 
-                                                <div class="mb-3">
-                                                    <label for="projectname" class="form-label">Title <i class="mdi mdi-asterisk text-danger small"></i></label>
-                                                    <input type="text" id="projectname" class="form-control">
-                                                </div>
-
-                                                <div class="mb-3">
-                                                    <label for="project-overview" class="form-label">Description <i class="mdi mdi-asterisk text-danger small"></i></label>
-                                                    <textarea class="form-control" id="project-overview" rows="5"></textarea>
-                                                </div>
-
-                                                <div class="mb-3">
-                                                    <label for="project-overview" class="form-label">Location <i class="mdi mdi-asterisk text-danger small"></i></label>
-                                                    <select class="form-control select2" data-toggle="select2">
-                                                        <option>Select</option>
-                                                        <option value="">MIS</option>
-                                                        <option value="">Aerospace</option>
-                                                        <option value="">Air Compressor</option>
-                                                    </select>
-                                                </div>
-
-                                                <div class="form-check mb-3">
-                                                    <input type="checkbox" class="form-check-input" id="customCheckcolor1">
-                                                    <label class="form-check-label" for="customCheckcolor1">Machine Problem</label>
-                                                </div>
-
-                                                <div class="mb-0">
-                                                    <label for="project-overview" class="form-label">Machine Number</label>
-                                                    <select class="form-control select2" data-toggle="select2">
-                                                        <option>Select</option>
-                                                        <option value="">MCA-01</option>
-                                                        <option value="">MCA-02</option>
-                                                        <option value="">MCA-03</option>
-                                                    </select>
-                                                </div>
-
-                                            </div> <!-- end col-->
-
+                                            </div>
+                                            <!-- ========== Right Content ========== -->
                                             <div class="col-xl-6">
                                                 <div class="mb-3 mt-3 mt-xl-0">
-                                                    <label for="projectname" class="mb-0">Attachments</label>
-                                                    <p class="text-muted font-14">* Do not upload files that have # in their file names.</p>
+                                                    <label class="mb-0">Attachments / ไฟล์</label>
+                                                    <p class="text-muted font-14">* Do not upload files that have # in the file name.</p>
 
-                                                    <form action="/" method="post" class="dropzone" id="myAwesomeDropzone" data-plugin="dropzone" data-previews-container="#file-previews"
+                                                    <form action="/" method="post" class="dropzone" name="attachments" id="attachments" data-plugin="dropzone" data-previews-container="#file-previews"
                                                         data-upload-preview-template="#uploadPreviewTemplate">
                                                         <div class="fallback">
                                                             <input name="file" type="file" />
@@ -146,94 +129,23 @@
                                                             </div>
                                                         </div>
                                                     </div>
-                                                    <!-- end file preview template -->
                                                 </div>
-                                            </div> <!-- end col-->
+                                            </div>
                                         </div>
-                                        <!-- end row -->
-
-                                    </div> <!-- end card-body -->
-                                </div> <!-- end card-->
-                            </div> <!-- end col-->
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-
-                    </div> <!-- End Content -->
-
-                    <!-- Footer Start -->
+                    </div>
+                    <!-- ========== Footer ========== -->
                     {% include 'footer.html' %}
-                    <!-- end Footer -->
 
-                </div> <!-- content-page -->
-
-            </div> <!-- end wrapper-->
-        </div>
-        <!-- END Container -->
-
-
-        <!-- Right Sidebar -->
-        <div class="end-bar">
-
-            <div class="rightbar-title">
-                <a href="javascript:void(0);" class="end-bar-toggle float-end">
-                    <i class="dripicons-cross noti-icon"></i>
-                </a>
-                <h5 class="m-0">Settings</h5>
-            </div>
-
-            <div class="rightbar-content h-100" data-simplebar>
-
-                <div class="p-3">
-                    <div class="alert alert-warning" role="alert">
-                        <strong>Customize </strong> the overall color scheme, sidebar menu, etc.
-                    </div>
-
-                    <!-- Settings -->
-                    <h5 class="mt-3">Color Scheme</h5>
-                    <hr class="mt-1" />
-
-                    <div class="form-check form-switch mb-1">
-                        <input type="checkbox" class="form-check-input" name="color-scheme-mode" value="light"
-                            id="light-mode-check" checked />
-                        <label class="form-check-label" for="light-mode-check">Light Mode</label>
-                    </div>
-
-                    <div class="form-check form-switch mb-1">
-                        <input type="checkbox" class="form-check-input" name="color-scheme-mode" value="dark"
-                            id="dark-mode-check" />
-                        <label class="form-check-label" for="dark-mode-check">Dark Mode</label>
-                    </div>
-
-                    <!-- Left Sidebar-->
-                    <h5 class="mt-4">Left Sidebar</h5>
-                    <hr class="mt-1" />
-
-                    <div class="form-check form-switch mb-1">
-                        <input type="checkbox" class="form-check-input" name="compact" value="fixed" id="fixed-check"
-                            checked />
-                        <label class="form-check-label" for="fixed-check">Scrollable</label>
-                    </div>
-
-                    <div class="form-check form-switch mb-1">
-                        <input type="checkbox" class="form-check-input" name="compact" value="condensed"
-                            id="condensed-check" />
-                        <label class="form-check-label" for="condensed-check">Condensed</label>
-                    </div>
-
-                   <div class="d-grid mt-4">
-                    <button class="btn btn-primary" id="resetBtn">Reset to Default</button>
-
-                    <a href="https://themes.getbootstrap.com/product/hyper-responsive-admin-dashboard-template/"
-                        class="btn btn-danger mt-3" target="_blank"><i class="mdi mdi-basket me-1"></i> Purchase
-                        Now</a>
-                   </div>
-                </div> <!-- end padding-->
+                </div>
 
             </div>
         </div>
 
-        <div class="rightbar-overlay"></div>
-        <!-- /End-bar -->
-
+        <!-- ========== Right Side Bar ========== -->
 
         <!-- bundle -->
         <script src="{% static "assets/js/vendor.min.js" %}"></script>

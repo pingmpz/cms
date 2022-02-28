@@ -3,12 +3,20 @@
 
     <div class="leftbar-user">
         <a href="javascript: void(0);">
-            <h3 class="leftbar-user-name">5731</h3>
-            <img src="{% static "assets/images/users/avatar-3.png" %}" alt="user-image" height="64" class="rounded-circle shadow-sm">
-            <span class="leftbar-user-name small" style="margin-bottom:0px;">YASHAWANTATUL MANGALMURTI</span>
-            <span class="leftbar-user-name small" style="margin-top:0px; color:#acb3bd">ADMINISTRATOR</span>
+            <h3 class="leftbar-user-name">{{request.user}}</h3>
+            {% if request.user.is_superuser %}
+              <img src="{% static "assets/images/users/avatar-1.png" %}" alt="user-image" height="64" class="rounded-circle shadow-sm">
+            {% elif request.user.is_staff %}
+              <img src="{% static "assets/images/users/avatar-1.png" %}" alt="user-image" height="64" class="rounded-circle shadow-sm">
+            {% elif request.user.section == '' %}
+              <img src="{% static "assets/images/users/avatar-3.png" %}" alt="user-image" height="64" class="rounded-circle shadow-sm">
+            {% else %}
+              <img src="{% static "assets/images/users/avatar-2.png" %}" alt="user-image" height="64" class="rounded-circle shadow-sm">
+            {% endif %}
+            <span class="leftbar-user-name small" style="margin-bottom:0px;">{{request.user.employee.name}}</span>
+            <span class="leftbar-user-name small" style="margin-top:0px; color:#acb3bd">{{request.user.employee.section}}</span>
             <a href="#" class="small text-link"><i class="dripicons-gear"></i> Setting &nbsp;</a>
-            <a href="#" class="small text-link"><i class="dripicons-power"></i> Sign Out &nbsp;</a>
+            <a href="/logout_action" class="small text-link"><i class="dripicons-power"></i> Sign Out &nbsp;</a>
         </a>
     </div>
 
@@ -16,7 +24,7 @@
     <ul class="side-nav">
 
         <li class="side-nav-item">
-            <a href="#" class="side-nav-link">
+            <a href="/new_request" class="side-nav-link">
                 <i class="uil-comment-plus text-success"></i>
                 <span class="text-success"> New Request </span>
             </a>
