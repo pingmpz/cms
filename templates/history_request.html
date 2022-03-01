@@ -47,15 +47,15 @@
                                 <div class="page-title-box">
                                     <div class="page-title-right d-flex">
                                       <select class="form-select" id="fstatus">
-                                        <option value="ALL">All Status</option>
-                                        <option value="COMPLETED">Completed</option>
-                                        <option value="REJECTED">Rejected</option>
-                                        <option value="CANCELED">Canceled</option>
+                                        <option value="ALL" {% if fstatus == 'ALL' %}selected{% endif %}>All Status</option>
+                                        <option value="COMPLETED" {% if fstatus == 'COMPLETED' %}selected{% endif %}>Completed</option>
+                                        <option value="REJECTED" {% if fstatus == 'REJECTED' %}selected{% endif %}>Rejected</option>
+                                        <option value="CANCELED" {% if fstatus == 'CANCELED' %}selected{% endif %}>Canceled</option>
                                       </select>
                                       <p class="pt-2 pb-1 mb-0">&nbsp;&nbsp;&nbsp;&nbsp;</p>
-                                      <input type="date" class="form-control" id="fstartdate">
+                                      <input type="date" class="form-control" id="fstartdate" value="{{fstartdate}}" onkeydown="return false">
                                       <p class="pt-2 pb-1 mb-0">&nbsp;&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;&nbsp;</p>
-                                      <input type="date" class="form-control" id="fstopdate">
+                                      <input type="date" class="form-control" id="fstopdate" value="{{fstopdate}}" onkeydown="return false">
                                     </div>
                                     <h4 class="page-title"><i class="uil-comment-chart-line"></i> History Request (#)</h4>
                                 </div>
@@ -158,6 +158,25 @@
                 // 'csvHtml5',
               ]
           });
+
+          $('#fstatus').change(function() {
+            filter();
+          });
+
+          $('#fstartdate').change(function() {
+            filter();
+          });
+
+          $('#fstopdate').change(function() {
+            filter();
+          });
+
+          function filter(){
+            var fstatus = $("#fstatus").val();
+            var fstartdate = ($("#fstartdate").val() != "")?$("#fstartdate").val():"NOW";
+            var fstopdate = ($("#fstopdate").val() != "")?$("#fstopdate").val():"NOW";
+            window.location.href = "/history_request/" + fstatus + "&" + fstartdate + "&" + fstopdate;
+          }
         </script>
 
     </body>

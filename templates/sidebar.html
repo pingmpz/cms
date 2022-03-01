@@ -27,7 +27,9 @@
             <a href="/index/" class="side-nav-link">
                 <i class="uil-constructor"></i>
                 <span> My Tasks </span>
-                <span class="badge bg-danger rounded-pill float-end">2</span>
+                {% if all_page_data.my_task_counts != 0 %}
+                <span class="badge bg-danger rounded-pill float-end">{{all_page_data.my_task_counts}}</span>
+                {% endif %}
             </a>
         </li>
 
@@ -35,7 +37,10 @@
             <a href="/pending_request/" class="side-nav-link">
                 <i class="uil-comment-question"></i>
                 <span> Pending Request </span>
-                <span class="badge bg-danger rounded-pill float-end">4</span>
+                {% if all_page_data.pending_request_counts != 0 %}
+                <span class="badge bg-danger rounded-pill float-end">{{all_page_data.pending_request_counts}}</span>
+                {% endif %}
+
             </a>
         </li>
 
@@ -61,7 +66,7 @@
         </li>
 
         <li class="side-nav-item">
-            <a href="/history_request/" class="side-nav-link">
+            <a href="/history_request/ALL&NOW&NOW" class="side-nav-link">
                 <i class="uil-comment-chart-line"></i>
                 <span> History Request </span>
             </a>

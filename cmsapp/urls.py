@@ -13,6 +13,6 @@ urlpatterns = [
     path('index/', views.index, name='index'),
     path('index0/', views.index0, name='index0'),
     path('pending_request/', views.pending_request, name='pending_request'),
-    path('history_request/', views.history_request, name='history_request'),
+    path('history_request/<str:fstatus>&<str:fstartdate>&<str:fstopdate>', views.history_request, name='history_request'),
     path('emp_master/', views.emp_master, name='emp_master'),
 ]
