@@ -50,13 +50,21 @@ def logout_action(request):
     logout(request)
     return redirect('/')
 
+def new_request(request):
+    context = {
+    }
+    return render(request, 'new_request.html', context)
+
 @login_required(login_url='/')
 def index(request):
     context = {
     }
     return render(request, 'index.html', context)
 
-def new_request(request):
+@login_required(login_url='/')
+def emp_master(request):
+    users = User.objects.all()
     context = {
+        'users': users,
     }
-    return render(request, 'new_request.html', context)
+    return render(request, 'emp_master.html', context)
