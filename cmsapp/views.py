@@ -62,6 +62,24 @@ def index(request):
     return render(request, 'index.html', context)
 
 @login_required(login_url='/')
+def index0(request):
+    context = {
+    }
+    return render(request, 'index0.html', context)
+
+@login_required(login_url='/')
+def pending_request(request):
+    context = {
+    }
+    return render(request, 'pending_request.html', context)
+
+@login_required(login_url='/')
+def history_request(request):
+    context = {
+    }
+    return render(request, 'history_request.html', context)
+
+@login_required(login_url='/')
 def emp_master(request):
     users = User.objects.all()
     context = {

@@ -4,7 +4,7 @@
 <html lang="en">
     <head>
         <meta charset="utf-8" />
-        <title>Employee Master | C.C.S. Maintenance Service</title>
+        <title>History Request | C.C.S. Maintenance Service</title>
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <meta content="A fully featured admin theme which can be used to build CRM, CMS, etc." name="description" />
         <meta content="Coderthemes" name="author" />
@@ -46,9 +46,18 @@
                             <div class="col-12">
                                 <div class="page-title-box">
                                     <div class="page-title-right d-flex">
-                                        <!-- Filter Here -->
+                                      <select class="form-select" id="fstatus">
+                                        <option value="ALL">All Status</option>
+                                        <option value="COMPLETED">Completed</option>
+                                        <option value="REJECTED">Rejected</option>
+                                        <option value="CANCELED">Canceled</option>
+                                      </select>
+                                      <p class="pt-2 pb-1 mb-0">&nbsp;&nbsp;&nbsp;&nbsp;</p>
+                                      <input type="date" class="form-control" id="fstartdate">
+                                      <p class="pt-2 pb-1 mb-0">&nbsp;&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;&nbsp;</p>
+                                      <input type="date" class="form-control" id="fstopdate">
                                     </div>
-                                    <h4 class="page-title"><i class="uil-database"></i> Employee Master ({{users|length}})</h4>
+                                    <h4 class="page-title"><i class="uil-comment-chart-line"></i> History Request (#)</h4>
                                 </div>
                             </div>
                         </div>
@@ -58,30 +67,50 @@
                           <div class="col-12">
                             <div class="card">
                               <div class="card-body">
-                                <table id="emp_master_table" class="table table-sm nowrap dt-responsive row-border order-column w-100 small">
+                                <table id="request_table" class="table table-sm nowrap dt-responsive row-border order-column w-100 small">
                                   <thead>
                                       <tr>
-                                          <th>Employee ID</th>
-                                          <th>Name</th>
-                                          <th>Section</th>
-                                          <th>PhoneNo</th>
-                                          <th>IsActive</th>
-                                          <th>DateJoined</th>
-                                          <th>Permission Level</th>
+                                          <th>Request No</th>
+                                          <th>Status</th>
+                                          <th>Reason</th>
+                                          <th>Description</th>
+                                          <th>Machine No</th>
+                                          <th>Request By</th>
+                                          <th>Request Date</th>
+                                          <th>Finish Date</th>
                                       </tr>
                                   </thead>
                                   <tbody>
-                                      {% for user in users %}
                                       <tr>
-                                          <td>{{user.username}}</td>
-                                          <td>{{user.employee.name}}</td>
-                                          <td>{{user.employee.section}}</td>
-                                          <td>{{user.employee.phone_no}}</td>
-                                          <td>{{user.is_active}}</td>
-                                          <td>{{user.employee.date_published}}</td>
-                                          <td>{% if user.is_superuser %}Super Administrator{% elif user.is_staff %}Administrator{% else %}-{% endif %}</td>
+                                          <td><a href="/index0/">CMS000002/2022</a></td>
+                                          <td><strong class="text-danger"><i class='uil-times'></i> Rejected</strong></td>
+                                          <td>เหตุผลที่ไม่รับ</td>
+                                          <td>เครื่องจักรเสียไม่รู้สาเหตุ..</td>
+                                          <td>MCA01</td>
+                                          <td>5731 | Yashawantatul Mangalmurti (MIS) <i class="uil-phone"></i> 6624</td>
+                                          <td>{% now "jS F Y H:i" %}</td>
+                                          <td>{% now "jS F Y H:i" %}</td>
                                       </tr>
-                                      {% endfor %}
+                                      <tr>
+                                          <td><a href="/index0/">CMS000005/2022</a></td>
+                                          <td><strong class="text-success"><i class='mdi mdi-check-all'></i> Completed</strong></td>
+                                          <td></td>
+                                          <td>เครื่องจักรเสียไม่รู้สาเหตุ..</td>
+                                          <td>MCA01</td>
+                                          <td>5731 | Yashawantatul Mangalmurti (MIS) <i class="uil-phone"></i> 6624</td>
+                                          <td>{% now "jS F Y H:i" %}</td>
+                                          <td>{% now "jS F Y H:i" %}</td>
+                                      </tr>
+                                      <tr>
+                                          <td><a href="/index0/">CMS000006/2022</a></td>
+                                          <td><strong class="text-danger"><i class='mdi mdi-cancel'></i> Canceled</strong></td>
+                                          <td>เหตุผลที่ยกเลิก</td>
+                                          <td>เครื่องจักรเสียไม่รู้สาเหตุ..</td>
+                                          <td>MCA01</td>
+                                          <td>5731 | Yashawantatul Mangalmurti (MIS) <i class="uil-phone"></i> 6624</td>
+                                          <td>{% now "jS F Y H:i" %}</td>
+                                          <td>{% now "jS F Y H:i" %}</td>
+                                      </tr>
                                   </tbody>
                                 </table>
                               </div>
@@ -119,7 +148,7 @@
         <script src="{% static "assets/js/vendor/fixedHeader.bootstrap5.min.js" %}"></script>
 
         <script type="text/javascript">
-          $('#emp_master_table').DataTable( {
+          $('#request_table').DataTable( {
               "order": [[ 0, "asc" ]],
               'iDisplayLength': 100,
               "scrollX": true,
