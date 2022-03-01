@@ -57,18 +57,21 @@ def new_request(request):
 
 @login_required(login_url='/')
 def index(request):
-
     context = {
     }
     context['all_page_data'] = (all_page_data(request))
     return render(request, 'index.html', context)
 
 @login_required(login_url='/')
-def index0(request):
+def request_page(request, request_no):
+    requestIsExist = False
+    requestIsExist = True
     context = {
+        'request_no': request_no,
+        'requestIsExist': requestIsExist,
     }
     context['all_page_data'] = (all_page_data(request))
-    return render(request, 'index0.html', context)
+    return render(request, 'request_page.html', context)
 
 @login_required(login_url='/')
 def pending_request(request):
