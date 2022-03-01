@@ -38,7 +38,7 @@
                                     <p class="text-muted mb-4">Welcome to C.C.S. Maintenance Service</p>
                                 </div>
 
-                                <form action="/login_action/" method="POST">
+                                <form action="/login_action/" method="POST" id="login_form">
                                     {% csrf_token %}
                                     <div class="mb-3">
                                         <label for="emailaddress" class="form-label">Username (Employee ID)</label>
@@ -55,13 +55,12 @@
                                         </div>
                                     </div>
 
-                                    <div class="mb-3 mb-0 text-center">
-                                        <button class="btn btn-primary" type="submit">Log In</button>
-                                    </div>
+                                    <p class="text-danger text-center small mb-4" id="login_invalid_text"></p>
 
-                                    <div class="col-12 text-center">
-                                        <p class="text-muted">Don't have an account? <a href="pages-register.html" class="text-info ms-1"><b>Register</b></a></p>
-                                    </div> <!-- end col -->
+                                    <div class="mb-3 mb-0 text-center">
+                                        <button class="btn btn-primary rounded-pill" type="button" onclick="validate_login()">Log In</button>
+                                        <a class="btn btn-secondary rounded-pill" href="/">Back</a>
+                                    </div>
                                 </form>
                             </div> <!-- end card-body -->
                         </div>
@@ -78,6 +77,34 @@
         <!-- bundle -->
         <script src="{% static "assets/js/vendor.min.js" %}"></script>
         <script src="{% static "assets/js/app.min.js" %}"></script>
-
+        <script src="{% static "custom/custom.js" %}"></script>
+        <script type="text/javascript">
+          function validate_login(){
+            // Clear Validate
+            remove_valids(['username','password']);
+            set_text_emptys(['login_invalid_text']);
+            // Data Prepare
+            var username = $('#username').val();
+            var password = $('#password').val();
+            // Function
+            $.ajax({
+              url: '/validate_login/',
+              data: {
+                'username': username,
+                'password': password,
+              },
+              dataType: 'json',
+              success: function (data) {
+                if(data.canLogIn){
+                  valids(['username','password']);
+                  document.getElementById('login_form').submit();
+                } else {
+                  invalids(data.invalidList);
+                  set_text_value('login_invalid_text', data.invalidText);
+                }
+              }
+            });
+          }
+        </script>
     </body>
 </html>
