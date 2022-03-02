@@ -14,5 +14,6 @@ urlpatterns = [
     path('request_page/<str:request_no>', views.request_page, name='request_page'),
     path('pending_request/', views.pending_request, name='pending_request'),
     path('history_request/<str:freq>&<str:fstatus>&<str:fstartdate>&<str:fstopdate>', views.history_request, name='history_request'),
+    path('new_pv_request/', views.new_pv_request, name='new_pv_request'),
     path('emp_master/', views.emp_master, name='emp_master'),
 ]

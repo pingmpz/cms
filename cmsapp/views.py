@@ -96,6 +96,11 @@ def history_request(request, freq, fstatus, fstartdate, fstopdate):
     context['all_page_data'] = (all_page_data(request))
     return render(request, 'history_request.html', context)
 
+def new_pv_request(request):
+    context = {
+    }
+    return render(request, 'new_pv_request.html', context)
+
 @login_required(login_url='/')
 def emp_master(request):
     users = User.objects.all()
