@@ -46,10 +46,14 @@
                             <div class="col-12">
                                 <div class="page-title-box">
                                     <div class="page-title-right d-flex">
+                                      <select class="form-select" id="freq" style="width:60%">
+                                        <option value="MY" {% if freq == 'MY' %}style="color:blue" selected{% endif %}>My Request</option>
+                                        <option value="ALL" {% if freq == 'ALL' %}style="color:blue" selected{% endif %}>All Request</option>
+                                      </select>
                                       <p class="pt-2 pb-1 mb-0 small">&nbsp;Status&nbsp;</p>
                                       <select class="form-select" id="fstatus" style="width:60%">
                                         <option value="ALL" {% if fstatus == 'ALL' %}style="color:blue" selected{% endif %}>All Status</option>
-                                        <option value="COMPLETED" {% if fstatus == 'COMPLETED' %}style="color:blue" selected{% endif %}>Completed</option>
+                                        <option value="COMPLETE" {% if fstatus == 'COMPLETE' %}style="color:blue" selected{% endif %}>Complete</option>
                                         <option value="REJECTED" {% if fstatus == 'REJECTED' %}style="color:blue" selected{% endif %}>Rejected</option>
                                         <option value="CANCELED" {% if fstatus == 'CANCELED' %}style="color:blue" selected{% endif %}>Canceled</option>
                                       </select>
@@ -72,6 +76,7 @@
                                   <thead>
                                       <tr>
                                           <th>Request No</th>
+                                          <th>Type</th>
                                           <th>Status</th>
                                           <th>Reason</th>
                                           <th>Description</th>
@@ -83,31 +88,34 @@
                                   </thead>
                                   <tbody>
                                       <tr>
-                                          <td><a href="/request_page/CMS999999">CMS999999</a></td>
+                                          <td><a href="/request_page/CMS000004">CMS000004</a></td>
+                                          <td>Breakdown</td>
                                           <td><strong class="text-danger"><i class='uil-times'></i> Rejected</strong></td>
-                                          <td>เหตุผลที่ไม่รับ</td>
-                                          <td>เครื่องจักรเสียไม่รู้สาเหตุ..</td>
-                                          <td>MCA01</td>
+                                          <td>พนักงานเสียบปลั๊กหลวม</td>
+                                          <td>จอยบังคับไม่ทำงาน</td>
+                                          <td>MCA04</td>
                                           <td>5731 | Yashawantatul Mangalmurti (MIS) <i class="uil-phone"></i> 6624</td>
                                           <td>{% now "jS F Y H:i" %}</td>
                                           <td>{% now "jS F Y H:i" %}</td>
                                       </tr>
                                       <tr>
-                                          <td><a href="/request_page/CMS888888">CMS888888</a></td>
-                                          <td><strong class="text-success"><i class='mdi mdi-check-all'></i> Completed</strong></td>
+                                          <td><a href="/request_page/CMS000005">CMS000005</a></td>
+                                          <td>Breakdown</td>
+                                          <td><strong class="text-success"><i class='mdi mdi-check-all'></i> Complete</strong></td>
                                           <td></td>
-                                          <td>เครื่องจักรเสียไม่รู้สาเหตุ..</td>
-                                          <td>MCA01</td>
+                                          <td>เครื่องจักรสั่นเสียงดัง</td>
+                                          <td>MCA05</td>
                                           <td>5731 | Yashawantatul Mangalmurti (MIS) <i class="uil-phone"></i> 6624</td>
                                           <td>{% now "jS F Y H:i" %}</td>
                                           <td>{% now "jS F Y H:i" %}</td>
                                       </tr>
                                       <tr>
-                                          <td><a href="/request_page/CMS777777">CMS777777</a></td>
+                                          <td><a href="/request_page/CMS000006">CMS000006</a></td>
+                                          <td>Preventive</td>
                                           <td><strong class="text-danger"><i class='mdi mdi-cancel'></i> Canceled</strong></td>
-                                          <td>เหตุผลที่ยกเลิก</td>
-                                          <td>เครื่องจักรเสียไม่รู้สาเหตุ..</td>
-                                          <td>MCA01</td>
+                                          <td>ยังไม่จำเป็นต้องซ่อม</td>
+                                          <td>ซ่อมบำรุงประจำเดือน</td>
+                                          <td>MCA06</td>
                                           <td>5731 | Yashawantatul Mangalmurti (MIS) <i class="uil-phone"></i> 6624</td>
                                           <td>{% now "jS F Y H:i" %}</td>
                                           <td>{% now "jS F Y H:i" %}</td>
@@ -161,6 +169,10 @@
               ]
           });
 
+          $('#freq').change(function() {
+            filter();
+          });
+
           $('#fstatus').change(function() {
             filter();
           });
@@ -174,10 +186,11 @@
           });
 
           function filter(){
+            var freq = $("#freq").val();
             var fstatus = $("#fstatus").val();
             var fstartdate = ($("#fstartdate").val() != "")?$("#fstartdate").val():"NOW";
             var fstopdate = ($("#fstopdate").val() != "")?$("#fstopdate").val():"NOW";
-            window.location.href = "/history_request/" + fstatus + "&" + fstartdate + "&" + fstopdate;
+            window.location.href = "/history_request/" + freq + "&" + fstatus + "&" + fstartdate + "&" + fstopdate;
           }
         </script>
 

@@ -24,11 +24,11 @@
     <ul class="side-nav">
 
         <li class="side-nav-item">
-            <a href="/index/" class="side-nav-link">
+            <a href="/index/MY" class="side-nav-link">
                 <i class="uil-constructor"></i>
-                <span> My Tasks </span>
+                <span> My Request </span>
                 {% if all_page_data.my_task_counts != 0 %}
-                <span class="badge bg-danger rounded-pill float-end">{{all_page_data.my_task_counts}}</span>
+                <span class="badge bg-danger rounded-pill float-end">{{all_page_data.my_request_counts}}</span>
                 {% endif %}
             </a>
         </li>
@@ -66,7 +66,7 @@
         </li>
 
         <li class="side-nav-item">
-            <a href="/history_request/ALL&NOW&NOW" class="side-nav-link">
+            <a href="/history_request/MY&ALL&NOW&NOW" class="side-nav-link">
                 <i class="uil-comment-chart-line"></i>
                 <span> History Request </span>
             </a>

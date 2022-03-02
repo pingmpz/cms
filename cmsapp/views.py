@@ -56,8 +56,9 @@ def new_request(request):
     return render(request, 'new_request.html', context)
 
 @login_required(login_url='/')
-def index(request):
+def index(request, freq):
     context = {
+        'freq': freq,
     }
     context['all_page_data'] = (all_page_data(request))
     return render(request, 'index.html', context)
@@ -81,12 +82,13 @@ def pending_request(request):
     return render(request, 'pending_request.html', context)
 
 @login_required(login_url='/')
-def history_request(request, fstatus, fstartdate, fstopdate):
+def history_request(request, freq, fstatus, fstartdate, fstopdate):
     if fstartdate == "NOW":
         fstartdate = datetime.today().strftime('%Y-%m-%d')
     if fstopdate == "NOW":
         fstopdate = datetime.today().strftime('%Y-%m-%d')
     context = {
+        'freq': freq,
         'fstatus': fstatus,
         'fstartdate': fstartdate,
         'fstopdate': fstopdate,
@@ -104,10 +106,10 @@ def emp_master(request):
     return render(request, 'emp_master.html', context)
 
 def all_page_data(request):
-    my_task_counts = 2
-    pending_request_counts = 4
+    my_request_counts = 2
+    pending_request_counts = 1
     context = {
-        'my_task_counts': my_task_counts,
+        'my_request_counts': my_request_counts,
         'pending_request_counts': pending_request_counts,
     }
     return context
