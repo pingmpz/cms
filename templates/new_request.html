@@ -85,12 +85,12 @@
                                               <div class="mb-3">
                                                 <label class="form-label">Request To.. <i class="mdi mdi-asterisk text-danger small"></i></label><br>
                                                 <div class="form-check form-check-inline">
-                                                    <input type="radio" id="customRadio3" name="customRadio1" class="form-check-input" checked>
-                                                    <label class="form-check-label" for="customRadio3">Maintenance (MA)</label>
+                                                    <input type="radio" id="req_to_ma" name="req_to" class="form-check-input" value="MA" checked>
+                                                    <label class="form-check-label" for="req_to_ma">Maintenance (MA)</label>
                                                 </div>
                                                 <div class="form-check form-check-inline">
-                                                    <input type="radio" id="customRadio3" name="customRadio1" class="form-check-input">
-                                                    <label class="form-check-label" for="customRadio3">Admin Service (AD-SEC)</label>
+                                                    <input type="radio" id="req_to_ad" name="req_to" class="form-check-input" value="AD-SEC">
+                                                    <label class="form-check-label" for="req_to_ad">Admin Service (AD-SEC)</label>
                                                 </div>
                                               </div>
 
@@ -99,19 +99,16 @@
                                                   <textarea class="form-control" name="description" id="description" rows="5"></textarea>
                                               </div>
 
-                                              <div class="form-check mb-3">
-                                                  <input type="checkbox" class="form-check-input" id="customCheckcolor1">
-                                                  <label class="form-check-label" for="customCheckcolor1">Machine Problem</label>
-                                              </div>
-
-                                              <div class="mb-0">
-                                                  <label class="form-label">Machine Number</label>
-                                                  <select class="form-control select2" data-toggle="select2" name="mc_no" id="mc_no">
-                                                      <option>Select</option>
-                                                      <option value="">MCA-01</option>
-                                                      <option value="">MCA-02</option>
-                                                      <option value="">MCA-03</option>
-                                                  </select>
+                                              <div id="ma_group">
+                                                <div class="mb-0">
+                                                    <label class="form-label">Machine Number</label>
+                                                    <select class="form-control select2" data-toggle="select2" name="mc_no" id="mc_no">
+                                                        <option>Select</option>
+                                                        <option value="">MCA-01</option>
+                                                        <option value="">MCA-02</option>
+                                                        <option value="">MCA-03</option>
+                                                    </select>
+                                                </div>
                                               </div>
 
                                             </div>
@@ -179,10 +176,19 @@
         <!-- bundle -->
         <script src="{% static "assets/js/vendor.min.js" %}"></script>
         <script src="{% static "assets/js/app.min.js" %}"></script>
+        <script src="{% static "custom/custom.js" %}"></script>
         <!-- plugin js -->
         <script src="{% static "assets/js/vendor/dropzone.min.js" %}"></script>
         <!-- init js -->
         <script src="{% static "assets/js/ui/component.fileupload.js" %}"></script>
-
+        <script>
+          $('input[type=radio][name=req_to]').on("change", function() {
+            if(this.value == 'MA'){
+              unhide("ma_group");
+            } else {
+              hide("ma_group");
+            }
+          });
+        </script>
     </body>
 </html>
