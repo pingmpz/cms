@@ -42,7 +42,7 @@ def login_action(request):
     user = authenticate(request, username=username, password=password)
     if user is not None:
         login(request, user)
-        return redirect('/index/')
+        return redirect('/index/MY')
     return redirect('/')
 
 @login_required(login_url='/')
