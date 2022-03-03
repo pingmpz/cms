@@ -84,28 +84,41 @@
                                                 </div>
                                               </div>
                                               <hr>
-                                              <div class="mb-3">
-                                                <label class="form-label">Request To.. <i class="mdi mdi-asterisk text-danger small"></i></label><br>
-                                                <div class="form-check form-check-inline">
-                                                    <input type="radio" class="form-check-input" name="req_to" id="req_to_ma" value="MA" checked>
-                                                    <label class="form-check-label" for="req_to_ma">Maintenance (MA)</label>
+
+                                              <div class="row">
+                                                <div class="col-6">
+                                                  <div class="mb-3">
+                                                    <label class="form-label">Request To.. <i class="mdi mdi-asterisk text-danger small"></i></label><br>
+                                                    <div class="form-check form-check-inline">
+                                                        <input type="radio" class="form-check-input" name="req_to" id="req_to_ma" value="MA" checked>
+                                                        <label class="form-check-label" for="req_to_ma">Maintenance (MA)</label>
+                                                    </div>
+                                                    <div class="form-check form-check-inline">
+                                                        <input type="radio" class="form-check-input" name="req_to" id="req_to_ad" value="AD-SER">
+                                                        <label class="form-check-label" for="req_to_ad">Admin Service (AD-SER)</label>
+                                                    </div>
+                                                  </div>
                                                 </div>
-                                                <div class="form-check form-check-inline">
-                                                    <input type="radio" class="form-check-input" name="req_to" id="req_to_ad" value="AD-SEC">
-                                                    <label class="form-check-label" for="req_to_ad">Admin Service (AD-SER)</label>
+                                                <div class="col-6">
+                                                  <div class="mb-3">
+                                                    <label class="form-label">Format <i class="mdi mdi-asterisk text-danger small"></i></label><br>
+                                                    <div class="form-check form-check-inline">
+                                                        <input type="radio" class="form-check-input" name="format" id="format_mc" value="MC" checked>
+                                                        <label class="form-check-label" for="format_mc">Machine</label>
+                                                    </div>
+                                                    <div class="form-check form-check-inline">
+                                                        <input type="radio" class="form-check-input" name="format" id="format_non_mc" value="NON-MC">
+                                                        <label class="form-check-label" for="format_non_mc">Non-Machine</label>
+                                                    </div>
+                                                  </div>
                                                 </div>
                                               </div>
 
-                                              <div class="mb-3">
-                                                  <label class="form-label">Description <i class="mdi mdi-asterisk text-danger small"></i></label>
-                                                  <textarea class="form-control" name="description" id="description" rows="5"></textarea>
-                                              </div>
-
-                                              <div id="ma_group">
-                                                <div class="mb-0">
+                                              <div id="ma_mc_group">
+                                                <div class="mb-3">
                                                     <label class="form-label">Machine <i class="mdi mdi-asterisk text-danger small"></i></label>
                                                     <p class="text-muted font-12">Machine No 〢 Model 〢 Manufacture</p>
-                                                    <select class="form-control select2" data-toggle="select2" name="mc_no" id="mc_no">
+                                                    <select class="form-control select2" data-toggle="select2" name="mc_no" id="ma_mc_no">
                                                         <option>Select</option>
                                                         <optgroup label="MCA">
                                                           <option value="MCA-01">▪️ MCA-01 〢 MB-46VAE-R 〢 OKUMA</option>
@@ -119,6 +132,25 @@
                                                         </optgroup>
                                                     </select>
                                                 </div>
+                                              </div>
+
+                                              <div id="ad_ser_mc_group" hidden>
+                                                <div class="mb-3">
+                                                    <label class="form-label">Machine <i class="mdi mdi-asterisk text-danger small"></i></label>
+                                                    <p class="text-muted font-12">Machine No</p>
+                                                    <select class="form-control select2" data-toggle="select2" name="mc_no" id="ad_ser_mc_no">
+                                                        <option>Select</option>
+                                                        <optgroup label="PIPE">
+                                                          <option value="PIPE-01">▪️ PIPE-01</option>
+                                                          <option value="PIPE-01">▪️ PIPE-02</option>
+                                                        </optgroup>
+                                                    </select>
+                                                </div>
+                                              </div>
+
+                                              <div class="mb-3">
+                                                  <label class="form-label">Description <i class="mdi mdi-asterisk text-danger small"></i></label>
+                                                  <textarea class="form-control" name="description" id="description" rows="5"></textarea>
                                               </div>
 
                                             </div>
@@ -197,14 +229,31 @@
             if (event.persisted || (typeof window.performance != "undefined" && window.performance.navigation.type === 2)) window.location.reload();
           });
 
-          //-- Reqeust To Toggle
+          //-- Toggle
           $('input[type=radio][name=req_to]').on("change", function() {
-            if(this.value == 'MA'){
-              unhide("ma_group");
-            } else {
-              hide("ma_group");
-            }
+            toggle();
           });
+
+          $('input[type=radio][name=format]').on("change", function() {
+            toggle();
+          });
+
+          function toggle(){
+            var req_to = $('input[type=radio][name=req_to]:checked').val();
+            var format = $('input[type=radio][name=format]:checked').val();
+            if(format == 'MC'){
+              if(req_to == 'MA'){
+                unhide("ma_mc_group");
+                hide("ad_ser_mc_group");
+              } else {
+                hide("ma_mc_group");
+                unhide("ad_ser_mc_group");
+              }
+            } else {
+              hide("ma_mc_group");
+              hide("ad_ser_mc_group");
+            }
+          }
 
           //-- Only Number
           $("#emp_id").on("keypress keyup blur",function (event) {
