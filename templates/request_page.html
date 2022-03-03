@@ -46,7 +46,7 @@
                             <div class="col-12">
                                 <div class="page-title-box">
                                     <div class="page-title-right d-flex">
-                                        <button type="button" class="btn btn-dark ms-2"><i class="uil-cog"></i></button>
+
                                     </div>
                                     <h4 class="page-title"><i class="uil-comment"></i>{{request_no}}</h4>
                                 </div>
@@ -106,6 +106,7 @@
                               <!-- ========== Request Detail (From Requester) ========== -->
                               <div class="card">
                                   <div class="card-body">
+                                      <p class="text-muted font-12">** Appear while not Pending **</p>
                                       <div class="d-flex align-self-start">
                                           <div class="w-100 overflow-hidden">
                                               <h4 class="mb-2 mt-0">Request Detail</h4>
@@ -127,8 +128,10 @@
 
                               <div class="card">
                                   <div class="card-body">
+                                      <p class="text-muted font-12">** Appear while not Pending **</p>
+                                      <div class="dropdown float-end">
+                                      </div>
                                       <h5 class="card-title mb-3">Files</h5>
-
                                       <div class="card mb-1 shadow-none border">
                                           <div class="p-2">
                                               <div class="row align-items-center">
@@ -181,86 +184,287 @@
                             <div class="col-xxl-6 col-lg-12 order-lg-2 order-xxl-1">
                                 <!-- ========== Main Tab ========== -->
                                 <div class="card">
-                                    <div class="card-body p-0">
-                                        <ul class="nav nav-tabs nav-bordered">
+                                    <div class="card-body">
+                                        <ul class="nav nav-pills bg-nav-pills nav-justified mb-3">
                                             <li class="nav-item">
                                                 <a href="#comment" data-bs-toggle="tab" aria-expanded="false" class="nav-link active px-3 py-2">
                                                     <i class="mdi mdi-pencil-box-multiple font-18 d-md-none d-block"></i>
-                                                    <span class="d-none d-md-block">Comments</span>
+                                                    <span class="d-none d-md-block small">Comments</span>
                                                 </a>
                                             </li>
                                             <li class="nav-item">
                                                 <a href="#operate_time" data-bs-toggle="tab" aria-expanded="true" class="nav-link px-3 py-2">
                                                     <i class="mdi mdi-book-open-variant font-18 d-md-none d-block"></i>
-                                                    <span class="d-none d-md-block">Operate Time</span>
+                                                    <span class="d-none d-md-block small">Working Time</span>
                                                 </a>
                                             </li>
                                             <li class="nav-item">
                                                 <a href="#mc_downtime" data-bs-toggle="tab" aria-expanded="true" class="nav-link px-3 py-2">
                                                     <i class="mdi mdi-book-open-variant font-18 d-md-none d-block"></i>
-                                                    <span class="d-none d-md-block">Machine Downtime</span>
+                                                    <span class="d-none d-md-block small">Machine Downtime</span>
                                                 </a>
                                             </li>
                                             <li class="nav-item">
                                                 <a href="#costing" data-bs-toggle="tab" aria-expanded="true" class="nav-link px-3 py-2">
                                                     <i class="mdi mdi-book-open-variant font-18 d-md-none d-block"></i>
-                                                    <span class="d-none d-md-block">Costing</span>
+                                                    <span class="d-none d-md-block small"><del>Costing</del></span>
                                                 </a>
                                             </li>
                                         </ul>
 
                                         <div class="tab-content">
                                             <!-- ========== Comment Tab ========== -->
-                                            <div class="tab-pane show active p-3" id="comment">
+                                            <div class="tab-pane show active p-0" id="comment">
                                                 <!-- ========== New Comment ========== -->
                                                 <div class="border rounded">
                                                     <form action="#" class="comment-area-box">
                                                         <textarea rows="4" class="form-control border-0 resize-none" placeholder=""></textarea>
                                                         <div class="p-2 bg-light d-flex justify-content-between align-items-center">
                                                             <div></div>
-                                                            <button type="submit" class="btn btn-sm btn-success"><i class='uil uil-message me-1'></i>Post</button>
+                                                            <button type="submit" class="btn btn-sm btn-primary"><i class='uil uil-message me-1'></i>Post</button>
                                                         </div>
                                                     </form>
                                                 </div>
                                                 <br>
                                                 <!-- ========== Comment List ========== -->
-                                                <div class="card">
-                                                    <div class="card-body pb-1">
-                                                        <div class="d-flex">
-                                                            <div class="w-100">
-                                                                <h5 class="m-0">5731 | Yashawantatul Mangalmurti</h5>
-                                                                <p class="text-muted small"><i class="mdi mdi-clock-time-eight-outline"></i> 10:51 13/01/2022</p>
-                                                            </div>
-                                                        </div>
-                                                        <hr class="m-0" />
-                                                        <div class="font-16 text-center text-dark my-3">ได้รับหลอดไฟใหม่เรียบร้อยแล้ว จะทำการเปลี่ยนตอนเย็นหลังเลิกงาน</div>
-                                                        <hr class="m-0" />
-                                                    </div>
-                                                </div>
+                                                <div class="timeline-alt pb-0">
 
-                                                <div class="card">
-                                                    <div class="card-body pb-1">
-                                                        <div class="d-flex">
-                                                            <div class="w-100">
-                                                                <h5 class="m-0">5731 | Yashawantatul Mangalmurti</h5>
-                                                                <p class="text-muted small"><i class="mdi mdi-clock-time-eight-outline"></i> 10:51 13/01/2022</p>
-                                                            </div>
+                                                    <div class="timeline-item">
+                                                        <i class="mdi mdi-circle bg-primary-lighten text-primary timeline-icon"></i>
+                                                        <div class="timeline-item-info">
+                                                            <h5 class="mt-0 mb-1">5731 | Yashawantatul Mangalmurti</h5>
+                                                            <p class="font-12"><i class="mdi mdi-clock-time-eight-outline"></i> 10:51 13/01/2022</span></p>
+                                                            <p class="text-muted mt-2 mb-0 pb-3 text-center">เทสเครื่องเรียบร้อยดี</p>
+                                                            <hr>
                                                         </div>
-                                                        <hr class="m-0" />
-                                                        <div class="font-16 text-center text-dark my-3">เปิด PR No 1000123456 เพื่อซื้อหลอดไฟใหม่</div>
-                                                        <hr class="m-0" />
                                                     </div>
+
+                                                    <div class="timeline-item">
+                                                        <i class="mdi mdi-circle bg-primary-lighten text-primary timeline-icon"></i>
+                                                        <div class="timeline-item-info">
+                                                            <h5 class="mt-0 mb-1">5731 | Yashawantatul Mangalmurti</h5>
+                                                            <p class="font-12"><i class="mdi mdi-clock-time-eight-outline"></i> 10:51 13/01/2022</span></p>
+                                                            <p class="text-muted mt-2 mb-0 pb-3 text-center">เปลี่ยนหลอดไฟเสร็จเรียบร้อยแล้ว</p>
+                                                            <hr>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="timeline-item">
+                                                        <i class="mdi mdi-circle bg-primary-lighten text-primary timeline-icon"></i>
+                                                        <div class="timeline-item-info">
+                                                            <h5 class="mt-0 mb-1">5731 | Yashawantatul Mangalmurti</h5>
+                                                            <p class="font-12"><i class="mdi mdi-clock-time-eight-outline"></i> 10:51 13/01/2022</span></p>
+                                                            <p class="text-muted mt-2 mb-0 pb-3 text-center">ได้รับของแล้ว</p>
+                                                            <hr>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="timeline-item">
+                                                        <i class="mdi mdi-circle bg-primary-lighten text-primary timeline-icon"></i>
+                                                        <div class="timeline-item-info">
+                                                            <h5 class="mt-0 mb-1">5731 | Yashawantatul Mangalmurti</h5>
+                                                            <p class="font-12"><i class="mdi mdi-clock-time-eight-outline"></i> 10:51 13/01/2022</span></p>
+                                                            <p class="text-muted mt-2 mb-0 pb-3 text-center">เปิด PR เลขที่ 1000123456</p>
+                                                            <hr>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="timeline-item">
+                                                        <i class="mdi mdi-circle bg-primary-lighten text-primary timeline-icon"></i>
+                                                        <div class="timeline-item-info">
+                                                            <h5 class="mt-0 mb-1">No Comment..</h5>
+                                                        </div>
+                                                    </div>
+
                                                 </div>
                                             </div>
 
                                             <!-- ========== Operate Time Tab ========== -->
-                                            <div class="tab-pane p-3" id="operate_time">
+                                            <div class="tab-pane p-0" id="operate_time">
+                                              <ul class="nav nav-pills bg-nav-pills nav-justified mb-3">
+                                                  <li class="nav-item">
+                                                      <a href="#operators" data-bs-toggle="tab" aria-expanded="false" class="nav-link active">
+                                                          <i class="mdi mdi-home-variant d-md-none d-block"></i>
+                                                          <span class="d-none d-md-block">Operators</span>
+                                                      </a>
+                                                  </li>
+                                                  <li class="nav-item">
+                                                      <a href="#vendors" data-bs-toggle="tab" aria-expanded="true" class="nav-link">
+                                                          <i class="mdi mdi-account-circle d-md-none d-block"></i>
+                                                          <span class="d-none d-md-block">External Vendors</span>
+                                                      </a>
+                                                  </li>
+                                              </ul>
 
+                                              <!-- ========== Working Time Tab ========== -->
+                                              <div class="tab-content">
+                                                  <!-- ========== Operator Tab ========== -->
+                                                  <div class="tab-pane active" id="operators">
+                                                    <!-- ========== Add Operate Time ========== -->
+                                                    <p class="text-muted font-12">Use 'CTRL' to select multiple item</p>
+                                                    <div class="row">
+                                                      <div class="col-10">
+                                                        <div class="mb-3">
+                                                          <select class="select2 form-control select2-multiple" data-toggle="select2" multiple="multiple" data-placeholder="Choose ...">
+                                                              <option value="5731">5731 | Yashawantatul Mangalmurti</option>
+                                                              <option value="5731">0000 | John</option>
+                                                              <option value="5731">0001 | David</option>
+                                                          </select>
+                                                        </div>
+                                                      </div>
+                                                      <div class="col-2">
+                                                        <div class="mb-3">
+                                                          <button type="submit" class="btn btn-sm btn-success"><i class='mdi mdi-content-save me-1'></i>Save</button>
+                                                        </div>
+                                                      </div>
+                                                      <div class="col-6">
+                                                        <div class="mb-0">
+                                                          <label class="form-label">StartDateTime</label>
+                                                          <input type="datetime-local" class="form-control" name="section"  id="operate_start_date_time">
+                                                        </div>
+                                                      </div>
+                                                      <div class="col-6">
+                                                        <div class="mb-0">
+                                                          <label class="form-label">StopDateTime</label>
+                                                          <input type="datetime-local" class="form-control" name="phone_no"  id="operate_stop_date_time">
+                                                        </div>
+                                                      </div>
+                                                    </div>
+                                                    <hr>
+                                                    <!-- ========== Operate Time Table ========== -->
+                                                    <table id="operate_time_table" class="table table-sm nowrap dt-responsive row-border order-column w-100 small">
+                                                      <thead class="table-light">
+                                                          <tr>
+                                                              <th>Employee ID</th>
+                                                              <th>Name</th>
+                                                              <th>StartDateTime</th>
+                                                              <th>StopDateTime</th>
+                                                          </tr>
+                                                      </thead>
+                                                      <tbody>
+                                                          <tr>
+                                                              <td>5731</td>
+                                                              <td>Yashawantatul Mangalmurti</td>
+                                                              <td>10:51 13/01/2022</td>
+                                                              <td>10:51 13/01/2022</td>
+                                                          </tr>
+                                                          <tr>
+                                                              <td>0000</td>
+                                                              <td>John</td>
+                                                              <td>10:51 13/01/2022</td>
+                                                              <td>10:51 13/01/2022</td>
+                                                          </tr>
+                                                          <tr>
+                                                              <td>0001</td>
+                                                              <td>David</td>
+                                                              <td>10:51 13/01/2022</td>
+                                                              <td>10:51 13/01/2022</td>
+                                                          </tr>
+                                                      </tbody>
+                                                    </table>
+                                                  </div>
+
+                                                  <!-- ========== Vendors Tab ========== -->
+                                                  <div class="tab-pane show" id="vendors">
+                                                    <!-- ========== Add Operate Time ========== -->
+                                                    <p class="text-muted font-12">Use 'CTRL' to select multiple item</p>
+                                                    <div class="row">
+                                                      <div class="col-10">
+                                                        <div class="mb-3">
+                                                          <select class="select2 form-control select2-multiple" data-toggle="select2" multiple="multiple" data-placeholder="Choose ...">
+                                                              <option value="10000">10000 | Vendor #1</option>
+                                                              <option value="11000">11000 | Vendor #2</option>
+                                                              <option value="12000">12000 | Vendor #3</option>
+                                                          </select>
+                                                        </div>
+                                                      </div>
+                                                      <div class="col-2">
+                                                        <div class="mb-3">
+                                                          <button type="submit" class="btn btn-sm btn-success"><i class='mdi mdi-content-save me-1'></i>Save</button>
+                                                        </div>
+                                                      </div>
+                                                      <div class="col-6">
+                                                        <div class="mb-0">
+                                                          <label class="form-label">StartDateTime</label>
+                                                          <input type="datetime-local" class="form-control" name="section"  id="operate_start_date_time">
+                                                        </div>
+                                                      </div>
+                                                      <div class="col-6">
+                                                        <div class="mb-0">
+                                                          <label class="form-label">StopDateTime</label>
+                                                          <input type="datetime-local" class="form-control" name="phone_no"  id="operate_stop_date_time">
+                                                        </div>
+                                                      </div>
+                                                    </div>
+                                                    <hr>
+                                                    <!-- ========== Operate Time Table ========== -->
+                                                    <table id="operate_time_table" class="table table-sm nowrap dt-responsive row-border order-column w-100 small">
+                                                      <thead class="table-light">
+                                                          <tr>
+                                                              <th>Vendor Code</th>
+                                                              <th>Name</th>
+                                                              <th>StartDateTime</th>
+                                                              <th>StopDateTime</th>
+                                                          </tr>
+                                                      </thead>
+                                                      <tbody>
+                                                          <tr>
+                                                              <td>10000</td>
+                                                              <td>Vendor #1</td>
+                                                              <td>10:51 13/01/2022</td>
+                                                              <td>10:51 13/01/2022</td>
+                                                          </tr>
+                                                      </tbody>
+                                                    </table>
+                                                  </div>
+                                              </div>
                                             </div>
 
                                             <!-- ========== Machine Downtime Tab ========== -->
-                                            <div class="tab-pane p-3" id="mc_downtime">
-
+                                            <div class="tab-pane p-0" id="mc_downtime">
+                                              <!-- ========== Add Machine Downtime ========== -->
+                                              <div class="row">
+                                                <div class="col-10">
+                                                  <div class="mb-3">
+                                                    <label class="form-label">Machine No</label>
+                                                    <input type="text" class="form-control" value="MCA-01 〢 MB-46VAE-R 〢 OKUMA" readonly>
+                                                  </div>
+                                                </div>
+                                                <div class="col-2">
+                                                  <div class="mb-3">
+                                                    <label class="form-label">ㅤ</label>
+                                                    <button type="submit" class="btn btn-sm btn-success"><i class='mdi mdi-content-save me-1'></i>Save</button>
+                                                  </div>
+                                                </div>
+                                                <div class="col-6">
+                                                  <div class="mb-0">
+                                                    <label class="form-label">StartDateTime</label>
+                                                    <input type="datetime-local" class="form-control" name="section"  id="operate_start_date_time">
+                                                  </div>
+                                                </div>
+                                                <div class="col-6">
+                                                  <div class="mb-0">
+                                                    <label class="form-label">StopDateTime</label>
+                                                    <input type="datetime-local" class="form-control" name="phone_no"  id="operate_stop_date_time">
+                                                  </div>
+                                                </div>
+                                              </div>
+                                              <hr>
+                                              <!-- ========== Operate Time Table ========== -->
+                                              <table id="operate_time_table" class="table table-sm nowrap dt-responsive row-border order-column w-100 small">
+                                                <thead class="table-light">
+                                                    <tr>
+                                                        <th>StartDateTime</th>
+                                                        <th>StopDateTime</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr>
+                                                        <td>10:51 13/01/2022</td>
+                                                        <td>10:51 13/01/2022</td>
+                                                    </tr>
+                                                </tbody>
+                                              </table>
                                             </div>
 
                                             <!-- ========== Costing Tab ========== -->
@@ -281,16 +485,20 @@
                                 <div class="card">
                                     <div class="card-body p-2">
                                         <div class="list-group list-group-flush my-2">
-                                            Pending
+                                            <p class="text-muted font-12">** Appear while Pending **</p>
                                             <button type="button" class="btn btn-xs mb-1 btn-success"><i class='uil-check me-1'></i>Accept</button>
                                             <button type="button" class="btn btn-xs mb-1 btn-danger"><i class='uil-times me-1'></i>Reject</button>
-                                            Hold
+                                            <p class="text-muted font-12">** Appear while Hold **</p>
+                                            <button type="button" class="btn btn-xs mb-1 btn-warning"><i class='uil-pen me-1'></i>Edit Request</button>
                                             <button type="button" class="btn btn-xs mb-1 btn-primary"><i class='mdi mdi-hammer-wrench me-1'></i>Start Work</button>
                                             <button type="button" class="btn btn-xs mb-1 btn-danger"><i class='mdi mdi-cancel me-1'></i>Cancel</button>
-                                            On Progress
+                                            <p class="text-muted font-12">** Appear while On Progress **</p>
+                                            <button type="button" class="btn btn-xs mb-1 btn-warning"><i class='uil-pen me-1'></i>Edit Request</button>
                                             <button type="button" class="btn btn-xs mb-1 btn-dark"><i class='mdi mdi-motion-pause-outline me-1'></i>Hold</button>
                                             <button type="button" class="btn btn-xs mb-1 btn-success"><i class='mdi mdi-check-all me-1'></i>Complete</button>
                                             <button type="button" class="btn btn-xs mb-1 btn-danger"><i class='mdi mdi-cancel me-1'></i>Cancel</button>
+                                            <p class="text-muted font-12">** Appear while Complete/Canceled **</p>
+                                            <button type="button" class="btn btn-xs mb-1 btn-info"><i class='uil-redo me-1'></i>Rework</button>
                                         </div>
                                     </div>
                                 </div>
@@ -298,6 +506,7 @@
                                 <!-- ========== Team ========== -->
                                 <div class="card">
                                     <div class="card-body pb-0">
+                                        <p class="text-muted font-12">** Appear while not Pending **</p>
                                         <div class="dropdown float-end">
                                         </div>
 

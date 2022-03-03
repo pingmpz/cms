@@ -55,7 +55,7 @@
                                             <div class="col-xl-6">
                                               <div class="mb-3">
                                                 <label class="form-label">Request Date <i class="mdi mdi-asterisk text-danger small"></i></label>
-                                                <input type="date" id="simpleinput" class="form-control">
+                                                <input type="date" class="form-control" name="req_date" id="req_date">
                                               </div>
 
                                               <div class="mb-3">
@@ -64,13 +64,22 @@
                                               </div>
 
                                               <div class="mb-0">
-                                                  <label class="form-label">Machine Number <i class="mdi mdi-asterisk text-danger small"></i></label>
+                                                  <label class="form-label">Machine <i class="mdi mdi-asterisk text-danger small"></i></label>
+                                                  <p class="text-muted font-12">Machine No 〢 Model 〢 Manufacture</p>
                                                   <select class="form-control select2" data-toggle="select2" name="mc_no" id="mc_no">
                                                       <option>Select</option>
-                                                      <option value="">MCA-01</option>
-                                                      <option value="">MCA-02</option>
-                                                      <option value="">MCA-03</option>
+                                                      <optgroup label="MCA">
+                                                        <option value="MCA-01">▪️ MCA-01 〢 MB-46VAE-R 〢 OKUMA</option>
+                                                        <option value="MCA-02">▪️ MCA-02 〢 MB-56VA 〢 OKUMA</option>
+                                                        <option value="MCA-03">▪️ MCA-03 〢 GX-600 〢 OKUMA</option>
+                                                      </optgroup>
+                                                      <optgroup label="BTA">
+                                                        <option value="BTA-01">▪️ BTA-01 〢 BNF-16 〢 Miyano</option>
+                                                        <option value="BTA-02">▪️ BTA-02 〢 BNF-16 〢 Miyano</option>
+                                                        <option value="BTA-03">▪️ BTA-03 〢 BNF-16 〢 Miyano</option>
+                                                      </optgroup>
                                                   </select>
+                                                  
                                               </div>
 
                                             </div>
@@ -78,7 +87,7 @@
                                             <div class="col-xl-6">
                                                 <div class="mb-3 mt-3 mt-xl-0">
                                                     <label class="mb-0">Files</label>
-                                                    <p class="text-muted font-14">* Do not upload files that have # in the file name.</p>
+                                                    <p class="text-muted font-12">* Do not upload files that have # in the file name.</p>
 
                                                     <form action="/" method="post" class="dropzone" name="attachments" id="attachments" data-plugin="dropzone" data-previews-container="#file-previews"
                                                         data-upload-preview-template="#uploadPreviewTemplate">
@@ -148,5 +157,11 @@
         <script src="{% static "assets/js/vendor/dropzone.min.js" %}"></script>
         <!-- init js -->
         <script src="{% static "assets/js/ui/component.fileupload.js" %}"></script>
+        <script>
+        //-- Prevent Back
+        window.addEventListener( "pageshow", function (event) {
+          if (event.persisted || (typeof window.performance != "undefined" && window.performance.navigation.type === 2)) window.location.reload();
+        });
+        </script>
     </body>
 </html>

@@ -54,44 +54,45 @@
                                             <!-- ========== Left Content ========== -->
                                             <div class="col-xl-6">
                                               <div class="mb-3">
-                                                <label class="form-label">Requester Info</label><hr>
+                                                <label class="form-label">Requester Info</label>
+                                                <p class="text-muted font-12">* This will auto fill requester info after enter your employee id, if you ever create a request in CMS.</p>
                                                 <div class="row">
                                                   <div class="col-6">
                                                     <div class="mb-3">
-                                                      <label class="form-label">Requester ID <i class="mdi mdi-asterisk text-danger small"></i></label>
-                                                      <input type="text" id="simpleinput" class="form-control">
+                                                      <label class="form-label">Employee ID <i class="mdi mdi-asterisk text-danger small"></i></label>
+                                                      <input type="text" class="form-control" name="emp_id" id="emp_id">
                                                     </div>
                                                   </div>
                                                   <div class="col-6">
                                                     <div class="mb-3">
-                                                      <label class="form-label">Requester Name <i class="mdi mdi-asterisk text-danger small"></i></label>
-                                                      <input type="text" id="simpleinput" class="form-control">
+                                                      <label class="form-label">Name <i class="mdi mdi-asterisk text-danger small"></i></label>
+                                                      <input type="text" class="form-control" name="name"  id="name">
                                                     </div>
                                                   </div>
                                                   <div class="col-6">
-                                                    <div class="mb-3">
+                                                    <div class="mb-0">
                                                       <label class="form-label">Section <i class="mdi mdi-asterisk text-danger small"></i></label>
-                                                      <input type="text" id="simpleinput" class="form-control">
+                                                      <input type="text" class="form-control" name="section"  id="section">
                                                     </div>
                                                   </div>
                                                   <div class="col-6">
-                                                    <div class="mb-3">
+                                                    <div class="mb-0">
                                                       <label class="form-label">Phone No <i class="mdi mdi-asterisk text-danger small"></i></label>
-                                                      <input type="text" id="simpleinput" class="form-control">
+                                                      <input type="text" class="form-control" name="phone_no"  id="phone_no">
                                                     </div>
                                                   </div>
                                                 </div>
                                               </div>
-
+                                              <hr>
                                               <div class="mb-3">
                                                 <label class="form-label">Request To.. <i class="mdi mdi-asterisk text-danger small"></i></label><br>
                                                 <div class="form-check form-check-inline">
-                                                    <input type="radio" id="req_to_ma" name="req_to" class="form-check-input" value="MA" checked>
+                                                    <input type="radio" class="form-check-input" name="req_to" id="req_to_ma" value="MA" checked>
                                                     <label class="form-check-label" for="req_to_ma">Maintenance (MA)</label>
                                                 </div>
                                                 <div class="form-check form-check-inline">
-                                                    <input type="radio" id="req_to_ad" name="req_to" class="form-check-input" value="AD-SEC">
-                                                    <label class="form-check-label" for="req_to_ad">Admin Service (AD-SEC)</label>
+                                                    <input type="radio" class="form-check-input" name="req_to" id="req_to_ad" value="AD-SEC">
+                                                    <label class="form-check-label" for="req_to_ad">Admin Service (AD-SER)</label>
                                                 </div>
                                               </div>
 
@@ -102,12 +103,20 @@
 
                                               <div id="ma_group">
                                                 <div class="mb-0">
-                                                    <label class="form-label">Machine Number <i class="mdi mdi-asterisk text-danger small"></i></label>
+                                                    <label class="form-label">Machine <i class="mdi mdi-asterisk text-danger small"></i></label>
+                                                    <p class="text-muted font-12">Machine No 〢 Model 〢 Manufacture</p>
                                                     <select class="form-control select2" data-toggle="select2" name="mc_no" id="mc_no">
                                                         <option>Select</option>
-                                                        <option value="">MCA-01</option>
-                                                        <option value="">MCA-02</option>
-                                                        <option value="">MCA-03</option>
+                                                        <optgroup label="MCA">
+                                                          <option value="MCA-01">▪️ MCA-01 〢 MB-46VAE-R 〢 OKUMA</option>
+                                                          <option value="MCA-02">▪️ MCA-02 〢 MB-56VA 〢 OKUMA</option>
+                                                          <option value="MCA-03">▪️ MCA-03 〢 GX-600 〢 OKUMA</option>
+                                                        </optgroup>
+                                                        <optgroup label="BTA">
+                                                          <option value="BTA-01">▪️ BTA-01 〢 BNF-16 〢 Miyano</option>
+                                                          <option value="BTA-02">▪️ BTA-02 〢 BNF-16 〢 Miyano</option>
+                                                          <option value="BTA-03">▪️ BTA-03 〢 BNF-16 〢 Miyano</option>
+                                                        </optgroup>
                                                     </select>
                                                 </div>
                                               </div>
@@ -117,7 +126,7 @@
                                             <div class="col-xl-6">
                                                 <div class="mb-3 mt-3 mt-xl-0">
                                                     <label class="mb-0">Files</label>
-                                                    <p class="text-muted font-14">* Do not upload files that have # in the file name.</p>
+                                                    <p class="text-muted font-12">* Do not upload files that have # in the file name.</p>
 
                                                     <form action="/" method="post" class="dropzone" name="attachments" id="attachments" data-plugin="dropzone" data-previews-container="#file-previews"
                                                         data-upload-preview-template="#uploadPreviewTemplate">
@@ -183,12 +192,29 @@
         <!-- init js -->
         <script src="{% static "assets/js/ui/component.fileupload.js" %}"></script>
         <script>
+          //-- Prevent Back
+          window.addEventListener( "pageshow", function (event) {
+            if (event.persisted || (typeof window.performance != "undefined" && window.performance.navigation.type === 2)) window.location.reload();
+          });
+
+          //-- Reqeust To Toggle
           $('input[type=radio][name=req_to]').on("change", function() {
             if(this.value == 'MA'){
               unhide("ma_group");
             } else {
               hide("ma_group");
             }
+          });
+
+          //-- Only Number
+          $("#emp_id").on("keypress keyup blur",function (event) {
+              $(this).val($(this).val().replace(/[^\d].+/, ""));
+              if((event.which < 48 || event.which > 57)) event.preventDefault();
+          });
+
+          $("#phone_no").on("keypress keyup blur",function (event) {
+              $(this).val($(this).val().replace(/[^\d].+/, ""));
+              if((event.which < 48 || event.which > 57)) event.preventDefault();
           });
         </script>
     </body>
