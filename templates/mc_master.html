@@ -4,7 +4,7 @@
 <html lang="en">
     <head>
         <meta charset="utf-8" />
-        <title>Pending Request | C.C.S. Maintenance Service</title>
+        <title>Machine Master | C.C.S. Maintenance Service</title>
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <meta content="A fully featured admin theme which can be used to build CRM, CMS, etc." name="description" />
         <meta content="Coderthemes" name="author" />
@@ -48,7 +48,7 @@
                                     <div class="page-title-right d-flex">
                                         <!-- Filter Here -->
                                     </div>
-                                    <h4 class="page-title"><i class="uil-comment-question"></i> Pending Request (1)</h4>
+                                    <h4 class="page-title"><i class="uil-database"></i> Machine Master (6)</h4>
                                 </div>
                             </div>
                         </div>
@@ -58,27 +58,51 @@
                           <div class="col-12">
                             <div class="card">
                               <div class="card-body">
-                                <table id="request_table" class="table table-sm nowrap dt-responsive row-border order-column w-100 small">
+                                <table id="mc_master_table" class="table table-sm nowrap dt-responsive row-border order-column w-100 small">
                                   <thead>
                                       <tr>
-                                          <th>Request No</th>
-                                          <th>Type</th>
-                                          <th>Status</th>
-                                          <th>Description</th>
+                                          <th>Section</th>
                                           <th>Machine No</th>
-                                          <th>Request By</th>
-                                          <th>Request Date</th>
+                                          <th>Model</th>
+                                          <th>Manufacture</th>
                                       </tr>
                                   </thead>
                                   <tbody>
                                       <tr>
-                                          <td><a href="/request_page/CMS000003">CMS000003</a></td>
-                                          <td>Breakdown</td>
-                                          <td><strong class="text-warning"><i class='mdi mdi-clock-time-eight-outline'></i> Pending</strong></td>
-                                          <td>ไฟแจ้งเตือนเครื่องจักรไม่ติด</td>
-                                          <td>MCA03</td>
-                                          <td>5731 | Yashawantatul Mangalmurti (MIS) <i class="uil-phone"></i> 6624</td>
-                                          <td>{% now "jS F Y H:i" %}</td>
+                                          <td>MCA</td>
+                                          <td>MCA-01</td>
+                                          <td>MB-46VAE-R</td>
+                                          <td>OKUMA</td>
+                                      </tr>
+                                      <tr>
+                                          <td>MCA</td>
+                                          <td>MCA-02</td>
+                                          <td>MB-56VA</td>
+                                          <td>OKUMA</td>
+                                      </tr>
+                                      <tr>
+                                          <td>MCA</td>
+                                          <td>MCA-03</td>
+                                          <td>GX-600</td>
+                                          <td>OKUMA</td>
+                                      </tr>
+                                      <tr>
+                                          <td>BTA</td>
+                                          <td>BTA-01</td>
+                                          <td>BNF-16</td>
+                                          <td>Miyano</td>
+                                      </tr>
+                                      <tr>
+                                          <td>BTA</td>
+                                          <td>BTA-02</td>
+                                          <td>BNF-16</td>
+                                          <td>Miyano</td>
+                                      </tr>
+                                      <tr>
+                                          <td>BTA</td>
+                                          <td>BTA-03</td>
+                                          <td>BNF-16</td>
+                                          <td>Miyano</td>
                                       </tr>
                                   </tbody>
                                 </table>
@@ -119,15 +143,24 @@
         <script src="{% static "assets/js/vendor/fixedHeader.bootstrap5.min.js" %}"></script>
 
         <script type="text/javascript">
-          $('#request_table').DataTable( {
-              "order": [[ 0, "asc" ]],
-              'iDisplayLength': 100,
-              "scrollX": true,
-              dom: 'Bfrtip',
-              buttons: [
-                // 'excelHtml5',
-                // 'csvHtml5',
-              ]
+          $('#mc_master_table').DataTable( {
+            "columnDefs": [{ "visible": true, "targets": 0 }],
+            "order": [[ 0, "asc" ]],
+            "displayLength": 100,
+            "drawCallback": function ( settings ) {
+                  var api = this.api();
+                  var rows = api.rows( {page:'current'} ).nodes();
+                  var last=null;
+
+                  api.column(0, {page:'current'} ).data().each( function ( group, i ) {
+                      if ( last !== group ) {
+                          $(rows).eq( i ).before(
+                              '<tr class="group"><td colspan="10">⎯<b><i> '+group+'</i></b></td></tr>'
+                          );
+                          last = group;
+                      }
+                });
+              }
           });
         </script>
 

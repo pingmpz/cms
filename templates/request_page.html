@@ -58,58 +58,73 @@
 
                             <!-- ========== Left Content ========== -->
                             <div class="col-xxl-3 col-lg-6 order-lg-1 order-xxl-1">
+
                               <!-- ========== Pending ========== -->
+                              {% if status == 'Pending' %}
                               <div class="card bg-warning text-white">
                                   <div class="card-body p-2">
                                       <h3 class="mb-2 mt-2 text-center"><i class='mdi mdi-clock-time-eight-outline'></i> Pending</h3>
                                   </div>
                               </div>
+                              {% endif %}
 
                               <!-- ========== Rejected ========== -->
+                              {% if status == 'Rejected' %}
                               <div class="card bg-danger text-white">
                                   <div class="card-body p-2">
                                       <h3 class="mb-2 mt-2 text-center"><i class='uil-times'></i> Rejected</h3>
                                       <p class="mb-2 mt-2 text-center">"เหตุผลที่ไม่รับ"</p>
                                   </div>
                               </div>
+                              {% endif %}
 
                               <!-- ========== On Progress ========== -->
+                              {% if status == 'On Progress' %}
                               <div class="card bg-primary text-white">
                                   <div class="card-body p-2">
                                       <h3 class="mb-2 mt-2 text-center"><i class='mdi mdi-hammer-wrench'></i> On Pogress</h3>
                                   </div>
                               </div>
+                              {% endif %}
 
                               <!-- ========== On Hold ========== -->
+                              {% if status == 'On Hold' %}
                               <div class="card bg-dark text-white">
                                   <div class="card-body p-2">
                                       <h3 class="mb-2 mt-2 text-center"><i class='mdi mdi-motion-pause-outline'></i> On Hold</h3>
                                       <p class="mb-2 mt-2 text-center">"เหตุผลที่รอ"</p>
                                   </div>
                               </div>
+                              {% endif %}
 
                               <!-- ========== Complete ========== -->
+                              {% if status == 'Complete' %}
                               <div class="card bg-success text-white">
                                   <div class="card-body p-2">
                                       <h3 class="mb-2 mt-2 text-center"><i class='mdi mdi-check-all'></i> Complete</h3>
                                   </div>
                               </div>
+                              {% endif %}
 
                               <!-- ========== Canceled ========== -->
+                              {% if status == 'Canceled' %}
                               <div class="card bg-danger text-white">
                                   <div class="card-body p-2">
                                       <h3 class="mb-2 mt-2 text-center"><i class='mdi mdi-cancel'></i> Canceled</h3>
                                       <p class="mb-2 mt-2 text-center">"เหตุผลที่ยกเลิก"</p>
                                   </div>
                               </div>
+                              {% endif %}
 
                               <!-- ========== Request Detail (From Requester) ========== -->
+                              {% if status != 'Pending' and status != 'Rejected' %}
                               <div class="card">
                                   <div class="card-body">
-                                      <p class="text-muted font-12">** Appear while not Pending **</p>
                                       <div class="d-flex align-self-start">
                                           <div class="w-100 overflow-hidden">
-                                              <h4 class="mb-2 mt-0">Request Detail</h4>
+                                            <div class="dropdown float-end">
+                                            </div>
+                                            <h4 class="header-title mb-1">Request Detail</h4>
                                               <p class="mb-2 mt-0 text-muted small">เครื่องสั่นขณะเปิดรอบ และมีเสียงกระชากดังตึกขณะวิ่งด้วยความเร็ว Goo , ไฟส่องสว่างในเครื่องไม่สว่าง</p>
                                               <p class="mb-0 mt-0 small"><i class="mdi mdi-clock-time-eight-outline"></i> 10:51 13/01/2022</p>
                                               <p class="mb-0 mt-0 small"><b><i class="mdi mdi-cash-register"></i> <u>Machine Info</u></b></p>
@@ -125,12 +140,33 @@
                                       </div>
                                   </div>
                               </div>
+                              {% endif %}
 
+                              <!-- ========== Category ========== -->
+                              {% if status != 'Pending' and status != 'Rejected' %}
+                              <div class="card">
+                                    <div class="card-body">
+                                        <div class="dropdown float-end">
+                                        </div>
+                                        <h4 class="header-title mb-1">Category</h4>
+                                        <div class="d-flex mt-3">
+                                            <i class="mdi mdi-circle text-primary"></i>&nbsp;<strong>Electricity</strong>
+                                        </div>
+
+                                        <div class="d-flex mt-3">
+                                            <i class="mdi mdi-circle text-primary"></i>&nbsp;<strong>Hydrolic</strong>
+                                        </div>
+
+                                    </div>
+                                </div>
+                                {% endif %}
+
+                              <!-- ========== Files ========== -->
                               <div class="card">
                                   <div class="card-body">
                                       <div class="dropdown float-end">
                                       </div>
-                                      <h5 class="card-title mb-3">Files</h5>
+                                      <h4 class="header-title mb-3">Files</h4>
                                       <div class="card mb-1 shadow-none border">
                                           <div class="p-2">
                                               <div class="row align-items-center">
@@ -180,10 +216,11 @@
 
                             <!-- ========== Middle Content ========== -->
                             <div class="col-xxl-6 col-lg-12 order-lg-2 order-xxl-1">
+
                                 <!-- ========== Request Detail ========== -->
+                                {% if status == 'Pending' or status == 'Rejected' %}
                                 <div class="card">
                                     <div class="card-body">
-                                        <p class="text-muted font-12">** Appear while Pending **</p>
                                         <div class="d-flex align-self-start">
                                             <div class="w-100 overflow-hidden">
                                                 <h4 class="mb-2 mt-0">Request Detail</h4>
@@ -202,11 +239,12 @@
                                         </div>
                                     </div>
                                 </div>
+                                {% endif %}
 
                                 <!-- ========== Main Tab ========== -->
+                                {% if status != 'Pending' and status != 'Rejected' %}
                                 <div class="card">
                                     <div class="card-body">
-                                        <p class="text-muted font-12">** Appear while On Progress & On Hold **</p>
                                         <ul class="nav nav-pills bg-nav-pills nav-justified mb-3">
                                             <li class="nav-item">
                                                 <a href="#comment" data-bs-toggle="tab" aria-expanded="false" class="nav-link active px-3 py-2">
@@ -238,6 +276,7 @@
                                             <!-- ========== Comment Tab ========== -->
                                             <div class="tab-pane show active p-0" id="comment">
                                                 <!-- ========== New Comment ========== -->
+                                                {% if status == 'On Progress' or status == 'On Hold' %}
                                                 <div class="border rounded">
                                                     <form action="#" class="comment-area-box">
                                                         <textarea rows="4" class="form-control border-0 resize-none" placeholder=""></textarea>
@@ -248,6 +287,7 @@
                                                     </form>
                                                 </div>
                                                 <br>
+                                                {% endif %}
                                                 <!-- ========== Comment List ========== -->
                                                 <div class="timeline-alt pb-0">
 
@@ -292,10 +332,7 @@
                                                     </div>
 
                                                     <div class="timeline-item">
-                                                        <i class="mdi mdi-circle bg-primary-lighten text-primary timeline-icon"></i>
-                                                        <div class="timeline-item-info">
-                                                            <h5 class="mt-0 mb-1">No Comment..</h5>
-                                                        </div>
+                                                        <h4 class="text-center">There is no comment in this request.</h4>
                                                     </div>
 
                                                 </div>
@@ -323,6 +360,7 @@
                                                   <!-- ========== Operator Tab ========== -->
                                                   <div class="tab-pane active" id="operators">
                                                     <!-- ========== Add Operate Time ========== -->
+                                                    {% if status == 'On Progress' or status == 'On Hold' %}
                                                     <p class="text-muted font-12">Use 'CTRL' to select multiple item</p>
                                                     <div class="row">
                                                       <div class="col-10">
@@ -353,6 +391,7 @@
                                                       </div>
                                                     </div>
                                                     <hr>
+                                                    {% endif %}
                                                     <!-- ========== Operate Time Table ========== -->
                                                     <table id="operate_time_table" class="table table-sm nowrap dt-responsive row-border order-column w-100 small">
                                                       <thead class="table-light">
@@ -389,6 +428,7 @@
                                                   <!-- ========== Vendors Tab ========== -->
                                                   <div class="tab-pane show" id="vendors">
                                                     <!-- ========== Add Operate Time ========== -->
+                                                    {% if status == 'On Progress' or status == 'On Hold' %}
                                                     <p class="text-muted font-12">Use 'CTRL' to select multiple item</p>
                                                     <div class="row">
                                                       <div class="col-10">
@@ -419,6 +459,7 @@
                                                       </div>
                                                     </div>
                                                     <hr>
+                                                    {% endif %}
                                                     <!-- ========== Operate Time Table ========== -->
                                                     <table id="operate_time_table" class="table table-sm nowrap dt-responsive row-border order-column w-100 small">
                                                       <thead class="table-light">
@@ -445,6 +486,7 @@
                                             <!-- ========== Machine Downtime Tab ========== -->
                                             <div class="tab-pane p-0" id="mc_downtime">
                                               <!-- ========== Add Machine Downtime ========== -->
+                                              {% if status == 'On Progress' or status == 'On Hold' %}
                                               <div class="row">
                                                 <div class="col-10">
                                                   <div class="mb-3">
@@ -472,6 +514,7 @@
                                                 </div>
                                               </div>
                                               <hr>
+                                              {% endif %}
                                               <!-- ========== Operate Time Table ========== -->
                                               <table id="operate_time_table" class="table table-sm nowrap dt-responsive row-border order-column w-100 small">
                                                 <thead class="table-light">
@@ -498,6 +541,7 @@
 
                                     </div>
                                 </div>
+                                {% endif %}
 
                             </div>
 
@@ -505,30 +549,37 @@
                             <div class="col-xxl-3 col-lg-6 order-lg-1 order-xxl-2">
                                 <!-- ========== Functions ========== -->
                                 <div class="card">
-                                    <div class="card-body p-2">
+                                    <div class="card-body p-3">
+                                        <div class="dropdown float-end">
+                                        </div>
+                                        <h4 class="header-title mb-3">Functions</h4>
                                         <div class="list-group list-group-flush my-2">
-                                            <p class="text-muted font-12">** Appear while Pending **</p>
+                                            {% if status == 'Pending' %}
                                             <button type="button" class="btn btn-xs mb-1 btn-success"><i class='uil-check me-1'></i>Accept</button>
                                             <button type="button" class="btn btn-xs mb-1 btn-danger"><i class='uil-times me-1'></i>Reject</button>
-                                            <p class="text-muted font-12">** Appear while Hold **</p>
+                                            {% elif status == 'On Hold' %}
                                             <button type="button" class="btn btn-xs mb-1 btn-warning"><i class='uil-pen me-1'></i>Edit Request</button>
                                             <button type="button" class="btn btn-xs mb-1 btn-primary"><i class='mdi mdi-hammer-wrench me-1'></i>Start Work</button>
                                             <button type="button" class="btn btn-xs mb-1 btn-danger"><i class='mdi mdi-cancel me-1'></i>Cancel</button>
-                                            <p class="text-muted font-12">** Appear while On Progress **</p>
+                                            {% elif status == 'On Progress' %}
                                             <button type="button" class="btn btn-xs mb-1 btn-warning"><i class='uil-pen me-1'></i>Edit Request</button>
                                             <button type="button" class="btn btn-xs mb-1 btn-dark"><i class='mdi mdi-motion-pause-outline me-1'></i>Hold</button>
                                             <button type="button" class="btn btn-xs mb-1 btn-success"><i class='mdi mdi-check-all me-1'></i>Complete</button>
                                             <button type="button" class="btn btn-xs mb-1 btn-danger"><i class='mdi mdi-cancel me-1'></i>Cancel</button>
-                                            <p class="text-muted font-12">** Appear while Complete & Canceled **</p>
+                                            {% elif status == 'Complete' or status == 'Canceled' %}
                                             <button type="button" class="btn btn-xs mb-1 btn-info"><i class='uil-redo me-1'></i>Rework</button>
+                                            {% endif %}
+                                            {% if status == 'Rejected' %}
+                                            <p class="text-center">There is no function for this request.</p>
+                                            {% endif %}
                                         </div>
                                     </div>
                                 </div>
 
                                 <!-- ========== Team ========== -->
+                                {% if status != 'Pending' and status != 'Rejected' %}
                                 <div class="card">
                                     <div class="card-body pb-0">
-                                        <p class="text-muted font-12">** Appear while not Pending **</p>
                                         <div class="dropdown float-end">
                                         </div>
 
@@ -587,6 +638,7 @@
                                         </div>
                                     </div>
                                 </div>
+                                {% endif %}
 
                             </div>
                         </div>

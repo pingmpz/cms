@@ -67,9 +67,23 @@ def index(request, freq):
 def request_page(request, request_no):
     requestIsExist = False
     requestIsExist = True
+    status = 'None'
+    if request_no == 'CMS000001':
+        status = 'On Progress'
+    elif request_no == 'CMS000002':
+        status = 'On Hold'
+    elif request_no == 'CMS000003':
+        status = 'Pending'
+    elif request_no == 'CMS000004':
+        status = 'Rejected'
+    elif request_no == 'CMS000005':
+        status = 'Complete'
+    elif request_no == 'CMS000006':
+        status = 'Canceled'
     context = {
         'request_no': request_no,
         'requestIsExist': requestIsExist,
+        'status': status,
     }
     context['all_page_data'] = (all_page_data(request))
     return render(request, 'request_page.html', context)
@@ -109,6 +123,33 @@ def emp_master(request):
     }
     context['all_page_data'] = (all_page_data(request))
     return render(request, 'emp_master.html', context)
+
+@login_required(login_url='/')
+def mc_master(request):
+    users = User.objects.all()
+    context = {
+        'users': users,
+    }
+    context['all_page_data'] = (all_page_data(request))
+    return render(request, 'mc_master.html', context)
+
+@login_required(login_url='/')
+def vendor_master(request):
+    users = User.objects.all()
+    context = {
+        'users': users,
+    }
+    context['all_page_data'] = (all_page_data(request))
+    return render(request, 'vendor_master.html', context)
+
+@login_required(login_url='/')
+def cat_master(request):
+    users = User.objects.all()
+    context = {
+        'users': users,
+    }
+    context['all_page_data'] = (all_page_data(request))
+    return render(request, 'cat_master.html', context)
 
 def all_page_data(request):
     my_request_counts = 2
