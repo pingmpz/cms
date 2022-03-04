@@ -46,7 +46,7 @@
                             <div class="col-12">
                                 <div class="page-title-box">
                                     <div class="page-title-right d-flex">
-                                        <!-- Filter Here -->
+
                                     </div>
                                     <h4 class="page-title"><i class="uil-database"></i> Employee Master ({{users|length}})</h4>
                                 </div>
@@ -64,6 +64,7 @@
                                           <th>Employee ID</th>
                                           <th>Name</th>
                                           <th>Section</th>
+                                          <th>View Type</th>
                                           <th>PhoneNo</th>
                                           <th>IsActive</th>
                                           <th>DateJoined</th>
@@ -76,6 +77,7 @@
                                           <td>{{user.username}}</td>
                                           <td>{{user.employee.name}}</td>
                                           <td>{{user.employee.section}}</td>
+                                          <td>{{user.employee.view_type}}</td>
                                           <td>{{user.employee.phone_no}}</td>
                                           <td>{{user.is_active}}</td>
                                           <td>{{user.employee.date_published}}</td>
@@ -98,7 +100,6 @@
         </div>
 
         <!-- ========== Right Side Bar ========== -->
-
 
         <!-- bundle -->
         <script src="{% static "assets/js/vendor.min.js" %}"></script>

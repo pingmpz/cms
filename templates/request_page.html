@@ -53,6 +53,7 @@
                             </div>
                         </div>
 
+                        {% if requestIsExist %}
                         <!-- ========== Main Content ========== -->
                         <div class="row">
 
@@ -642,6 +643,18 @@
 
                             </div>
                         </div>
+                        {% else %}
+                        <!-- ========== Not Found ========== -->
+                        <div class="row justify-content-center mt-5">
+                            <div class="col-lg-4">
+                                <div class="text-center">
+                                    <img src="{% static "assets/images/file-searching.svg" %}" height="360" alt="File not found Image">
+                                    <h2 class="text-uppercase text-danger mt-4">Request Not Found</h2>
+                                    <h4 class="text-muted mt-1">{{request_no}}</h4>
+                                </div>
+                            </div>
+                        </div>
+                        {% endif %}
                     </div>
 
                     <!-- ========== Footer ========== -->

@@ -65,7 +65,6 @@ def index(request, freq):
 
 @login_required(login_url='/')
 def request_page(request, request_no):
-    requestIsExist = False
     requestIsExist = True
     status = 'None'
     if request_no == 'CMS000001':
@@ -80,6 +79,8 @@ def request_page(request, request_no):
         status = 'Complete'
     elif request_no == 'CMS000006':
         status = 'Canceled'
+    else:
+        requestIsExist = False
     context = {
         'request_no': request_no,
         'requestIsExist': requestIsExist,
@@ -113,6 +114,7 @@ def history_request(request, freq, fstatus, fstartdate, fstopdate):
 def new_pv_request(request):
     context = {
     }
+    context['all_page_data'] = (all_page_data(request))
     return render(request, 'new_pv_request.html', context)
 
 @login_required(login_url='/')
