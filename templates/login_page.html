@@ -38,7 +38,7 @@
                                     <p class="text-muted mb-4">Welcome to C.C.S. Maintenance Service</p>
                                 </div>
 
-                                <form action="/login_action/" method="POST" id="login_form">
+                                <form action="/login_action/" method="POST" id="form">
                                     {% csrf_token %}
                                     <div class="mb-3">
                                         <label for="emailaddress" class="form-label">Username (Employee ID)</label>
@@ -48,14 +48,14 @@
                                     <div class="mb-3">
                                         <label for="password" class="form-label">Password</label>
                                         <div class="input-group input-group-merge">
-                                            <input type="password" name="password" id="password" class="form-control" placeholder="Enter your password" required>
+                                            <input type="password" class="form-control" name="password" id="password" placeholder="Enter your password" required>
                                             <div class="input-group-text" data-password="false">
                                                 <span class="password-eye"></span>
                                             </div>
                                         </div>
                                     </div>
 
-                                    <p class="text-danger text-center small mb-4" id="login_invalid_text"></p>
+                                    <p class="text-danger text-center small mb-4" id="invalid_text"></p>
 
                                     <div class="mb-3 mb-0 text-center">
                                         <button class="btn btn-primary rounded-pill" type="button" onclick="validate_login()">Log In</button>
@@ -78,11 +78,11 @@
         <script src="{% static "assets/js/vendor.min.js" %}"></script>
         <script src="{% static "assets/js/app.min.js" %}"></script>
         <script src="{% static "custom/custom.js" %}"></script>
-        <script type="text/javascript">
+        <script>
           function validate_login(){
             // Clear Validate
             remove_valids(['username','password']);
-            set_text_emptys(['login_invalid_text']);
+            set_text_emptys(['invalid_text']);
             // Data Prepare
             var username = $('#username').val();
             var password = $('#password').val();
@@ -97,10 +97,10 @@
               success: function (data) {
                 if(data.canLogIn){
                   valids(['username','password']);
-                  document.getElementById('login_form').submit();
+                  document.getElementById('form').submit();
                 } else {
-                  invalids(data.invalidList);
-                  set_text_value('login_invalid_text', data.invalidText);
+                  invalids(['username','password']);
+                  set_text_value('invalid_text', 'Username or Password is not correct.');
                 }
               }
             });

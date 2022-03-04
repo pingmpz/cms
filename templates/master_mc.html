@@ -58,7 +58,7 @@
                           <div class="col-12">
                             <div class="card">
                               <div class="card-body">
-                                <table id="mc_master_table" class="table table-sm nowrap dt-responsive row-border order-column w-100 small">
+                                <table id="master_table" class="table table-sm nowrap dt-responsive row-border order-column w-100 small">
                                   <thead>
                                       <tr>
                                           <th>Section</th>
@@ -199,7 +199,7 @@
         <script src="{% static "assets/js/vendor/fixedHeader.bootstrap5.min.js" %}"></script>
 
         <script type="text/javascript">
-          $('#mc_master_table').DataTable( {
+          $('#master_table').DataTable( {
             "columnDefs": [{ "visible": true, "targets": 0 }],
             "order": [[ 0, "asc" ]],
             "displayLength": 100,
