@@ -46,9 +46,15 @@
                             <div class="col-12">
                                 <div class="page-title-box">
                                     <div class="page-title-right d-flex">
-                                      <select class="form-select" id="freq" style="width:60%">
+                                      <select class="form-select" id="freq">
                                         <option value="MY" {% if freq == 'MY' %}style="color:blue" selected{% endif %}>My Request</option>
+                                        {% if request.user.employee.view_type == 'ALL' %}
+                                        <option value="MA" {% if freq == 'MA' %}style="color:blue" selected{% endif %}>MA Request</option>
+                                        <option value="AD-SER" {% if freq == 'AD-SER' %}style="color:blue" selected{% endif %}>AD-SER Request</option>
+                                        <option value="TOTAL" {% if freq == 'TOTAL' %}style="color:blue" selected{% endif %}>Total Request</option>
+                                        {% else %}
                                         <option value="ALL" {% if freq == 'ALL' %}style="color:blue" selected{% endif %}>All Request</option>
+                                        {% endif %}
                                       </select>
                                       <p class="pt-2 pb-1 mb-0 small">&nbsp;Status&nbsp;</p>
                                       <select class="form-select" id="fstatus" style="width:60%">
@@ -191,7 +197,7 @@
             var fstatus = $("#fstatus").val();
             var fstartdate = ($("#fstartdate").val() != "")?$("#fstartdate").val():"NOW";
             var fstopdate = ($("#fstopdate").val() != "")?$("#fstopdate").val():"NOW";
-            window.location.href = "/history_request/" + freq + "&" + fstatus + "&" + fstartdate + "&" + fstopdate;
+            window.location.href = "/request_history/" + freq + "&" + fstatus + "&" + fstartdate + "&" + fstopdate;
           }
         </script>
 

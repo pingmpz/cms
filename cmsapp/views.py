@@ -126,8 +126,9 @@ def index(request, freq):
     return render(request, 'index.html', context)
 
 @login_required(login_url='/')
-def request_pending(request):
+def request_pending(request, freq):
     context = {
+        'freq': freq,
     }
     context['all_page_data'] = (all_page_data(request))
     return render(request, 'request_pending.html', context)

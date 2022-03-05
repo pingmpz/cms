@@ -15,7 +15,7 @@ urlpatterns = [
     path('request_page/<str:request_no>', views.request_page, name='request_page'),
     #--
     path('index/<str:freq>', views.index, name='index'),
-    path('request_pending/', views.request_pending, name='request_pending'),
+    path('request_pending/<str:freq>', views.request_pending, name='request_pending'),
     path('request_history/<str:freq>&<str:fstatus>&<str:fstartdate>&<str:fstopdate>', views.request_history, name='request_history'),
     #-- Master
     path('master_emp/', views.master_emp, name='master_emp'),

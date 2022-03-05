@@ -48,7 +48,13 @@
                                     <div class="page-title-right d-flex">
                                       <select class="form-select" id="freq">
                                         <option value="MY" {% if freq == 'MY' %}style="color:blue" selected{% endif %}>My Request</option>
+                                        {% if request.user.employee.view_type == 'ALL' %}
+                                        <option value="MA" {% if freq == 'MA' %}style="color:blue" selected{% endif %}>MA Request</option>
+                                        <option value="AD-SER" {% if freq == 'AD-SER' %}style="color:blue" selected{% endif %}>AD-SER Request</option>
+                                        <option value="TOTAL" {% if freq == 'TOTAL' %}style="color:blue" selected{% endif %}>Total Request</option>
+                                        {% else %}
                                         <option value="ALL" {% if freq == 'ALL' %}style="color:blue" selected{% endif %}>All Request</option>
+                                        {% endif %}
                                       </select>
                                     </div>
                                     <h4 class="page-title"><i class="uil-constructor"></i> My Request (2)</h4>
