@@ -64,11 +64,11 @@
                                                   <select class="form-control select2" data-toggle="select2" name="mc_no" id="mc_no">
                                                       <option>Select</option>
                                                       {% for mc in mcs %}
-                                                          {% if mc_sections|index:forloop.counter0 != None %}
-                                                          <optgroup label="{{mc_sections|index:forloop.counter0}}">
+                                                          {% if section_group|index:forloop.counter0 != None %}
+                                                          <optgroup label="{{section_group|index:forloop.counter0}}">
                                                           {% endif %}
                                                           <option value="{{mc.mc_no}}">▪️ {{mc.mc_no}}</option>
-                                                          {% if mc_sections|index:forloop.counter1 != None %}
+                                                          {% if section_group|index:forloop.counter1 != None %}
                                                           </optgroup>
                                                           {% endif %}
                                                       {% endfor %}

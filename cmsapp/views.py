@@ -52,44 +52,29 @@ def logout_action(request):
 
 def new_request(request):
     ma_mcs = Machine.objects.filter(is_active=True, mc_of='MA').order_by('section')
-    ad_ser_mcs = Machine.objects.filter(is_active=True, mc_of='AD_SER').order_by('section')
-    ma_mc_sections = []
-    ad_ser_mc_sections = []
-    temp_section = ""
-    for mc in ma_mcs:
-        if temp_section != mc.section:
-            temp_section = mc.section
-            ma_mc_sections.append(mc.section)
-        else:
-            ma_mc_sections.append(None)
-    temp_section = ""
-    for mc in ad_ser_mcs:
-        if temp_section != mc.section:
-            temp_section = mc.section
-            ad_ser_mc_sections.append(mc.section)
-        else:
-            ad_ser_mc_sections.append(None)
+    ad_ser_mcs = Machine.objects.filter(is_active=True, mc_of='AD-SER').order_by('section')
+    ma_section_group = get_section_group(ma_mcs)
+    ad_ser_section_group = get_section_group(ad_ser_mcs)
     context = {
         'ma_mcs': ma_mcs,
         'ad_ser_mcs': ad_ser_mcs,
-        'ma_mc_sections': ma_mc_sections,
-        'ad_ser_mc_sections': ad_ser_mc_sections,
+        'ma_section_group': ma_section_group,
+        'ad_ser_section_group': ad_ser_section_group,
     }
     return render(request, 'new_request.html', context)
 
 def new_pv_request(request):
-    mcs = Machine.objects.filter(is_active=True).order_by('section')
-    mc_sections = []
-    temp_section = ""
-    for mc in mcs:
-        if temp_section != mc.section:
-            temp_section = mc.section
-            mc_sections.append(mc.section)
-        else:
-            mc_sections.append(None)
+    mcs = []
+    if request.user.employee.view_type == 'MA':
+        mcs = Machine.objects.filter(is_active=True, mc_of='MA').order_by('section')
+    elif request.user.employee.view_type == 'AD_SER':
+        mcs = Machine.objects.filter(is_active=True, mc_of='AD-SER').order_by('section')
+    else:
+        mcs = Machine.objects.filter(is_active=True).order_by('section')
+    section_group = get_section_group(mcs)
     context = {
         'mcs': mcs,
-        'mc_sections': mc_sections,
+        'section_group': section_group,
     }
     context['all_page_data'] = (all_page_data(request))
     return render(request, 'new_pv_request.html', context)
@@ -231,6 +216,19 @@ def new_cat(request):
     context['all_page_data'] = (all_page_data(request))
     return render(request, 'new_cat.html', context)
 
+#################################### OTHER #####################################
+
+def get_section_group(mcs):
+    section_group = []
+    temp = ""
+    for mc in mcs:
+        if temp != mc.section:
+            temp = mc.section
+            section_group.append(mc.section)
+        else:
+            section_group.append(None)
+    return section_group
+
 ################################### Request ####################################
 
 def new_emp_save(request):
@@ -256,6 +254,8 @@ def validate_username(request):
         'canUse': canUse,
     }
     return JsonResponse(data)
+
+################################# File Reader ##################################
 
 def upload_machine():
     entries = Machine.objects.all()

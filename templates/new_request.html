@@ -121,11 +121,11 @@
                                                     <select class="form-control select2" data-toggle="select2" name="mc_no" id="ma_mc_no">
                                                         <option>Select</option>
                                                         {% for mc in ma_mcs %}
-                                                            {% if ma_mc_sections|index:forloop.counter0 != None %}
-                                                            <optgroup label="{{ma_mc_sections|index:forloop.counter0}}">
+                                                            {% if ma_section_group|index:forloop.counter0 != None %}
+                                                            <optgroup label="{{ma_section_group|index:forloop.counter0}}">
                                                             {% endif %}
                                                             <option value="{{mc.mc_no}}">▪️ {{mc.mc_no}}</option>
-                                                            {% if ma_mc_sections|index:forloop.counter1 != None %}
+                                                            {% if ma_section_group|index:forloop.counter1 != None %}
                                                             </optgroup>
                                                             {% endif %}
                                                         {% endfor %}
@@ -139,11 +139,11 @@
                                                     <select class="form-control select2" data-toggle="select2" name="mc_no" id="ad_ser_mc_no">
                                                         <option>Select</option>
                                                         {% for mc in ad_ser_mcs %}
-                                                            {% if ad_ser_mc_sections|index:forloop.counter0 != None %}
-                                                            <optgroup label="{{ad_ser_mc_sections|index:forloop.counter0}}">
+                                                            {% if ad_ser_section_group|index:forloop.counter0 != None %}
+                                                            <optgroup label="{{ad_ser_section_group|index:forloop.counter0}}">
                                                             {% endif %}
                                                             <option value="{{mc.mc_no}}">▪️ {{mc.mc_no}}</option>
-                                                            {% if ad_ser_mc_sections|index:forloop.counter1 != None %}
+                                                            {% if ad_ser_section_group|index:forloop.counter1 != None %}
                                                             </optgroup>
                                                             {% endif %}
                                                         {% endfor %}

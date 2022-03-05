@@ -117,57 +117,70 @@
                               </div>
                               {% endif %}
 
-                              <!-- ========== Request Detail (From Requester) ========== -->
                               {% if status != 'Pending' and status != 'Rejected' %}
-                              <div class="card">
+                              <!-- ========== Request Detail ========== -->
+                              <div class="card tilebox-one">
                                   <div class="card-body">
-                                      <div class="d-flex align-self-start">
-                                          <div class="w-100 overflow-hidden">
-                                            <div class="dropdown float-end">
-                                            </div>
-                                            <h4 class="header-title mb-1">Request Detail</h4>
-                                              <p class="mb-2 mt-0 text-muted small">เครื่องสั่นขณะเปิดรอบ และมีเสียงกระชากดังตึกขณะวิ่งด้วยความเร็ว Goo , ไฟส่องสว่างในเครื่องไม่สว่าง</p>
-                                              <p class="mb-0 mt-0 small"><i class="mdi mdi-clock-time-eight-outline"></i> 10:51 13/01/2022</p>
-                                              <p class="mb-0 mt-0 small"><b><i class="mdi mdi-cash-register"></i> <u>Machine Info</u></b></p>
-                                              <p class="mb-0 mt-0 small">Machine No : MCA-01</p>
-                                              <p class="mb-0 mt-0 small">Model : MB-46VAE-R</p>
-                                              <p class="mb-0 mt-0 small">Manufacture : OKUMA</p>
-                                              <p class="mb-0 mt-0 small"><b><i class="uil-user"></i> <u>Requester Info</u></b></p>
-                                              <p class="mb-0 mt-0 small">ID : 5731</p>
-                                              <p class="mb-0 mt-0 small">Name : Yashawantatul Mangalmurti</p>
-                                              <p class="mb-0 mt-0 small">Section : MIS</p>
-                                              <p class="mb-0 mt-0 small"><i class="uil-phone"></i> 6624</p>
-                                          </div>
-                                      </div>
+                                      <h6 class="header-title mt-0">Request Detail</h6>
+                                      <p class="my-2 small">เครื่องสั่นขณะเปิดรอบ และมีเสียงกระชากดังตึกขณะวิ่งด้วยความเร็ว Goo , ไฟส่องสว่างในเครื่องไม่สว่าง</p>
+                                      <p class="mb-0 text-nowrap text-muted small">Type: Preventive</p>
+                                      <p class="mb-0 text-nowrap text-muted small">Request Date: 13/01/2022</p>
+                                      <p class="mb-0 text-nowrap text-muted small">Created Date: 10:51 13/01/2022</p>
+                                      <p class="mb-0 text-nowrap text-muted small">Finish Date: 10:51 13/01/2022</p>
                                   </div>
                               </div>
-                              {% endif %}
 
                               <!-- ========== Category ========== -->
-                              {% if status != 'Pending' and status != 'Rejected' %}
                               <div class="card">
                                     <div class="card-body">
                                         <div class="dropdown float-end">
                                         </div>
-                                        <h4 class="header-title mb-1">Category</h4>
-                                        <div class="d-flex mt-3">
-                                            <i class="mdi mdi-circle text-primary"></i>&nbsp;<strong>Electricity</strong>
-                                        </div>
+                                        <h4 class="header-title mb-3">Category (2)</h4>
 
-                                        <div class="d-flex mt-3">
-                                            <i class="mdi mdi-circle text-primary"></i>&nbsp;<strong>Hydrolic</strong>
-                                        </div>
+                                        <div class="d-flex mt-2"><i class="mdi mdi-circle text-info"></i>&nbsp;&nbsp;&nbsp;Electricity</div>
+                                        <div class="d-flex mt-2"><i class="mdi mdi-circle text-info"></i>&nbsp;&nbsp;&nbsp;Hydrolic</div>
 
                                     </div>
                                 </div>
-                                {% endif %}
+
+                              <!-- ========== Machine ========== -->
+                              <div class="card tilebox-one">
+                                  <div class="card-body">
+                                      <i class="mdi mdi-cash-register float-end"></i>
+                                      <h6 class="header-title mt-0">Machine</h6>
+                                      <h2 class="my-2">&nbsp;&nbsp;&nbsp;MCA-01</h2>
+                                      <p class="mb-0 text-nowrap text-muted small">Section: MCA</p>
+                                      <p class="mb-0 text-nowrap text-muted small">Register No: 49-325-309-0023</p>
+                                      <p class="mb-0 text-nowrap text-muted small">Asset No: 	402000069</p>
+                                      <p class="mb-0 text-nowrap text-muted small">Manufacture: OKUMA</p>
+                                      <p class="mb-0 text-nowrap text-muted small">Plant: A</p>
+                                      <p class="mb-0 text-nowrap text-muted small">Model: MB-46VAE-R</p>
+                                      <p class="mb-0 text-nowrap text-muted small">Serial No: 	112576</p>
+                                      <p class="mb-0 text-nowrap text-muted small">Capacity:  762 x 460 x 460 mm.</p>
+                                      <p class="mb-0 text-nowrap text-muted small">Power:  37 KVA</p>
+                                      <p class="mb-0 text-nowrap text-muted small">Install Date: Jan. 17, 2006</p>
+                                      <p class="mb-0 text-nowrap text-muted small">Note: </p>
+                                  </div>
+                              </div>
+
+                              <!-- ========== Requester ========== -->
+                              <div class="card tilebox-one">
+                                  <div class="card-body">
+                                      <i class="uil uil-user float-end"></i>
+                                      <h6 class="header-title mt-0">Requester</h6>
+                                      <h2 class="my-2">&nbsp;&nbsp;&nbsp;5731</h2>
+                                      <p class="mb-0 text-nowrap text-muted small">Yashawantatul Mangalmurti (MIS)</p>
+                                      <p class="mb-0 text-nowrap text-muted small">6624</p>
+                                  </div>
+                              </div>
+                              {% endif %}
 
                               <!-- ========== Files ========== -->
                               <div class="card">
                                   <div class="card-body">
                                       <div class="dropdown float-end">
                                       </div>
-                                      <h4 class="header-title mb-3">Files</h4>
+                                      <h4 class="header-title mb-3">Files (2)</h4>
                                       <div class="card mb-1 shadow-none border">
                                           <div class="p-2">
                                               <div class="row align-items-center">
@@ -218,27 +231,53 @@
                             <!-- ========== Middle Content ========== -->
                             <div class="col-xxl-6 col-lg-12 order-lg-2 order-xxl-1">
 
-                                <!-- ========== Request Detail ========== -->
                                 {% if status == 'Pending' or status == 'Rejected' %}
-                                <div class="card">
+                                <!-- ========== Request Detail ========== -->
+                                <div class="card tilebox-one">
                                     <div class="card-body">
-                                        <div class="d-flex align-self-start">
-                                            <div class="w-100 overflow-hidden">
-                                                <h4 class="mb-2 mt-0">Request Detail</h4>
-                                                <p class="mb-2 mt-0 font-16 text-muted">เครื่องสั่นขณะเปิดรอบ และมีเสียงกระชากดังตึกขณะวิ่งด้วยความเร็ว Goo , ไฟส่องสว่างในเครื่องไม่สว่าง</p>
-                                                <p class="mb-0 mt-0"><i class="mdi mdi-clock-time-eight-outline"></i> 10:51 13/01/2022</p><br>
-                                                <p class="mb-0 mt-0"><b><i class="mdi mdi-cash-register"></i> <u>Machine Info</u></b></p>
-                                                <p class="mb-0 mt-0">Machine No : MCA-01</p>
-                                                <p class="mb-0 mt-0">Model : MB-46VAE-R</p>
-                                                <p class="mb-0 mt-0">Manufacture : OKUMA</p><br>
-                                                <p class="mb-0 mt-0"><b><i class="uil-user"></i> <u>Requester Info</u></b></p>
-                                                <p class="mb-0 mt-0">ID : 5731</p>
-                                                <p class="mb-0 mt-0">Name : Yashawantatul Mangalmurti</p>
-                                                <p class="mb-0 mt-0">Section : MIS</p>
-                                                <p class="mb-0 mt-0"><i class="uil-phone"></i> 6624</p>
-                                            </div>
+                                        <h6 class="header-title mt-0">Request Detail</h6>
+                                        <p class="my-3">เครื่องสั่นขณะเปิดรอบ และมีเสียงกระชากดังตึกขณะวิ่งด้วยความเร็ว Goo , ไฟส่องสว่างในเครื่องไม่สว่าง</p>
+                                        <p class="mb-0 text-nowrap text-muted small">Type: Preventive</p>
+                                        <p class="mb-0 text-nowrap text-muted small">Request Date: 13/01/2022</p>
+                                        <p class="mb-0 text-nowrap text-muted small">Created Date: 10:51 13/01/2022</p>
+                                        <p class="mb-0 text-nowrap text-muted small">Finish Date: 10:51 13/01/2022</p>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                  <div class="col-6">
+                                    <!-- ========== Requester ========== -->
+                                    <div class="card tilebox-one">
+                                        <div class="card-body">
+                                            <i class="uil uil-user float-end"></i>
+                                            <h6 class="header-title mt-0">Requester</h6>
+                                            <h2 class="my-2">&nbsp;&nbsp;&nbsp;5731</h2>
+                                            <p class="mb-0 text-nowrap text-muted small">Yashawantatul Mangalmurti (MIS)</p>
+                                            <p class="mb-0 text-nowrap text-muted small">6624</p>
                                         </div>
                                     </div>
+                                  </div>
+                                  <div class="col-6">
+                                    <!-- ========== Machine ========== -->
+                                    <div class="card tilebox-one">
+                                        <div class="card-body">
+                                            <i class="mdi mdi-cash-register float-end"></i>
+                                            <h6 class="header-title mt-0">Machine</h6>
+                                            <h2 class="my-2">&nbsp;&nbsp;&nbsp;MCA-01</h2>
+                                            <p class="mb-0 text-nowrap text-muted small">Section: MCA</p>
+                                            <p class="mb-0 text-nowrap text-muted small">Register No: 49-325-309-0023</p>
+                                            <p class="mb-0 text-nowrap text-muted small">Asset No: 	402000069</p>
+                                            <p class="mb-0 text-nowrap text-muted small">Manufacture: OKUMA</p>
+                                            <p class="mb-0 text-nowrap text-muted small">Plant: A</p>
+                                            <p class="mb-0 text-nowrap text-muted small">Model: MB-46VAE-R</p>
+                                            <p class="mb-0 text-nowrap text-muted small">Serial No: 	112576</p>
+                                            <p class="mb-0 text-nowrap text-muted small">Capacity:  762 x 460 x 460 mm.</p>
+                                            <p class="mb-0 text-nowrap text-muted small">Power:  37 KVA</p>
+                                            <p class="mb-0 text-nowrap text-muted small">Install Date: Jan. 17, 2006</p>
+                                            <p class="mb-0 text-nowrap text-muted small">Note: </p>
+                                        </div>
+                                    </div>
+                                  </div>
                                 </div>
                                 {% endif %}
 
@@ -535,7 +574,9 @@
 
                                             <!-- ========== Costing Tab ========== -->
                                             <div class="tab-pane p-3" id="costing">
-
+                                              <div class="timeline-item">
+                                                  <h4 class="text-center">This function is on development.</h4>
+                                              </div>
                                             </div>
 
                                         </div>
