@@ -4,7 +4,7 @@
 <html lang="en">
     <head>
         <meta charset="utf-8" />
-        <title>New Employee | C.C.S. Maintenance Service</title>
+        <title>New Machine | C.C.S. Maintenance Service</title>
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <meta content="A fully featured admin theme which can be used to build CRM, CMS, etc." name="description" />
         <meta content="Coderthemes" name="author" />
@@ -48,62 +48,93 @@
                                     <div class="page-title-right d-flex">
                                       <button type="button" class="btn btn-success ms-2" id="save_button" onclick="save()"><i class="mdi mdi-content-save"></i></button>
                                     </div>
-                                    <h4 class="page-title"><i class="mdi mdi-database-plus-outline"></i> New Employee</h4>
+                                    <h4 class="page-title"><i class="mdi mdi-database-plus-outline"></i> New Machine</h4>
                                 </div>
                             </div>
                         </div>
 
                         <!-- ========== Main Content ========== -->
                         <div class="row">
-                          <div class="col-3">
-
-                          </div>
-                          <div class="col-6">
+                          <div class="col-12">
                             <div class="card">
                               <div class="card-body">
-                                <form action="/new_emp_save/" method="POST" id="form">
+                                <form action="/new_mc_save/" method="POST" id="form">
                                     {% csrf_token %}
-                                    <input type="text" name="username" id="username" hidden>
-                                    <input type="password" name="password" id="password" hidden>
+                                    <div class="row">
+                                      <div class="col-6">
 
-                                    <div class="mb-3" {% if request.user.employee.view_type == 'MA' or request.user.employee.view_type == 'AD-SER' %}hidden{% endif %}>
-                                        <label class="form-label">View Type <i class="mdi mdi-asterisk text-danger small"></i></label>
-                                        <select class="form-select" name="view_type" id="view_type">
-                                          {% if request.user.employee.view_type == 'MA' or request.user.employee.view_type == 'ALL' %}<option value="MA">MA</option>{% endif %}
-                                          {% if request.user.employee.view_type == 'AD-SER' or request.user.employee.view_type == 'ALL' %}<option value="AD-SER">AD-SER</option>{% endif %}
-                                          {% if request.user.employee.view_type == 'ALL' %}<option value="ALL">ALL</option>{% endif %}
-                                        </select>
-                                    </div>
-
-                                    <div class="mb-3">
-                                        <label class="form-label">Username (Employee ID) <i class="mdi mdi-asterisk text-danger small"></i></label>
-                                        <input class="form-control" type="text" name="new_username" id="new_username">
-                                    </div>
-
-                                    <div class="mb-3">
-                                        <label class="form-label">Password <i class="mdi mdi-asterisk text-danger small"></i></label>
-                                        <p class="text-muted font-12">* At least 4 letters.</p>
-                                        <div class="input-group input-group-merge">
-                                            <input type="password" class="form-control" name="new_password" id="new_password">
-                                            <div class="input-group-text" data-password="false">
-                                                <span class="password-eye"></span>
-                                            </div>
+                                        <div class="mb-3" {% if request.user.employee.view_type == 'MA' or request.user.employee.view_type == 'AD-SER' %}hidden{% endif %}>
+                                            <label class="form-label">Machine Of.. <i class="mdi mdi-asterisk text-danger small"></i></label>
+                                            <select class="form-select" name="mc_of" id="mc_of">
+                                              {% if request.user.employee.view_type == 'MA' or request.user.employee.view_type == 'ALL' %}<option value="MA">MA</option>{% endif %}
+                                              {% if request.user.employee.view_type == 'AD-SER' or request.user.employee.view_type == 'ALL' %}<option value="AD-SER">AD-SER</option>{% endif %}
+                                            </select>
                                         </div>
-                                    </div>
 
-                                    <div class="mb-3">
-                                        <label class="form-label">Name <i class="mdi mdi-asterisk text-danger small"></i></label>
-                                        <input class="form-control" type="text" name="name" id="name" required>
-                                    </div>
+                                        <div class="mb-3">
+                                            <label class="form-label">Machine No <i class="mdi mdi-asterisk text-danger small"></i></label>
+                                            <input class="form-control" type="text" name="mc_no" id="mc_no">
+                                        </div>
 
-                                    <div class="mb-3">
-                                        <label class="form-label">Section <i class="mdi mdi-asterisk text-danger small"></i></label>
-                                        <input class="form-control" type="text" name="section" id="section" required>
-                                    </div>
+                                        <div class="mb-3">
+                                            <label class="form-label">Section <i class="mdi mdi-asterisk text-danger small"></i></label>
+                                            <input class="form-control" type="text" name="section" id="section">
+                                        </div>
 
-                                    <div class="mb-3">
-                                        <label class="form-label">Phone No <i class="mdi mdi-asterisk text-danger small"></i></label>
-                                        <input class="form-control" type="text" name="phone_no" id="phone_no" required>
+                                        <div class="mb-3">
+                                            <label class="form-label">Register No</label>
+                                            <input class="form-control" type="text" name="register_no" id="register_no">
+                                        </div>
+
+                                        <div class="mb-3">
+                                            <label class="form-label">Asset No</label>
+                                            <input class="form-control" type="text" name="asset_no" id="asset_no">
+                                        </div>
+
+                                        <div class="mb-3">
+                                            <label class="form-label">Serial No</label>
+                                            <input class="form-control" type="text" name="serial_no" id="serial_no">
+                                        </div>
+
+                                        <div class="mb-3">
+                                            <label class="form-label">Manufacture</label>
+                                            <input class="form-control" type="text" name="manufacture" id="manufacture">
+                                        </div>
+
+                                        <div class="mb-3">
+                                            <label class="form-label">Model</label>
+                                            <input class="form-control" type="text" name="model" id="model">
+                                        </div>
+
+                                      </div>
+                                      <div class="col-6">
+
+                                        <div class="mb-3">
+                                            <label class="form-label">Plant</label>
+                                            <input class="form-control" type="text" name="plant" id="plant">
+                                        </div>
+
+                                        <div class="mb-3">
+                                            <label class="form-label">Power</label>
+                                            <input class="form-control" type="text" name="power" id="power">
+                                        </div>
+
+                                        <div class="mb-3">
+                                            <label class="form-label">Install Date</label>
+                                            <input class="form-control" type="date" name="install_date" id="install_date">
+                                        </div>
+
+                                        <div class="mb-3">
+                                            <label class="form-label">Capacity</label>
+                                            <textarea class="form-control" name="capacity" id="capacity" rows="5"></textarea>
+                                        </div>
+
+                                        <div class="mb-3">
+                                            <label class="form-label">Note</label>
+                                            <textarea class="form-control" name="note" id="note" rows="5"></textarea>
+                                        </div>
+
+                                      </div>
                                     </div>
 
                                     <p class="text-danger text-center small mb-4" id="invalid_text"></p>

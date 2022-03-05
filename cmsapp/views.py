@@ -6,8 +6,10 @@ from dateutil import parser
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
+# File Reader
+from openpyxl import load_workbook, Workbook
 
-from .models import Employee
+from .models import Employee, Machine
 
 ################################# Authenticate #################################
 def first_page(request):
@@ -49,12 +51,45 @@ def logout_action(request):
 ##################################### Page #####################################
 
 def new_request(request):
+    ma_mcs = Machine.objects.filter(is_active=True, mc_of='MA').order_by('section')
+    ad_ser_mcs = Machine.objects.filter(is_active=True, mc_of='AD_SER').order_by('section')
+    ma_mc_sections = []
+    ad_ser_mc_sections = []
+    temp_section = ""
+    for mc in ma_mcs:
+        if temp_section != mc.section:
+            temp_section = mc.section
+            ma_mc_sections.append(mc.section)
+        else:
+            ma_mc_sections.append(None)
+    temp_section = ""
+    for mc in ad_ser_mcs:
+        if temp_section != mc.section:
+            temp_section = mc.section
+            ad_ser_mc_sections.append(mc.section)
+        else:
+            ad_ser_mc_sections.append(None)
     context = {
+        'ma_mcs': ma_mcs,
+        'ad_ser_mcs': ad_ser_mcs,
+        'ma_mc_sections': ma_mc_sections,
+        'ad_ser_mc_sections': ad_ser_mc_sections,
     }
     return render(request, 'new_request.html', context)
 
 def new_pv_request(request):
+    mcs = Machine.objects.filter(is_active=True).order_by('section')
+    mc_sections = []
+    temp_section = ""
+    for mc in mcs:
+        if temp_section != mc.section:
+            temp_section = mc.section
+            mc_sections.append(mc.section)
+        else:
+            mc_sections.append(None)
     context = {
+        'mcs': mcs,
+        'mc_sections': mc_sections,
     }
     context['all_page_data'] = (all_page_data(request))
     return render(request, 'new_pv_request.html', context)
@@ -63,6 +98,7 @@ def new_pv_request(request):
 def request_page(request, request_no):
     requestIsExist = True
     status = 'None'
+
     if request_no == 'CMS000001':
         status = 'On Progress'
     elif request_no == 'CMS000002':
@@ -139,9 +175,9 @@ def master_emp(request):
 
 @login_required(login_url='/')
 def master_mc(request):
-    users = User.objects.all()
+    mcs = Machine.objects.all()
     context = {
-        'users': users,
+        'mcs': mcs,
     }
     context['all_page_data'] = (all_page_data(request))
     return render(request, 'master_mc.html', context)
@@ -175,6 +211,7 @@ def new_emp(request):
 
 @login_required(login_url='/')
 def new_mc(request):
+    # upload_machine()
     context = {
     }
     context['all_page_data'] = (all_page_data(request))
@@ -219,3 +256,31 @@ def validate_username(request):
         'canUse': canUse,
     }
     return JsonResponse(data)
+
+def upload_machine():
+    entries = Machine.objects.all()
+    entries.delete()
+    wb = load_workbook(filename = 'media/CMS Machine Master.xlsx')
+    ws = wb.active
+    skip_count = 2
+    for i in range(ws.max_row + 1):
+        if i < skip_count:
+            continue
+        mc_of = 'MA'
+        section = ws['A' + str(i)].value
+        register_no = ws['B' + str(i)].value
+        mc_no = ws['C' + str(i)].value
+        asset_no = ws['D' + str(i)].value
+        manufacture = ws['E' + str(i)].value
+        plant = ws['F' + str(i)].value
+        model = ws['G' + str(i)].value
+        serial_no = ws['H' + str(i)].value
+        capacity = ws['I' + str(i)].value
+        power  = ws['J' + str(i)].value
+        install_date = ws['K' + str(i)].value
+        note = ws['L' + str(i)].value
+        if mc_no != None and mc_no != "":
+            print(mc_no)
+            mc_new = Machine(mc_no=mc_no,mc_of=mc_of,section=section,register_no=register_no,asset_no=asset_no,serial_no=serial_no,manufacture=manufacture,model=model,plant=plant,power=power,install_date=install_date,capacity=capacity,note=note)
+            mc_new.save()
+    return
