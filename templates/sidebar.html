@@ -25,7 +25,7 @@
 
         <li class="side-nav-item">
             <a href="/index/MY" class="side-nav-link">
-                <i class="uil-constructor"></i>
+                <i class="uil-comment-dots"></i>
                 <span> My Request </span>
                 {% if all_page_data.my_task_counts != 0 %}
                 <span class="badge bg-danger rounded-pill float-end">{{all_page_data.my_request_counts}}</span>
@@ -35,7 +35,7 @@
 
         <li class="side-nav-item">
             <a href="/request_pending/{% if request.user.employee.view_type == 'ALL' %}MA{% else %}{{request.user.employee.view_type}}{% endif %}" class="side-nav-link">
-                <i class="uil-comment-question"></i>
+                <i class="uil-comment-exclamation"></i>
                 <span> Pending Request </span>
                 {% if all_page_data.pending_request_counts != 0 %}
                 <span class="badge bg-danger rounded-pill float-end">{{all_page_data.pending_request_counts}}</span>
@@ -54,7 +54,7 @@
 
         <li class="side-nav-item">
             <a data-bs-toggle="collapse" href="#report" class="side-nav-link">
-                <i class="uil-clipboard-notes"></i>
+                <i class="uil-comment-chart-line"></i>
                 <span><del> Report </del></span>
                 <span class="menu-arrow"></span>
             </a>
@@ -67,7 +67,7 @@
 
         <li class="side-nav-item">
             <a href="/request_history/MY&ALL&NOW&NOW" class="side-nav-link">
-                <i class="uil-comment-chart-line"></i>
+                <i class="uil-comment-verify"></i>
                 <span> History Request </span>
             </a>
         </li>
@@ -108,7 +108,7 @@
                     <li><a href="/new_emp/">Employee</a></li>
                     <li><a href="/new_mc/">Machine</a></li>
                     <li><del><a href="/new_vendor/">Vendor</a></del></li>
-                    <li><del><a href="/new_cat/">Category</a></del></li>
+                    <li><a href="/new_cat/">Category</a></li>
                 </ul>
             </div>
         </li>

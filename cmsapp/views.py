@@ -9,7 +9,7 @@ from django.contrib.auth.models import User
 # File Reader
 from openpyxl import load_workbook, Workbook
 
-from .models import Employee, Machine
+from .models import Employee, Machine, Request, File, Member
 
 ################################# Authenticate #################################
 def first_page(request):

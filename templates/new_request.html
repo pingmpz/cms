@@ -86,32 +86,15 @@
                                               </div>
                                               <hr>
 
-                                              <div class="row">
-                                                <div class="col-6">
-                                                  <div class="mb-3">
-                                                    <label class="form-label">Request To.. <i class="mdi mdi-asterisk text-danger small"></i></label><br>
-                                                    <div class="form-check form-check-inline">
-                                                        <input type="radio" class="form-check-input" name="req_to" id="req_to_ma" value="MA" checked>
-                                                        <label class="form-check-label" for="req_to_ma">Maintenance (MA)</label>
-                                                    </div>
-                                                    <div class="form-check form-check-inline">
-                                                        <input type="radio" class="form-check-input" name="req_to" id="req_to_ad" value="AD-SER">
-                                                        <label class="form-check-label" for="req_to_ad">Admin Service (AD-SER)</label>
-                                                    </div>
-                                                  </div>
+                                              <div class="mb-3">
+                                                <label class="form-label">Request To.. <i class="mdi mdi-asterisk text-danger small"></i></label><br>
+                                                <div class="form-check form-check-inline">
+                                                    <input type="radio" class="form-check-input" name="req_to" id="req_to_ma" value="MA" checked>
+                                                    <label class="form-check-label" for="req_to_ma">Maintenance (MA)</label>
                                                 </div>
-                                                <div class="col-6">
-                                                  <div class="mb-3">
-                                                    <label class="form-label">Format <i class="mdi mdi-asterisk text-danger small"></i></label><br>
-                                                    <div class="form-check form-check-inline">
-                                                        <input type="radio" class="form-check-input" name="format" id="format_mc" value="MC" checked>
-                                                        <label class="form-check-label" for="format_mc">Machine</label>
-                                                    </div>
-                                                    <div class="form-check form-check-inline">
-                                                        <input type="radio" class="form-check-input" name="format" id="format_non_mc" value="NON-MC">
-                                                        <label class="form-check-label" for="format_non_mc">Non-Machine</label>
-                                                    </div>
-                                                  </div>
+                                                <div class="form-check form-check-inline">
+                                                    <input type="radio" class="form-check-input" name="req_to" id="req_to_ad" value="AD-SER">
+                                                    <label class="form-check-label" for="req_to_ad">Admin Service (AD-SER)</label>
                                                 </div>
                                               </div>
 
@@ -237,24 +220,15 @@
             toggle();
           });
 
-          $('input[type=radio][name=format]').on("change", function() {
-            toggle();
-          });
 
           function toggle(){
             var req_to = $('input[type=radio][name=req_to]:checked').val();
-            var format = $('input[type=radio][name=format]:checked').val();
-            if(format == 'MC'){
-              if(req_to == 'MA'){
-                unhide("ma_mc_group");
-                hide("ad_ser_mc_group");
-              } else {
-                hide("ma_mc_group");
-                unhide("ad_ser_mc_group");
-              }
+            if(req_to == 'MA'){
+              unhide("ma_mc_group");
+              hide("ad_ser_mc_group");
             } else {
               hide("ma_mc_group");
-              hide("ad_ser_mc_group");
+              unhide("ad_ser_mc_group");
             }
           }
 
