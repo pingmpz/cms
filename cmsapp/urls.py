@@ -34,7 +34,6 @@ urlpatterns = [
     ### GET
     path('validate_username/', views.validate_username, name='validate_username'),
     path('find_emp_info/', views.find_emp_info, name='find_emp_info'),
-    path('post_comment/', views.post_comment, name='post_comment'),
     path('reject_request/', views.reject_request, name='reject_request'),
     path('join_request/', views.join_request, name='join_request'),
     path('leave_request/', views.leave_request, name='leave_request'),
@@ -43,4 +42,6 @@ urlpatterns = [
     path('complete_request/', views.complete_request, name='complete_request'),
     path('cancel_request/', views.cancel_request, name='cancel_request'),
     path('rework_request/', views.rework_request, name='rework_request'),
+    path('post_comment/', views.post_comment, name='post_comment'),
+    path('owt_save/', views.owt_save, name='owt_save'),
 ]

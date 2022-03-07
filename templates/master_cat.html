@@ -48,7 +48,7 @@
                                     <div class="page-title-right d-flex">
                                         <!-- Filter Here -->
                                     </div>
-                                    <h4 class="page-title"><i class="uil-database"></i> Category Master (2)</h4>
+                                    <h4 class="page-title"><i class="uil-database"></i> Category Master ({{cats|length}})</h4>
                                 </div>
                             </div>
                         </div>
@@ -61,19 +61,19 @@
                                 <table id="master_table" class="table table-sm nowrap dt-responsive row-border order-column w-100 small">
                                   <thead>
                                       <tr>
+                                          {% if request.user.is_superuser %}<th>ID</th>{% endif %}
                                           <th>Name</th>
                                           <th>Description</th>
                                       </tr>
                                   </thead>
                                   <tbody>
+                                      {% for cat in cats %}
                                       <tr>
-                                          <td>Electrical</td>
-                                          <td>Light Issue, Electrical Line</td>
+                                          {% if request.user.is_superuser %}<td>{{cat.id}}</td>{% endif %}
+                                          <td>{{cat.name}}</td>
+                                          <td>{{cat.description}}</td>
                                       </tr>
-                                      <tr>
-                                          <td>Hydrolic</td>
-                                          <td>Engine Issue</td>
-                                      </tr>
+                                      {% endfor %}
                                   </tbody>
                                 </table>
                               </div>

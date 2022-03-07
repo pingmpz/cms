@@ -89,7 +89,7 @@
                                             {% elif req.status == 'On Hold' %}<strong class="text-dark"><i class='mdi mdi-pause'></i> On Hold</strong>
                                             {% else %}{{req.status}}{% endif %}
                                           </td>
-                                          <td>{{req.reason}}</td>
+                                          <td>{{req.reason|default_if_none:""}}</td>
                                           <td>{{req.description}}</td>
                                           <td>{{req.mc.mc_no}}</td>
                                           <td>{{req.emp_id}} | {{req.name}} ({{req.section}}) <i class="uil-phone"></i> {{req.phone_no}}</td>

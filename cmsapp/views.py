@@ -11,7 +11,7 @@ from openpyxl import load_workbook, Workbook
 # Date Time
 from datetime import datetime, timedelta
 
-from .models import Employee, Machine,  Category, Request, File, Member, Comment, RequestCategory
+from .models import Employee, Machine,  Category, Request, File, Member, Comment, RequestCategory, OperatorWorkingTime
 
 ################################# Authenticate #################################
 def first_page(request):
@@ -90,6 +90,7 @@ def request_page(request, request_no):
     comments = []
     reqcats = []
     files = []
+    owts = []
     if requestIsExist:
         req = Request.objects.get(req_no=request_no)
         isJoined = Member.objects.filter(req=req,user=request.user).exists()
@@ -97,6 +98,7 @@ def request_page(request, request_no):
         comments = Comment.objects.filter(req=req).order_by('-date_published')
         reqcats = RequestCategory.objects.filter(req=req)
         files = File.objects.filter(req=req)
+        owts = OperatorWorkingTime.objects.filter(req=req).order_by('-start_datetime')
     context = {
         'request_no': request_no,
         'requestIsExist': requestIsExist,
@@ -106,6 +108,7 @@ def request_page(request, request_no):
         'comments': comments,
         'reqcats': reqcats,
         'files': files,
+        'owts': owts,
     }
     context['all_page_data'] = (all_page_data(request))
     return render(request, 'request_page.html', context)
@@ -238,9 +241,9 @@ def master_vendor(request):
 
 @login_required(login_url='/')
 def master_cat(request):
-    users = User.objects.all()
+    cats = Category.objects.all()
     context = {
-        'users': users,
+        'cats': cats,
     }
     context['all_page_data'] = (all_page_data(request))
     return render(request, 'master_cat.html', context)
@@ -358,16 +361,6 @@ def find_emp_info(request):
     }
     return JsonResponse(data)
 
-def post_comment(request):
-    req_id = request.GET['req_id']
-    comment_text = request.GET['comment_text']
-    req = Request.objects.get(id=req_id)
-    comment_new = Comment(req=req,text=comment_text,user=request.user)
-    comment_new.save()
-    data = {
-    }
-    return JsonResponse(data)
-
 def reject_request(request):
     req_id = request.GET['req_id']
     is_nms = True if request.GET['is_nms'] == 'true' else False
@@ -375,6 +368,7 @@ def reject_request(request):
     req = Request.objects.get(id=req_id)
     if is_nms:
         req.req_to = 'MA' if req.req_to == 'AD-SER' else 'AD-SER'
+        req.mc = None
     else:
         req.status = 'Rejected'
         req.reason = reject_reason
@@ -449,6 +443,30 @@ def rework_request(request):
     req.status = 'On Progress'
     req.reason = None
     req.save()
+    data = {
+    }
+    return JsonResponse(data)
+
+def post_comment(request):
+    req_id = request.GET['req_id']
+    comment_text = request.GET['comment_text']
+    req = Request.objects.get(id=req_id)
+    comment_new = Comment(req=req,text=comment_text,user=request.user)
+    comment_new.save()
+    data = {
+    }
+    return JsonResponse(data)
+
+def owt_save(request):
+    req_id = request.GET['req_id']
+    username_list = request.GET.getlist('username_list[]')
+    start_datetime = request.GET['start_datetime']
+    stop_datetime = request.GET['stop_datetime']
+    req = Request.objects.get(id=req_id)
+    for username in username_list:
+        user = User.objects.get(username=username)
+        owt_new = OperatorWorkingTime(req=req,user=user,start_datetime=start_datetime,stop_datetime=stop_datetime)
+        owt_new.save()
     data = {
     }
     return JsonResponse(data)

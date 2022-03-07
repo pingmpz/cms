@@ -279,7 +279,7 @@
                                             <li class="nav-item">
                                                 <a href="#comment" data-bs-toggle="tab" aria-expanded="false" class="nav-link active px-3 py-2">
                                                     <i class="mdi mdi-pencil-box-multiple font-18 d-md-none d-block"></i>
-                                                    <span class="d-none d-md-block small">Comments</span>
+                                                    <span class="d-none d-md-block small">Comments ({{comments|length}})</span>
                                                 </a>
                                             </li>
                                             <li class="nav-item">
@@ -348,15 +348,15 @@
                                             <div class="tab-pane p-0" id="operate_time">
                                               <ul class="nav nav-pills bg-nav-pills nav-justified mb-3">
                                                   <li class="nav-item">
-                                                      <a href="#operators" data-bs-toggle="tab" aria-expanded="false" class="nav-link active">
+                                                      <a href="#operator" data-bs-toggle="tab" aria-expanded="false" class="nav-link active">
                                                           <i class="mdi mdi-home-variant d-md-none d-block"></i>
-                                                          <span class="d-none d-md-block">Operators</span>
+                                                          <span class="d-none d-md-block">Operator ({{owts|length}})</span>
                                                       </a>
                                                   </li>
                                                   <li class="nav-item">
-                                                      <a href="#vendors" data-bs-toggle="tab" aria-expanded="true" class="nav-link">
+                                                      <a href="#vendor" data-bs-toggle="tab" aria-expanded="true" class="nav-link">
                                                           <i class="mdi mdi-account-circle d-md-none d-block"></i>
-                                                          <span class="d-none d-md-block">External Vendors</span>
+                                                          <span class="d-none d-md-block">External Vendor</span>
                                                       </a>
                                                   </li>
                                               </ul>
@@ -364,14 +364,15 @@
                                               <!-- ========== Working Time Tab ========== -->
                                               <div class="tab-content">
                                                   <!-- ========== Operator Tab ========== -->
-                                                  <div class="tab-pane active" id="operators">
+                                                  <div class="tab-pane active" id="operator">
                                                     <!-- ========== Add Operate Time ========== -->
                                                     {% if req.status == 'On Progress' or req.status == 'On Hold' %}
+                                                    {% if isJoined %}
                                                     <p class="text-muted font-12">Use 'CTRL' to select multiple item</p>
                                                     <div class="row">
                                                       <div class="col-10">
                                                         <div class="mb-3">
-                                                          <select class="select2 form-control select2-multiple" data-toggle="select2" multiple="multiple" data-placeholder="Choose ...">
+                                                          <select class="select2 form-control select2-multiple" data-toggle="select2" multiple="multiple" data-placeholder="Choose ..." id="owt_username_list">
                                                               {% for member in members %}
                                                               <option value="{{member.user.username}}">{{member.user.username}} | {{member.user.employee.name}}</option>
                                                               {% endfor %}
@@ -380,28 +381,31 @@
                                                       </div>
                                                       <div class="col-2">
                                                         <div class="mb-3">
-                                                          <button type="submit" class="btn btn-sm btn-success"><i class='mdi mdi-content-save me-1'></i>Save</button>
+                                                          <button type="submit" class="btn btn-sm btn-success" onclick="owt_save()"><i class='mdi mdi-content-save me-1'></i>Save</button>
                                                         </div>
                                                       </div>
                                                       <div class="col-6">
                                                         <div class="mb-0">
                                                           <label class="form-label">StartDateTime</label>
-                                                          <input type="datetime-local" class="form-control" name="section"  id="operate_start_date_time">
+                                                          <input type="datetime-local" class="form-control" name="section"  id="owt_start_datetime">
                                                         </div>
                                                       </div>
                                                       <div class="col-6">
                                                         <div class="mb-0">
                                                           <label class="form-label">StopDateTime</label>
-                                                          <input type="datetime-local" class="form-control" name="phone_no"  id="operate_stop_date_time">
+                                                          <input type="datetime-local" class="form-control" name="phone_no"  id="owt_stop_datetime">
                                                         </div>
                                                       </div>
                                                     </div>
                                                     <hr>
                                                     {% endif %}
+                                                    {% endif %}
                                                     <!-- ========== Operate Time Table ========== -->
+                                                    {% if owts|length > 0 %}
                                                     <table id="operate_time_table" class="table table-sm nowrap dt-responsive row-border order-column w-100 small">
                                                       <thead class="table-light">
                                                           <tr>
+                                                              {% if request.user.is_superuser %}<th>ID</th>{% endif %}
                                                               <th>Employee ID</th>
                                                               <th>Name</th>
                                                               <th>StartDateTime</th>
@@ -409,30 +413,26 @@
                                                           </tr>
                                                       </thead>
                                                       <tbody>
+                                                          {% for owt in owts %}
                                                           <tr>
-                                                              <td>5731</td>
-                                                              <td>Yashawantatul Mangalmurti</td>
-                                                              <td>10:51 13/01/2022</td>
-                                                              <td>10:51 13/01/2022</td>
+                                                              {% if request.user.is_superuser %}<td>{{owt.id}}</td>{% endif %}
+                                                              <td>{{owt.user.username}}</td>
+                                                              <td>{{owt.user.employee.name}}</td>
+                                                              <td>{{owt.start_datetime}}</td>
+                                                              <td>{{owt.stop_datetime}}</td>
                                                           </tr>
-                                                          <tr>
-                                                              <td>0000</td>
-                                                              <td>John</td>
-                                                              <td>10:51 13/01/2022</td>
-                                                              <td>10:51 13/01/2022</td>
-                                                          </tr>
-                                                          <tr>
-                                                              <td>0001</td>
-                                                              <td>David</td>
-                                                              <td>10:51 13/01/2022</td>
-                                                              <td>10:51 13/01/2022</td>
-                                                          </tr>
+                                                          {% endfor %}
                                                       </tbody>
                                                     </table>
+                                                    {% else %}
+                                                    <div class="timeline-item">
+                                                        <h4 class="text-center">There is no operator working time in this request.</h4>
+                                                    </div>
+                                                    {% endif %}
                                                   </div>
 
                                                   <!-- ========== Vendors Tab ========== -->
-                                                  <div class="tab-pane show" id="vendors">
+                                                  <div class="tab-pane show" id="vendor">
                                                     <!-- ========== Add Operate Time ========== -->
                                                     {% if req.status == 'On Progress' or req.status == 'On Hold' %}
                                                     <p class="text-muted font-12">Use 'CTRL' to select multiple item</p>
@@ -808,24 +808,6 @@
               ]
           });
 
-          function post_comment(){
-            var req_id = $("#req_id").val();
-            var comment_text = $("#comment_text").val();
-            if(comment_text.length > 0){
-              $.ajax({
-                url: '/post_comment/',
-                data: {
-                  'req_id': req_id,
-                  'comment_text': comment_text,
-                },
-                dataType: 'json',
-                success: function (data) {
-                  location.reload();
-                }
-              });
-            }
-          }
-
           function reject_request(){
             var req_id = $("#req_id").val();
             var is_nms = $('#is_nms').is(':checked');
@@ -948,6 +930,46 @@
                 location.reload();
               }
             });
+          }
+
+          function post_comment(){
+            var req_id = $("#req_id").val();
+            var comment_text = $("#comment_text").val();
+            if(comment_text.length > 0){
+              $.ajax({
+                url: '/post_comment/',
+                data: {
+                  'req_id': req_id,
+                  'comment_text': comment_text,
+                },
+                dataType: 'json',
+                success: function (data) {
+                  location.reload();
+                }
+              });
+            }
+          }
+
+          function owt_save(){
+            var req_id = $("#req_id").val();
+            var username_list = $("#owt_username_list").val();
+            var start_datetime = $("#owt_start_datetime").val();
+            var stop_datetime = $("#owt_stop_datetime").val();
+            if(username_list.length > 0 && start_datetime != "" && stop_datetime != "" && stop_datetime > start_datetime){
+              $.ajax({
+                url: '/owt_save/',
+                data: {
+                  'req_id': req_id,
+                  'username_list': username_list,
+                  'start_datetime': start_datetime,
+                  'stop_datetime': stop_datetime,
+                },
+                dataType: 'json',
+                success: function (data) {
+                  location.reload();
+                }
+              });
+            }
           }
         </script>
 
