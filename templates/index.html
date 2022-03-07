@@ -57,7 +57,7 @@
                                         {% endif %}
                                       </select>
                                     </div>
-                                    <h4 class="page-title"><i class="uil-comment-dots"></i> My Request (2)</h4>
+                                    <h4 class="page-title"><i class="uil-comment-dots"></i> My Request ({{reqs|length}})</h4>
                                 </div>
                             </div>
                         </div>
@@ -81,26 +81,22 @@
                                       </tr>
                                   </thead>
                                   <tbody>
-                                      <tr>
-                                          <td><a href="/request_page/CMS000001">CMS000001</a></td>
-                                          <td>Preventive</td>
-                                          <td><strong class="text-primary"><i class='uil-play'></i> On Progress</strong></td>
-                                          <td></td>
-                                          <td>ซ่อมบำรุงประจำเดือน</td>
-                                          <td>MCA01</td>
-                                          <td>5731 | Yashawantatul Mangalmurti (MIS) <i class="uil-phone"></i> 6624</td>
-                                          <td>{% now "jS F Y H:i" %}</td>
-                                      </tr>
-                                      <tr>
-                                          <td><a href="/request_page/CMS000002">CMS000002</a></td>
-                                          <td>Breakdown</td>
-                                          <td><strong class="text-dark"><i class='uil-pause'></i> On Hold</strong></td>
-                                          <td>รออะไหล่มาส่ง</td>
-                                          <td>เครื่องจักรเสียไม่รู้สาเหตุ..</td>
-                                          <td>MCA02</td>
-                                          <td>5731 | Yashawantatul Mangalmurti (MIS) <i class="uil-phone"></i> 6624</td>
-                                          <td>{% now "jS F Y H:i" %}</td>
-                                      </tr>
+                                    {% for req in reqs %}
+                                    <tr>
+                                        <td><a href="/request_page/{{req.req_no}}">{{req.req_no}}</a></td>
+                                        <td>{{req.type}}</td>
+                                        <td>
+                                          {% if req.status == 'On Progress' %}<strong class="text-primary"><i class='mdi mdi-play'></i> On Progress</strong>
+                                          {% elif req.status == 'On Hold' %}<strong class="text-dark"><i class='mdi mdi-pause'></i> On Hold</strong>
+                                          {% else %}{{req.status}}{% endif %}
+                                        </td>
+                                        <td>{{req.reason}}</td>
+                                        <td>{{req.description}}</td>
+                                        <td>{{req.mc.mc_no}}</td>
+                                        <td>{{req.emp_id}} | {{req.name}} ({{req.section}}) <i class="uil-phone"></i> {{req.phone_no}}</td>
+                                        <td>{{req.request_date}}</td>
+                                    </tr>
+                                    {% endfor %}
                                   </tbody>
                                 </table>
                               </div>

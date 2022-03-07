@@ -48,7 +48,7 @@
                                     <div class="page-title-right d-flex">
 
                                     </div>
-                                    <h4 class="page-title"><i class="uil-comment-dots"></i> {{request_no}}</h4>
+                                    <h4 class="page-title"><i class="uil-comment-dots"></i> {{request_no}} {% if request.user.is_superuser %}({{req.id}}){% endif %}</h4>
                                 </div>
                             </div>
                         </div>
@@ -59,9 +59,10 @@
 
                             <!-- ========== Left Content ========== -->
                             <div class="col-xxl-3 col-lg-6 order-lg-1 order-xxl-1">
+                              <input type="text" id="req_id" value="{{req.id}}" hidden>
 
                               <!-- ========== Pending ========== -->
-                              {% if status == 'Pending' %}
+                              {% if req.status == 'Pending' %}
                               <div class="card bg-warning text-white">
                                   <div class="card-body p-2">
                                       <h3 class="mb-2 mt-2 text-center"><i class='mdi mdi-clock-time-eight-outline'></i> Pending</h3>
@@ -70,17 +71,17 @@
                               {% endif %}
 
                               <!-- ========== Rejected ========== -->
-                              {% if status == 'Rejected' %}
+                              {% if req.status == 'Rejected' %}
                               <div class="card bg-danger text-white">
                                   <div class="card-body p-2">
                                       <h3 class="mb-2 mt-2 text-center"><i class='uil-times'></i> Rejected</h3>
-                                      <p class="mb-2 mt-2 text-center">"เหตุผลที่ไม่รับ"</p>
+                                      <p class="mb-2 mt-2 text-center">{{req.reason}}</p>
                                   </div>
                               </div>
                               {% endif %}
 
                               <!-- ========== On Progress ========== -->
-                              {% if status == 'On Progress' %}
+                              {% if req.status == 'On Progress' %}
                               <div class="card bg-primary text-white">
                                   <div class="card-body p-2">
                                       <h3 class="mb-2 mt-2 text-center"><i class='uil-play'></i> On Pogress</h3>
@@ -89,17 +90,17 @@
                               {% endif %}
 
                               <!-- ========== On Hold ========== -->
-                              {% if status == 'On Hold' %}
+                              {% if req.status == 'On Hold' %}
                               <div class="card bg-dark text-white">
                                   <div class="card-body p-2">
                                       <h3 class="mb-2 mt-2 text-center"><i class='uil-pause'></i> On Hold</h3>
-                                      <p class="mb-2 mt-2 text-center">"เหตุผลที่รอ"</p>
+                                      <p class="mb-2 mt-2 text-center">{{req.reason}}</p>
                                   </div>
                               </div>
                               {% endif %}
 
                               <!-- ========== Complete ========== -->
-                              {% if status == 'Complete' %}
+                              {% if req.status == 'Complete' %}
                               <div class="card bg-success text-white">
                                   <div class="card-body p-2">
                                       <h3 class="mb-2 mt-2 text-center"><i class='mdi mdi-check-all'></i> Complete</h3>
@@ -108,25 +109,25 @@
                               {% endif %}
 
                               <!-- ========== Canceled ========== -->
-                              {% if status == 'Canceled' %}
+                              {% if req.status == 'Canceled' %}
                               <div class="card bg-danger text-white">
                                   <div class="card-body p-2">
                                       <h3 class="mb-2 mt-2 text-center"><i class='mdi mdi-cancel'></i> Canceled</h3>
-                                      <p class="mb-2 mt-2 text-center">"เหตุผลที่ยกเลิก"</p>
+                                      <p class="mb-2 mt-2 text-center">{{req.reason}}</p>
                                   </div>
                               </div>
                               {% endif %}
 
-                              {% if status != 'Pending' and status != 'Rejected' %}
+                              {% if req.status != 'Pending' and status != 'Rejected' %}
                               <!-- ========== Request Detail ========== -->
                               <div class="card tilebox-one">
                                   <div class="card-body">
                                       <h6 class="header-title mt-0">Request Detail</h6>
-                                      <p class="my-2 small">เครื่องสั่นขณะเปิดรอบ และมีเสียงกระชากดังตึกขณะวิ่งด้วยความเร็ว Goo , ไฟส่องสว่างในเครื่องไม่สว่าง</p>
-                                      <p class="mb-0 text-nowrap text-muted small">Type: Preventive</p>
-                                      <p class="mb-0 text-nowrap text-muted small">Request Date: 13/01/2022</p>
-                                      <p class="mb-0 text-nowrap text-muted small">Created Date: 10:51 13/01/2022</p>
-                                      <p class="mb-0 text-nowrap text-muted small">Finish Date: 10:51 13/01/2022</p>
+                                      <p class="my-2 small">{{req.description}}</p>
+                                      <p class="mb-0 text-nowrap text-muted small">Type: {{req.type}}</p>
+                                      <p class="mb-0 text-nowrap text-muted small">Request Date: {{req.request_date}}</p>
+                                      <p class="mb-0 text-nowrap text-muted small">Created Date: {{req.date_published}}</p>
+                                      <p class="mb-0 text-nowrap text-muted small">Finish Date: {{req.date_modified}}</p>
                                   </div>
                               </div>
 
@@ -148,18 +149,18 @@
                                   <div class="card-body">
                                       <i class="mdi mdi-cogs float-end"></i>
                                       <h6 class="header-title mt-0">Machine</h6>
-                                      <h2 class="my-2">&nbsp;&nbsp;&nbsp;MCA-01</h2>
-                                      <p class="mb-0 text-nowrap text-muted small">Section: MCA</p>
-                                      <p class="mb-0 text-nowrap text-muted small">Register No: 49-325-309-0023</p>
-                                      <p class="mb-0 text-nowrap text-muted small">Asset No: 	402000069</p>
-                                      <p class="mb-0 text-nowrap text-muted small">Manufacture: OKUMA</p>
-                                      <p class="mb-0 text-nowrap text-muted small">Plant: A</p>
-                                      <p class="mb-0 text-nowrap text-muted small">Model: MB-46VAE-R</p>
-                                      <p class="mb-0 text-nowrap text-muted small">Serial No: 	112576</p>
-                                      <p class="mb-0 text-nowrap text-muted small">Capacity:  762 x 460 x 460 mm.</p>
-                                      <p class="mb-0 text-nowrap text-muted small">Power:  37 KVA</p>
-                                      <p class="mb-0 text-nowrap text-muted small">Install Date: Jan. 17, 2006</p>
-                                      <p class="mb-0 text-nowrap text-muted small">Note: </p>
+                                      <h2 class="my-2">&nbsp;&nbsp;&nbsp;{{req.mc.mc_no}}</h2>
+                                      <p class="mb-0 text-nowrap text-muted small">Section: {{req.mc.section}}</p>
+                                      <p class="mb-0 text-nowrap text-muted small">Register No: {{req.mc.register_no|default_if_none:"-"}}</p>
+                                      <p class="mb-0 text-nowrap text-muted small">Asset No: 	{{req.mc.asset_no|default_if_none:"-"}}</p>
+                                      <p class="mb-0 text-nowrap text-muted small">Manufacture: {{req.mc.manufacture|default_if_none:"-"}}</p>
+                                      <p class="mb-0 text-nowrap text-muted small">Plant: {{req.mc.plant|default_if_none:"-"}}</p>
+                                      <p class="mb-0 text-nowrap text-muted small">Model: {{req.mc.model|default_if_none:"-"}}</p>
+                                      <p class="mb-0 text-nowrap text-muted small">Serial No: {{req.mc.serial_no|default_if_none:"-"}}</p>
+                                      <p class="mb-0 text-nowrap text-muted small">Capacity: {{req.mc.capacity|default_if_none:"-"}}</p>
+                                      <p class="mb-0 text-nowrap text-muted small">Power: {{req.mc.power|default_if_none:"-"}}</p>
+                                      <p class="mb-0 text-nowrap text-muted small">Install Date: {{req.mc.install_date|default_if_none:"-"}}</p>
+                                      <p class="mb-0 text-nowrap text-muted small">Note: {{req.mc.note|default_if_none:"-"}}</p>
                                   </div>
                               </div>
 
@@ -168,9 +169,9 @@
                                   <div class="card-body">
                                       <i class="uil uil-user float-end"></i>
                                       <h6 class="header-title mt-0">Requester</h6>
-                                      <h2 class="my-2">&nbsp;&nbsp;&nbsp;5731</h2>
-                                      <p class="mb-0 text-nowrap text-muted small">Yashawantatul Mangalmurti (MIS)</p>
-                                      <p class="mb-0 text-nowrap text-muted small">6624</p>
+                                      <h2 class="my-2">&nbsp;&nbsp;&nbsp;{{req.emp_id}}</h2>
+                                      <p class="mb-0 text-nowrap text-muted small">{{req.name}} ({{req.section}})</p>
+                                      <p class="mb-0 text-nowrap text-muted small">{{req.phone_no}}</p>
                                   </div>
                               </div>
                               {% endif %}
@@ -231,16 +232,16 @@
                             <!-- ========== Middle Content ========== -->
                             <div class="col-xxl-6 col-lg-12 order-lg-2 order-xxl-1">
 
-                                {% if status == 'Pending' or status == 'Rejected' %}
+                                {% if req.status == 'Pending' or req.status == 'Rejected' %}
                                 <!-- ========== Request Detail ========== -->
                                 <div class="card tilebox-one">
                                     <div class="card-body">
                                         <h6 class="header-title mt-0">Request Detail</h6>
-                                        <p class="my-3">เครื่องสั่นขณะเปิดรอบ และมีเสียงกระชากดังตึกขณะวิ่งด้วยความเร็ว Goo , ไฟส่องสว่างในเครื่องไม่สว่าง</p>
-                                        <p class="mb-0 text-nowrap text-muted small">Type: Preventive</p>
-                                        <p class="mb-0 text-nowrap text-muted small">Request Date: 13/01/2022</p>
-                                        <p class="mb-0 text-nowrap text-muted small">Created Date: 10:51 13/01/2022</p>
-                                        <p class="mb-0 text-nowrap text-muted small">Finish Date: 10:51 13/01/2022</p>
+                                        <p class="my-3">{{req.description}}</p>
+                                        <p class="mb-0 text-nowrap text-muted small">Type: {{req.type}}</p>
+                                        <p class="mb-0 text-nowrap text-muted small">Request Date: {{req.request_date}}</p>
+                                        <p class="mb-0 text-nowrap text-muted small">Created Date: {{req.date_published}}</p>
+                                        <p class="mb-0 text-nowrap text-muted small">Finish Date: {{req.date_modified}}</p>
                                     </div>
                                 </div>
 
@@ -251,9 +252,9 @@
                                         <div class="card-body">
                                             <i class="uil uil-user float-end"></i>
                                             <h6 class="header-title mt-0">Requester</h6>
-                                            <h2 class="my-2">&nbsp;&nbsp;&nbsp;5731</h2>
-                                            <p class="mb-0 text-nowrap text-muted small">Yashawantatul Mangalmurti (MIS)</p>
-                                            <p class="mb-0 text-nowrap text-muted small">6624</p>
+                                            <h2 class="my-2">&nbsp;&nbsp;&nbsp;{{req.emp_id}}</h2>
+                                            <p class="mb-0 text-nowrap text-muted small">{{req.name}} ({{req.section}})</p>
+                                            <p class="mb-0 text-nowrap text-muted small">{{req.phone_no}}</p>
                                         </div>
                                     </div>
                                   </div>
@@ -263,18 +264,18 @@
                                         <div class="card-body">
                                             <i class="mdi mdi-cogs float-end"></i>
                                             <h6 class="header-title mt-0">Machine</h6>
-                                            <h2 class="my-2">&nbsp;&nbsp;&nbsp;MCA-01</h2>
-                                            <p class="mb-0 text-nowrap text-muted small">Section: MCA</p>
-                                            <p class="mb-0 text-nowrap text-muted small">Register No: 49-325-309-0023</p>
-                                            <p class="mb-0 text-nowrap text-muted small">Asset No: 	402000069</p>
-                                            <p class="mb-0 text-nowrap text-muted small">Manufacture: OKUMA</p>
-                                            <p class="mb-0 text-nowrap text-muted small">Plant: A</p>
-                                            <p class="mb-0 text-nowrap text-muted small">Model: MB-46VAE-R</p>
-                                            <p class="mb-0 text-nowrap text-muted small">Serial No: 	112576</p>
-                                            <p class="mb-0 text-nowrap text-muted small">Capacity:  762 x 460 x 460 mm.</p>
-                                            <p class="mb-0 text-nowrap text-muted small">Power:  37 KVA</p>
-                                            <p class="mb-0 text-nowrap text-muted small">Install Date: Jan. 17, 2006</p>
-                                            <p class="mb-0 text-nowrap text-muted small">Note: </p>
+                                            <h2 class="my-2">&nbsp;&nbsp;&nbsp;{{req.mc.mc_no}}</h2>
+                                            <p class="mb-0 text-nowrap text-muted small">Section: {{req.mc.section}}</p>
+                                            <p class="mb-0 text-nowrap text-muted small">Register No: {{req.mc.register_no|default_if_none:"-"}}</p>
+                                            <p class="mb-0 text-nowrap text-muted small">Asset No: 	{{req.mc.asset_no|default_if_none:"-"}}</p>
+                                            <p class="mb-0 text-nowrap text-muted small">Manufacture: {{req.mc.manufacture|default_if_none:"-"}}</p>
+                                            <p class="mb-0 text-nowrap text-muted small">Plant: {{req.mc.plant|default_if_none:"-"}}</p>
+                                            <p class="mb-0 text-nowrap text-muted small">Model: {{req.mc.model|default_if_none:"-"}}</p>
+                                            <p class="mb-0 text-nowrap text-muted small">Serial No: {{req.mc.serial_no|default_if_none:"-"}}</p>
+                                            <p class="mb-0 text-nowrap text-muted small">Capacity: {{req.mc.capacity|default_if_none:"-"}}</p>
+                                            <p class="mb-0 text-nowrap text-muted small">Power: {{req.mc.power|default_if_none:"-"}}</p>
+                                            <p class="mb-0 text-nowrap text-muted small">Install Date: {{req.mc.install_date|default_if_none:"-"}}</p>
+                                            <p class="mb-0 text-nowrap text-muted small">Note: {{req.mc.note|default_if_none:"-"}}</p>
                                         </div>
                                     </div>
                                   </div>
@@ -282,7 +283,7 @@
                                 {% endif %}
 
                                 <!-- ========== Main Tab ========== -->
-                                {% if status != 'Pending' and status != 'Rejected' %}
+                                {% if req.status != 'Pending' and req.status != 'Rejected' %}
                                 <div class="card">
                                     <div class="card-body">
                                         <ul class="nav nav-pills bg-nav-pills nav-justified mb-3">
@@ -316,64 +317,40 @@
                                             <!-- ========== Comment Tab ========== -->
                                             <div class="tab-pane show active p-0" id="comment">
                                                 <!-- ========== New Comment ========== -->
-                                                {% if status == 'On Progress' or status == 'On Hold' %}
+                                                {% if req.status == 'On Progress' or req.status == 'On Hold' %}
+                                                {% if isJoined %}
                                                 <div class="border rounded">
                                                     <form action="#" class="comment-area-box">
-                                                        <textarea rows="4" class="form-control border-0 resize-none" placeholder=""></textarea>
+                                                        <textarea rows="4" class="form-control border-0 resize-none" id="comment_text"></textarea>
                                                         <div class="p-2 bg-light d-flex justify-content-between align-items-center">
                                                             <div></div>
-                                                            <button type="submit" class="btn btn-sm btn-primary"><i class='uil uil-message me-1'></i>Post</button>
+                                                            <button type="submit" class="btn btn-sm btn-primary" onclick="post_comment()"><i class='uil uil-message me-1'></i>Post</button>
                                                         </div>
                                                     </form>
                                                 </div>
                                                 <br>
                                                 {% endif %}
+                                                {% endif %}
                                                 <!-- ========== Comment List ========== -->
                                                 <div class="timeline-alt pb-0">
 
+                                                    {% for comment in comments %}
                                                     <div class="timeline-item">
                                                         <i class="mdi mdi-circle bg-primary-lighten text-primary timeline-icon"></i>
                                                         <div class="timeline-item-info">
-                                                            <h5 class="mt-0 mb-1">5731 | Yashawantatul Mangalmurti</h5>
-                                                            <p class="font-12"><i class="mdi mdi-clock-time-eight-outline"></i> 10:51 13/01/2022</span></p>
-                                                            <p class="text-muted mt-2 mb-0 pb-3 text-center">เทสเครื่องเรียบร้อยดี</p>
+                                                            <h5 class="mt-0 mb-1">{{comment.user.username}} | {{comment.user.employee.name}}</h5>
+                                                            <p class="font-12"><i class="mdi mdi-clock-time-eight-outline"></i> {{comment.date_published}}</span></p>
+                                                            <p class="text-muted mt-2 mb-0 pb-3 text-center">{{comment.text}}</p>
                                                             <hr>
                                                         </div>
                                                     </div>
+                                                    {% endfor %}
 
-                                                    <div class="timeline-item">
-                                                        <i class="mdi mdi-circle bg-primary-lighten text-primary timeline-icon"></i>
-                                                        <div class="timeline-item-info">
-                                                            <h5 class="mt-0 mb-1">5731 | Yashawantatul Mangalmurti</h5>
-                                                            <p class="font-12"><i class="mdi mdi-clock-time-eight-outline"></i> 10:51 13/01/2022</span></p>
-                                                            <p class="text-muted mt-2 mb-0 pb-3 text-center">เปลี่ยนหลอดไฟเสร็จเรียบร้อยแล้ว</p>
-                                                            <hr>
-                                                        </div>
-                                                    </div>
-
-                                                    <div class="timeline-item">
-                                                        <i class="mdi mdi-circle bg-primary-lighten text-primary timeline-icon"></i>
-                                                        <div class="timeline-item-info">
-                                                            <h5 class="mt-0 mb-1">5731 | Yashawantatul Mangalmurti</h5>
-                                                            <p class="font-12"><i class="mdi mdi-clock-time-eight-outline"></i> 10:51 13/01/2022</span></p>
-                                                            <p class="text-muted mt-2 mb-0 pb-3 text-center">ได้รับของแล้ว</p>
-                                                            <hr>
-                                                        </div>
-                                                    </div>
-
-                                                    <div class="timeline-item">
-                                                        <i class="mdi mdi-circle bg-primary-lighten text-primary timeline-icon"></i>
-                                                        <div class="timeline-item-info">
-                                                            <h5 class="mt-0 mb-1">5731 | Yashawantatul Mangalmurti</h5>
-                                                            <p class="font-12"><i class="mdi mdi-clock-time-eight-outline"></i> 10:51 13/01/2022</span></p>
-                                                            <p class="text-muted mt-2 mb-0 pb-3 text-center">เปิด PR เลขที่ 1000123456</p>
-                                                            <hr>
-                                                        </div>
-                                                    </div>
-
+                                                    {% if comments|length == 0 %}
                                                     <div class="timeline-item">
                                                         <h4 class="text-center">There is no comment in this request.</h4>
                                                     </div>
+                                                    {% endif %}
 
                                                 </div>
                                             </div>
@@ -400,15 +377,15 @@
                                                   <!-- ========== Operator Tab ========== -->
                                                   <div class="tab-pane active" id="operators">
                                                     <!-- ========== Add Operate Time ========== -->
-                                                    {% if status == 'On Progress' or status == 'On Hold' %}
+                                                    {% if req.status == 'On Progress' or req.status == 'On Hold' %}
                                                     <p class="text-muted font-12">Use 'CTRL' to select multiple item</p>
                                                     <div class="row">
                                                       <div class="col-10">
                                                         <div class="mb-3">
                                                           <select class="select2 form-control select2-multiple" data-toggle="select2" multiple="multiple" data-placeholder="Choose ...">
-                                                              <option value="5731">5731 | Yashawantatul Mangalmurti</option>
-                                                              <option value="5731">0000 | John</option>
-                                                              <option value="5731">0001 | David</option>
+                                                              {% for member in members %}
+                                                              <option value="{{member.user.username}}">{{member.user.username}} | {{member.user.employee.name}}</option>
+                                                              {% endfor %}
                                                           </select>
                                                         </div>
                                                       </div>
@@ -468,7 +445,7 @@
                                                   <!-- ========== Vendors Tab ========== -->
                                                   <div class="tab-pane show" id="vendors">
                                                     <!-- ========== Add Operate Time ========== -->
-                                                    {% if status == 'On Progress' or status == 'On Hold' %}
+                                                    {% if req.status == 'On Progress' or req.status == 'On Hold' %}
                                                     <p class="text-muted font-12">Use 'CTRL' to select multiple item</p>
                                                     <div class="row">
                                                       <div class="col-10">
@@ -526,12 +503,12 @@
                                             <!-- ========== Machine Downtime Tab ========== -->
                                             <div class="tab-pane p-0" id="mc_downtime">
                                               <!-- ========== Add Machine Downtime ========== -->
-                                              {% if status == 'On Progress' or status == 'On Hold' %}
+                                              {% if req.status == 'On Progress' or req.status == 'On Hold' %}
                                               <div class="row">
                                                 <div class="col-10">
                                                   <div class="mb-3">
                                                     <label class="form-label">Machine No</label>
-                                                    <input type="text" class="form-control" value="MCA-01 〢 MB-46VAE-R 〢 OKUMA" readonly>
+                                                    <input type="text" class="form-control" value="{{req.mc.mc_no}}" readonly>
                                                   </div>
                                                 </div>
                                                 <div class="col-2">
@@ -596,22 +573,37 @@
                                         </div>
                                         <h4 class="header-title mb-3">Functions</h4>
                                         <div class="list-group list-group-flush my-2">
-                                            {% if status == 'Pending' %}
+
+                                            {% if req.status == 'Pending' %}
                                             <button type="button" class="btn btn-xs mb-1 btn-success"><i class='uil-check me-1'></i>Accept</button>
                                             <button type="button" class="btn btn-xs mb-1 btn-danger"><i class='uil-times me-1'></i>Reject</button>
-                                            {% elif status == 'On Hold' %}
+                                            {% elif req.status == 'On Hold' and not isJoined %}
+                                            <button type="button" class="btn btn-xs mb-1 btn-outline-success" onclick="join_request()"><i class='uil-sign-in-alt me-1'></i>Join</button>
+                                            {% elif req.status == 'On Hold' %}
                                             <button type="button" class="btn btn-xs mb-1 btn-warning"><i class='uil-pen me-1'></i>Edit Request</button>
+                                            <button type="button" class="btn btn-xs mb-1 btn-info"><i class='uil-users-alt me-1'></i>Manage Member</button>
                                             <button type="button" class="btn btn-xs mb-1 btn-primary"><i class='uil-play me-1'></i>Start Work</button>
                                             <button type="button" class="btn btn-xs mb-1 btn-danger"><i class='mdi mdi-cancel me-1'></i>Cancel</button>
-                                            {% elif status == 'On Progress' %}
+                                              {% if members|length > 1 %}
+                                              <hr>
+                                              <button type="button" class="btn btn-xs mb-1 btn-outline-danger" onclick="leave_request()"><i class='uil-sign-out-alt me-1'></i>Leave</button>
+                                              {% endif %}
+                                            {% elif req.status == 'On Progress' and not isJoined %}
+                                            <button type="button" class="btn btn-xs mb-1 btn-outline-success" onclick="join_request()"><i class='uil-sign-in-alt me-1'></i>Join</button>
+                                            {% elif req.status == 'On Progress' %}
                                             <button type="button" class="btn btn-xs mb-1 btn-warning"><i class='uil-pen me-1'></i>Edit Request</button>
+                                            <button type="button" class="btn btn-xs mb-1 btn-info"><i class='uil-users-alt me-1'></i>Manage Member</button>
                                             <button type="button" class="btn btn-xs mb-1 btn-dark"><i class='uil-pause me-1'></i>Hold</button>
                                             <button type="button" class="btn btn-xs mb-1 btn-success"><i class='mdi mdi-check-all me-1'></i>Complete</button>
                                             <button type="button" class="btn btn-xs mb-1 btn-danger"><i class='mdi mdi-cancel me-1'></i>Cancel</button>
-                                            {% elif status == 'Complete' or status == 'Canceled' %}
+                                              {% if members|length > 1 %}
+                                              <hr>
+                                              <button type="button" class="btn btn-xs mb-1 btn-outline-danger" onclick="leave_request()"><i class='uil-sign-out-alt me-1'></i>Leave</button>
+                                              {% endif %}
+                                            {% elif req.status == 'Complete' or status == 'Canceled' %}
                                             <button type="button" class="btn btn-xs mb-1 btn-info"><i class='uil-redo me-1'></i>Rework</button>
                                             {% endif %}
-                                            {% if status == 'Rejected' %}
+                                            {% if req.status == 'Rejected' %}
                                             <p class="text-center">There is no function for this request.</p>
                                             {% endif %}
                                         </div>
@@ -619,64 +611,21 @@
                                 </div>
 
                                 <!-- ========== Team ========== -->
-                                {% if status != 'Pending' and status != 'Rejected' %}
+                                {% if req.status != 'Pending' and req.status != 'Rejected' %}
                                 <div class="card">
                                     <div class="card-body pb-0">
                                         <div class="dropdown float-end">
                                         </div>
 
-                                        <h4 class="header-title mb-3">Members (3)</h4>
+                                        <h4 class="header-title mb-3">Members ({{members|length}})</h4>
 
                                         <div class="inbox-widget">
-                                          <div class="inbox-item">
-                                              <p class="inbox-item-author">5731 | Yashawantatul Mangalmurti</p>
-                                              <p class="inbox-item-text">Member</p>
-                                              <p class="inbox-item-date">
-                                                  <button type="button" class="btn btn-sm btn-outline-danger px-1 py-0"> <i class='uil uil-user-times font-16'></i> </button>
-                                              </p>
-                                          </div>
+                                            {% for member in members %}
                                             <div class="inbox-item">
-                                                <p class="inbox-item-author">0000 | John</p>
+                                                <p class="inbox-item-author">{{member.user.username}} | {{member.user.employee.name}}</p>
                                                 <p class="inbox-item-text">Member</p>
-                                                <p class="inbox-item-date">
-                                                    <button type="button" class="btn btn-sm btn-outline-danger px-1 py-0"> <i class='uil uil-user-times font-16'></i> </button>
-                                                </p>
                                             </div>
-                                            <div class="inbox-item">
-                                              <p class="inbox-item-author">0001 | David</p>
-                                              <p class="inbox-item-text">Member</p>
-                                              <p class="inbox-item-date">
-                                                  <button type="button" class="btn btn-sm btn-outline-danger px-1 py-0"> <i class='uil uil-user-times font-16'></i> </button>
-                                              </p>
-                                            </div>
-                                            <div class="inbox-item">
-                                              <p class="inbox-item-author">0002 | Sarah</p>
-                                              <p class="inbox-item-text">Not Member</p>
-                                              <p class="inbox-item-date">
-                                                  <button type="button" class="btn btn-sm btn-outline-success px-1 py-0"> <i class='uil uil-user-plus font-16'></i> </button>
-                                              </p>
-                                            </div>
-                                            <div class="inbox-item">
-                                              <p class="inbox-item-author">0003 | Philip</p>
-                                              <p class="inbox-item-text">Not Member</p>
-                                              <p class="inbox-item-date">
-                                                  <button type="button" class="btn btn-sm btn-outline-success px-1 py-0"> <i class='uil uil-user-plus font-16'></i> </button>
-                                              </p>
-                                            </div>
-                                            <div class="inbox-item">
-                                              <p class="inbox-item-author">0004 | Micheal</p>
-                                              <p class="inbox-item-text">Not Member</p>
-                                              <p class="inbox-item-date">
-                                                  <button type="button" class="btn btn-sm btn-outline-success px-1 py-0"> <i class='uil uil-user-plus font-16'></i> </button>
-                                              </p>
-                                            </div>
-                                            <div class="inbox-item">
-                                              <p class="inbox-item-author">0005 | Richard</p>
-                                              <p class="inbox-item-text">Not Member</p>
-                                              <p class="inbox-item-date">
-                                                  <button type="button" class="btn btn-sm btn-outline-success px-1 py-0"> <i class='uil uil-user-plus font-16'></i> </button>
-                                              </p>
-                                            </div>
+                                            {% endfor %}
                                         </div>
                                     </div>
                                 </div>
@@ -728,7 +677,7 @@
         <script src="{% static "assets/js/vendor/fixedColumns.bootstrap5.min.js" %}"></script>
         <script src="{% static "assets/js/vendor/fixedHeader.bootstrap5.min.js" %}"></script>
 
-        <script type="text/javascript">
+        <script>
           $('#basic-datatable').DataTable( {
               "order": [[ 0, "asc" ]],
               'iDisplayLength': 100,
@@ -739,6 +688,52 @@
                 // 'csvHtml5',
               ]
           });
+
+          function post_comment(){
+            var req_id = $("#req_id").val();
+            var comment_text = $("#comment_text").val();
+            if(comment_text.length > 0){
+              $.ajax({
+                url: '/post_comment/',
+                data: {
+                  'req_id': req_id,
+                  'comment_text': comment_text,
+                },
+                dataType: 'json',
+                success: function (data) {
+                  location.reload();
+                }
+              });
+            }
+          }
+
+          function join_request(){
+            var req_id = $("#req_id").val();
+            $.ajax({
+              url: '/join_request/',
+              data: {
+                'req_id': req_id,
+              },
+              dataType: 'json',
+              success: function (data) {
+                location.reload();
+              }
+            });
+          }
+
+          function leave_request(){
+            var req_id = $("#req_id").val();
+            $.ajax({
+              url: '/leave_request/',
+              data: {
+                'req_id': req_id,
+              },
+              dataType: 'json',
+              success: function (data) {
+                location.reload();
+              }
+            });
+          }
         </script>
 
     </body>

@@ -17,6 +17,8 @@
         <link href="{% static "assets/css/app-modern.min.css" %}" rel="stylesheet" type="text/css" id="light-style" />
         <link href="{% static "assets/css/app-modern-dark.min.css" %}" rel="stylesheet" type="text/css" id="dark-style" />
 
+        <link href="{% static "custom/drag-drop-image-uploader/dist/image-uploader.min.css" %}" rel="stylesheet">
+
     </head>
 
     <body class="loading" data-layout="detached" data-layout-config='{"leftSidebarCondensed":false,"darkMode":false, "showRightSidebarOnStart": false}'>
@@ -38,7 +40,7 @@
                             <div class="col-12">
                                 <div class="page-title-box">
                                     <div class="page-title-right d-flex">
-                                        <button type="button" class="btn btn-success ms-2"><i class="mdi mdi-content-save"></i></button>
+                                        <button type="button" class="btn btn-success ms-2" id="save_button" onclick="save()"><i class="mdi mdi-content-save"></i></button>
                                         <a class="btn btn-secondary ms-2" href="/"><i class="mdi mdi-logout"></i></a>
                                     </div>
                                     <h4 class="page-title"><i class="uil-comment-plus"></i> New Request</h4>
@@ -51,7 +53,9 @@
                             <div class="col-12">
                                 <div class="card">
                                     <div class="card-body">
-                                        <div class="row">
+                                      <form action="/new_request_save/" method="POST" id="form">
+                                          {% csrf_token %}
+                                          <div class="row">
                                             <!-- ========== Left Content ========== -->
                                             <div class="col-xl-6">
                                               <div class="mb-3">
@@ -61,25 +65,25 @@
                                                   <div class="col-6">
                                                     <div class="mb-3">
                                                       <label class="form-label">Employee ID <i class="mdi mdi-asterisk text-danger small"></i></label>
-                                                      <input type="text" class="form-control" name="emp_id" id="emp_id">
+                                                      <input type="text" class="form-control" name="emp_id" id="emp_id" autocomplete="off">
                                                     </div>
                                                   </div>
                                                   <div class="col-6">
                                                     <div class="mb-3">
                                                       <label class="form-label">Name <i class="mdi mdi-asterisk text-danger small"></i></label>
-                                                      <input type="text" class="form-control" name="name"  id="name">
+                                                      <input type="text" class="form-control" name="name"  id="name" autocomplete="off">
                                                     </div>
                                                   </div>
                                                   <div class="col-6">
                                                     <div class="mb-0">
                                                       <label class="form-label">Section <i class="mdi mdi-asterisk text-danger small"></i></label>
-                                                      <input type="text" class="form-control" name="section"  id="section">
+                                                      <input type="text" class="form-control" name="section"  id="section" autocomplete="off">
                                                     </div>
                                                   </div>
                                                   <div class="col-6">
                                                     <div class="mb-0">
                                                       <label class="form-label">Phone No <i class="mdi mdi-asterisk text-danger small"></i></label>
-                                                      <input type="text" class="form-control" name="phone_no"  id="phone_no">
+                                                      <input type="text" class="form-control" name="phone_no"  id="phone_no" autocomplete="off">
                                                     </div>
                                                   </div>
                                                 </div>
@@ -100,8 +104,9 @@
 
                                               <div id="ma_mc_group">
                                                 <div class="mb-3">
-                                                    <label class="form-label">Machine <i class="mdi mdi-asterisk text-danger small"></i></label>
-                                                    <select class="form-control select2" data-toggle="select2" name="mc_no" id="ma_mc_no">
+                                                    <label class="form-label">Machine</label>
+                                                    <p class="text-muted font-12">* If there is no machine to select please fill in the description.</p>
+                                                    <select class="form-control select2" data-toggle="select2" name="ma_mc_no" id="ma_mc_no">
                                                         <option>Select</option>
                                                         {% for mc in ma_mcs %}
                                                             {% if ma_section_group|index:forloop.counter0 != None %}
@@ -118,8 +123,9 @@
 
                                               <div id="ad_ser_mc_group" hidden>
                                                 <div class="mb-3">
-                                                    <label class="form-label">Machine <i class="mdi mdi-asterisk text-danger small"></i></label>
-                                                    <select class="form-control select2" data-toggle="select2" name="mc_no" id="ad_ser_mc_no">
+                                                    <label class="form-label">Machine</label>
+                                                    <p class="text-muted font-12">* If there is no machine to select please fill in the description.</p>
+                                                    <select class="form-control select2" data-toggle="select2" name="ad_ser_mc_no" id="ad_ser_mc_no">
                                                         <option>Select</option>
                                                         {% for mc in ad_ser_mcs %}
                                                             {% if ad_ser_section_group|index:forloop.counter0 != None %}
@@ -143,49 +149,17 @@
                                             <!-- ========== Right Content ========== -->
                                             <div class="col-xl-6">
                                                 <div class="mb-3 mt-3 mt-xl-0">
-                                                    <label class="mb-0">Files</label>
+                                                    <label class="mb-0">Files (Not Working)</label>
                                                     <p class="text-muted font-12">* Do not upload files that have # in the file name.</p>
-
-                                                    <form action="/" method="post" class="dropzone" name="attachments" id="attachments" data-plugin="dropzone" data-previews-container="#file-previews"
-                                                        data-upload-preview-template="#uploadPreviewTemplate">
-                                                        <div class="fallback">
-                                                            <input name="file" type="file" />
-                                                        </div>
-
-                                                        <div class="dz-message needsclick">
-                                                            <i class="h3 text-muted dripicons-cloud-upload"></i>
-                                                            <h4>Drop files here or click to upload.</h4>
-                                                        </div>
-                                                    </form>
-
-                                                    <!-- Preview -->
-                                                    <div class="dropzone-previews mt-3" id="file-previews"></div>
-
-                                                    <!-- file preview template -->
-                                                    <div class="d-none" id="uploadPreviewTemplate">
-                                                        <div class="card mt-1 mb-0 shadow-none border">
-                                                            <div class="p-2">
-                                                                <div class="row align-items-center">
-                                                                    <div class="col-auto">
-                                                                        <img data-dz-thumbnail src="#" class="avatar-sm rounded bg-light" alt="">
-                                                                    </div>
-                                                                    <div class="col ps-0">
-                                                                        <a href="javascript:void(0);" class="text-muted fw-bold" data-dz-name></a>
-                                                                        <p class="mb-0" data-dz-size></p>
-                                                                    </div>
-                                                                    <div class="col-auto">
-                                                                        <!-- Button -->
-                                                                        <a href="" class="btn btn-link btn-lg text-muted" data-dz-remove>
-                                                                            <i class="dripicons-cross"></i>
-                                                                        </a>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
+                                                    <div style="width: 100%">
+                                                      <div class="input-images" style="padding-top: .5rem;"></div>
                                                     </div>
                                                 </div>
                                             </div>
+
+                                            <p class="text-danger text-center small mb-4" id="invalid_text"></p>
                                         </div>
+                                      </form>
                                     </div>
                                 </div>
                             </div>
@@ -205,21 +179,121 @@
         <script src="{% static "assets/js/vendor.min.js" %}"></script>
         <script src="{% static "assets/js/app.min.js" %}"></script>
         <script src="{% static "custom/custom.js" %}"></script>
-        <!-- plugin js -->
-        <script src="{% static "assets/js/vendor/dropzone.min.js" %}"></script>
-        <!-- init js -->
-        <script src="{% static "assets/js/ui/component.fileupload.js" %}"></script>
+
+        <script src="{% static "custom/drag-drop-image-uploader/dist/image-uploader.min.js" %}"></script>
+
         <script>
           //-- Prevent Back
           window.addEventListener( "pageshow", function (event) {
             if (event.persisted || (typeof window.performance != "undefined" && window.performance.navigation.type === 2)) window.location.reload();
           });
 
+          $('.input-images').imageUploader({
+            extensions: ['.jpg', '.jpeg', '.png', '.gif', '.svg', '.xlsx', '.csv', '.ppt'],
+            // mimes: ['image/jpeg', 'image/png', 'image/gif', 'image/svg+xml', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'],
+            mimes: null,
+          });
+
+          $('#emp_id').on("change", function() {
+            var emp_id = $('#emp_id').val();
+            if(emp_id.length >= 4){
+              $.ajax({
+                url: '/find_emp_info/',
+                data: {
+                  'emp_id': emp_id,
+                },
+                dataType: 'json',
+                success: function (data) {
+                  if (data.found) {
+                    $('#name').val(data.name);
+                    $('#section').val(data.section);
+                    $('#phone_no').val(data.phone_no);
+                  }
+                }
+              });
+            }
+          });
+
+          function save(){
+            // Clear Validate
+            remove_valids(['emp_id','name','section','phone_no','ma_mc_no','ad_ser_mc_no','description']);
+            set_text_emptys(['invalid_text']);
+            // Function
+            if(validate_emp_id() && validate_name() && validate_section() && validate_phone_no() && validate_description()){
+              document.getElementById('form').submit();
+              $('#save_button').prop('disabled', true);
+            }
+          }
+
+          function validate_emp_id(){
+            var emp_id = $('#emp_id').val();
+            if(emp_id.length < 4){
+              invalid("emp_id");
+              set_text_value("invalid_text","Please fill 'Employee ID'.");
+              return false;
+            } else {
+              valid("emp_id");
+              set_text_emptys("invalid_text");
+              return true;
+            }
+          }
+
+          function validate_name(){
+            var name = $('#name').val();
+            if(name.length == 0){
+              invalid("name");
+              set_text_value("invalid_text","Please fill 'Name'.");
+              return false;
+            } else {
+              valid("name");
+              set_text_emptys("invalid_text");
+              return true;
+            }
+          }
+
+          function validate_section(){
+            var section = $('#section').val();
+            if(section.length == 0){
+              invalid("section");
+              set_text_value("invalid_text","Please fill 'Section'.");
+              return false;
+            } else {
+              valid("section");
+              set_text_emptys("invalid_text");
+              return true;
+            }
+          }
+
+          function validate_phone_no(){
+            var phone_no = $('#phone_no').val();
+            if(phone_no.length == 0){
+              invalid("phone_no");
+              set_text_value("invalid_text","Please fill 'Phone No'.");
+              return false;
+            } else {
+              valid("phone_no");
+              set_text_emptys("invalid_text");
+              return true;
+            }
+          }
+
+          function validate_description(){
+            var description = $('#description').val();
+            if(description.length == 0){
+              invalid("description");
+              set_text_value("invalid_text","Please fill 'Description'.");
+              return false;
+            } else {
+              valid("description");
+              set_text_emptys("invalid_text");
+              return true;
+            }
+          }
+
           //-- Toggle
           $('input[type=radio][name=req_to]').on("change", function() {
             toggle();
           });
-
 
           function toggle(){
             var req_to = $('input[type=radio][name=req_to]:checked').val();

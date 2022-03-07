@@ -38,7 +38,8 @@ class Request(models.Model):
     req_to = models.CharField(max_length=10)
     mc = models.ForeignKey(Machine, null=True, on_delete=models.SET_NULL)
     request_date = models.DateField(null=True)
-    status = models.CharField(max_length=20)
+    type = models.CharField(max_length=10) # Preventive, Breakdown
+    status = models.CharField(max_length=20) # Pending, Rejected, On Progress, On Hold, Complete, Canceled
     reason = models.CharField(max_length=1000, null=True)
     description = models.CharField(max_length=1000)
     date_modified = models.DateTimeField(auto_now=True)
@@ -59,4 +60,5 @@ class Comment(models.Model):
     id = models.AutoField(primary_key=True)
     req = models.ForeignKey(Request, on_delete=models.CASCADE)
     user = models.ForeignKey(User, null=True, on_delete=models.SET_NULL)
+    text = models.CharField(max_length=1000, null=True)
     date_published = models.DateTimeField(auto_now_add=True)

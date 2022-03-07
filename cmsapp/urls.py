@@ -27,7 +27,13 @@ urlpatterns = [
     path('new_mc/', views.new_mc, name='new_mc'),
     path('new_vendor/', views.new_vendor, name='new_vendor'),
     path('new_cat/', views.new_cat, name='new_cat'),
-    ### Request
+    ### POST
+    path('new_request_save/', views.new_request_save, name='new_request_save'),
     path('new_emp_save/', views.new_emp_save, name='new_emp_save'),
+    ### GET
     path('validate_username/', views.validate_username, name='validate_username'),
+    path('find_emp_info/', views.find_emp_info, name='find_emp_info'),
+    path('post_comment/', views.post_comment, name='post_comment'),
+    path('join_request/', views.join_request, name='join_request'),
+    path('leave_request/', views.leave_request, name='leave_request'),
 ]
