@@ -24,10 +24,10 @@
     <ul class="side-nav">
 
         <li class="side-nav-item">
-            <a href="/index/MY" class="side-nav-link">
+            <a href="/index/" class="side-nav-link">
                 <i class="uil-comment-dots"></i>
                 <span> My Request </span>
-                {% if all_page_data.my_task_counts != 0 %}
+                {% if all_page_data.my_request_counts != 0 %}
                 <span class="badge bg-danger rounded-pill float-end">{{all_page_data.my_request_counts}}</span>
                 {% endif %}
             </a>
@@ -40,7 +40,13 @@
                 {% if all_page_data.pending_request_counts != 0 %}
                 <span class="badge bg-danger rounded-pill float-end">{{all_page_data.pending_request_counts}}</span>
                 {% endif %}
+            </a>
+        </li>
 
+        <li class="side-nav-item">
+            <a href="/request_all/{% if request.user.employee.view_type == 'ALL' %}MA{% else %}{{request.user.employee.view_type}}{% endif %}" class="side-nav-link">
+                <i class="uil-comments"></i>
+                <span> All Request </span>
             </a>
         </li>
 

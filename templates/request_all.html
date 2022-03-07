@@ -4,7 +4,7 @@
 <html lang="en">
     <head>
         <meta charset="utf-8" />
-        <title>Pending Request | C.C.S. Maintenance Service</title>
+        <title>All Request | C.C.S. Maintenance Service</title>
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <meta content="A fully featured admin theme which can be used to build CRM, CMS, etc." name="description" />
         <meta content="Coderthemes" name="author" />
@@ -56,7 +56,7 @@
                                           {% endif %}
                                         </select>
                                     </div>
-                                    <h4 class="page-title"><i class="uil-comment-exclamation"></i> Pending Request ({{reqs|length}})</h4>
+                                    <h4 class="page-title"><i class="uil-comments"></i> All Request ({{reqs|length}})</h4>
                                 </div>
                             </div>
                         </div>
@@ -72,6 +72,7 @@
                                           <th>Request No</th>
                                           <th>Type</th>
                                           <th>Status</th>
+                                          <th>Reason</th>
                                           <th>Description</th>
                                           <th>Machine No</th>
                                           <th>Request By</th>
@@ -83,7 +84,12 @@
                                       <tr>
                                           <td><a href="/request_page/{{req.req_no}}">{{req.req_no}}</a></td>
                                           <td>{{req.type}}</td>
-                                          <td><strong class="text-warning"><i class='mdi mdi-clock-time-eight-outline'></i> Pending</strong></td>
+                                          <td>
+                                            {% if req.status == 'On Progress' %}<strong class="text-primary"><i class='mdi mdi-play'></i> On Progress</strong>
+                                            {% elif req.status == 'On Hold' %}<strong class="text-dark"><i class='mdi mdi-pause'></i> On Hold</strong>
+                                            {% else %}{{req.status}}{% endif %}
+                                          </td>
+                                          <td>{{req.reason}}</td>
                                           <td>{{req.description}}</td>
                                           <td>{{req.mc.mc_no}}</td>
                                           <td>{{req.emp_id}} | {{req.name}} ({{req.section}}) <i class="uil-phone"></i> {{req.phone_no}}</td>
@@ -146,7 +152,7 @@
 
           function filter(){
             var freq = $("#freq").val();
-            window.location.href = "/request_pending/" + freq;
+            window.location.href = "/request_all/" + freq;
           }
         </script>
 

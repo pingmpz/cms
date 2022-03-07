@@ -42,7 +42,7 @@ def login_action(request):
     user = authenticate(request, username=username, password=password)
     if user is not None:
         login(request, user)
-        return redirect('/index/MY')
+        return redirect('/index/')
     return redirect('/')
 
 @login_required(login_url='/')
@@ -107,7 +107,12 @@ def request_page(request, request_no):
 #------------------------------------ Main ------------------------------------#
 
 def all_page_data(request):
-    my_reqs = Request.objects.filter(status='On Progress') | Request.objects.filter(status='On Hold')
+    my_reqs = []
+    temp_reqs = Request.objects.filter(status='On Progress') | Request.objects.filter(status='On Hold')
+    for req in temp_reqs:
+        isMember = Member.objects.filter(req=req,user=request.user).exists()
+        if isMember:
+            my_reqs.append(req)
     my_request_counts = len(my_reqs)
     pending_reqs = []
     if request.user.employee.view_type == 'MA':
@@ -122,24 +127,34 @@ def all_page_data(request):
     return context
 
 @login_required(login_url='/')
-def index(request, freq):
+def index(request):
     reqs = []
-    if freq == 'MY':
-        reqs = Request.objects.filter(status='On Progress') | Request.objects.filter(status='On Hold')
-    elif freq == 'MA':
+    temp_reqs = Request.objects.filter(status='On Progress') | Request.objects.filter(status='On Hold')
+    for req in temp_reqs:
+        isMember = Member.objects.filter(req=req,user=request.user).exists()
+        if isMember:
+            reqs.append(req)
+    context = {
+        'reqs': reqs,
+    }
+    context['all_page_data'] = (all_page_data(request))
+    return render(request, 'index.html', context)
+
+@login_required(login_url='/')
+def request_all(request, freq):
+    reqs = []
+    if freq == 'MA':
         reqs = Request.objects.filter(status='On Progress',req_to='MA') | Request.objects.filter(status='On Hold',req_to='MA')
     elif freq == 'AD-SER':
         reqs = Request.objects.filter(status='On Progress',req_to='AD-SER') | Request.objects.filter(status='On Hold',req_to='AD-SER')
-    elif freq == 'ALL':
-        reqs = Request.objects.filter(status='On Progress') | Request.objects.filter(status='On Hold')
-    elif freq == 'TOTAL':
-        reqs = Request.objects.filter(status='On Progress') | Request.objects.filter(status='On Hold')
+    else:
+        reqs = Request.objects.filter(status='On Progress')  | Request.objects.filter(status='On Hold')
     context = {
         'freq': freq,
         'reqs': reqs,
     }
     context['all_page_data'] = (all_page_data(request))
-    return render(request, 'index.html', context)
+    return render(request, 'request_all.html', context)
 
 @login_required(login_url='/')
 def request_pending(request, freq):
@@ -153,9 +168,6 @@ def request_pending(request, freq):
     context = {
         'freq': freq,
         'reqs': reqs,
-    }
-    context = {
-        'freq': freq,
     }
     context['all_page_data'] = (all_page_data(request))
     return render(request, 'request_pending.html', context)
@@ -271,7 +283,9 @@ def new_request_save(request):
     status = 'Pending'
     request_date = datetime.now().date()
     mc_no = ma_mc_no if req_to == 'MA' else ad_ser_mc_no
-    mc = Machine.objects.get(mc_no=mc_no)
+    mc = None
+    if mc_no != "Select":
+        mc = Machine.objects.get(mc_no=mc_no)
     request_new = Request(emp_id=emp_id,name=name,section=section,phone_no=phone_no,req_to=req_to,type=type,status=status,request_date=request_date,mc=mc,description=description)
     request_new.save()
     request_new.req_no = create_req_no(request_new.id)

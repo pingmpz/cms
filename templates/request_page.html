@@ -145,6 +145,7 @@
                                 </div>
 
                               <!-- ========== Machine ========== -->
+                              {% if req.mc %}
                               <div class="card tilebox-one">
                                   <div class="card-body">
                                       <i class="mdi mdi-cogs float-end"></i>
@@ -163,6 +164,7 @@
                                       <p class="mb-0 text-nowrap text-muted small">Note: {{req.mc.note|default_if_none:"-"}}</p>
                                   </div>
                               </div>
+                              {% endif %}
 
                               <!-- ========== Requester ========== -->
                               <div class="card tilebox-one">
@@ -260,6 +262,7 @@
                                   </div>
                                   <div class="col-6">
                                     <!-- ========== Machine ========== -->
+                                    {% if req.mc %}
                                     <div class="card tilebox-one">
                                         <div class="card-body">
                                             <i class="mdi mdi-cogs float-end"></i>
@@ -278,6 +281,7 @@
                                             <p class="mb-0 text-nowrap text-muted small">Note: {{req.mc.note|default_if_none:"-"}}</p>
                                         </div>
                                     </div>
+                                    {% endif %}
                                   </div>
                                 </div>
                                 {% endif %}
