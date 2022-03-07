@@ -126,8 +126,11 @@
                                       <p class="my-2 small">{{req.description}}</p>
                                       <p class="mb-0 text-muted small">Type: {{req.type}}</p>
                                       <p class="mb-0 text-muted small">Request Date: {{req.request_date}}</p>
+                                      {% if req.status == 'Complete' or req.status == 'Canceled' %}
+                                      <p class="mb-0 text-muted small">Finish Date: {{req.finish_datetime}}</p>
+                                      {% endif %}
                                       <p class="mb-0 text-muted small">Created Date: {{req.date_published}}</p>
-                                      <p class="mb-0 text-muted small">Finish Date: {{req.date_modified}}</p>
+                                      <p class="mb-0 text-muted small">Modified Date: {{req.date_modified}}</p>
                                   </div>
                               </div>
 
@@ -227,8 +230,11 @@
                                         <p class="my-3">{{req.description}}</p>
                                         <p class="mb-0 text-muted small">Type: {{req.type}}</p>
                                         <p class="mb-0 text-muted small">Request Date: {{req.request_date}}</p>
+                                        {% if req.status == 'Rejected' %}
+                                        <p class="mb-0 text-muted small">Finish Date: {{req.finish_datetime}}</p>
+                                        {% endif %}
                                         <p class="mb-0 text-muted small">Created Date: {{req.date_published}}</p>
-                                        <p class="mb-0 text-muted small">Finish Date: {{req.date_modified}}</p>
+                                        <p class="mb-0 text-muted small">Modified Date: {{req.date_modified}}</p>
                                     </div>
                                 </div>
 
@@ -563,7 +569,7 @@
                                         <h4 class="header-title mb-3">Functions</h4>
                                         <div class="list-group list-group-flush my-2">
                                             {% if req.status == 'Pending' %}
-                                            <button type="button" class="btn btn-xs mb-1 btn-success"><i class='uil-check me-1'></i><del>Accept</del></button>
+                                            <button type="button" class="btn btn-xs mb-1 btn-success" data-bs-toggle="modal" data-bs-target="#accept_modal"><i class='uil-check me-1'></i>Accept</button>
                                             <button type="button" class="btn btn-xs mb-1 btn-danger" data-bs-toggle="modal" data-bs-target="#reject_modal"><i class='uil-times me-1'></i>Reject</button>
                                             {% elif req.status == 'On Hold' and not isJoined %}
                                             <button type="button" class="btn btn-xs mb-1 btn-outline-success" onclick="join_request()"><i class='uil-sign-in-alt me-1'></i>Join</button>
@@ -614,7 +620,7 @@
                                         <div class="inbox-widget">
                                             {% for member in members %}
                                             <div class="inbox-item">
-                                                <p class="inbox-item-author">{{member.user.username}} | {{member.user.employee.name}} {% if request.user.is_superuser %}[{{member.id}}]{% endif %}</p>
+                                                <p class="inbox-item-author">{{member.user.username}} | {{member.user.employee.name|truncatechars:20}} {% if request.user.is_superuser %}[{{member.id}}]{% endif %}</p>
                                                 <p class="inbox-item-text">Member</p>
                                             </div>
                                             {% endfor %}
@@ -650,6 +656,42 @@
 
         <!-- ========== Modal ========== -->
         <div>
+          <!-- Accept -->
+          <div id="accept_modal" class="modal fade" tabindex="-1" role="dialog">
+              <div class="modal-dialog">
+                  <div class="modal-content">
+                      <div class="modal-header modal-colored-header bg-success">
+                          <h4 class="modal-title"><i class='uil-check me-1'></i>Accept</h4>
+                          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                      </div>
+                      <div class="modal-body">
+                          <h5 class="mt-3 mb-3 text-center">Are you sure that you want to accept this request ?</h5>
+                          <div class="mb-3">
+                            <label class="form-label">Add Member</label>
+                            <p class="text-muted font-12">Use 'CTRL' to select multiple item, Please select at least 1 person.</p>
+                            <select class="select2 form-control select2-multiple" data-toggle="select2" multiple="multiple" data-placeholder="Choose ..." id="accept_username_list">
+                                {% for user in users %}
+                                <option value="{{user.username}}">{{user.username}} | {{user.employee.name}}</option>
+                                {% endfor %}
+                            </select>
+                          </div>
+                          <div class="mb-3">
+                            <label class="form-label">Category</label>
+                            <p class="text-muted font-12">Use 'CTRL' to select multiple item</p>
+                            <select class="select2 form-control select2-multiple" data-toggle="select2" multiple="multiple" data-placeholder="Choose ..." id="accept_cat_id_list">
+                                {% for cat in cats %}
+                                <option value="{{cat.id}}">{{cat.name}}</option>
+                                {% endfor %}
+                            </select>
+                          </div>
+                      </div>
+                      <div class="modal-footer">
+                          <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
+                          <button type="button" class="btn btn-success" onclick="accept_request()">Confirm</button>
+                      </div>
+                  </div>
+              </div>
+          </div>
           <!-- Reject -->
           <div id="reject_modal" class="modal fade" tabindex="-1" role="dialog">
               <div class="modal-dialog">
@@ -807,6 +849,34 @@
                 // 'csvHtml5',
               ]
           });
+
+          $('#accept_username_list').select2({
+              dropdownParent: $('#accept_modal')
+          });
+
+          $('#accept_cat_id_list').select2({
+              dropdownParent: $('#accept_modal')
+          });
+
+          function accept_request(){
+            var req_id = $("#req_id").val();
+            var username_list = $("#accept_username_list").val();
+            var cat_id_list = $("#accept_cat_id_list").val();
+            if(username_list.length > 0){
+              $.ajax({
+                url: '/accept_request/',
+                data: {
+                  'req_id': req_id,
+                  'username_list': username_list,
+                  'cat_id_list': cat_id_list,
+                },
+                dataType: 'json',
+                success: function (data) {
+                  location.reload();
+                }
+              });
+            }
+          }
 
           function reject_request(){
             var req_id = $("#req_id").val();

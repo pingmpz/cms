@@ -91,6 +91,8 @@ def request_page(request, request_no):
     reqcats = []
     files = []
     owts = []
+    users = []
+    cats = []
     if requestIsExist:
         req = Request.objects.get(req_no=request_no)
         isJoined = Member.objects.filter(req=req,user=request.user).exists()
@@ -99,6 +101,11 @@ def request_page(request, request_no):
         reqcats = RequestCategory.objects.filter(req=req)
         files = File.objects.filter(req=req)
         owts = OperatorWorkingTime.objects.filter(req=req).order_by('-start_datetime')
+        temp_users = User.objects.filter(is_active=True)
+        for user in temp_users:
+            if user.employee.section == req.req_to:
+                users.append(user)
+        cats = Category.objects.all()
     context = {
         'request_no': request_no,
         'requestIsExist': requestIsExist,
@@ -109,6 +116,8 @@ def request_page(request, request_no):
         'reqcats': reqcats,
         'files': files,
         'owts': owts,
+        'users': users,
+        'cats': cats,
     }
     context['all_page_data'] = (all_page_data(request))
     return render(request, 'request_page.html', context)
@@ -122,16 +131,18 @@ def all_page_data(request):
         isMember = Member.objects.filter(req=req,user=request.user).exists()
         if isMember:
             my_reqs.append(req)
-    my_request_counts = len(my_reqs)
+    my_request_count = len(my_reqs)
     pending_reqs = []
-    if request.user.employee.view_type == 'MA':
-        pending_reqs = Request.objects.filter(status='Pending',req_to='MA')
-    elif request.user.employee.view_type == 'AD-SER':
-        pending_reqs = Request.objects.filter(status='Pending',req_to='AD-SER')
-    pending_request_counts = len(pending_reqs)
+    if request.user.employee.view_type != 'ALL':
+        pending_reqs = Request.objects.filter(status='Pending',req_to=request.user.employee.view_type)
+    else:
+        pending_reqs = Request.objects.filter(status='Pending')
+    pending_request_count = len(pending_reqs)
+    all_request_count = len(temp_reqs)
     context = {
-        'my_request_counts': my_request_counts,
-        'pending_request_counts': pending_request_counts,
+        'my_request_count': my_request_count,
+        'pending_request_count': pending_request_count,
+        'all_request_count': all_request_count,
     }
     return context
 
@@ -150,48 +161,62 @@ def index(request):
     return render(request, 'index.html', context)
 
 @login_required(login_url='/')
-def request_all(request, freq):
+def request_pending(request):
     reqs = []
-    if freq == 'MA':
-        reqs = Request.objects.filter(status='On Progress',req_to='MA') | Request.objects.filter(status='On Hold',req_to='MA')
-    elif freq == 'AD-SER':
-        reqs = Request.objects.filter(status='On Progress',req_to='AD-SER') | Request.objects.filter(status='On Hold',req_to='AD-SER')
-    else:
-        reqs = Request.objects.filter(status='On Progress')  | Request.objects.filter(status='On Hold')
-    context = {
-        'freq': freq,
-        'reqs': reqs,
-    }
-    context['all_page_data'] = (all_page_data(request))
-    return render(request, 'request_all.html', context)
-
-@login_required(login_url='/')
-def request_pending(request, freq):
-    reqs = []
-    if freq == 'MA':
-        reqs = Request.objects.filter(status='Pending',req_to='MA')
-    elif freq == 'AD-SER':
-        reqs = Request.objects.filter(status='Pending',req_to='AD-SER')
+    if request.user.employee.view_type != 'ALL':
+        reqs = Request.objects.filter(status='Pending',req_to=request.user.employee.view_type)
     else:
         reqs = Request.objects.filter(status='Pending')
     context = {
-        'freq': freq,
         'reqs': reqs,
     }
     context['all_page_data'] = (all_page_data(request))
     return render(request, 'request_pending.html', context)
 
 @login_required(login_url='/')
-def request_history(request, freq, fstatus, fstartdate, fstopdate):
+def request_all(request):
+    reqs = []
+    if request.user.employee.view_type != 'ALL':
+        reqs = Request.objects.filter(status='On Progress',req_to=request.user.employee.view_type) | Request.objects.filter(status='On Hold',req_to=request.user.employee.view_type)
+    else:
+        reqs = Request.objects.filter(status='On Progress')  | Request.objects.filter(status='On Hold')
+    joinings = []
+    for req in reqs:
+        isMember = Member.objects.filter(req=req,user=request.user).exists()
+        if isMember:
+            joinings.append('YES')
+        else:
+            joinings.append('NO')
+    context = {
+        'reqs': reqs,
+        'joinings': joinings,
+    }
+    context['all_page_data'] = (all_page_data(request))
+    return render(request, 'request_all.html', context)
+
+@login_required(login_url='/')
+def request_history(request, fstartdate, fstopdate):
     if fstartdate == "NOW":
         fstartdate = datetime.today().strftime('%Y-%m-%d')
     if fstopdate == "NOW":
         fstopdate = datetime.today().strftime('%Y-%m-%d')
+    reqs = []
+    if request.user.employee.view_type != 'ALL':
+        reqs = Request.objects.filter(status='Rejected',req_to=request.user.employee.view_type) | Request.objects.filter(status='Complete',req_to=request.user.employee.view_type) | Request.objects.filter(status='Canceled',req_to=request.user.employee.view_type)
+    else:
+        reqs = Request.objects.filter(status='Rejected')  | Request.objects.filter(status='Complete') | Request.objects.filter(status='Canceled')
+    joinings = []
+    for req in reqs:
+        isMember = Member.objects.filter(req=req,user=request.user).exists()
+        if isMember:
+            joinings.append('YES')
+        else:
+            joinings.append('NO')
     context = {
-        'freq': freq,
-        'fstatus': fstatus,
         'fstartdate': fstartdate,
         'fstopdate': fstopdate,
+        'reqs': reqs,
+        'joinings': joinings,
     }
     context['all_page_data'] = (all_page_data(request))
     return render(request, 'request_history.html', context)
@@ -361,6 +386,25 @@ def find_emp_info(request):
     }
     return JsonResponse(data)
 
+def accept_request(request):
+    req_id = request.GET['req_id']
+    username_list = request.GET.getlist('username_list[]')
+    cat_id_list = request.GET.getlist('cat_id_list[]')
+    req = Request.objects.get(id=req_id)
+    for username in username_list:
+        user = User.objects.get(username=username)
+        member_new = Member(req=req,user=user)
+        member_new.save()
+    for cat_id in cat_id_list:
+        cat = Category.objects.get(id=cat_id)
+        reqcat_new = RequestCategory(req=req,cat=cat)
+        reqcat_new.save()
+    req.status = 'On Progress'
+    req.save()
+    data = {
+    }
+    return JsonResponse(data)
+
 def reject_request(request):
     req_id = request.GET['req_id']
     is_nms = True if request.GET['is_nms'] == 'true' else False
@@ -372,6 +416,7 @@ def reject_request(request):
     else:
         req.status = 'Rejected'
         req.reason = reject_reason
+        req.finish_datetime = datetime.now()
     req.save()
     data = {
     }
@@ -421,6 +466,7 @@ def complete_request(request):
     req = Request.objects.get(id=req_id)
     req.status = 'Complete'
     req.reason = None
+    req.finish_datetime = datetime.now()
     req.save()
     data = {
     }
@@ -432,6 +478,7 @@ def cancel_request(request):
     req = Request.objects.get(id=req_id)
     req.status = 'Canceled'
     req.reason = cancel_reason
+    req.finish_datetime = datetime.now()
     req.save()
     data = {
     }

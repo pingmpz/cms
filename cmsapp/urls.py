@@ -15,9 +15,9 @@ urlpatterns = [
     path('request_page/<str:request_no>', views.request_page, name='request_page'),
     #--
     path('index/', views.index, name='index'),
-    path('request_pending/<str:freq>', views.request_pending, name='request_pending'),
-    path('request_all/<str:freq>', views.request_all, name='request_all'),
-    path('request_history/<str:freq>&<str:fstatus>&<str:fstartdate>&<str:fstopdate>', views.request_history, name='request_history'),
+    path('request_pending/', views.request_pending, name='request_pending'),
+    path('request_all/', views.request_all, name='request_all'),
+    path('request_history/<str:fstartdate>&<str:fstopdate>', views.request_history, name='request_history'),
     #-- Master
     path('master_emp/', views.master_emp, name='master_emp'),
     path('master_mc/', views.master_mc, name='master_mc'),
@@ -34,6 +34,7 @@ urlpatterns = [
     ### GET
     path('validate_username/', views.validate_username, name='validate_username'),
     path('find_emp_info/', views.find_emp_info, name='find_emp_info'),
+    path('accept_request/', views.accept_request, name='accept_request'),
     path('reject_request/', views.reject_request, name='reject_request'),
     path('join_request/', views.join_request, name='join_request'),
     path('leave_request/', views.leave_request, name='leave_request'),

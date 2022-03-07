@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 {% load static %}
+{% load extra %}
 
 <html lang="en">
     <head>
@@ -46,15 +47,6 @@
                             <div class="col-12">
                                 <div class="page-title-box">
                                     <div class="page-title-right d-flex">
-                                        <select class="form-select" id="freq">
-                                          {% if request.user.employee.view_type == 'ALL' %}
-                                          <option value="MA" {% if freq == 'MA' %}style="color:blue" selected{% endif %}>MA Request</option>
-                                          <option value="AD-SER" {% if freq == 'AD-SER' %}style="color:blue" selected{% endif %}>AD-SER Request</option>
-                                          <option value="ALL" {% if freq == 'ALL' %}style="color:blue" selected{% endif %}>All Request</option>
-                                          {% else %}
-                                          <option value="{{request.user.employee.view_type}}" {% if freq == '{{request.user.employee.view_type}}' %}style="color:blue" selected{% endif %}>{{request.user.employee.view_type}} Request</option>
-                                          {% endif %}
-                                        </select>
                                     </div>
                                     <h4 class="page-title"><i class="uil-comments"></i> All Request ({{reqs|length}})</h4>
                                 </div>
@@ -77,6 +69,10 @@
                                           <th>Machine No</th>
                                           <th>Request By</th>
                                           <th>Request Date</th>
+                                          <th>Joining</th>
+                                          {% if request.user.employee.view_type == 'ALL' %}
+                                          <th>Request To</th>
+                                          {% endif %}
                                       </tr>
                                   </thead>
                                   <tbody>
@@ -85,8 +81,12 @@
                                           <td><a href="/request_page/{{req.req_no}}">{{req.req_no}}</a></td>
                                           <td>{{req.type}}</td>
                                           <td>
-                                            {% if req.status == 'On Progress' %}<strong class="text-primary"><i class='mdi mdi-play'></i> On Progress</strong>
+                                            {% if req.status == 'Pending' %}<strong class="text-warning"><i class='mdi mdi-clock-time-eight-outline'></i> Pending</strong>
+                                            {% elif req.status == 'On Progress' %}<strong class="text-primary"><i class='mdi mdi-play'></i> On Progress</strong>
                                             {% elif req.status == 'On Hold' %}<strong class="text-dark"><i class='mdi mdi-pause'></i> On Hold</strong>
+                                            {% elif req.status == 'Rejected' %}<strong class="text-danger"><i class='uil-times'></i> Rejected</strong>
+                                            {% elif req.status == 'Complete' %}<strong class="text-dark"><i class='mdi mdi-check-all'></i> Complete</strong>
+                                            {% elif req.status == 'Canceled' %}<strong class="text-dark"><i class='uil-ban'></i> Canceled</strong>
                                             {% else %}{{req.status}}{% endif %}
                                           </td>
                                           <td>{{req.reason|default_if_none:""}}</td>
@@ -94,6 +94,13 @@
                                           <td>{{req.mc.mc_no}}</td>
                                           <td>{{req.emp_id}} | {{req.name}} ({{req.section}}) <i class="uil-phone"></i> {{req.phone_no}}</td>
                                           <td>{{req.request_date}}</td>
+                                          <td>
+                                            {% if joinings|index:forloop.counter0 == 'YES' %}<strong class="text-success">YES</strong>
+                                            {% else%}<strong class="text-danger">NO</strong>{% endif %}
+                                          </td>
+                                          {% if request.user.employee.view_type == 'ALL' %}
+                                          <td>{{req.req_to}}</td>
+                                          {% endif %}
                                       </tr>
                                       {% endfor %}
                                   </tbody>
@@ -145,15 +152,6 @@
                 // 'csvHtml5',
               ]
           });
-
-          $('#freq').change(function() {
-            filter();
-          });
-
-          function filter(){
-            var freq = $("#freq").val();
-            window.location.href = "/request_all/" + freq;
-          }
         </script>
 
     </body>

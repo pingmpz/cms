@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 {% load static %}
+{% load extra %}
 
 <html lang="en">
     <head>
@@ -46,29 +47,12 @@
                             <div class="col-12">
                                 <div class="page-title-box">
                                     <div class="page-title-right d-flex">
-                                      <select class="form-select" id="freq">
-                                        <option value="MY" {% if freq == 'MY' %}style="color:blue" selected{% endif %}>My Request</option>
-                                        {% if request.user.employee.view_type == 'ALL' %}
-                                        <option value="MA" {% if freq == 'MA' %}style="color:blue" selected{% endif %}>MA Request</option>
-                                        <option value="AD-SER" {% if freq == 'AD-SER' %}style="color:blue" selected{% endif %}>AD-SER Request</option>
-                                        <option value="TOTAL" {% if freq == 'TOTAL' %}style="color:blue" selected{% endif %}>Total Request</option>
-                                        {% else %}
-                                        <option value="ALL" {% if freq == 'ALL' %}style="color:blue" selected{% endif %}>All Request</option>
-                                        {% endif %}
-                                      </select>
-                                      <p class="pt-2 pb-1 mb-0 small">&nbsp;Status&nbsp;</p>
-                                      <select class="form-select" id="fstatus" style="width:60%">
-                                        <option value="ALL" {% if fstatus == 'ALL' %}style="color:blue" selected{% endif %}>All Status</option>
-                                        <option value="COMPLETE" {% if fstatus == 'COMPLETE' %}style="color:blue" selected{% endif %}>Complete</option>
-                                        <option value="REJECTED" {% if fstatus == 'REJECTED' %}style="color:blue" selected{% endif %}>Rejected</option>
-                                        <option value="CANCELED" {% if fstatus == 'CANCELED' %}style="color:blue" selected{% endif %}>Canceled</option>
-                                      </select>
-                                      <p class="pt-2 pb-1 mb-0 small">&nbsp;Finish&nbsp;Date&nbsp;</p>
+                                      <p class="pt-2 pb-1 mb-0 small">Finish&nbsp;Date&nbsp;</p>
                                       <input type="date" class="form-control" id="fstartdate" value="{{fstartdate}}" onkeydown="return false">
                                       <p class="pt-2 pb-1 mb-0">&nbsp;-&nbsp;</p>
                                       <input type="date" class="form-control" id="fstopdate" value="{{fstopdate}}" onkeydown="return false">
                                     </div>
-                                    <h4 class="page-title"><i class="uil-comment-verify"></i> History Request (3)</h4>
+                                    <h4 class="page-title"><i class="uil-comment-verify"></i> History Request ({{reqs|length}})</h4>
                                 </div>
                             </div>
                         </div>
@@ -90,42 +74,41 @@
                                           <th>Request By</th>
                                           <th>Request Date</th>
                                           <th>Finish Date</th>
+                                          <th>Joining</th>
+                                          {% if request.user.employee.view_type == 'ALL' %}
+                                          <th>Request To</th>
+                                          {% endif %}
                                       </tr>
                                   </thead>
                                   <tbody>
+                                      {% for req in reqs %}
                                       <tr>
-                                          <td><a href="/request_page/CMS000004">CMS000004</a></td>
-                                          <td>Breakdown</td>
-                                          <td><strong class="text-danger"><i class='uil-times'></i> Rejected</strong></td>
-                                          <td>พนักงานเสียบปลั๊กหลวม</td>
-                                          <td>จอยบังคับไม่ทำงาน</td>
-                                          <td>MCA04</td>
-                                          <td>5731 | Yashawantatul Mangalmurti (MIS) <i class="uil-phone"></i> 6624</td>
-                                          <td>{% now "jS F Y H:i" %}</td>
-                                          <td>{% now "jS F Y H:i" %}</td>
+                                          <td><a href="/request_page/{{req.req_no}}">{{req.req_no}}</a></td>
+                                          <td>{{req.type}}</td>
+                                          <td>
+                                            {% if req.status == 'Pending' %}<strong class="text-warning"><i class='mdi mdi-clock-time-eight-outline'></i> Pending</strong>
+                                            {% elif req.status == 'On Progress' %}<strong class="text-primary"><i class='mdi mdi-play'></i> On Progress</strong>
+                                            {% elif req.status == 'On Hold' %}<strong class="text-dark"><i class='mdi mdi-pause'></i> On Hold</strong>
+                                            {% elif req.status == 'Rejected' %}<strong class="text-danger"><i class='uil-times'></i> Rejected</strong>
+                                            {% elif req.status == 'Complete' %}<strong class="text-dark"><i class='mdi mdi-check-all'></i> Complete</strong>
+                                            {% elif req.status == 'Canceled' %}<strong class="text-dark"><i class='uil-ban'></i> Canceled</strong>
+                                            {% else %}{{req.status}}{% endif %}
+                                          </td>
+                                          <td>{{req.reason|default_if_none:""}}</td>
+                                          <td>{{req.description}}</td>
+                                          <td>{{req.mc.mc_no}}</td>
+                                          <td>{{req.emp_id}} | {{req.name}} ({{req.section}}) <i class="uil-phone"></i> {{req.phone_no}}</td>
+                                          <td>{{req.request_date}}</td>
+                                          <td>{{req.finish_datetime}}</td>
+                                          <td>
+                                            {% if joinings|index:forloop.counter0 == 'YES' %}<strong class="text-success">YES</strong>
+                                            {% else%}<strong class="text-danger">NO</strong>{% endif %}
+                                          </td>
+                                          {% if request.user.employee.view_type == 'ALL' %}
+                                          <td>{{req.req_to}}</td>
+                                          {% endif %}
                                       </tr>
-                                      <tr>
-                                          <td><a href="/request_page/CMS000005">CMS000005</a></td>
-                                          <td>Breakdown</td>
-                                          <td><strong class="text-success"><i class='mdi mdi-check-all'></i> Complete</strong></td>
-                                          <td></td>
-                                          <td>เครื่องจักรสั่นเสียงดัง</td>
-                                          <td>MCA05</td>
-                                          <td>5731 | Yashawantatul Mangalmurti (MIS) <i class="uil-phone"></i> 6624</td>
-                                          <td>{% now "jS F Y H:i" %}</td>
-                                          <td>{% now "jS F Y H:i" %}</td>
-                                      </tr>
-                                      <tr>
-                                          <td><a href="/request_page/CMS000006">CMS000006</a></td>
-                                          <td>Preventive</td>
-                                          <td><strong class="text-danger"><i class='mdi mdi-cancel'></i> Canceled</strong></td>
-                                          <td>ยังไม่จำเป็นต้องซ่อม</td>
-                                          <td>ซ่อมบำรุงประจำเดือน</td>
-                                          <td>MCA06</td>
-                                          <td>5731 | Yashawantatul Mangalmurti (MIS) <i class="uil-phone"></i> 6624</td>
-                                          <td>{% now "jS F Y H:i" %}</td>
-                                          <td>{% now "jS F Y H:i" %}</td>
-                                      </tr>
+                                      {% endfor %}
                                   </tbody>
                                 </table>
                               </div>
@@ -176,14 +159,6 @@
               ]
           });
 
-          $('#freq').change(function() {
-            filter();
-          });
-
-          $('#fstatus').change(function() {
-            filter();
-          });
-
           $('#fstartdate').change(function() {
             filter();
           });
@@ -193,11 +168,9 @@
           });
 
           function filter(){
-            var freq = $("#freq").val();
-            var fstatus = $("#fstatus").val();
             var fstartdate = ($("#fstartdate").val() != "")?$("#fstartdate").val():"NOW";
             var fstopdate = ($("#fstopdate").val() != "")?$("#fstopdate").val():"NOW";
-            window.location.href = "/request_history/" + freq + "&" + fstatus + "&" + fstartdate + "&" + fstopdate;
+            window.location.href = "/request_history/" + fstartdate + "&" + fstopdate;
           }
         </script>
 

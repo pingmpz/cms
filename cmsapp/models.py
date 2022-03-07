@@ -45,6 +45,7 @@ class Request(models.Model):
     req_to = models.CharField(max_length=10)
     mc = models.ForeignKey(Machine, null=True, on_delete=models.SET_NULL)
     request_date = models.DateField(null=True)
+    finish_datetime = models.DateTimeField(null=True)
     type = models.CharField(max_length=10) # Preventive, Breakdown
     status = models.CharField(max_length=20) # Pending, Rejected, On Progress, On Hold, Complete, Canceled
     reason = models.CharField(max_length=1000, null=True)
