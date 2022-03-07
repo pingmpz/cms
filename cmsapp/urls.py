@@ -45,4 +45,5 @@ urlpatterns = [
     path('rework_request/', views.rework_request, name='rework_request'),
     path('post_comment/', views.post_comment, name='post_comment'),
     path('owt_save/', views.owt_save, name='owt_save'),
+    path('mcdt_save/', views.mcdt_save, name='mcdt_save'),
 ]

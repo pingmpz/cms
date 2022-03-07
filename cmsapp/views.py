@@ -11,9 +11,10 @@ from openpyxl import load_workbook, Workbook
 # Date Time
 from datetime import datetime, timedelta
 
-from .models import Employee, Machine,  Category, Request, File, Member, Comment, RequestCategory, OperatorWorkingTime
+from .models import Employee, Machine,  Category, Request, File, Member, Comment, RequestCategory, OperatorWorkingTime, MachineDowntime
 
 ################################# Authenticate #################################
+
 def first_page(request):
     context = {
     }
@@ -91,6 +92,7 @@ def request_page(request, request_no):
     reqcats = []
     files = []
     owts = []
+    mcdts = []
     users = []
     cats = []
     if requestIsExist:
@@ -101,6 +103,7 @@ def request_page(request, request_no):
         reqcats = RequestCategory.objects.filter(req=req)
         files = File.objects.filter(req=req)
         owts = OperatorWorkingTime.objects.filter(req=req).order_by('-start_datetime')
+        mcdts = MachineDowntime.objects.filter(req=req).order_by('-start_datetime')
         temp_users = User.objects.filter(is_active=True)
         for user in temp_users:
             if user.employee.section == req.req_to:
@@ -116,6 +119,7 @@ def request_page(request, request_no):
         'reqcats': reqcats,
         'files': files,
         'owts': owts,
+        'mcdts': mcdts,
         'users': users,
         'cats': cats,
     }
@@ -528,6 +532,19 @@ def owt_save(request):
         user = User.objects.get(username=username)
         owt_new = OperatorWorkingTime(req=req,user=user,start_datetime=start_datetime,stop_datetime=stop_datetime)
         owt_new.save()
+    data = {
+    }
+    return JsonResponse(data)
+
+def mcdt_save(request):
+    req_id = request.GET['req_id']
+    mc_no = request.GET['mc_no']
+    start_datetime = request.GET['start_datetime']
+    stop_datetime = request.GET['stop_datetime']
+    req = Request.objects.get(id=req_id)
+    mc = Machine.objects.get(mc_no=mc_no)
+    mcdt_new = MachineDowntime(req=req,mc=mc,start_datetime=start_datetime,stop_datetime=stop_datetime)
+    mcdt_new.save()
     data = {
     }
     return JsonResponse(data)

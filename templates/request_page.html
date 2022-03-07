@@ -299,7 +299,7 @@
                                             <li class="nav-item">
                                                 <a href="#mc_downtime" data-bs-toggle="tab" aria-expanded="true" class="nav-link px-3 py-2">
                                                     <i class="mdi mdi-book-open-variant font-18 d-md-none d-block"></i>
-                                                    <span class="d-none d-md-block small">Machine Downtime</span>
+                                                    <span class="d-none d-md-block small">Machine Downtime ({{mcdts|length}})</span>
                                                 </a>
                                             </li>
                                             <li class="nav-item">
@@ -364,7 +364,7 @@
                                                   <li class="nav-item">
                                                       <a href="#vendor" data-bs-toggle="tab" aria-expanded="true" class="nav-link">
                                                           <i class="mdi mdi-account-circle d-md-none d-block"></i>
-                                                          <span class="d-none d-md-block">External Vendor</span>
+                                                          <span class="d-none d-md-block"><del>External Vendor</del></span>
                                                       </a>
                                                   </li>
                                               </ul>
@@ -501,49 +501,61 @@
                                             <div class="tab-pane p-0" id="mc_downtime">
                                               <!-- ========== Add Machine Downtime ========== -->
                                               {% if req.status == 'On Progress' or req.status == 'On Hold' %}
+                                              {% if isJoined %}
                                               <div class="row">
                                                 <div class="col-10">
                                                   <div class="mb-3">
                                                     <label class="form-label">Machine No</label>
-                                                    <input type="text" class="form-control" value="{{req.mc.mc_no}}" readonly>
+                                                    <input type="text" class="form-control" id="mcdt_mc_no" value="{{req.mc.mc_no}}" readonly>
                                                   </div>
                                                 </div>
                                                 <div class="col-2">
                                                   <div class="mb-3">
                                                     <label class="form-label">ㅤ</label>
-                                                    <button type="submit" class="btn btn-sm btn-success"><i class='mdi mdi-content-save me-1'></i>Save</button>
+                                                    <button type="submit" class="btn btn-sm btn-success" onclick="mcdt_save()"><i class='mdi mdi-content-save me-1'></i>Save</button>
                                                   </div>
                                                 </div>
                                                 <div class="col-6">
                                                   <div class="mb-0">
                                                     <label class="form-label">StartDateTime</label>
-                                                    <input type="datetime-local" class="form-control" name="section"  id="operate_start_date_time">
+                                                    <input type="datetime-local" class="form-control" name="section"  id="mcdt_start_datetime">
                                                   </div>
                                                 </div>
                                                 <div class="col-6">
                                                   <div class="mb-0">
                                                     <label class="form-label">StopDateTime</label>
-                                                    <input type="datetime-local" class="form-control" name="phone_no"  id="operate_stop_date_time">
+                                                    <input type="datetime-local" class="form-control" name="phone_no"  id="mcdt_stop_datetime">
                                                   </div>
                                                 </div>
                                               </div>
                                               <hr>
                                               {% endif %}
-                                              <!-- ========== Operate Time Table ========== -->
+                                              {% endif %}
+                                              <!-- ========== Machine Downtime Table ========== -->
+                                              {% if mcdts|length > 0 %}
                                               <table id="operate_time_table" class="table table-sm nowrap dt-responsive row-border order-column w-100 small">
                                                 <thead class="table-light">
                                                     <tr>
+                                                        {% if request.user.is_superuser %}<th>ID</th>{% endif %}
                                                         <th>StartDateTime</th>
                                                         <th>StopDateTime</th>
                                                     </tr>
                                                 </thead>
                                                 <tbody>
+                                                    {% for mcdt in mcdts %}
                                                     <tr>
-                                                        <td>10:51 13/01/2022</td>
-                                                        <td>10:51 13/01/2022</td>
+                                                        {% if request.user.is_superuser %}<td>{{mcdt.id}}</td>{% endif %}
+                                                        <td>{{mcdt.start_datetime}}</td>
+                                                        <td>{{mcdt.stop_datetime}}</td>
                                                     </tr>
+                                                    {% endfor %}
                                                 </tbody>
                                               </table>
+                                              {% else %}
+                                              <div class="timeline-item">
+                                                  <h4 class="text-center">There is no machine downtime in this request.</h4>
+                                              </div>
+                                              {% endif %}
                                             </div>
 
                                             <!-- ========== Costing Tab ========== -->
@@ -1033,6 +1045,28 @@
                 data: {
                   'req_id': req_id,
                   'username_list': username_list,
+                  'start_datetime': start_datetime,
+                  'stop_datetime': stop_datetime,
+                },
+                dataType: 'json',
+                success: function (data) {
+                  location.reload();
+                }
+              });
+            }
+          }
+
+          function mcdt_save(){
+            var req_id = $("#req_id").val();
+            var mc_no = $("#mcdt_mc_no").val();
+            var start_datetime = $("#mcdt_start_datetime").val();
+            var stop_datetime = $("#mcdt_stop_datetime").val();
+            if(start_datetime != "" && stop_datetime != "" && stop_datetime > start_datetime){
+              $.ajax({
+                url: '/mcdt_save/',
+                data: {
+                  'req_id': req_id,
+                  'mc_no': mc_no,
                   'start_datetime': start_datetime,
                   'stop_datetime': stop_datetime,
                 },

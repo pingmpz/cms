@@ -85,3 +85,11 @@ class OperatorWorkingTime(models.Model):
     start_datetime = models.DateTimeField(null=True)
     stop_datetime = models.DateTimeField(null=True)
     date_published = models.DateTimeField(auto_now_add=True)
+
+class MachineDowntime(models.Model):
+    id = models.AutoField(primary_key=True)
+    req = models.ForeignKey(Request, on_delete=models.CASCADE)
+    mc = models.ForeignKey(Machine, on_delete=models.CASCADE)
+    start_datetime = models.DateTimeField(null=True)
+    stop_datetime = models.DateTimeField(null=True)
+    date_published = models.DateTimeField(auto_now_add=True)
