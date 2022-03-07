@@ -28,6 +28,13 @@ class Machine(models.Model):
     date_modified = models.DateTimeField(auto_now=True)
     date_published = models.DateTimeField(auto_now_add=True)
 
+class Category(models.Model):
+    id = models.AutoField(primary_key=True)
+    name = models.CharField(max_length=100)
+    description = models.CharField(max_length=1000, null=True)
+    date_modified = models.DateTimeField(auto_now=True)
+    date_published = models.DateTimeField(auto_now_add=True)
+
 class Request(models.Model):
     id = models.AutoField(primary_key=True)
     req_no = models.CharField(max_length=10)
@@ -61,4 +68,10 @@ class Comment(models.Model):
     req = models.ForeignKey(Request, on_delete=models.CASCADE)
     user = models.ForeignKey(User, null=True, on_delete=models.SET_NULL)
     text = models.CharField(max_length=1000, null=True)
+    date_published = models.DateTimeField(auto_now_add=True)
+
+class RequestCategory(models.Model):
+    id = models.AutoField(primary_key=True)
+    req = models.ForeignKey(Request, on_delete=models.CASCADE)
+    cat = models.ForeignKey(Category, on_delete=models.CASCADE)
     date_published = models.DateTimeField(auto_now_add=True)

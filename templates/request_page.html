@@ -48,7 +48,7 @@
                                     <div class="page-title-right d-flex">
 
                                     </div>
-                                    <h4 class="page-title"><i class="uil-comment-dots"></i> {{request_no}} {% if request.user.is_superuser %}({{req.id}}){% endif %}</h4>
+                                    <h4 class="page-title"><i class="uil-comment-dots"></i> {{request_no}} {% if request.user.is_superuser %}[{{req.id}}]{% endif %}</h4>
                                 </div>
                             </div>
                         </div>
@@ -118,16 +118,16 @@
                               </div>
                               {% endif %}
 
-                              {% if req.status != 'Pending' and status != 'Rejected' %}
+                              {% if req.status != 'Pending' and req.status != 'Rejected' %}
                               <!-- ========== Request Detail ========== -->
                               <div class="card tilebox-one">
                                   <div class="card-body">
                                       <h6 class="header-title mt-0">Request Detail</h6>
                                       <p class="my-2 small">{{req.description}}</p>
-                                      <p class="mb-0 text-nowrap text-muted small">Type: {{req.type}}</p>
-                                      <p class="mb-0 text-nowrap text-muted small">Request Date: {{req.request_date}}</p>
-                                      <p class="mb-0 text-nowrap text-muted small">Created Date: {{req.date_published}}</p>
-                                      <p class="mb-0 text-nowrap text-muted small">Finish Date: {{req.date_modified}}</p>
+                                      <p class="mb-0 text-muted small">Type: {{req.type}}</p>
+                                      <p class="mb-0 text-muted small">Request Date: {{req.request_date}}</p>
+                                      <p class="mb-0 text-muted small">Created Date: {{req.date_published}}</p>
+                                      <p class="mb-0 text-muted small">Finish Date: {{req.date_modified}}</p>
                                   </div>
                               </div>
 
@@ -136,11 +136,13 @@
                                     <div class="card-body">
                                         <div class="dropdown float-end">
                                         </div>
-                                        <h4 class="header-title mb-3">Category (2)</h4>
-
-                                        <div class="d-flex mt-2"><i class="mdi mdi-label text-info"></i>&nbsp;&nbsp;&nbsp;Electricity</div>
-                                        <div class="d-flex mt-2"><i class="mdi mdi-label text-info"></i>&nbsp;&nbsp;&nbsp;Hydrolic</div>
-
+                                        <h4 class="header-title mb-3">Category ({{reqcats|length}})</h4>
+                                        {% for reqcat in reqcats %}
+                                        <div class="d-flex mt-2"><i class="mdi mdi-label text-info"></i>&nbsp;&nbsp;&nbsp;{{reqcat.cat.name}} {% if request.user.is_superuser %}[{{reqcat.id}}]{% endif %}</div>
+                                        {% endfor %}
+                                        {% if reqcats|length == 0 %}
+                                        <p class="text-center">There is no category for this request.</p>
+                                        {% endif %}
                                     </div>
                                 </div>
 
@@ -151,17 +153,17 @@
                                       <i class="mdi mdi-cogs float-end"></i>
                                       <h6 class="header-title mt-0">Machine</h6>
                                       <h2 class="my-2">&nbsp;&nbsp;&nbsp;{{req.mc.mc_no}}</h2>
-                                      <p class="mb-0 text-nowrap text-muted small">Section: {{req.mc.section}}</p>
-                                      <p class="mb-0 text-nowrap text-muted small">Register No: {{req.mc.register_no|default_if_none:"-"}}</p>
-                                      <p class="mb-0 text-nowrap text-muted small">Asset No: 	{{req.mc.asset_no|default_if_none:"-"}}</p>
-                                      <p class="mb-0 text-nowrap text-muted small">Manufacture: {{req.mc.manufacture|default_if_none:"-"}}</p>
-                                      <p class="mb-0 text-nowrap text-muted small">Plant: {{req.mc.plant|default_if_none:"-"}}</p>
-                                      <p class="mb-0 text-nowrap text-muted small">Model: {{req.mc.model|default_if_none:"-"}}</p>
-                                      <p class="mb-0 text-nowrap text-muted small">Serial No: {{req.mc.serial_no|default_if_none:"-"}}</p>
-                                      <p class="mb-0 text-nowrap text-muted small">Capacity: {{req.mc.capacity|default_if_none:"-"}}</p>
-                                      <p class="mb-0 text-nowrap text-muted small">Power: {{req.mc.power|default_if_none:"-"}}</p>
-                                      <p class="mb-0 text-nowrap text-muted small">Install Date: {{req.mc.install_date|default_if_none:"-"}}</p>
-                                      <p class="mb-0 text-nowrap text-muted small">Note: {{req.mc.note|default_if_none:"-"}}</p>
+                                      <p class="mb-0 text-muted small">Section: {{req.mc.section}}</p>
+                                      <p class="mb-0 text-muted small">Register No: {{req.mc.register_no|default_if_none:"-"}}</p>
+                                      <p class="mb-0 text-muted small">Asset No: 	{{req.mc.asset_no|default_if_none:"-"}}</p>
+                                      <p class="mb-0 text-muted small">Manufacture: {{req.mc.manufacture|default_if_none:"-"}}</p>
+                                      <p class="mb-0 text-muted small">Plant: {{req.mc.plant|default_if_none:"-"}}</p>
+                                      <p class="mb-0 text-muted small">Model: {{req.mc.model|default_if_none:"-"}}</p>
+                                      <p class="mb-0 text-muted small">Serial No: {{req.mc.serial_no|default_if_none:"-"}}</p>
+                                      <p class="mb-0 text-muted small">Capacity: {{req.mc.capacity|default_if_none:"-"}}</p>
+                                      <p class="mb-0 text-muted small">Power: {{req.mc.power|default_if_none:"-"}}</p>
+                                      <p class="mb-0 text-muted small">Install Date: {{req.mc.install_date|default_if_none:"-"}}</p>
+                                      <p class="mb-0 text-muted small">Note: {{req.mc.note|default_if_none:"-"}}</p>
                                   </div>
                               </div>
                               {% endif %}
@@ -172,8 +174,8 @@
                                       <i class="uil uil-user float-end"></i>
                                       <h6 class="header-title mt-0">Requester</h6>
                                       <h2 class="my-2">&nbsp;&nbsp;&nbsp;{{req.emp_id}}</h2>
-                                      <p class="mb-0 text-nowrap text-muted small">{{req.name}} ({{req.section}})</p>
-                                      <p class="mb-0 text-nowrap text-muted small">{{req.phone_no}}</p>
+                                      <p class="mb-0 text-muted small">{{req.name}} ({{req.section}})</p>
+                                      <p class="mb-0 text-muted small">{{req.phone_no}}</p>
                                   </div>
                               </div>
                               {% endif %}
@@ -183,7 +185,8 @@
                                   <div class="card-body">
                                       <div class="dropdown float-end">
                                       </div>
-                                      <h4 class="header-title mb-3">Files (2)</h4>
+                                      <h4 class="header-title mb-3">Files ({{files|length}})</h4>
+                                      {% for file in files %}
                                       <div class="card mb-1 shadow-none border">
                                           <div class="p-2">
                                               <div class="row align-items-center">
@@ -204,28 +207,10 @@
                                               </div>
                                           </div>
                                       </div>
-
-                                      <div class="card mb-1 shadow-none border">
-                                          <div class="p-2">
-                                              <div class="row align-items-center">
-                                                  <div class="col-auto">
-                                                      <div class="avatar-sm">
-                                                          <span class="avatar-title rounded">.JPG</span>
-                                                      </div>
-                                                  </div>
-                                                  <div class="col ps-0">
-                                                      <a href="javascript:void(0);" class="text-muted fw-bold">image.jpg</a>
-                                                  </div>
-                                                  <div class="col-auto">
-                                                      <!-- Button -->
-                                                      <a href="javascript:void(0);" class="btn btn-link btn-lg text-muted">
-                                                          <i class="dripicons-download"></i>
-                                                      </a>
-                                                  </div>
-                                              </div>
-                                          </div>
-                                      </div>
-
+                                      {% endfor %}
+                                      {% if files|length == 0 %}
+                                      <p class="text-center">There is no file for this request.</p>
+                                      {% endif %}
                                   </div>
                               </div>
 
@@ -240,10 +225,10 @@
                                     <div class="card-body">
                                         <h6 class="header-title mt-0">Request Detail</h6>
                                         <p class="my-3">{{req.description}}</p>
-                                        <p class="mb-0 text-nowrap text-muted small">Type: {{req.type}}</p>
-                                        <p class="mb-0 text-nowrap text-muted small">Request Date: {{req.request_date}}</p>
-                                        <p class="mb-0 text-nowrap text-muted small">Created Date: {{req.date_published}}</p>
-                                        <p class="mb-0 text-nowrap text-muted small">Finish Date: {{req.date_modified}}</p>
+                                        <p class="mb-0 text-muted small">Type: {{req.type}}</p>
+                                        <p class="mb-0 text-muted small">Request Date: {{req.request_date}}</p>
+                                        <p class="mb-0 text-muted small">Created Date: {{req.date_published}}</p>
+                                        <p class="mb-0 text-muted small">Finish Date: {{req.date_modified}}</p>
                                     </div>
                                 </div>
 
@@ -255,8 +240,8 @@
                                             <i class="uil uil-user float-end"></i>
                                             <h6 class="header-title mt-0">Requester</h6>
                                             <h2 class="my-2">&nbsp;&nbsp;&nbsp;{{req.emp_id}}</h2>
-                                            <p class="mb-0 text-nowrap text-muted small">{{req.name}} ({{req.section}})</p>
-                                            <p class="mb-0 text-nowrap text-muted small">{{req.phone_no}}</p>
+                                            <p class="mb-0 text-muted small">{{req.name}} ({{req.section}})</p>
+                                            <p class="mb-0 text-muted small">{{req.phone_no}}</p>
                                         </div>
                                     </div>
                                   </div>
@@ -268,17 +253,17 @@
                                             <i class="mdi mdi-cogs float-end"></i>
                                             <h6 class="header-title mt-0">Machine</h6>
                                             <h2 class="my-2">&nbsp;&nbsp;&nbsp;{{req.mc.mc_no}}</h2>
-                                            <p class="mb-0 text-nowrap text-muted small">Section: {{req.mc.section}}</p>
-                                            <p class="mb-0 text-nowrap text-muted small">Register No: {{req.mc.register_no|default_if_none:"-"}}</p>
-                                            <p class="mb-0 text-nowrap text-muted small">Asset No: 	{{req.mc.asset_no|default_if_none:"-"}}</p>
-                                            <p class="mb-0 text-nowrap text-muted small">Manufacture: {{req.mc.manufacture|default_if_none:"-"}}</p>
-                                            <p class="mb-0 text-nowrap text-muted small">Plant: {{req.mc.plant|default_if_none:"-"}}</p>
-                                            <p class="mb-0 text-nowrap text-muted small">Model: {{req.mc.model|default_if_none:"-"}}</p>
-                                            <p class="mb-0 text-nowrap text-muted small">Serial No: {{req.mc.serial_no|default_if_none:"-"}}</p>
-                                            <p class="mb-0 text-nowrap text-muted small">Capacity: {{req.mc.capacity|default_if_none:"-"}}</p>
-                                            <p class="mb-0 text-nowrap text-muted small">Power: {{req.mc.power|default_if_none:"-"}}</p>
-                                            <p class="mb-0 text-nowrap text-muted small">Install Date: {{req.mc.install_date|default_if_none:"-"}}</p>
-                                            <p class="mb-0 text-nowrap text-muted small">Note: {{req.mc.note|default_if_none:"-"}}</p>
+                                            <p class="mb-0 text-muted small">Section: {{req.mc.section}}</p>
+                                            <p class="mb-0 text-muted small">Register No: {{req.mc.register_no|default_if_none:"-"}}</p>
+                                            <p class="mb-0 text-muted small">Asset No: 	{{req.mc.asset_no|default_if_none:"-"}}</p>
+                                            <p class="mb-0 text-muted small">Manufacture: {{req.mc.manufacture|default_if_none:"-"}}</p>
+                                            <p class="mb-0 text-muted small">Plant: {{req.mc.plant|default_if_none:"-"}}</p>
+                                            <p class="mb-0 text-muted small">Model: {{req.mc.model|default_if_none:"-"}}</p>
+                                            <p class="mb-0 text-muted small">Serial No: {{req.mc.serial_no|default_if_none:"-"}}</p>
+                                            <p class="mb-0 text-muted small">Capacity: {{req.mc.capacity|default_if_none:"-"}}</p>
+                                            <p class="mb-0 text-muted small">Power: {{req.mc.power|default_if_none:"-"}}</p>
+                                            <p class="mb-0 text-muted small">Install Date: {{req.mc.install_date|default_if_none:"-"}}</p>
+                                            <p class="mb-0 text-muted small">Note: {{req.mc.note|default_if_none:"-"}}</p>
                                         </div>
                                     </div>
                                     {% endif %}
@@ -342,7 +327,7 @@
                                                     <div class="timeline-item">
                                                         <i class="mdi mdi-circle bg-primary-lighten text-primary timeline-icon"></i>
                                                         <div class="timeline-item-info">
-                                                            <h5 class="mt-0 mb-1">{{comment.user.username}} | {{comment.user.employee.name}}</h5>
+                                                            <h5 class="mt-0 mb-1">{{comment.user.username}} | {{comment.user.employee.name}} {% if request.user.is_superuser %}[{{comment.id}}]{% endif %}</h5>
                                                             <p class="font-12"><i class="mdi mdi-clock-time-eight-outline"></i> {{comment.date_published}}</span></p>
                                                             <p class="text-muted mt-2 mb-0 pb-3 text-center">{{comment.text}}</p>
                                                             <hr>
@@ -577,17 +562,16 @@
                                         </div>
                                         <h4 class="header-title mb-3">Functions</h4>
                                         <div class="list-group list-group-flush my-2">
-
                                             {% if req.status == 'Pending' %}
-                                            <button type="button" class="btn btn-xs mb-1 btn-success"><i class='uil-check me-1'></i>Accept</button>
-                                            <button type="button" class="btn btn-xs mb-1 btn-danger"><i class='uil-times me-1'></i>Reject</button>
+                                            <button type="button" class="btn btn-xs mb-1 btn-success"><i class='uil-check me-1'></i><del>Accept</del></button>
+                                            <button type="button" class="btn btn-xs mb-1 btn-danger" data-bs-toggle="modal" data-bs-target="#reject_modal"><i class='uil-times me-1'></i>Reject</button>
                                             {% elif req.status == 'On Hold' and not isJoined %}
                                             <button type="button" class="btn btn-xs mb-1 btn-outline-success" onclick="join_request()"><i class='uil-sign-in-alt me-1'></i>Join</button>
                                             {% elif req.status == 'On Hold' %}
-                                            <button type="button" class="btn btn-xs mb-1 btn-warning"><i class='uil-pen me-1'></i>Edit Request</button>
-                                            <button type="button" class="btn btn-xs mb-1 btn-info"><i class='uil-users-alt me-1'></i>Manage Member</button>
-                                            <button type="button" class="btn btn-xs mb-1 btn-primary"><i class='uil-play me-1'></i>Start Work</button>
-                                            <button type="button" class="btn btn-xs mb-1 btn-danger"><i class='mdi mdi-cancel me-1'></i>Cancel</button>
+                                            <button type="button" class="btn btn-xs mb-1 btn-warning"><i class='uil-pen me-1'></i><del>Edit Request</del></button>
+                                            <button type="button" class="btn btn-xs mb-1 btn-info"><i class='uil-users-alt me-1'></i><del>Manage Member</del></button>
+                                            <button type="button" class="btn btn-xs mb-1 btn-primary" data-bs-toggle="modal" data-bs-target="#start_work_modal"><i class='uil-play me-1'></i>Start Work</button>
+                                            <button type="button" class="btn btn-xs mb-1 btn-danger" data-bs-toggle="modal" data-bs-target="#cancel_modal"><i class='mdi mdi-cancel me-1'></i>Cancel</button>
                                               {% if members|length > 1 %}
                                               <hr>
                                               <button type="button" class="btn btn-xs mb-1 btn-outline-danger" onclick="leave_request()"><i class='uil-sign-out-alt me-1'></i>Leave</button>
@@ -595,17 +579,21 @@
                                             {% elif req.status == 'On Progress' and not isJoined %}
                                             <button type="button" class="btn btn-xs mb-1 btn-outline-success" onclick="join_request()"><i class='uil-sign-in-alt me-1'></i>Join</button>
                                             {% elif req.status == 'On Progress' %}
-                                            <button type="button" class="btn btn-xs mb-1 btn-warning"><i class='uil-pen me-1'></i>Edit Request</button>
-                                            <button type="button" class="btn btn-xs mb-1 btn-info"><i class='uil-users-alt me-1'></i>Manage Member</button>
-                                            <button type="button" class="btn btn-xs mb-1 btn-dark"><i class='uil-pause me-1'></i>Hold</button>
-                                            <button type="button" class="btn btn-xs mb-1 btn-success"><i class='mdi mdi-check-all me-1'></i>Complete</button>
-                                            <button type="button" class="btn btn-xs mb-1 btn-danger"><i class='mdi mdi-cancel me-1'></i>Cancel</button>
+                                            <button type="button" class="btn btn-xs mb-1 btn-warning"><i class='uil-pen me-1'></i><del>Edit Request</del></button>
+                                            <button type="button" class="btn btn-xs mb-1 btn-info"><i class='uil-users-alt me-1'></i><del>Manage Member</del></button>
+                                            <button type="button" class="btn btn-xs mb-1 btn-dark" data-bs-toggle="modal" data-bs-target="#hold_modal"><i class='uil-pause me-1'></i>Hold</button>
+                                            <button type="button" class="btn btn-xs mb-1 btn-success" data-bs-toggle="modal" data-bs-target="#complete_modal"><i class='mdi mdi-check-all me-1'></i>Complete</button>
+                                            <button type="button" class="btn btn-xs mb-1 btn-danger" data-bs-toggle="modal" data-bs-target="#cancel_modal"><i class='mdi mdi-cancel me-1'></i>Cancel</button>
                                               {% if members|length > 1 %}
                                               <hr>
                                               <button type="button" class="btn btn-xs mb-1 btn-outline-danger" onclick="leave_request()"><i class='uil-sign-out-alt me-1'></i>Leave</button>
                                               {% endif %}
-                                            {% elif req.status == 'Complete' or status == 'Canceled' %}
-                                            <button type="button" class="btn btn-xs mb-1 btn-info"><i class='uil-redo me-1'></i>Rework</button>
+                                            {% elif req.status == 'Complete' or req.status == 'Canceled' %}
+                                              {% if isJoined %}
+                                              <button type="button" class="btn btn-xs mb-1 btn-info" data-bs-toggle="modal" data-bs-target="#rework_modal"><i class='uil-redo me-1'></i>Rework</button>
+                                              {% else %}
+                                              <p class="text-center">There is no function for this request.</p>
+                                              {% endif %}
                                             {% endif %}
                                             {% if req.status == 'Rejected' %}
                                             <p class="text-center">There is no function for this request.</p>
@@ -626,7 +614,7 @@
                                         <div class="inbox-widget">
                                             {% for member in members %}
                                             <div class="inbox-item">
-                                                <p class="inbox-item-author">{{member.user.username}} | {{member.user.employee.name}}</p>
+                                                <p class="inbox-item-author">{{member.user.username}} | {{member.user.employee.name}} {% if request.user.is_superuser %}[{{member.id}}]{% endif %}</p>
                                                 <p class="inbox-item-text">Member</p>
                                             </div>
                                             {% endfor %}
@@ -660,6 +648,133 @@
 
         <!-- ========== Right Side Bar ========== -->
 
+        <!-- ========== Modal ========== -->
+        <div>
+          <!-- Reject -->
+          <div id="reject_modal" class="modal fade" tabindex="-1" role="dialog">
+              <div class="modal-dialog">
+                  <div class="modal-content">
+                      <div class="modal-header modal-colored-header bg-danger">
+                          <h4 class="modal-title"><i class='uil-times me-1'></i>Reject</h4>
+                          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                      </div>
+                      <div class="modal-body">
+                          <h5 class="mt-3 mb-3 text-center">Are you sure that you want to reject this request ?</h5>
+                          <div class="form-check form-checkbox-danger mb-2">
+                            <input type="checkbox" class="form-check-input" id="is_nms">
+                            <label class="form-check-label" for="reject_type">This request is not for my section.</label>
+                          </div>
+                          <div class="mb-0">
+                              <label class="form-label">Reject Reason</label>
+                              <textarea class="form-control" name="reject_reason" id="reject_reason" rows="5"></textarea>
+                          </div>
+                      </div>
+                      <div class="modal-footer">
+                          <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
+                          <button type="button" class="btn btn-danger" onclick="reject_request()">Confirm</button>
+                      </div>
+                  </div>
+              </div>
+          </div>
+          <!-- Hold -->
+          <div id="hold_modal" class="modal fade" tabindex="-1" role="dialog">
+              <div class="modal-dialog">
+                  <div class="modal-content">
+                      <div class="modal-header modal-colored-header bg-dark">
+                          <h4 class="modal-title"><i class='uil-pause me-1'></i>Hold</h4>
+                          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                      </div>
+                      <div class="modal-body">
+                          <h5 class="mt-3 mb-3 text-center">Are you sure that you want to hold this request ?</h5>
+                          <div class="mb-0">
+                              <label class="form-label">Hold Reason</label>
+                              <textarea class="form-control" name="hold_reason" id="hold_reason" rows="5"></textarea>
+                          </div>
+                      </div>
+                      <div class="modal-footer">
+                          <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
+                          <button type="button" class="btn btn-dark" onclick="hold_request()">Confirm</button>
+                      </div>
+                  </div>
+              </div>
+          </div>
+          <!-- Start Work -->
+          <div id="start_work_modal" class="modal fade" tabindex="-1" role="dialog">
+              <div class="modal-dialog">
+                  <div class="modal-content">
+                      <div class="modal-header modal-colored-header bg-primary">
+                          <h4 class="modal-title"><i class='uil-play me-1'></i>Start Work</h4>
+                          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                      </div>
+                      <div class="modal-body">
+                          <h5 class="mt-3 mb-3 text-center">Are you sure that you want to start work this request ?</h5>
+                      </div>
+                      <div class="modal-footer">
+                          <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
+                          <button type="button" class="btn btn-primary" onclick="start_work_request()">Confirm</button>
+                      </div>
+                  </div>
+              </div>
+          </div>
+          <!-- Complete -->
+          <div id="complete_modal" class="modal fade" tabindex="-1" role="dialog">
+              <div class="modal-dialog">
+                  <div class="modal-content">
+                      <div class="modal-header modal-colored-header bg-success">
+                          <h4 class="modal-title"><i class='mdi mdi-check-all me-1'></i>Complete</h4>
+                          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                      </div>
+                      <div class="modal-body">
+                          <h5 class="mt-3 mb-3 text-center">Are you sure that you want to complete this request ?</h5>
+                      </div>
+                      <div class="modal-footer">
+                          <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
+                          <button type="button" class="btn btn-success" onclick="complete_request()">Confirm</button>
+                      </div>
+                  </div>
+              </div>
+          </div>
+          <!-- Cancel -->
+          <div id="cancel_modal" class="modal fade" tabindex="-1" role="dialog">
+              <div class="modal-dialog">
+                  <div class="modal-content">
+                      <div class="modal-header modal-colored-header bg-danger">
+                          <h4 class="modal-title"><i class='uil-ban me-1'></i>Cancel</h4>
+                          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                      </div>
+                      <div class="modal-body">
+                          <h5 class="mt-3 mb-3 text-center">Are you sure that you want to cancel this request ?</h5>
+                          <div class="mb-0">
+                              <label class="form-label">Cancel Reason</label>
+                              <textarea class="form-control" name="cancel_reason" id="cancel_reason" rows="5"></textarea>
+                          </div>
+                      </div>
+                      <div class="modal-footer">
+                          <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
+                          <button type="button" class="btn btn-danger" onclick="cancel_request()">Confirm</button>
+                      </div>
+                  </div>
+              </div>
+          </div>
+          <!-- Rework -->
+          <div id="rework_modal" class="modal fade" tabindex="-1" role="dialog">
+              <div class="modal-dialog">
+                  <div class="modal-content">
+                      <div class="modal-header modal-colored-header bg-info">
+                          <h4 class="modal-title"><i class='uil-redo me-1'></i>Rework</h4>
+                          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                      </div>
+                      <div class="modal-body">
+                          <h5 class="mt-3 mb-3 text-center">Are you sure that you want to rework this request ?</h5>
+                      </div>
+                      <div class="modal-footer">
+                          <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
+                          <button type="button" class="btn btn-info" onclick="rework_request()">Confirm</button>
+                      </div>
+                  </div>
+              </div>
+          </div>
+        </div>
 
         <!-- bundle -->
         <script src="{% static "assets/js/vendor.min.js" %}"></script>
@@ -711,6 +826,28 @@
             }
           }
 
+          function reject_request(){
+            var req_id = $("#req_id").val();
+            var is_nms = $('#is_nms').is(':checked');
+            var reject_reason = $("#reject_reason").val();
+            $.ajax({
+              url: '/reject_request/',
+              data: {
+                'req_id': req_id,
+                'is_nms': is_nms,
+                'reject_reason': reject_reason,
+              },
+              dataType: 'json',
+              success: function (data) {
+                if(is_nms){
+                  window.location.href = '/index/';
+                } else {
+                  location.reload();
+                }
+              }
+            });
+          }
+
           function join_request(){
             var req_id = $("#req_id").val();
             $.ajax({
@@ -729,6 +866,80 @@
             var req_id = $("#req_id").val();
             $.ajax({
               url: '/leave_request/',
+              data: {
+                'req_id': req_id,
+              },
+              dataType: 'json',
+              success: function (data) {
+                location.reload();
+              }
+            });
+          }
+
+          function hold_request(){
+            var req_id = $("#req_id").val();
+            var hold_reason = $("#hold_reason").val();
+            $.ajax({
+              url: '/hold_request/',
+              data: {
+                'req_id': req_id,
+                'hold_reason': hold_reason,
+              },
+              dataType: 'json',
+              success: function (data) {
+                location.reload();
+              }
+            });
+          }
+
+          function start_work_request(){
+            var req_id = $("#req_id").val();
+            $.ajax({
+              url: '/start_work_request/',
+              data: {
+                'req_id': req_id,
+              },
+              dataType: 'json',
+              success: function (data) {
+                location.reload();
+              }
+            });
+          }
+
+          function complete_request(){
+            var req_id = $("#req_id").val();
+            $.ajax({
+              url: '/complete_request/',
+              data: {
+                'req_id': req_id,
+              },
+              dataType: 'json',
+              success: function (data) {
+                location.reload();
+              }
+            });
+          }
+
+          function cancel_request(){
+            var req_id = $("#req_id").val();
+            var cancel_reason = $("#cancel_reason").val();
+            $.ajax({
+              url: '/cancel_request/',
+              data: {
+                'req_id': req_id,
+                'cancel_reason': cancel_reason,
+              },
+              dataType: 'json',
+              success: function (data) {
+                location.reload();
+              }
+            });
+          }
+
+          function rework_request(){
+            var req_id = $("#req_id").val();
+            $.ajax({
+              url: '/rework_request/',
               data: {
                 'req_id': req_id,
               },

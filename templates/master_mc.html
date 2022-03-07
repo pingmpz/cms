@@ -63,7 +63,9 @@
                                       <tr>
                                           <th>Section</th>
                                           <th>Machine No</th>
+                                          {% if request.user.employee.view_type == 'ALL' %}
                                           <th>Machine Of</th>
+                                          {% endif %}
                                           <th>IsActive</th>
                                           <th>Register No</th>
                                           <th>Asset No</th>
@@ -82,7 +84,9 @@
                                       <tr>
                                           <td>{{mc.section|default_if_none:""}}</td>
                                           <td>{{mc.mc_no|default_if_none:""}}</td>
+                                          {% if request.user.employee.view_type == 'ALL' %}
                                           <td>{{mc.mc_of|default_if_none:""}}</td>
+                                          {% endif %}
                                           <td>
                                             {% if mc.is_active %}
                                             <i class='mdi mdi-check text-success'></i><span hidden>True</span>

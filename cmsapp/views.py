@@ -11,7 +11,7 @@ from openpyxl import load_workbook, Workbook
 # Date Time
 from datetime import datetime, timedelta
 
-from .models import Employee, Machine, Request, File, Member, Comment
+from .models import Employee, Machine,  Category, Request, File, Member, Comment, RequestCategory
 
 ################################# Authenticate #################################
 def first_page(request):
@@ -88,11 +88,15 @@ def request_page(request, request_no):
     isJoined = False
     members = []
     comments = []
+    reqcats = []
+    files = []
     if requestIsExist:
         req = Request.objects.get(req_no=request_no)
         isJoined = Member.objects.filter(req=req,user=request.user).exists()
         members = Member.objects.filter(req=req)
         comments = Comment.objects.filter(req=req).order_by('-date_published')
+        reqcats = RequestCategory.objects.filter(req=req)
+        files = File.objects.filter(req=req)
     context = {
         'request_no': request_no,
         'requestIsExist': requestIsExist,
@@ -100,6 +104,8 @@ def request_page(request, request_no):
         'isJoined': isJoined,
         'members': members,
         'comments': comments,
+        'reqcats': reqcats,
+        'files': files,
     }
     context['all_page_data'] = (all_page_data(request))
     return render(request, 'request_page.html', context)
@@ -191,7 +197,14 @@ def request_history(request, freq, fstatus, fstartdate, fstopdate):
 
 @login_required(login_url='/')
 def master_emp(request):
-    users = User.objects.all()
+    users = []
+    temp_users = User.objects.all()
+    if request.user.employee.view_type != 'ALL':
+        for user in temp_users:
+            if user.employee.view_type == request.user.employee.view_type:
+                users.append(user)
+    else:
+        users = temp_users
     context = {
         'users': users,
     }
@@ -200,7 +213,14 @@ def master_emp(request):
 
 @login_required(login_url='/')
 def master_mc(request):
-    mcs = Machine.objects.all()
+    mcs = []
+    temp_mcs = Machine.objects.all()
+    if request.user.employee.view_type != 'ALL':
+        for mc in temp_mcs:
+            if mc.mc_of == request.user.employee.view_type:
+                mcs.append(mc)
+    else:
+        mcs = temp_mcs
     context = {
         'mcs': mcs,
     }
@@ -290,7 +310,7 @@ def new_request_save(request):
     request_new.save()
     request_new.req_no = create_req_no(request_new.id)
     request_new.save()
-    return redirect('/new_request/')
+    return redirect('/')
 
 def new_emp_save(request):
     username = request.POST['new_username']
@@ -348,6 +368,21 @@ def post_comment(request):
     }
     return JsonResponse(data)
 
+def reject_request(request):
+    req_id = request.GET['req_id']
+    is_nms = True if request.GET['is_nms'] == 'true' else False
+    reject_reason = request.GET['reject_reason']
+    req = Request.objects.get(id=req_id)
+    if is_nms:
+        req.req_to = 'MA' if req.req_to == 'AD-SER' else 'AD-SER'
+    else:
+        req.status = 'Rejected'
+        req.reason = reject_reason
+    req.save()
+    data = {
+    }
+    return JsonResponse(data)
+
 def join_request(request):
     req_id = request.GET['req_id']
     req = Request.objects.get(id=req_id)
@@ -362,6 +397,58 @@ def leave_request(request):
     req = Request.objects.get(id=req_id)
     member = Member.objects.get(req=req,user=request.user)
     member.delete()
+    data = {
+    }
+    return JsonResponse(data)
+
+def hold_request(request):
+    req_id = request.GET['req_id']
+    hold_reason = request.GET['hold_reason']
+    req = Request.objects.get(id=req_id)
+    req.status = 'On Hold'
+    req.reason = hold_reason
+    req.save()
+    data = {
+    }
+    return JsonResponse(data)
+
+def start_work_request(request):
+    req_id = request.GET['req_id']
+    req = Request.objects.get(id=req_id)
+    req.status = 'On Progress'
+    req.reason = None
+    req.save()
+    data = {
+    }
+    return JsonResponse(data)
+
+def complete_request(request):
+    req_id = request.GET['req_id']
+    req = Request.objects.get(id=req_id)
+    req.status = 'Complete'
+    req.reason = None
+    req.save()
+    data = {
+    }
+    return JsonResponse(data)
+
+def cancel_request(request):
+    req_id = request.GET['req_id']
+    cancel_reason = request.GET['cancel_reason']
+    req = Request.objects.get(id=req_id)
+    req.status = 'Canceled'
+    req.reason = cancel_reason
+    req.save()
+    data = {
+    }
+    return JsonResponse(data)
+
+def rework_request(request):
+    req_id = request.GET['req_id']
+    req = Request.objects.get(id=req_id)
+    req.status = 'On Progress'
+    req.reason = None
+    req.save()
     data = {
     }
     return JsonResponse(data)

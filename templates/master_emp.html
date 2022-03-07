@@ -64,7 +64,9 @@
                                           <th>Employee ID</th>
                                           <th>Name</th>
                                           <th>Section</th>
+                                          {% if request.user.employee.view_type == 'ALL' %}
                                           <th>View Type</th>
+                                          {% endif %}
                                           <th>PhoneNo</th>
                                           <th>IsActive</th>
                                           <th>DateJoined</th>
@@ -77,7 +79,9 @@
                                           <td>{{user.username}}</td>
                                           <td>{{user.employee.name}}</td>
                                           <td>{{user.employee.section}}</td>
+                                          {% if request.user.employee.view_type == 'ALL' %}
                                           <td>{{user.employee.view_type}}</td>
+                                          {% endif %}
                                           <td>{{user.employee.phone_no}}</td>
                                           <td>
                                             {% if user.is_active %}
