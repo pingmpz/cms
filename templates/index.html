@@ -91,7 +91,7 @@
                                         <td>{{req.reason|default_if_none:""}}</td>
                                         <td>{{req.description}}</td>
                                         <td>{{req.mc.mc_no}}</td>
-                                        <td>{{req.emp_id}} | {{req.name}} ({{req.section}}) <i class="uil-phone"></i> {{req.phone_no}}</td>
+                                        <td>{{req.emp_id}} | {{req.name|title}} ({{req.section}}) <i class="uil-phone"></i> {{req.phone_no}}</td>
                                         <td>{{req.request_date}}</td>
                                         {% if request.user.employee.view_type == 'ALL' %}
                                         <td>{{req.req_to}}</td>

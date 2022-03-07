@@ -61,14 +61,13 @@
                           <div class="col-6">
                             <div class="card">
                               <div class="card-body">
-                                <form action="/new_emp_save/" method="POST" id="form">
+                                <form action="/new_cat_save/" method="POST" id="form">
                                     {% csrf_token %}
                                     <div class="mb-3" {% if request.user.employee.view_type == 'MA' or request.user.employee.view_type == 'AD-SER' %}hidden{% endif %}>
-                                        <label class="form-label">View Type <i class="mdi mdi-asterisk text-danger small"></i></label>
-                                        <select class="form-select" name="view_type" id="view_type">
+                                        <label class="form-label">Category Of.. <i class="mdi mdi-asterisk text-danger small"></i></label>
+                                        <select class="form-select" name="view_type" id="cat_of">
                                           {% if request.user.employee.view_type == 'MA' or request.user.employee.view_type == 'ALL' %}<option value="MA">MA</option>{% endif %}
                                           {% if request.user.employee.view_type == 'AD-SER' or request.user.employee.view_type == 'ALL' %}<option value="AD-SER">AD-SER</option>{% endif %}
-                                          {% if request.user.employee.view_type == 'ALL' %}<option value="ALL">ALL</option>{% endif %}
                                         </select>
                                     </div>
 

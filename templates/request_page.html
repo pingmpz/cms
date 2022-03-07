@@ -124,6 +124,7 @@
                                   <div class="card-body">
                                       <h6 class="header-title mt-0">Request Detail</h6>
                                       <p class="my-2 small">{{req.description}}</p>
+                                      {% if request.user.is_superuser %}<p class="mb-0 text-muted small">Request To: {{req.req_to}}</p>{% endif %}
                                       <p class="mb-0 text-muted small">Type: {{req.type}}</p>
                                       <p class="mb-0 text-muted small">Request Date: {{req.request_date}}</p>
                                       {% if req.status == 'Complete' or req.status == 'Canceled' %}
@@ -141,7 +142,7 @@
                                         </div>
                                         <h4 class="header-title mb-3">Category ({{reqcats|length}})</h4>
                                         {% for reqcat in reqcats %}
-                                        <div class="d-flex mt-2"><i class="mdi mdi-label text-info"></i>&nbsp;&nbsp;&nbsp;{{reqcat.cat.name}} {% if request.user.is_superuser %}[{{reqcat.id}}]{% endif %}</div>
+                                        <div class="d-flex mt-2"><i class="mdi mdi-label text-info"></i>&nbsp;&nbsp;&nbsp;{{reqcat.cat.name|title}} {% if request.user.is_superuser %}[{{reqcat.id}}]{% endif %}</div>
                                         {% endfor %}
                                         {% if reqcats|length == 0 %}
                                         <p class="text-center">There is no category for this request.</p>
@@ -177,7 +178,7 @@
                                       <i class="uil uil-user float-end"></i>
                                       <h6 class="header-title mt-0">Requester</h6>
                                       <h2 class="my-2">&nbsp;&nbsp;&nbsp;{{req.emp_id}}</h2>
-                                      <p class="mb-0 text-muted small">{{req.name}} ({{req.section}})</p>
+                                      <p class="mb-0 text-muted small">{{req.name|title}} ({{req.section}})</p>
                                       <p class="mb-0 text-muted small">{{req.phone_no}}</p>
                                   </div>
                               </div>
@@ -228,6 +229,7 @@
                                     <div class="card-body">
                                         <h6 class="header-title mt-0">Request Detail</h6>
                                         <p class="my-3">{{req.description}}</p>
+                                        {% if request.user.is_superuser %}<p class="mb-0 text-muted small">Request To: {{req.req_to}}</p>{% endif %}
                                         <p class="mb-0 text-muted small">Type: {{req.type}}</p>
                                         <p class="mb-0 text-muted small">Request Date: {{req.request_date}}</p>
                                         {% if req.status == 'Rejected' %}
@@ -246,7 +248,7 @@
                                             <i class="uil uil-user float-end"></i>
                                             <h6 class="header-title mt-0">Requester</h6>
                                             <h2 class="my-2">&nbsp;&nbsp;&nbsp;{{req.emp_id}}</h2>
-                                            <p class="mb-0 text-muted small">{{req.name}} ({{req.section}})</p>
+                                            <p class="mb-0 text-muted small">{{req.name|title}} ({{req.section}})</p>
                                             <p class="mb-0 text-muted small">{{req.phone_no}}</p>
                                         </div>
                                     </div>
@@ -333,7 +335,7 @@
                                                     <div class="timeline-item">
                                                         <i class="mdi mdi-circle bg-primary-lighten text-primary timeline-icon"></i>
                                                         <div class="timeline-item-info">
-                                                            <h5 class="mt-0 mb-1">{{comment.user.username}} | {{comment.user.employee.name}} {% if request.user.is_superuser %}[{{comment.id}}]{% endif %}</h5>
+                                                            <h5 class="mt-0 mb-1">{{comment.user.username}} | {{comment.user.employee.name|title}} {% if request.user.is_superuser %}[{{comment.id}}]{% endif %}</h5>
                                                             <p class="font-12"><i class="mdi mdi-clock-time-eight-outline"></i> {{comment.date_published}}</span></p>
                                                             <p class="text-muted mt-2 mb-0 pb-3 text-center">{{comment.text}}</p>
                                                             <hr>
@@ -380,7 +382,7 @@
                                                         <div class="mb-3">
                                                           <select class="select2 form-control select2-multiple" data-toggle="select2" multiple="multiple" data-placeholder="Choose ..." id="owt_username_list">
                                                               {% for member in members %}
-                                                              <option value="{{member.user.username}}">{{member.user.username}} | {{member.user.employee.name}}</option>
+                                                              <option value="{{member.user.username}}">{{member.user.username}} | {{member.user.employee.name|title}}</option>
                                                               {% endfor %}
                                                           </select>
                                                         </div>
@@ -423,7 +425,7 @@
                                                           <tr>
                                                               {% if request.user.is_superuser %}<td>{{owt.id}}</td>{% endif %}
                                                               <td>{{owt.user.username}}</td>
-                                                              <td>{{owt.user.employee.name}}</td>
+                                                              <td>{{owt.user.employee.name|title}}</td>
                                                               <td>{{owt.start_datetime}}</td>
                                                               <td>{{owt.stop_datetime}}</td>
                                                           </tr>
@@ -620,7 +622,7 @@
                                         <div class="inbox-widget">
                                             {% for member in members %}
                                             <div class="inbox-item">
-                                                <p class="inbox-item-author">{{member.user.username}} | {{member.user.employee.name|truncatechars:20}} {% if request.user.is_superuser %}[{{member.id}}]{% endif %}</p>
+                                                <p class="inbox-item-author">{{member.user.username}} | {{member.user.employee.name|title}} {% if request.user.is_superuser %}[{{member.id}}]{% endif %}</p>
                                                 <p class="inbox-item-text">Member</p>
                                             </div>
                                             {% endfor %}
@@ -671,7 +673,7 @@
                             <p class="text-muted font-12">Use 'CTRL' to select multiple item, Please select at least 1 person.</p>
                             <select class="select2 form-control select2-multiple" data-toggle="select2" multiple="multiple" data-placeholder="Choose ..." id="accept_username_list">
                                 {% for user in users %}
-                                <option value="{{user.username}}">{{user.username}} | {{user.employee.name}}</option>
+                                <option value="{{user.username}}">{{user.username}} | {{user.employee.name|title}}</option>
                                 {% endfor %}
                             </select>
                           </div>
@@ -680,7 +682,7 @@
                             <p class="text-muted font-12">Use 'CTRL' to select multiple item</p>
                             <select class="select2 form-control select2-multiple" data-toggle="select2" multiple="multiple" data-placeholder="Choose ..." id="accept_cat_id_list">
                                 {% for cat in cats %}
-                                <option value="{{cat.id}}">{{cat.name}}</option>
+                                <option value="{{cat.id}}">{{cat.name|title}}</option>
                                 {% endfor %}
                             </select>
                           </div>

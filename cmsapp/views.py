@@ -105,7 +105,7 @@ def request_page(request, request_no):
         for user in temp_users:
             if user.employee.section == req.req_to:
                 users.append(user)
-        cats = Category.objects.all()
+        cats = Category.objects.filter(cat_of=req.req_to)
     context = {
         'request_no': request_no,
         'requestIsExist': requestIsExist,
@@ -132,13 +132,20 @@ def all_page_data(request):
         if isMember:
             my_reqs.append(req)
     my_request_count = len(my_reqs)
+
     pending_reqs = []
     if request.user.employee.view_type != 'ALL':
         pending_reqs = Request.objects.filter(status='Pending',req_to=request.user.employee.view_type)
     else:
         pending_reqs = Request.objects.filter(status='Pending')
     pending_request_count = len(pending_reqs)
-    all_request_count = len(temp_reqs)
+
+    all_reqs = []
+    if request.user.employee.view_type != 'ALL':
+        all_reqs = Request.objects.filter(status='On Progress',req_to=request.user.employee.view_type) | Request.objects.filter(status='On Hold',req_to=request.user.employee.view_type)
+    else:
+        all_reqs = temp_reqs
+    all_request_count = len(all_reqs)
     context = {
         'my_request_count': my_request_count,
         'pending_request_count': pending_request_count,
@@ -266,7 +273,14 @@ def master_vendor(request):
 
 @login_required(login_url='/')
 def master_cat(request):
-    cats = Category.objects.all()
+    cats = []
+    temp_cats = Category.objects.all()
+    if request.user.employee.view_type != 'ALL':
+        for cat in temp_cats:
+            if cat.cat_of == request.user.employee.view_type:
+                cats.append(cat)
+    else:
+        cats = temp_cats
     context = {
         'cats': cats,
     }

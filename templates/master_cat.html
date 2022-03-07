@@ -64,6 +64,7 @@
                                           {% if request.user.is_superuser %}<th>ID</th>{% endif %}
                                           <th>Name</th>
                                           <th>Description</th>
+                                          {% if request.user.is_superuser %}<th>Category Of</th>{% endif %}
                                       </tr>
                                   </thead>
                                   <tbody>
@@ -72,6 +73,7 @@
                                           {% if request.user.is_superuser %}<td>{{cat.id}}</td>{% endif %}
                                           <td>{{cat.name}}</td>
                                           <td>{{cat.description}}</td>
+                                          {% if request.user.is_superuser %}<td>{{cat.cat_of}}</td>{% endif %}
                                       </tr>
                                       {% endfor %}
                                   </tbody>
