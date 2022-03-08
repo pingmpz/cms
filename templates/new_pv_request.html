@@ -72,6 +72,22 @@
                                               </div>
 
                                               <div class="mb-3">
+                                                <label class="form-label">Machine</label>
+                                                <select class="form-control select2" data-toggle="select2" name="mc_no" id="mc_no">
+                                                  <option>Select</option>
+                                                  {% for mc in mcs %}
+                                                  {% if mc_group|index:forloop.counter0 != None %}
+                                                  <optgroup label="{{mc_group|index:forloop.counter0}}">
+                                                  {% endif %}
+                                                  <option value="{{mc.mc_no}}">▪️ {{mc.mc_no}}</option>
+                                                  {% if mc_group|index:forloop.counter1 != None %}
+                                                  </optgroup>
+                                                  {% endif %}
+                                                  {% endfor %}
+                                                </select>
+                                              </div>
+
+                                              <div class="mb-3">
                                                   <label class="form-label">Description</label>
                                                   <textarea class="form-control" name="description" id="description" rows="5"></textarea>
                                               </div>
@@ -123,8 +139,6 @@
           if (event.persisted || (typeof window.performance != "undefined" && window.performance.navigation.type === 2)) window.location.reload();
         });
 
-        toggle();
-
         $('.input-images').imageUploader({
           extensions: ['.jpg', '.jpeg', '.png', '.gif', '.svg', '.xlsx', '.csv', '.ppt'],
           // mimes: ['image/jpeg', 'image/png', 'image/gif', 'image/svg+xml', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'],
@@ -133,7 +147,7 @@
 
         function save(){
           // Clear Validate
-          remove_valids(['req_date','ma_mc_no','ad_ser_mc_no','description']);
+          remove_valids(['req_date','mc_no','description']);
           set_text_emptys(['invalid_text']);
           // Function
           if(validate_req_date()){
@@ -152,22 +166,6 @@
             valid("req_date");
             set_text_emptys("invalid_text");
             return true;
-          }
-        }
-
-        //-- Toggle
-        $('input[type=radio][name=req_to]').on("change", function() {
-          toggle();
-        });
-
-        function toggle(){
-          var req_to = $('input[type=radio][name=req_to]:checked').val();
-          if(req_to == 'MA'){
-            unhide("ma_mc_group");
-            hide("ad_ser_mc_group");
-          } else {
-            hide("ma_mc_group");
-            unhide("ad_ser_mc_group");
           }
         }
         </script>

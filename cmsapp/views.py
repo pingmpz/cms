@@ -62,8 +62,12 @@ def new_request(request):
 
 def new_pv_request(request):
     sgs = SectionGroup.objects.all()
+    mcs = Machine.objects.filter(is_active=True).order_by('section')
+    mc_group = get_mc_group(mcs)
     context = {
         'sgs': sgs,
+        'mcs': mcs,
+        'mc_group': mc_group,
     }
     context['all_page_data'] = (all_page_data(request))
     return render(request, 'new_pv_request.html', context)
@@ -327,8 +331,25 @@ def new_request_save(request):
     return redirect('/')
 
 def new_pv_request_save(request):
-
-    return redirect('/')
+    sg_name = request.POST['sg_name']
+    request_date = request.POST['req_date']
+    description = request.POST['description']
+    mc_no = request.POST['mc_no'] if request.POST['mc_no'] != 'Select' else None
+    mc = None
+    if mc_no != None:
+        mc = Machine.objects.get(mc_no=mc_no)
+    type = 'Preventive'
+    status = 'Pending'
+    sg = SectionGroup.objects.get(name=sg_name)
+    emp_id = request.user.username
+    name = request.user.employee.name
+    section = request.user.employee.section
+    phone_no = request.user.employee.phone_no
+    request_new = Request(emp_id=emp_id,name=name,section=section,phone_no=phone_no,sg=sg,type=type,status=status,request_date=request_date,description=description,mc=mc)
+    request_new.save()
+    request_new.req_no = create_req_no(request_new.id)
+    request_new.save()
+    return redirect('/new_pv_request/')
 
 def new_emp_save(request):
     username = request.POST['new_username']

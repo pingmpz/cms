@@ -721,7 +721,7 @@
                       </div>
                       <div class="modal-body">
                           <h5 class="mt-3 mb-3 text-center">Are you sure that you want to accept this request ?</h5>
-                          <div class="mb-3">
+                          <div class="mb-3" {% if req.type == 'Preventive' %}hidden{% endif %}>
                             <label class="form-label">Machine</label>
                             <select class="form-control select2" data-toggle="select2" name="accept_mc_no" id="accept_mc_no">
                               <option>Select</option>
@@ -729,7 +729,7 @@
                               {% if mc_group|index:forloop.counter0 != None %}
                               <optgroup label="{{mc_group|index:forloop.counter0}}">
                               {% endif %}
-                              <option value="{{mc.mc_no}}">▪️ {{mc.mc_no}}</option>
+                              <option value="{{mc.mc_no}}" {% if req.mc == mc %}selected{% endif %}>▪️ {{mc.mc_no}}</option>
                               {% if mc_group|index:forloop.counter1 != None %}
                               </optgroup>
                               {% endif %}
