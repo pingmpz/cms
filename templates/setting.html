@@ -4,7 +4,7 @@
 <html lang="en">
     <head>
         <meta charset="utf-8" />
-        <title>New Machine | C.C.S. Maintenance Service</title>
+        <title>Setting | C.C.S. Maintenance Service</title>
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <meta content="A fully featured admin theme which can be used to build CRM, CMS, etc." name="description" />
         <meta content="Coderthemes" name="author" />
@@ -48,7 +48,7 @@
                                     <div class="page-title-right d-flex">
                                       <button type="button" class="btn btn-success ms-2" id="save_button" onclick="save()" title="Save"><i class="mdi mdi-content-save"></i></button>
                                     </div>
-                                    <h4 class="page-title"><i class="mdi mdi-database-plus-outline"></i> New Machine</h4>
+                                    <h4 class="page-title"><i class="uil uil-cog"></i> Setting</h4>
                                 </div>
                             </div>
                         </div>
@@ -58,72 +58,56 @@
                           <div class="col-12">
                             <div class="card">
                               <div class="card-body">
-                                <form action="/new_mc_save/" method="POST" id="form">
+                                <form action="/setting_save/" method="POST" id="form">
                                     {% csrf_token %}
                                     <div class="row">
                                       <div class="col-6">
 
                                         <div class="mb-3">
-                                            <label class="form-label">Machine No <i class="mdi mdi-asterisk text-danger small"></i></label>
-                                            <input class="form-control" type="text" name="mc_no" id="mc_no">
+                                            <label class="form-label">Employee ID</label>
+                                            <input class="form-control" type="text" name="username" id="username" value="{{request.user.username}}" readonly>
+                                        </div>
+
+                                        <div class="mb-3">
+                                            <label class="form-label">Name <i class="mdi mdi-asterisk text-danger small"></i></label>
+                                            <input class="form-control" type="text" name="name" id="name" value="{{request.user.employee.name}}" required>
                                         </div>
 
                                         <div class="mb-3">
                                             <label class="form-label">Section <i class="mdi mdi-asterisk text-danger small"></i></label>
-                                            <input class="form-control" type="text" name="section" id="section">
+                                            <input class="form-control" type="text" name="section" id="section" value="{{request.user.employee.section}}" required>
                                         </div>
 
                                         <div class="mb-3">
-                                            <label class="form-label">Register No</label>
-                                            <input class="form-control" type="text" name="register_no" id="register_no">
-                                        </div>
-
-                                        <div class="mb-3">
-                                            <label class="form-label">Asset No</label>
-                                            <input class="form-control" type="text" name="asset_no" id="asset_no">
-                                        </div>
-
-                                        <div class="mb-3">
-                                            <label class="form-label">Serial No</label>
-                                            <input class="form-control" type="text" name="serial_no" id="serial_no">
-                                        </div>
-
-                                        <div class="mb-3">
-                                            <label class="form-label">Manufacture</label>
-                                            <input class="form-control" type="text" name="manufacture" id="manufacture">
-                                        </div>
-
-                                        <div class="mb-3">
-                                            <label class="form-label">Model</label>
-                                            <input class="form-control" type="text" name="model" id="model">
+                                            <label class="form-label">Phone No <i class="mdi mdi-asterisk text-danger small"></i></label>
+                                            <input class="form-control" type="text" name="phone_no" id="phone_no" value="{{request.user.employee.phone_no}}" required>
                                         </div>
 
                                       </div>
                                       <div class="col-6">
 
                                         <div class="mb-3">
-                                            <label class="form-label">Plant</label>
-                                            <input class="form-control" type="text" name="plant" id="plant">
+                                            <label class="form-label">Color Scheme</label>
+                                            <select class="form-control select2" data-toggle="select2" name="scheme" id="scheme">
+                                              <option value="Light Mode" {% if request.user.employee.scheme == 'Light Mode' %}selected{% endif %}>Light Mode</option>
+                                              <option value="Dark Mode" {% if request.user.employee.scheme == 'Dark Mode' %}selected{% endif %}>Dark Mode</option>
+                                            </select>
                                         </div>
 
                                         <div class="mb-3">
-                                            <label class="form-label">Power</label>
-                                            <input class="form-control" type="text" name="power" id="power">
+                                            <label class="form-label">Left Sidebar</label>
+                                            <select class="form-control select2" data-toggle="select2" name="sidebar" id="sidebar">
+                                              <option value="Scrollable" {% if request.user.employee.sidebar == 'Scrollable' %}selected{% endif %}>Scrollable</option>
+                                              <option value="Condensed" {% if request.user.employee.sidebar == 'Condensed' %}selected{% endif %}>Condensed</option>
+                                            </select>
                                         </div>
 
                                         <div class="mb-3">
-                                            <label class="form-label">Install Date</label>
-                                            <input class="form-control" type="date" name="install_date" id="install_date">
-                                        </div>
-
-                                        <div class="mb-3">
-                                            <label class="form-label">Capacity</label>
-                                            <textarea class="form-control" name="capacity" id="capacity" rows="5"></textarea>
-                                        </div>
-
-                                        <div class="mb-3">
-                                            <label class="form-label">Note</label>
-                                            <textarea class="form-control" name="note" id="note" rows="5"></textarea>
+                                            <label class="form-label">On Preventive Request Created..</label>
+                                            <select class="form-control select2" data-toggle="select2" name="pv_created" id="pv_created">
+                                              <option value="Request Page" {% if request.user.employee.pv_created == 'Request Page' %}selected{% endif %}>Request Page</option>
+                                              <option value="New Preventive Request" {% if request.user.employee.pv_created == 'New Preventive Request' %}selected{% endif %}>New Preventive Request</option>
+                                            </select>
                                         </div>
 
                                       </div>
@@ -160,61 +144,16 @@
 
           function save(){
             // Clear Validate
-            remove_valids(['new_username','new_password','name','section','view_type','phone_no']);
+            remove_valids(['name','section','phone_no']);
             set_text_emptys(['invalid_text']);
             // Function
-            validate_username(function(result) {
-              if(result && validate_password() && validate_name() && validate_section() && validate_view_type() && validate_phone_no()){
-                document.getElementById('form').submit();
-                $('#save_button').prop('disabled', true);
-              }
-            });
-          }
-
-          function validate_username(_callback){
-            var username = $('#new_username').val();
-            if(username.length < 4){
-              invalid("new_username");
-              set_text_value("invalid_text","Please correct your username.")
-              _callback(false);
-              return;
-            }
-            $.ajax({
-              url: '/validate_username/',
-              data: {
-                'username': username,
-              },
-              dataType: 'json',
-              success: function (data) {
-                if (data.canUse) {
-                  valid("new_username");
-                  set_text_emptys("invalid_text");
-                  _callback(true);
-                  return;
-                } else {
-                  invalid("new_username");
-                  set_text_value("invalid_text","This username is already exist.")
-                  _callback(false);
-                }
-              }
-            });
-          }
-
-          function validate_password(){
-            var password = $('#new_password').val();
-            if(password.length < 4){
-              invalid("new_password");
-              set_text_value("invalid_text","Password need at least 4 letters.")
-              return false;
-            } else {
-              valid("new_password");
-              set_text_emptys("invalid_text");
-              return true;
+            if(validate_name() && validate_section() && validate_phone_no()){
+              document.getElementById('form').submit();
+              $('#save_button').prop('disabled', true);
             }
           }
 
           function validate_name(){
-            console.log('ss');
             var name = $('#name').val();
             if(name.length == 0){
               invalid("name");
@@ -240,19 +179,6 @@
             }
           }
 
-          function validate_view_type(){
-            var view_type = $('#view_type').val();
-            if(view_type.length == 0){
-              invalid("view_type");
-              set_text_value("invalid_text","Please fill 'View Type'.");
-              return false;
-            } else {
-              valid("view_type");
-              set_text_emptys("invalid_text");
-              return true;
-            }
-          }
-
           function validate_phone_no(){
             var phone_no = $('#phone_no').val();
             if(phone_no.length == 0){
@@ -265,12 +191,6 @@
               return true;
             }
           }
-
-          //-- Only Number
-          $("#new_username").on("keypress keyup blur",function (event) {
-              $(this).val($(this).val().replace(/[^\d].+/, ""));
-              if((event.which < 48 || event.which > 57)) event.preventDefault();
-          });
 
           $("#phone_no").on("keypress keyup blur",function (event) {
               $(this).val($(this).val().replace(/[^\d].+/, ""));

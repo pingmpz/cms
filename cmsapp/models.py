@@ -6,6 +6,9 @@ class Employee(models.Model):
     name = models.CharField(max_length=100)
     section = models.CharField(max_length=10)
     phone_no = models.CharField(max_length=10)
+    scheme = models.CharField(max_length=10, default="Light Mode") # Light Mode, Dark Mode
+    sidebar = models.CharField(max_length=10, default="Scrollable") # Scrollable, Condensed
+    pv_created = models.CharField(max_length=20, default="Request Page") # Request Page, New Preventive Request
     date_modified = models.DateTimeField(auto_now=True)
     date_published = models.DateTimeField(auto_now_add=True)
 

@@ -26,7 +26,7 @@
 
     </head>
 
-    <body class="loading" data-layout="detached" data-layout-config='{"leftSidebarCondensed":false,"darkMode":false, "showRightSidebarOnStart": false}'>
+    <body class="loading" data-layout="detached" data-layout-config='{"leftSidebarCondensed":{% if request.user.employee.sidebar == 'Condensed' %}true{% else %}false{% endif %},"darkMode":{% if request.user.employee.scheme == 'Dark Mode' %}true{% else %}false{% endif %}, "showRightSidebarOnStart":false}'>
 
         <!-- ========== Header Bar ========== -->
         {% include 'header.html' %}
@@ -46,6 +46,12 @@
                             <div class="col-12">
                                 <div class="page-title-box">
                                     <div class="page-title-right d-flex">
+                                      <select class="form-control" id="fsg">
+                                          {% for sg in sgs %}
+                                          <option value="{{sg.name}}" {% if fsg == sg.name %}selected{% endif %}>{{sg.name}}</option>
+                                          {% endfor %}
+                                          <option value="ALL" {% if fsg == 'ALL' %}selected{% endif %}>ALL</option>
+                                      </select>
                                     </div>
                                     <h4 class="page-title"><i class="uil-comment-exclamation"></i> Pending Request ({{reqs|length}})</h4>
                                 </div>
@@ -138,6 +144,15 @@
                 // 'csvHtml5',
               ]
           });
+
+          $('#fsg').change(function() {
+            filter();
+          });
+
+          function filter(){
+            var fsg = $("#fsg").val();
+            window.location.href = "/request_pending/" + fsg;
+          }
         </script>
 
     </body>

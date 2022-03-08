@@ -51,6 +51,13 @@ def logout_action(request):
     logout(request)
     return redirect('/')
 
+@login_required(login_url='/')
+def setting(request):
+    context = {
+    }
+    context['all_page_data'] = (all_page_data(request))
+    return render(request, 'setting.html', context)
+
 ##################################### Page #####################################
 
 def new_request(request):
@@ -151,10 +158,18 @@ def all_page_data(request):
             my_reqs.append(req)
     my_request_count = len(my_reqs)
 
-    pending_reqs = Request.objects.filter(status='Pending')
+    pending_reqs = []
+    if is_in_section_group(request):
+        pending_reqs = Request.objects.filter(status='Pending',sg=request.user.employee.section)
+    else :
+        pending_reqs = Request.objects.filter(status='Pending')
     pending_request_count = len(pending_reqs)
 
-    all_reqs = Request.objects.filter(status='On Progress')  | Request.objects.filter(status='On Hold')
+    all_reqs = []
+    if is_in_section_group(request):
+        all_reqs = Request.objects.filter(status='On Progress',sg=request.user.employee.section) | Request.objects.filter(status='On Hold',sg=request.user.employee.section)
+    else :
+        all_reqs = Request.objects.filter(status='On Progress') | Request.objects.filter(status='On Hold')
     all_request_count = len(all_reqs)
     context = {
         'my_request_count': my_request_count,
@@ -178,19 +193,41 @@ def index(request):
     return render(request, 'index.html', context)
 
 @login_required(login_url='/')
-def request_pending(request):
-    reqs = Request.objects.filter(status='Pending')
+def request_pending(request, fsg):
+    sgs = SectionGroup.objects.all()
+    reqs = []
+    if fsg == 'MY' and is_in_section_group(request):
+        fsg = request.user.employee.section
+    elif fsg == 'MY':
+        fsg = sgs[0].name
+    if fsg == 'ALL':
+        reqs = Request.objects.filter(status='Pending')
+    else:
+        reqs = Request.objects.filter(status='Pending',sg=fsg)
     context = {
+        'sgs': sgs,
+        'fsg': fsg,
         'reqs': reqs,
     }
     context['all_page_data'] = (all_page_data(request))
     return render(request, 'request_pending.html', context)
 
 @login_required(login_url='/')
-def request_all(request):
-    reqs = Request.objects.filter(status='On Progress')  | Request.objects.filter(status='On Hold')
+def request_all(request, fsg):
+    sgs = SectionGroup.objects.all()
+    reqs = []
+    if fsg == 'MY' and is_in_section_group(request):
+        fsg = request.user.employee.section
+    elif fsg == 'MY':
+        fsg = sgs[0].name
+    if fsg == 'ALL':
+        reqs = Request.objects.filter(status='On Progress')  | Request.objects.filter(status='On Hold')
+    else:
+        reqs = Request.objects.filter(status='On Progress',sg=fsg)  | Request.objects.filter(status='On Hold',sg=fsg)
     is_members = get_is_members(reqs, request)
     context = {
+        'sgs': sgs,
+        'fsg': fsg,
         'reqs': reqs,
         'is_members': is_members,
     }
@@ -213,6 +250,15 @@ def request_history(request, fstartdate, fstopdate):
     }
     context['all_page_data'] = (all_page_data(request))
     return render(request, 'request_history.html', context)
+
+#----------------------------------- Report -----------------------------------#
+
+@login_required(login_url='/')
+def summary(request):
+    context = {
+    }
+    context['all_page_data'] = (all_page_data(request))
+    return render(request, 'summary.html', context)
 
 #----------------------------------- Master -----------------------------------#
 
@@ -302,6 +348,23 @@ def new_sub_cat(request):
     return render(request, 'new_sub_cat.html', context)
 
 #################################### POST ######################################
+def setting_save(request):
+    name = request.POST['name']
+    section = request.POST['section']
+    phone_no = request.POST['phone_no']
+    scheme = request.POST['scheme']
+    sidebar = request.POST['sidebar']
+    pv_created = request.POST['pv_created']
+    emp = request.user.employee
+    emp.name = name
+    emp.section = section
+    emp.phone_no = phone_no
+    emp.scheme = scheme
+    emp.sidebar = sidebar
+    emp.pv_created = pv_created
+    emp.save()
+    return redirect('/setting/')
+
 def new_request_save(request):
     emp_id = request.POST['emp_id']
     name = request.POST['name']
@@ -338,6 +401,8 @@ def new_pv_request_save(request):
     request_new.save()
     request_new.req_no = create_req_no(request_new.id)
     request_new.save()
+    if request.user.employee.pv_created == 'Request Page':
+        return redirect('/request_page/' + request_new.req_no)
     return redirect('/new_pv_request/')
 
 def new_emp_save(request):
@@ -637,10 +702,9 @@ def upload_machine():
     for i in range(ws.max_row + 1):
         if i < skip_count:
             continue
-        mc_of = 'MA'
-        section = ws['A' + str(i)].value
-        register_no = ws['B' + str(i)].value
-        mc_no = ws['C' + str(i)].value
+        mc_no = ws['A' + str(i)].value
+        section = ws['B' + str(i)].value
+        register_no = ws['C' + str(i)].value
         asset_no = ws['D' + str(i)].value
         manufacture = ws['E' + str(i)].value
         plant = ws['F' + str(i)].value
@@ -652,7 +716,7 @@ def upload_machine():
         note = ws['L' + str(i)].value
         if mc_no != None and mc_no != "":
             print(mc_no)
-            mc_new = Machine(mc_no=mc_no,mc_of=mc_of,section=section,register_no=register_no,asset_no=asset_no,serial_no=serial_no,manufacture=manufacture,model=model,plant=plant,power=power,install_date=install_date,capacity=capacity,note=note)
+            mc_new = Machine(mc_no=mc_no,section=section,register_no=register_no,asset_no=asset_no,serial_no=serial_no,manufacture=manufacture,model=model,plant=plant,power=power,install_date=install_date,capacity=capacity,note=note)
             mc_new.save()
     return
 
@@ -745,3 +809,11 @@ def get_select_sub_cats(req, sub_cats):
         else:
             select_sub_cats.append(False)
     return select_sub_cats
+
+def is_in_section_group(request):
+    sgs = SectionGroup.objects.all()
+    is_in = False
+    for sg in sgs:
+        if sg.name == request.user.employee.section:
+            is_in = True
+    return is_in

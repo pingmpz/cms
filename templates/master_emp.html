@@ -26,7 +26,7 @@
 
     </head>
 
-    <body class="loading" data-layout="detached" data-layout-config='{"leftSidebarCondensed":false,"darkMode":false, "showRightSidebarOnStart": false}'>
+    <body class="loading" data-layout="detached" data-layout-config='{"leftSidebarCondensed":{% if request.user.employee.sidebar == 'Condensed' %}true{% else %}false{% endif %},"darkMode":{% if request.user.employee.scheme == 'Dark Mode' %}true{% else %}false{% endif %}, "showRightSidebarOnStart":false}'>
 
         <!-- ========== Header Bar ========== -->
         {% include 'header.html' %}
@@ -68,6 +68,11 @@
                                           <th>PhoneNo</th>
                                           <th>IsActive</th>
                                           <th>DateJoined</th>
+                                          {% if request.user.is_superuser %}
+                                          <th>Color Scheme</th>
+                                          <th>Left Sidebar</th>
+                                          <th>On Preventive Request Created..</th>
+                                          {% endif %}
                                           <th>Permission Level</th>
 
                                       </tr>
@@ -88,6 +93,11 @@
                                             {% endif %}
                                           </td>
                                           <td>{{user.employee.date_published}}</td>
+                                          {% if request.user.is_superuser %}
+                                          <td>{{user.employee.scheme}}</td>
+                                          <td>{{user.employee.sidebar}}</td>
+                                          <td>{{user.employee.pv_created}}</td>
+                                          {% endif %}
                                           <td>{% if user.is_superuser %}Super Administrator{% elif user.is_staff %}Administrator{% else %}-{% endif %}</td>
                                       </tr>
                                       {% endfor %}

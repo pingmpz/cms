@@ -9,15 +9,18 @@ urlpatterns = [
     path('validate_login/', views.validate_login, name='validate_login'),
     path('login_action/', views.login_action, name='login_action'),
     path('logout_action/', views.logout_action, name='logout_action'),
+    path('setting/', views.setting, name='setting'),
     ### Page
     path('new_request/', views.new_request, name='new_request'),
     path('new_pv_request/', views.new_pv_request, name='new_pv_request'),
     path('request_page/<str:request_no>', views.request_page, name='request_page'),
     #--
     path('index/', views.index, name='index'),
-    path('request_pending/', views.request_pending, name='request_pending'),
-    path('request_all/', views.request_all, name='request_all'),
+    path('request_pending/<str:fsg>', views.request_pending, name='request_pending'),
+    path('request_all/<str:fsg>', views.request_all, name='request_all'),
     path('request_history/<str:fstartdate>&<str:fstopdate>', views.request_history, name='request_history'),
+    #-- Report
+    path('summary/', views.summary, name='summary'),
     #-- Master
     path('master_emp/', views.master_emp, name='master_emp'),
     path('master_mc/', views.master_mc, name='master_mc'),
@@ -31,6 +34,7 @@ urlpatterns = [
     path('new_cat/', views.new_cat, name='new_cat'),
     path('new_sub_cat/', views.new_sub_cat, name='new_sub_cat'),
     ### POST
+    path('setting_save/', views.setting_save, name='setting_save'),
     path('new_request_save/', views.new_request_save, name='new_request_save'),
     path('new_pv_request_save/', views.new_pv_request_save, name='new_pv_request_save'),
     path('new_emp_save/', views.new_emp_save, name='new_emp_save'),

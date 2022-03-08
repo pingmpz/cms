@@ -11,8 +11,6 @@
             {% endif %}
             <span class="leftbar-user-name small" style="margin-bottom:0px;">{{request.user.employee.name}}</span>
             <span class="leftbar-user-name small" style="margin-top:0px; color:#acb3bd">{{request.user.employee.section}}</span>
-            <a href="#" class="small text-link"><i class="dripicons-gear"></i> <del>Setting</del>&nbsp;</a>
-            <a href="/logout_action" class="small text-link"><i class="dripicons-power"></i> Sign Out &nbsp;</a>
         </a>
     </div>
 
@@ -30,7 +28,7 @@
         </li>
 
         <li class="side-nav-item">
-            <a href="/request_pending/" class="side-nav-link">
+            <a href="/request_pending/MY" class="side-nav-link">
                 <i class="uil-comment-exclamation"></i>
                 <span>Pending Request</span>
                 {% if all_page_data.pending_request_count != 0 %}
@@ -40,7 +38,7 @@
         </li>
 
         <li class="side-nav-item">
-            <a href="/request_all/" class="side-nav-link">
+            <a href="/request_all/MY" class="side-nav-link">
                 <i class="uil-comments"></i>
                 <span>All Request</span>
                 {% if all_page_data.all_request_count != 0 %}
@@ -60,12 +58,12 @@
         <li class="side-nav-item">
             <a data-bs-toggle="collapse" href="#report" class="side-nav-link">
                 <i class="uil-comment-chart-line"></i>
-                <span><del>Report</del></span>
+                <span>Report</span>
                 <span class="menu-arrow"></span>
             </a>
             <div class="collapse" id="report">
                 <ul class="side-nav-second-level">
-                    <li><a href="#">?</a></li>
+                    <li><a href="/summary/">Summary</a></li>
                 </ul>
             </div>
         </li>
@@ -127,8 +125,24 @@
             </a>
         </li>
 
+        <li class="side-nav-title side-nav-item">User Option</li>
+
+        <li class="side-nav-item">
+            <a href="/setting/" class="side-nav-link">
+                <i class="uil-cog"></i>
+                <span>Setting</span>
+            </a>
+        </li>
+
+        <li class="side-nav-item">
+            <a href="/logout_action/" class="side-nav-link">
+                <i class="dripicons-power text-danger"></i>
+                <span class="text-danger">Log Out</span>
+            </a>
+        </li>
+
         <li class="side-nav-title side-nav-item">Admin Contact</li>
-        <li class="side-nav-link text-dark text-center" style="font-size:12px; padding-top:0px; padding-left:20px; padding-right:20px;">
+        <li class="leftbar-user text-dark text-center" style="font-size:12px; padding-top:0px; padding-left:20px; padding-right:20px;">
           Yashawantatul Mangalmurti (6624)<br>
           yashawantatul.man@ccsadvancetech.co.th
         </li>
