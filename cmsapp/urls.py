@@ -23,17 +23,24 @@ urlpatterns = [
     path('master_mc/', views.master_mc, name='master_mc'),
     path('master_vendor/', views.master_vendor, name='master_vendor'),
     path('master_cat/', views.master_cat, name='master_cat'),
+    path('master_sub_cat/', views.master_sub_cat, name='master_sub_cat'),
     #-- New Data
     path('new_emp/', views.new_emp, name='new_emp'),
     path('new_mc/', views.new_mc, name='new_mc'),
     path('new_vendor/', views.new_vendor, name='new_vendor'),
     path('new_cat/', views.new_cat, name='new_cat'),
+    path('new_sub_cat/', views.new_sub_cat, name='new_sub_cat'),
     ### POST
     path('new_request_save/', views.new_request_save, name='new_request_save'),
     path('new_emp_save/', views.new_emp_save, name='new_emp_save'),
+    path('new_cat_save/', views.new_cat_save, name='new_cat_save'),
+    path('new_sub_cat_save/', views.new_sub_cat_save, name='new_sub_cat_save'),
     ### GET
     path('validate_username/', views.validate_username, name='validate_username'),
+    path('validate_category_name/', views.validate_category_name, name='validate_category_name'),
+    path('validate_sub_category_name/', views.validate_sub_category_name, name='validate_sub_category_name'),
     path('find_emp_info/', views.find_emp_info, name='find_emp_info'),
+    #-- Request Page
     path('accept_request/', views.accept_request, name='accept_request'),
     path('reject_request/', views.reject_request, name='reject_request'),
     path('join_request/', views.join_request, name='join_request'),
@@ -43,7 +50,12 @@ urlpatterns = [
     path('complete_request/', views.complete_request, name='complete_request'),
     path('cancel_request/', views.cancel_request, name='cancel_request'),
     path('rework_request/', views.rework_request, name='rework_request'),
+    path('manage_member/', views.manage_member, name='manage_member'),
+    path('manage_category/', views.manage_category, name='manage_category'),
     path('post_comment/', views.post_comment, name='post_comment'),
+    path('delete_comment/', views.delete_comment, name='delete_comment'),
     path('owt_save/', views.owt_save, name='owt_save'),
+    path('delete_owt/', views.delete_owt, name='delete_owt'),
     path('mcdt_save/', views.mcdt_save, name='mcdt_save'),
+    path('delete_mcdt/', views.delete_mcdt, name='delete_mcdt'),
 ]

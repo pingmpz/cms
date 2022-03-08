@@ -4,7 +4,7 @@
 <html lang="en">
     <head>
         <meta charset="utf-8" />
-        <title>New Category | C.C.S. Maintenance Service</title>
+        <title>New Sub-Category | C.C.S. Maintenance Service</title>
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <meta content="A fully featured admin theme which can be used to build CRM, CMS, etc." name="description" />
         <meta content="Coderthemes" name="author" />
@@ -48,7 +48,7 @@
                                     <div class="page-title-right d-flex">
                                       <button type="button" class="btn btn-success ms-2" id="save_button" onclick="save()"><i class="mdi mdi-content-save"></i></button>
                                     </div>
-                                    <h4 class="page-title"><i class="mdi mdi-database-plus-outline"></i> New Category</h4>
+                                    <h4 class="page-title"><i class="mdi mdi-database-plus-outline"></i> New Sub-Category</h4>
                                 </div>
                             </div>
                         </div>
@@ -61,19 +61,25 @@
                           <div class="col-6">
                             <div class="card">
                               <div class="card-body">
-                                <form action="/new_cat_save/" method="POST" id="form">
+                                <form action="/new_sub_cat_save/" method="POST" id="form">
                                     {% csrf_token %}
-                                    <div class="mb-3" {% if request.user.employee.view_type == 'MA' or request.user.employee.view_type == 'AD-SER' %}hidden{% endif %}>
-                                        <label class="form-label">Category Of.. <i class="mdi mdi-asterisk text-danger small"></i></label>
-                                        <select class="form-select" name="cat_of" id="cat_of">
-                                          {% if request.user.employee.view_type == 'MA' or request.user.employee.view_type == 'ALL' %}<option value="MA">MA</option>{% endif %}
-                                          {% if request.user.employee.view_type == 'AD-SER' or request.user.employee.view_type == 'ALL' %}<option value="AD-SER">AD-SER</option>{% endif %}
+                                    <div class="mb-3">
+                                        <label class="form-label">Sub-Category Name <i class="mdi mdi-asterisk text-danger small"></i></label>
+                                        <input class="form-control" type="text" name="name" id="name">
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label class="form-label">Category <i class="mdi mdi-asterisk text-danger small"></i></label>
+                                        <select class="form-control select2" data-toggle="select2" name="cat_id" id="cat_id">
+                                          {% for cat in cats %}
+                                          <option value="{{cat.id}}">{{cat.name}} {% if request.user.employee.view_type == 'ALL' %}({{cat.cat_of}}){% endif %}</option>
+                                          {% endfor %}
                                         </select>
                                     </div>
 
                                     <div class="mb-3">
-                                        <label class="form-label">Category Name <i class="mdi mdi-asterisk text-danger small"></i></label>
-                                        <input class="form-control" type="text" name="name" id="name">
+                                        <label class="form-label">Description</label>
+                                        <textarea class="form-control" name="description" id="description" rows="5"></textarea>
                                     </div>
 
                                     <p class="text-danger text-center small mb-4" id="invalid_text"></p>
@@ -107,10 +113,10 @@
 
           function save(){
             // Clear Validate
-            remove_valids(['cat_of','name']);
+            remove_valids(['name','cat_id','description']);
             set_text_emptys(['invalid_text']);
             // Function
-            validate_category_name(function(result) {
+            validate_sub_category_name(function(result) {
               if(result){
                 document.getElementById('form').submit();
                 $('#save_button').prop('disabled', true);
@@ -118,19 +124,19 @@
             });
           }
 
-          function validate_category_name(_callback){
+          function validate_sub_category_name(_callback){
             var name = $('#name').val();
-            var cat_of = $('#cat_of').val();
+            var cat_id = $('#cat_id').val();
             if(name.length == 0){
               invalid("name");
-              set_text_value("invalid_text","Please fill 'Category Name'.");
+              set_text_value("invalid_text","Please fill 'Sub-Category Name'.");
               return false;
             } else {
               $.ajax({
-                url: '/validate_category_name/',
+                url: '/validate_sub_category_name/',
                 data: {
                   'name': name,
-                  'cat_of': cat_of,
+                  'cat_id': cat_id,
                 },
                 dataType: 'json',
                 success: function (data) {
@@ -141,7 +147,7 @@
                     return;
                   } else {
                     invalid("name");
-                    set_text_value("invalid_text","This category name is already exists.")
+                    set_text_value("invalid_text","This sub-category name is already exists.")
                     _callback(false);
                   }
                 }

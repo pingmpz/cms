@@ -4,7 +4,7 @@
 <html lang="en">
     <head>
         <meta charset="utf-8" />
-        <title>Category Master | C.C.S. Maintenance Service</title>
+        <title>Sub-Category Master | C.C.S. Maintenance Service</title>
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <meta content="A fully featured admin theme which can be used to build CRM, CMS, etc." name="description" />
         <meta content="Coderthemes" name="author" />
@@ -48,7 +48,7 @@
                                     <div class="page-title-right d-flex">
                                         <!-- Filter Here -->
                                     </div>
-                                    <h4 class="page-title"><i class="uil-database"></i> Category Master ({{cats|length}})</h4>
+                                    <h4 class="page-title"><i class="uil-database"></i> Sub-Category Master ({{sub_cats|length}})</h4>
                                 </div>
                             </div>
                         </div>
@@ -63,15 +63,19 @@
                                       <tr>
                                           {% if request.user.is_superuser %}<th>ID</th>{% endif %}
                                           <th>Name</th>
+                                          <th>Category</th>
+                                          <th>Description</th>
                                           {% if request.user.is_superuser %}<th>Category Of</th>{% endif %}
                                       </tr>
                                   </thead>
                                   <tbody>
-                                      {% for cat in cats %}
+                                      {% for sub_cat in sub_cats %}
                                       <tr>
-                                          {% if request.user.is_superuser %}<td>{{cat.id}}</td>{% endif %}
-                                          <td>{{cat.name}}</td>
-                                          {% if request.user.is_superuser %}<td>{{cat.cat_of}}</td>{% endif %}
+                                          {% if request.user.is_superuser %}<td>{{sub_cat.id}}</td>{% endif %}
+                                          <td>{{sub_cat.name}}</td>
+                                          <td>{{sub_cat.cat.name}}</td>
+                                          <td>{{sub_cat.description}}</td>
+                                          {% if request.user.is_superuser %}<td>{{sub_cat.cat.cat_of}}</td>{% endif %}
                                       </tr>
                                       {% endfor %}
                                   </tbody>

@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 {% load static %}
+{% load extra %}
 
 <html lang="en">
     <head>
@@ -28,6 +29,13 @@
 
     <body class="loading" data-layout="detached" data-layout-config='{"leftSidebarCondensed":false,"darkMode":false, "showRightSidebarOnStart": false}'>
 
+        <!-- ========== Pre-Loader ========== -->
+        <div id="preloader">
+            <div id="status">
+                <div class="bouncing-loader"><div ></div><div ></div><div ></div></div>
+            </div>
+        </div>
+
         <!-- ========== Header Bar ========== -->
         {% include 'header.html' %}
 
@@ -53,7 +61,7 @@
                             </div>
                         </div>
 
-                        {% if requestIsExist %}
+                        {% if req_is_exist %}
                         <!-- ========== Main Content ========== -->
                         <div class="row">
 
@@ -140,11 +148,14 @@
                                     <div class="card-body">
                                         <div class="dropdown float-end">
                                         </div>
-                                        <h4 class="header-title mb-3">Category ({{reqcats|length}})</h4>
-                                        {% for reqcat in reqcats %}
-                                        <div class="d-flex mt-2"><i class="mdi mdi-label text-info"></i>&nbsp;&nbsp;&nbsp;{{reqcat.cat.name|title}} {% if request.user.is_superuser %}[{{reqcat.id}}]{% endif %}</div>
+                                        <h4 class="header-title mb-3">Category ({{req_sub_cats|length}})</h4>
+                                        {% for req_sub_cat in req_sub_cats %}
+                                        {% if req_sub_cat_group|index:forloop.counter0 != None %}
+                                        <div class="d-flex mt-2"><i class="mdi mdi-label text-info"></i>&nbsp;&nbsp;&nbsp;{{req_sub_cat_group|index:forloop.counter0}}</div>
+                                        {% endif %}
+                                        <div class="d-flex mt-1 font-12">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;▪️&nbsp;&nbsp;&nbsp;{{req_sub_cat.sub_cat.name|title}} {% if request.user.is_superuser %}[{{req_sub_cat.id}}]{% endif %}</div>
                                         {% endfor %}
-                                        {% if reqcats|length == 0 %}
+                                        {% if req_sub_cats|length == 0 %}
                                         <p class="text-center">There is no category for this request.</p>
                                         {% endif %}
                                     </div>
@@ -296,12 +307,14 @@
                                                     <span class="d-none d-md-block small">Working Time</span>
                                                 </a>
                                             </li>
+                                            {% if req.mc %}
                                             <li class="nav-item">
                                                 <a href="#mc_downtime" data-bs-toggle="tab" aria-expanded="true" class="nav-link px-3 py-2">
                                                     <i class="mdi mdi-book-open-variant font-18 d-md-none d-block"></i>
                                                     <span class="d-none d-md-block small">Machine Downtime ({{mcdts|length}})</span>
                                                 </a>
                                             </li>
+                                            {% endif %}
                                             <li class="nav-item">
                                                 <a href="#costing" data-bs-toggle="tab" aria-expanded="true" class="nav-link px-3 py-2">
                                                     <i class="mdi mdi-book-open-variant font-18 d-md-none d-block"></i>
@@ -315,7 +328,7 @@
                                             <div class="tab-pane show active p-0" id="comment">
                                                 <!-- ========== New Comment ========== -->
                                                 {% if req.status == 'On Progress' or req.status == 'On Hold' %}
-                                                {% if isJoined %}
+                                                {% if is_member %}
                                                 <div class="border rounded">
                                                     <form action="#" class="comment-area-box">
                                                         <textarea rows="4" class="form-control border-0 resize-none" id="comment_text"></textarea>
@@ -333,6 +346,14 @@
 
                                                     {% for comment in comments %}
                                                     <div class="timeline-item">
+                                                        <div class="float-end">
+                                                          {% if req.status == 'On Progress' or req.status == 'On Hold' %}
+                                                          {% if is_member %}
+                                                          <button type="button" class="btn btn-sm btn-link text-muted"  data-bs-toggle="modal" data-bs-target="#delete_comment_modal"
+                                                          onclick="prepare_delete_comment({{comment.id}})"><i class="uil-trash"></i></button>
+                                                          {% endif %}
+                                                          {% endif %}
+                                                        </div>
                                                         <i class="mdi mdi-circle bg-primary-lighten text-primary timeline-icon"></i>
                                                         <div class="timeline-item-info">
                                                             <h5 class="mt-0 mb-1">{{comment.user.username}} | {{comment.user.employee.name|title}} {% if request.user.is_superuser %}[{{comment.id}}]{% endif %}</h5>
@@ -375,7 +396,7 @@
                                                   <div class="tab-pane active" id="operator">
                                                     <!-- ========== Add Operate Time ========== -->
                                                     {% if req.status == 'On Progress' or req.status == 'On Hold' %}
-                                                    {% if isJoined %}
+                                                    {% if is_member %}
                                                     <p class="text-muted font-12">Use 'CTRL' to select multiple item</p>
                                                     <div class="row">
                                                       <div class="col-10">
@@ -418,6 +439,7 @@
                                                               <th>Name</th>
                                                               <th>StartDateTime</th>
                                                               <th>StopDateTime</th>
+                                                              <th></th>
                                                           </tr>
                                                       </thead>
                                                       <tbody>
@@ -428,6 +450,14 @@
                                                               <td>{{owt.user.employee.name|title}}</td>
                                                               <td>{{owt.start_datetime}}</td>
                                                               <td>{{owt.stop_datetime}}</td>
+                                                              <td>
+                                                                {% if req.status == 'On Progress' or req.status == 'On Hold' %}
+                                                                {% if is_member %}
+                                                                <button type="button" class="btn btn-sm btn-link text-muted pt-0 pb-0"  data-bs-toggle="modal" data-bs-target="#delete_owt_modal"
+                                                                onclick="prepare_delete_owt({{owt.id}})"><i class="uil-trash"></i></button>
+                                                                {% endif %}
+                                                                {% endif %}
+                                                              </td>
                                                           </tr>
                                                           {% endfor %}
                                                       </tbody>
@@ -501,7 +531,7 @@
                                             <div class="tab-pane p-0" id="mc_downtime">
                                               <!-- ========== Add Machine Downtime ========== -->
                                               {% if req.status == 'On Progress' or req.status == 'On Hold' %}
-                                              {% if isJoined %}
+                                              {% if is_member %}
                                               <div class="row">
                                                 <div class="col-10">
                                                   <div class="mb-3">
@@ -539,6 +569,7 @@
                                                         {% if request.user.is_superuser %}<th>ID</th>{% endif %}
                                                         <th>StartDateTime</th>
                                                         <th>StopDateTime</th>
+                                                        <th></th>
                                                     </tr>
                                                 </thead>
                                                 <tbody>
@@ -547,6 +578,14 @@
                                                         {% if request.user.is_superuser %}<td>{{mcdt.id}}</td>{% endif %}
                                                         <td>{{mcdt.start_datetime}}</td>
                                                         <td>{{mcdt.stop_datetime}}</td>
+                                                        <td>
+                                                          {% if req.status == 'On Progress' or req.status == 'On Hold' %}
+                                                          {% if is_member %}
+                                                          <button type="button" class="btn btn-sm btn-link text-muted pt-0 pb-0"  data-bs-toggle="modal" data-bs-target="#delete_mcdt_modal"
+                                                          onclick="prepare_delete_mcdt({{mcdt.id}})"><i class="uil-trash"></i></button>
+                                                          {% endif %}
+                                                          {% endif %}
+                                                        </td>
                                                     </tr>
                                                     {% endfor %}
                                                 </tbody>
@@ -585,22 +624,24 @@
                                             {% if req.status == 'Pending' %}
                                             <button type="button" class="btn btn-xs mb-1 btn-success" data-bs-toggle="modal" data-bs-target="#accept_modal"><i class='uil-check me-1'></i>Accept</button>
                                             <button type="button" class="btn btn-xs mb-1 btn-danger" data-bs-toggle="modal" data-bs-target="#reject_modal"><i class='uil-times me-1'></i>Reject</button>
-                                            {% elif req.status == 'On Hold' and not isJoined %}
+                                            {% elif req.status == 'On Hold' and not is_member %}
                                             <button type="button" class="btn btn-xs mb-1 btn-outline-success" onclick="join_request()"><i class='uil-sign-in-alt me-1'></i>Join</button>
                                             {% elif req.status == 'On Hold' %}
                                             <button type="button" class="btn btn-xs mb-1 btn-warning"><i class='uil-pen me-1'></i><del>Edit Request</del></button>
-                                            <button type="button" class="btn btn-xs mb-1 btn-info"><i class='uil-users-alt me-1'></i><del>Manage Member</del></button>
+                                            <button type="button" class="btn btn-xs mb-1 btn-info" data-bs-toggle="modal" data-bs-target="#manage_member_modal"><i class='mdi mdi-account-cog me-1'></i>Manage Member</button>
+                                            <button type="button" class="btn btn-xs mb-1 btn-info" data-bs-toggle="modal" data-bs-target="#manage_category_modal"><i class='mdi mdi-application-cog me-1'></i>Manage Category</button>
                                             <button type="button" class="btn btn-xs mb-1 btn-primary" data-bs-toggle="modal" data-bs-target="#start_work_modal"><i class='uil-play me-1'></i>Start Work</button>
                                             <button type="button" class="btn btn-xs mb-1 btn-danger" data-bs-toggle="modal" data-bs-target="#cancel_modal"><i class='mdi mdi-cancel me-1'></i>Cancel</button>
                                               {% if members|length > 1 %}
                                               <hr>
                                               <button type="button" class="btn btn-xs mb-1 btn-outline-danger" onclick="leave_request()"><i class='uil-sign-out-alt me-1'></i>Leave</button>
                                               {% endif %}
-                                            {% elif req.status == 'On Progress' and not isJoined %}
+                                            {% elif req.status == 'On Progress' and not is_member %}
                                             <button type="button" class="btn btn-xs mb-1 btn-outline-success" onclick="join_request()"><i class='uil-sign-in-alt me-1'></i>Join</button>
                                             {% elif req.status == 'On Progress' %}
                                             <button type="button" class="btn btn-xs mb-1 btn-warning"><i class='uil-pen me-1'></i><del>Edit Request</del></button>
-                                            <button type="button" class="btn btn-xs mb-1 btn-info"><i class='uil-users-alt me-1'></i><del>Manage Member</del></button>
+                                            <button type="button" class="btn btn-xs mb-1 btn-info" data-bs-toggle="modal" data-bs-target="#manage_member_modal"><i class='mdi mdi-account-cog me-1'></i>Manage Member</button>
+                                            <button type="button" class="btn btn-xs mb-1 btn-info" data-bs-toggle="modal" data-bs-target="#manage_category_modal"><i class='mdi mdi-application-cog me-1'></i>Manage Category</button>
                                             <button type="button" class="btn btn-xs mb-1 btn-dark" data-bs-toggle="modal" data-bs-target="#hold_modal"><i class='uil-pause me-1'></i>Hold</button>
                                             <button type="button" class="btn btn-xs mb-1 btn-success" data-bs-toggle="modal" data-bs-target="#complete_modal"><i class='mdi mdi-check-all me-1'></i>Complete</button>
                                             <button type="button" class="btn btn-xs mb-1 btn-danger" data-bs-toggle="modal" data-bs-target="#cancel_modal"><i class='mdi mdi-cancel me-1'></i>Cancel</button>
@@ -609,7 +650,7 @@
                                               <button type="button" class="btn btn-xs mb-1 btn-outline-danger" onclick="leave_request()"><i class='uil-sign-out-alt me-1'></i>Leave</button>
                                               {% endif %}
                                             {% elif req.status == 'Complete' or req.status == 'Canceled' %}
-                                              {% if isJoined %}
+                                              {% if is_member %}
                                               <button type="button" class="btn btn-xs mb-1 btn-info" data-bs-toggle="modal" data-bs-target="#rework_modal"><i class='uil-redo me-1'></i>Rework</button>
                                               {% else %}
                                               <p class="text-center">There is no function for this request.</p>
@@ -692,9 +733,15 @@
                           <div class="mb-3">
                             <label class="form-label">Category</label>
                             <p class="text-muted font-12">Use 'CTRL' to select multiple item</p>
-                            <select class="select2 form-control select2-multiple" data-toggle="select2" multiple="multiple" data-placeholder="Choose ..." id="accept_cat_id_list">
-                                {% for cat in cats %}
-                                <option value="{{cat.id}}">{{cat.name|title}}</option>
+                            <select class="select2 form-control select2-multiple" data-toggle="select2" multiple="multiple" data-placeholder="Choose ..." id="accept_sub_cat_id_list">
+                                {% for sub_cat in sub_cats %}
+                                {% if sub_cat_group|index:forloop.counter0 != None %}
+                                <optgroup label="{{sub_cat_group|index:forloop.counter0}}">
+                                {% endif %}
+                                <option value="{{sub_cat.id}}">▪️ {{sub_cat.name|title}}</option>
+                                {% if sub_cat_group|index:forloop.counter1 != None %}
+                                </optgroup>
+                                {% endif %}
                                 {% endfor %}
                             </select>
                           </div>
@@ -830,6 +877,121 @@
                   </div>
               </div>
           </div>
+          <!-- Manage Member -->
+          <div id="manage_member_modal" class="modal fade" tabindex="-1" role="dialog">
+              <div class="modal-dialog">
+                  <div class="modal-content">
+                      <div class="modal-header modal-colored-header bg-info">
+                          <h4 class="modal-title"><i class='mdi mdi-account-cog me-1'></i>Manage Member</h4>
+                          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                      </div>
+                      <div class="modal-body">
+                          <div class="mb-3">
+                            <label class="form-label">Member</label>
+                            <p class="text-muted font-12">Use 'CTRL' to select multiple item, Please select at least 1 person.</p>
+                            <select class="select2 form-control select2-multiple" data-toggle="select2" multiple="multiple" data-placeholder="Choose ..." id="mm_username_list">
+                                {% for user in users %}
+                                <option value="{{user.username}}" {% if select_members|index:forloop.counter0 %}selected{% endif %}>{{user.username}} | {{user.employee.name|title}}</option>
+                                {% endfor %}
+                            </select>
+                          </div>
+                      </div>
+                      <div class="modal-footer">
+                          <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
+                          <button type="button" class="btn btn-info" onclick="manage_member()">Confirm</button>
+                      </div>
+                  </div>
+              </div>
+          </div>
+          <!-- Manage Category -->
+          <div id="manage_category_modal" class="modal fade" tabindex="-1" role="dialog">
+              <div class="modal-dialog">
+                  <div class="modal-content">
+                      <div class="modal-header modal-colored-header bg-info">
+                          <h4 class="modal-title"><i class='mdi mdi-application-cog me-1'></i>Manage Category</h4>
+                          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                      </div>
+                      <div class="modal-body">
+                          <div class="mb-3">
+                            <label class="form-label">Category</label>
+                            <p class="text-muted font-12">Use 'CTRL' to select multiple item</p>
+                            <select class="select2 form-control select2-multiple" data-toggle="select2" multiple="multiple" data-placeholder="Choose ..." id="mc_sub_cat_id_list">
+                                {% for sub_cat in sub_cats %}
+                                {% if sub_cat_group|index:forloop.counter0 != None %}
+                                <optgroup label="{{sub_cat_group|index:forloop.counter0}}">
+                                {% endif %}
+                                <option value="{{sub_cat.id}}" {% if select_sub_cats|index:forloop.counter0 %}selected{% endif %}>▪️ {{sub_cat.name|title}}</option>
+                                {% if sub_cat_group|index:forloop.counter1 != None %}
+                                </optgroup>
+                                {% endif %}
+                                {% endfor %}
+                            </select>
+                          </div>
+                      </div>
+                      <div class="modal-footer">
+                          <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
+                          <button type="button" class="btn btn-info" onclick="manage_category()">Confirm</button>
+                      </div>
+                  </div>
+              </div>
+          </div>
+          <!-- Delete Comment -->
+          <div id="delete_comment_modal" class="modal fade" tabindex="-1" role="dialog">
+              <div class="modal-dialog">
+                  <div class="modal-content">
+                      <div class="modal-header modal-colored-header bg-danger">
+                          <h4 class="modal-title"><i class='uil-trash me-1'></i>Delete Comment</h4>
+                          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                      </div>
+                      <div class="modal-body">
+                          <h5 class="mt-3 mb-3 text-center">Are you sure that you want to delete this comment ?</h5>
+                          <input type="text" id="delete_comment_id" hidden>
+                      </div>
+                      <div class="modal-footer">
+                          <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
+                          <button type="button" class="btn btn-danger" onclick="delete_comment()">Confirm</button>
+                      </div>
+                  </div>
+              </div>
+          </div>
+          <!-- Delete Operator Work Time -->
+          <div id="delete_owt_modal" class="modal fade" tabindex="-1" role="dialog">
+              <div class="modal-dialog">
+                  <div class="modal-content">
+                      <div class="modal-header modal-colored-header bg-danger">
+                          <h4 class="modal-title"><i class='uil-trash me-1'></i>Delete Operator Work Time</h4>
+                          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                      </div>
+                      <div class="modal-body">
+                          <h5 class="mt-3 mb-3 text-center">Are you sure that you want to delete this operator work time ?</h5>
+                          <input type="text" id="delete_owt_id" hidden>
+                      </div>
+                      <div class="modal-footer">
+                          <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
+                          <button type="button" class="btn btn-danger" onclick="delete_owt()">Confirm</button>
+                      </div>
+                  </div>
+              </div>
+          </div>
+          <!-- Delete Machine Downtime -->
+          <div id="delete_mcdt_modal" class="modal fade" tabindex="-1" role="dialog">
+              <div class="modal-dialog">
+                  <div class="modal-content">
+                      <div class="modal-header modal-colored-header bg-danger">
+                          <h4 class="modal-title"><i class='uil-trash me-1'></i>Delete Machine Downtime</h4>
+                          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                      </div>
+                      <div class="modal-body">
+                          <h5 class="mt-3 mb-3 text-center">Are you sure that you want to delete this machine downtime ?</h5>
+                          <input type="text" id="delete_mcdt_id" hidden>
+                      </div>
+                      <div class="modal-footer">
+                          <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
+                          <button type="button" class="btn btn-danger" onclick="delete_mcdt()">Confirm</button>
+                      </div>
+                  </div>
+              </div>
+          </div>
         </div>
 
         <!-- bundle -->
@@ -868,21 +1030,29 @@
               dropdownParent: $('#accept_modal')
           });
 
-          $('#accept_cat_id_list').select2({
+          $('#accept_sub_cat_id_list').select2({
               dropdownParent: $('#accept_modal')
+          });
+
+          $('#mm_username_list').select2({
+              dropdownParent: $('#manage_member_modal')
+          });
+
+          $('#mc_sub_cat_id_list').select2({
+              dropdownParent: $('#manage_category_modal')
           });
 
           function accept_request(){
             var req_id = $("#req_id").val();
             var username_list = $("#accept_username_list").val();
-            var cat_id_list = $("#accept_cat_id_list").val();
+            var sub_cat_id_list = $("#accept_sub_cat_id_list").val();
             if(username_list.length > 0){
               $.ajax({
                 url: '/accept_request/',
                 data: {
                   'req_id': req_id,
                   'username_list': username_list,
-                  'cat_id_list': cat_id_list,
+                  'sub_cat_id_list': sub_cat_id_list,
                 },
                 dataType: 'json',
                 success: function (data) {
@@ -1016,6 +1186,40 @@
             });
           }
 
+          function manage_member(){
+            var req_id = $("#req_id").val();
+            var username_list = $("#mm_username_list").val();
+            if(username_list.length > 0){
+              $.ajax({
+                url: '/manage_member/',
+                data: {
+                  'req_id': req_id,
+                  'username_list': username_list,
+                },
+                dataType: 'json',
+                success: function (data) {
+                  location.reload();
+                }
+              });
+            }
+          }
+
+          function manage_category(){
+            var req_id = $("#req_id").val();
+            var sub_cat_id_list = $("#mc_sub_cat_id_list").val();
+            $.ajax({
+              url: '/manage_category/',
+              data: {
+                'req_id': req_id,
+                'sub_cat_id_list': sub_cat_id_list,
+              },
+              dataType: 'json',
+              success: function (data) {
+                location.reload();
+              }
+            });
+          }
+
           function post_comment(){
             var req_id = $("#req_id").val();
             var comment_text = $("#comment_text").val();
@@ -1032,6 +1236,24 @@
                 }
               });
             }
+          }
+
+          function prepare_delete_comment(comment_id){
+            $("#delete_comment_id").val(comment_id);
+          }
+
+          function delete_comment(){
+            var comment_id = $("#delete_comment_id").val();
+            $.ajax({
+              url: '/delete_comment/',
+              data: {
+                'comment_id': comment_id,
+              },
+              dataType: 'json',
+              success: function (data) {
+                location.reload();
+              }
+            });
           }
 
           function owt_save(){
@@ -1056,6 +1278,24 @@
             }
           }
 
+          function prepare_delete_owt(owt_id){
+            $("#delete_owt_id").val(owt_id);
+          }
+
+          function delete_owt(){
+            var owt_id = $("#delete_owt_id").val();
+            $.ajax({
+              url: '/delete_owt/',
+              data: {
+                'owt_id': owt_id,
+              },
+              dataType: 'json',
+              success: function (data) {
+                location.reload();
+              }
+            });
+          }
+
           function mcdt_save(){
             var req_id = $("#req_id").val();
             var mc_no = $("#mcdt_mc_no").val();
@@ -1076,6 +1316,24 @@
                 }
               });
             }
+          }
+
+          function prepare_delete_mcdt(mcdt_id){
+            $("#delete_mcdt_id").val(mcdt_id);
+          }
+
+          function delete_mcdt(){
+            var mcdt_id = $("#delete_mcdt_id").val();
+            $.ajax({
+              url: '/delete_mcdt/',
+              data: {
+                'mcdt_id': mcdt_id,
+              },
+              dataType: 'json',
+              success: function (data) {
+                location.reload();
+              }
+            });
           }
         </script>
 

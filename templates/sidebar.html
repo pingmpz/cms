@@ -15,7 +15,7 @@
             {% endif %}
             <span class="leftbar-user-name small" style="margin-bottom:0px;">{{request.user.employee.name}}</span>
             <span class="leftbar-user-name small" style="margin-top:0px; color:#acb3bd">{{request.user.employee.section}}</span>
-            <a href="#" class="small text-link"><i class="dripicons-gear"></i> Setting &nbsp;</a>
+            <a href="#" class="small text-link"><i class="dripicons-gear"></i> <del>Setting</del>&nbsp;</a>
             <a href="/logout_action" class="small text-link"><i class="dripicons-power"></i> Sign Out &nbsp;</a>
         </a>
     </div>
@@ -26,7 +26,7 @@
         <li class="side-nav-item">
             <a href="/index/" class="side-nav-link">
                 <i class="uil-comment-dots"></i>
-                <span> My Request </span>
+                <span>My Request</span>
                 {% if all_page_data.my_request_count != 0 %}
                 <span class="badge bg-danger rounded-pill float-end">{{all_page_data.my_request_count}}</span>
                 {% endif %}
@@ -36,7 +36,7 @@
         <li class="side-nav-item">
             <a href="/request_pending/" class="side-nav-link">
                 <i class="uil-comment-exclamation"></i>
-                <span> Pending Request </span>
+                <span>Pending Request</span>
                 {% if all_page_data.pending_request_count != 0 %}
                 <span class="badge bg-warning rounded-pill float-end">{{all_page_data.pending_request_count}}</span>
                 {% endif %}
@@ -46,7 +46,7 @@
         <li class="side-nav-item">
             <a href="/request_all/" class="side-nav-link">
                 <i class="uil-comments"></i>
-                <span> All Request </span>
+                <span>All Request</span>
                 {% if all_page_data.all_request_count != 0 %}
                 <span class="badge bg-info rounded-pill float-end">{{all_page_data.all_request_count}}</span>
                 {% endif %}
@@ -57,14 +57,14 @@
         <li class="side-nav-item">
             <a href="#" class="side-nav-link">
                 <i class="uil-calendar-alt"></i>
-                <span><del> My Calendar </del></span>
+                <span><del>My Calendar</del></span>
             </a>
         </li>
 
         <li class="side-nav-item">
             <a data-bs-toggle="collapse" href="#report" class="side-nav-link">
                 <i class="uil-comment-chart-line"></i>
-                <span><del> Report </del></span>
+                <span><del>Report</del></span>
                 <span class="menu-arrow"></span>
             </a>
             <div class="collapse" id="report">
@@ -77,14 +77,14 @@
         <li class="side-nav-item">
             <a href="/request_history/NOW&NOW" class="side-nav-link">
                 <i class="uil-comment-verify"></i>
-                <span> History Request </span>
+                <span>History Request</span>
             </a>
         </li>
 
         <li class="side-nav-item">
             <a href="/new_pv_request/" class="side-nav-link">
                 <i class="uil-comment-plus text-success"></i>
-                <span class="text-success"> New Preventive Request </span>
+                <span class="text-success"><del>New Preventive Request</del></span>
             </a>
         </li>
 
@@ -93,15 +93,16 @@
         <li class="side-nav-item">
             <a data-bs-toggle="collapse" href="#master" class="side-nav-link">
                 <i class="uil-database"></i>
-                <span> Master </span>
+                <span>Master</span>
                 <span class="menu-arrow"></span>
             </a>
             <div class="collapse" id="master">
                 <ul class="side-nav-second-level">
                     <li><a href="/master_emp/">Employee</a></li>
                     <li><a href="/master_mc/">Machine</a></li>
-                    <li><del><a href="/master_vendor/">Vendor</a></del></li>
+                    <li><a href="/master_vendor/"><del>Vendor</del></a></li>
                     <li><a href="/master_cat/">Category</a></li>
+                    <li><a href="/master_sub_cat/">Sub-Category</a></li>
                 </ul>
             </div>
         </li>
@@ -109,15 +110,16 @@
         <li class="side-nav-item">
             <a data-bs-toggle="collapse" href="#new_data" class="side-nav-link">
                 <i class="mdi mdi-database-plus-outline"></i>
-                <span> New Data </span>
+                <span>New Data</span>
                 <span class="menu-arrow"></span>
             </a>
             <div class="collapse" id="new_data">
                 <ul class="side-nav-second-level">
                     <li><a href="/new_emp/">Employee</a></li>
-                    <li><a href="/new_mc/">Machine</a></li>
-                    <li><del><a href="/new_vendor/">Vendor</a></del></li>
+                    <li><a href="/new_mc/"><del>Machine</del></a></li>
+                    <li><a href="/new_vendor/"><del>Vendor</del></a></li>
                     <li><a href="/new_cat/">Category</a></li>
+                    <li><a href="/new_sub_cat/">Sub-Category</a></li>
                 </ul>
             </div>
         </li>

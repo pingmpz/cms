@@ -11,7 +11,7 @@ from openpyxl import load_workbook, Workbook
 # Date Time
 from datetime import datetime, timedelta
 
-from .models import Employee, Machine,  Category, Request, File, Member, Comment, RequestCategory, OperatorWorkingTime, MachineDowntime
+from .models import Employee, Machine, Category,  SubCategory, Request, File, Member, Comment, RequestSubCategory, OperatorWorkingTime, MachineDowntime
 
 ################################# Authenticate #################################
 
@@ -84,23 +84,28 @@ def new_pv_request(request):
 
 @login_required(login_url='/')
 def request_page(request, request_no):
-    requestIsExist = Request.objects.filter(req_no=request_no).exists()
+    req_is_exist = Request.objects.filter(req_no=request_no).exists()
     req = None
-    isJoined = False
-    members = []
-    comments = []
-    reqcats = []
-    files = []
-    owts = []
-    mcdts = []
-    users = []
-    cats = []
-    if requestIsExist:
+    is_member = False
+    members = [] # Member (User)
+    comments = [] # Comment
+    req_sub_cats = [] # RequestSubCategory
+    req_sub_cat_group = [] # RequestSubCategory Group (Category)
+    files = [] # Files
+    owts = [] # OpereatorWorkTime
+    mcdts = [] # MachineDowntime
+    users = [] # All Available User
+    select_members = [] # For Manage Member
+    sub_cats = [] # All Available SubCategory
+    sub_cat_group = [] # SubCategory Group (Category)
+    select_sub_cats = [] # For Manage Category
+    if req_is_exist:
         req = Request.objects.get(req_no=request_no)
-        isJoined = Member.objects.filter(req=req,user=request.user).exists()
+        is_member = Member.objects.filter(req=req,user=request.user).exists()
         members = Member.objects.filter(req=req)
         comments = Comment.objects.filter(req=req).order_by('-date_published')
-        reqcats = RequestCategory.objects.filter(req=req)
+        req_sub_cats = RequestSubCategory.objects.filter(req=req)
+        req_sub_cat_group = get_req_sub_cat_group(req_sub_cats)
         files = File.objects.filter(req=req)
         owts = OperatorWorkingTime.objects.filter(req=req).order_by('-start_datetime')
         mcdts = MachineDowntime.objects.filter(req=req).order_by('-start_datetime')
@@ -108,20 +113,38 @@ def request_page(request, request_no):
         for user in temp_users:
             if user.employee.section == req.req_to:
                 users.append(user)
-        cats = Category.objects.filter(cat_of=req.req_to)
+            is_member_exist = Member.objects.filter(req=req,user=user).exists()
+            if is_member_exist:
+                select_members.append(True)
+            else:
+                select_members.append(False)
+        temp_sub_cats = SubCategory.objects.all().order_by('cat')
+        for sub_cat in temp_sub_cats:
+            if sub_cat.cat.cat_of == req.req_to:
+                sub_cats.append(sub_cat)
+            is_sub_cat_exist = RequestSubCategory.objects.filter(req=req,sub_cat=sub_cat).exists()
+            if is_sub_cat_exist:
+                select_sub_cats.append(True)
+            else:
+                select_sub_cats.append(False)
+        sub_cat_group = get_sub_cat_group(sub_cats)
     context = {
         'request_no': request_no,
-        'requestIsExist': requestIsExist,
+        'req_is_exist': req_is_exist,
         'req': req,
-        'isJoined': isJoined,
+        'is_member': is_member,
         'members': members,
         'comments': comments,
-        'reqcats': reqcats,
+        'req_sub_cats': req_sub_cats,
+        'req_sub_cat_group': req_sub_cat_group,
         'files': files,
         'owts': owts,
         'mcdts': mcdts,
         'users': users,
-        'cats': cats,
+        'select_members': select_members,
+        'sub_cats': sub_cats,
+        'sub_cat_group': sub_cat_group,
+        'select_sub_cats': select_sub_cats,
     }
     context['all_page_data'] = (all_page_data(request))
     return render(request, 'request_page.html', context)
@@ -291,6 +314,22 @@ def master_cat(request):
     context['all_page_data'] = (all_page_data(request))
     return render(request, 'master_cat.html', context)
 
+@login_required(login_url='/')
+def master_sub_cat(request):
+    sub_cats = []
+    temp_sub_cats = SubCategory.objects.all()
+    if request.user.employee.view_type != 'ALL':
+        for sub_cat in temp_sub_cats:
+            if sub_cat.cat.cat_of == request.user.employee.view_type:
+                sub_cats.append(sub_cat)
+    else:
+        sub_cats = temp_sub_cats
+    context = {
+        'sub_cats': sub_cats,
+    }
+    context['all_page_data'] = (all_page_data(request))
+    return render(request, 'master_sub_cat.html', context)
+
 #---------------------------------- New Data ----------------------------------#
 
 @login_required(login_url='/')
@@ -322,18 +361,18 @@ def new_cat(request):
     context['all_page_data'] = (all_page_data(request))
     return render(request, 'new_cat.html', context)
 
-#################################### OTHER #####################################
-
-def get_section_group(mcs):
-    section_group = []
-    temp = ""
-    for mc in mcs:
-        if temp != mc.section:
-            temp = mc.section
-            section_group.append(mc.section)
-        else:
-            section_group.append(None)
-    return section_group
+@login_required(login_url='/')
+def new_sub_cat(request):
+    cats = []
+    if request.user.employee.view_type != 'ALL':
+        cats = Category.objects.filter(cat_of=request.user.employee.view_type)
+    else:
+        cats = Category.objects.all()
+    context = {
+        'cats': cats,
+    }
+    context['all_page_data'] = (all_page_data(request))
+    return render(request, 'new_sub_cat.html', context)
 
 #################################### POST ######################################
 def new_request_save(request):
@@ -371,12 +410,53 @@ def new_emp_save(request):
     employee_new.save()
     return redirect('/new_emp/')
 
+def new_cat_save(request):
+    name = request.POST['name']
+    cat_of = request.POST['cat_of']
+    cat_new = Category(name=name,cat_of=cat_of)
+    cat_new.save()
+    return redirect('/new_cat/')
+
+def new_sub_cat_save(request):
+    name = request.POST['name']
+    cat_id = request.POST['cat_id']
+    description = request.POST['description']
+    cat = Category.objects.get(id=cat_id)
+    sub_cat_new = SubCategory(name=name,cat=cat,description=description)
+    sub_cat_new.save()
+    return redirect('/new_sub_cat/')
+
 ##################################### GET ######################################
 
 def validate_username(request):
     username = request.GET['username']
     canUse = True
     isExist = User.objects.filter(username=username).exists()
+    if isExist:
+        canUse = False
+    data = {
+        'canUse': canUse,
+    }
+    return JsonResponse(data)
+
+def validate_category_name(request):
+    name = request.GET['name']
+    cat_of = request.GET['cat_of']
+    canUse = True
+    isExist = Category.objects.filter(name=name,cat_of=cat_of).exists()
+    if isExist:
+        canUse = False
+    data = {
+        'canUse': canUse,
+    }
+    return JsonResponse(data)
+
+def validate_sub_category_name(request):
+    name = request.GET['name']
+    cat_id = request.GET['cat_id']
+    canUse = True
+    cat = Category.objects.get(id=cat_id)
+    isExist = SubCategory.objects.filter(name=name,cat=cat).exists()
     if isExist:
         canUse = False
     data = {
@@ -407,16 +487,16 @@ def find_emp_info(request):
 def accept_request(request):
     req_id = request.GET['req_id']
     username_list = request.GET.getlist('username_list[]')
-    cat_id_list = request.GET.getlist('cat_id_list[]')
+    sub_cat_id_list = request.GET.getlist('sub_cat_id_list[]')
     req = Request.objects.get(id=req_id)
     for username in username_list:
         user = User.objects.get(username=username)
         member_new = Member(req=req,user=user)
         member_new.save()
-    for cat_id in cat_id_list:
-        cat = Category.objects.get(id=cat_id)
-        reqcat_new = RequestCategory(req=req,cat=cat)
-        reqcat_new.save()
+    for sub_cat_id in sub_cat_id_list:
+        sub_cat = SubCategory.objects.get(id=sub_cat_id)
+        req_sub_cat_new = RequestSubCategory(req=req,sub_cat=sub_cat)
+        req_sub_cat_new.save()
     req.status = 'On Progress'
     req.save()
     data = {
@@ -512,12 +592,48 @@ def rework_request(request):
     }
     return JsonResponse(data)
 
+def manage_member(request):
+    req_id = request.GET['req_id']
+    username_list = request.GET.getlist('username_list[]')
+    req = Request.objects.get(id=req_id)
+    members = Member.objects.filter(req=req)
+    members.delete()
+    for username in username_list:
+        user = User.objects.get(username=username)
+        member_new = Member(req=req,user=user)
+        member_new.save()
+    data = {
+    }
+    return JsonResponse(data)
+
+def manage_category(request):
+    req_id = request.GET['req_id']
+    sub_cat_id_list = request.GET.getlist('sub_cat_id_list[]')
+    req = Request.objects.get(id=req_id)
+    req_sub_cats = RequestSubCategory.objects.filter(req=req)
+    req_sub_cats.delete()
+    for sub_cat_id in sub_cat_id_list:
+        sub_cat = SubCategory.objects.get(id=sub_cat_id)
+        req_sub_cat_new = RequestSubCategory(req=req,sub_cat=sub_cat)
+        req_sub_cat_new.save()
+    data = {
+    }
+    return JsonResponse(data)
+
 def post_comment(request):
     req_id = request.GET['req_id']
     comment_text = request.GET['comment_text']
     req = Request.objects.get(id=req_id)
     comment_new = Comment(req=req,text=comment_text,user=request.user)
     comment_new.save()
+    data = {
+    }
+    return JsonResponse(data)
+
+def delete_comment(request):
+    comment_id = request.GET['comment_id']
+    comment = Comment.objects.get(id=comment_id)
+    comment.delete()
     data = {
     }
     return JsonResponse(data)
@@ -536,6 +652,14 @@ def owt_save(request):
     }
     return JsonResponse(data)
 
+def delete_owt(request):
+    owt_id = request.GET['owt_id']
+    owt = OperatorWorkingTime.objects.get(id=owt_id)
+    owt.delete()
+    data = {
+    }
+    return JsonResponse(data)
+
 def mcdt_save(request):
     req_id = request.GET['req_id']
     mc_no = request.GET['mc_no']
@@ -545,6 +669,14 @@ def mcdt_save(request):
     mc = Machine.objects.get(mc_no=mc_no)
     mcdt_new = MachineDowntime(req=req,mc=mc,start_datetime=start_datetime,stop_datetime=stop_datetime)
     mcdt_new.save()
+    data = {
+    }
+    return JsonResponse(data)
+
+def delete_mcdt(request):
+    mcdt_id = request.GET['mcdt_id']
+    mcdt = MachineDowntime.objects.get(id=mcdt_id)
+    mcdt.delete()
     data = {
     }
     return JsonResponse(data)
@@ -587,3 +719,36 @@ def create_req_no(id):
         req_no = "0" + req_no
     req_no = "CMS" + req_no
     return req_no
+
+def get_section_group(mcs):
+    section_group = []
+    temp = ""
+    for mc in mcs:
+        if temp != mc.section:
+            temp = mc.section
+            section_group.append(mc.section)
+        else:
+            section_group.append(None)
+    return section_group
+
+def get_sub_cat_group(sub_cats):
+    sub_cat_group = []
+    temp = ""
+    for sub_cat in sub_cats:
+        if temp != sub_cat.cat.name:
+            temp = sub_cat.cat.name
+            sub_cat_group.append(sub_cat.cat.name)
+        else:
+            sub_cat_group.append(None)
+    return sub_cat_group
+
+def get_req_sub_cat_group(req_sub_cats):
+    req_sub_cat_group = []
+    temp = ""
+    for req_sub_cat in req_sub_cats:
+        if temp != req_sub_cat.sub_cat.cat.name:
+            temp = req_sub_cat.sub_cat.cat.name
+            req_sub_cat_group.append(req_sub_cat.sub_cat.cat.name)
+        else:
+            req_sub_cat_group.append(None)
+    return req_sub_cat_group
