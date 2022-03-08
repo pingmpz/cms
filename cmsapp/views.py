@@ -11,7 +11,7 @@ from openpyxl import load_workbook, Workbook
 # Date Time
 from datetime import datetime, timedelta
 
-from .models import Employee, Machine, Category,  SubCategory, Request, File, Member, Comment, RequestSubCategory, OperatorWorkingTime, MachineDowntime
+from .models import Employee, Machine, Category, SubCategory, SectionGroup, SectionGroupMember, Request, File, Member, Comment, RequestSubCategory, OperatorWorkingTime, MachineDowntime
 
 ################################# Authenticate #################################
 
@@ -54,30 +54,16 @@ def logout_action(request):
 ##################################### Page #####################################
 
 def new_request(request):
-    ma_mcs = Machine.objects.filter(is_active=True, mc_of='MA').order_by('section')
-    ad_ser_mcs = Machine.objects.filter(is_active=True, mc_of='AD-SER').order_by('section')
-    ma_section_group = get_section_group(ma_mcs)
-    ad_ser_section_group = get_section_group(ad_ser_mcs)
+    sgs = SectionGroup.objects.all()
     context = {
-        'ma_mcs': ma_mcs,
-        'ad_ser_mcs': ad_ser_mcs,
-        'ma_section_group': ma_section_group,
-        'ad_ser_section_group': ad_ser_section_group,
+        'sgs': sgs,
     }
     return render(request, 'new_request.html', context)
 
 def new_pv_request(request):
-    mcs = []
-    if request.user.employee.view_type == 'MA':
-        mcs = Machine.objects.filter(is_active=True, mc_of='MA').order_by('section')
-    elif request.user.employee.view_type == 'AD_SER':
-        mcs = Machine.objects.filter(is_active=True, mc_of='AD-SER').order_by('section')
-    else:
-        mcs = Machine.objects.filter(is_active=True).order_by('section')
-    section_group = get_section_group(mcs)
+    sgs = SectionGroup.objects.all()
     context = {
-        'mcs': mcs,
-        'section_group': section_group,
+        'sgs': sgs,
     }
     context['all_page_data'] = (all_page_data(request))
     return render(request, 'new_pv_request.html', context)
@@ -94,10 +80,17 @@ def request_page(request, request_no):
     files = [] # Files
     owts = [] # OpereatorWorkTime
     mcdts = [] # MachineDowntime
+
+    sgs = [] # All Available SectionGroup
+    mcs = [] # All Available Machine
     users = [] # All Available User
-    select_members = [] # For Manage Member
     sub_cats = [] # All Available SubCategory
+
+    mc_group = [] # Machine Group (Section)
+    user_group = [] # User Group (Section)
     sub_cat_group = [] # SubCategory Group (Category)
+
+    select_members = [] # For Manage Member
     select_sub_cats = [] # For Manage Category
     if req_is_exist:
         req = Request.objects.get(req_no=request_no)
@@ -109,25 +102,15 @@ def request_page(request, request_no):
         files = File.objects.filter(req=req)
         owts = OperatorWorkingTime.objects.filter(req=req).order_by('-start_datetime')
         mcdts = MachineDowntime.objects.filter(req=req).order_by('-start_datetime')
-        temp_users = User.objects.filter(is_active=True)
-        for user in temp_users:
-            if user.employee.section == req.req_to:
-                users.append(user)
-            is_member_exist = Member.objects.filter(req=req,user=user).exists()
-            if is_member_exist:
-                select_members.append(True)
-            else:
-                select_members.append(False)
-        temp_sub_cats = SubCategory.objects.all().order_by('cat')
-        for sub_cat in temp_sub_cats:
-            if sub_cat.cat.cat_of == req.req_to:
-                sub_cats.append(sub_cat)
-            is_sub_cat_exist = RequestSubCategory.objects.filter(req=req,sub_cat=sub_cat).exists()
-            if is_sub_cat_exist:
-                select_sub_cats.append(True)
-            else:
-                select_sub_cats.append(False)
+        sgs = SectionGroup.objects.all()
+        mcs = Machine.objects.filter(is_active=True).order_by('section')
+        users = sort_user_by_section(User.objects.filter(is_active=True))
+        sub_cats = SubCategory.objects.all().order_by('cat')
+        mc_group = get_mc_group(mcs)
+        user_group = get_user_group(users)
         sub_cat_group = get_sub_cat_group(sub_cats)
+        select_members = get_select_members(req, users)
+        select_sub_cats = get_select_sub_cats(req, sub_cats)
     context = {
         'request_no': request_no,
         'req_is_exist': req_is_exist,
@@ -140,10 +123,14 @@ def request_page(request, request_no):
         'files': files,
         'owts': owts,
         'mcdts': mcdts,
+        'sgs': sgs,
+        'mcs': mcs,
         'users': users,
-        'select_members': select_members,
         'sub_cats': sub_cats,
+        'mc_group': mc_group,
+        'user_group': user_group,
         'sub_cat_group': sub_cat_group,
+        'select_members': select_members,
         'select_sub_cats': select_sub_cats,
     }
     context['all_page_data'] = (all_page_data(request))
@@ -152,31 +139,34 @@ def request_page(request, request_no):
 #------------------------------------ Main ------------------------------------#
 
 def all_page_data(request):
-    my_reqs = []
-    temp_reqs = Request.objects.filter(status='On Progress') | Request.objects.filter(status='On Hold')
-    for req in temp_reqs:
-        isMember = Member.objects.filter(req=req,user=request.user).exists()
-        if isMember:
-            my_reqs.append(req)
-    my_request_count = len(my_reqs)
-
-    pending_reqs = []
-    if request.user.employee.view_type != 'ALL':
-        pending_reqs = Request.objects.filter(status='Pending',req_to=request.user.employee.view_type)
-    else:
-        pending_reqs = Request.objects.filter(status='Pending')
-    pending_request_count = len(pending_reqs)
-
-    all_reqs = []
-    if request.user.employee.view_type != 'ALL':
-        all_reqs = Request.objects.filter(status='On Progress',req_to=request.user.employee.view_type) | Request.objects.filter(status='On Hold',req_to=request.user.employee.view_type)
-    else:
-        all_reqs = temp_reqs
-    all_request_count = len(all_reqs)
+    # my_reqs = []
+    # temp_reqs = Request.objects.filter(status='On Progress') | Request.objects.filter(status='On Hold')
+    # for req in temp_reqs:
+    #     is_member = Member.objects.filter(req=req,user=request.user).exists()
+    #     if is_member:
+    #         my_reqs.append(req)
+    # my_request_count = len(my_reqs)
+    #
+    # pending_reqs = []
+    # if request.user.employee.view_type != 'ALL':
+    #     pending_reqs = Request.objects.filter(status='Pending',req_to=request.user.employee.view_type)
+    # else:
+    #     pending_reqs = Request.objects.filter(status='Pending')
+    # pending_request_count = len(pending_reqs)
+    #
+    # all_reqs = []
+    # if request.user.employee.view_type != 'ALL':
+    #     all_reqs = Request.objects.filter(status='On Progress',req_to=request.user.employee.view_type) | Request.objects.filter(status='On Hold',req_to=request.user.employee.view_type)
+    # else:
+    #     all_reqs = temp_reqs
+    # all_request_count = len(all_reqs)
     context = {
-        'my_request_count': my_request_count,
-        'pending_request_count': pending_request_count,
-        'all_request_count': all_request_count,
+        # 'my_request_count': my_request_count,
+        # 'pending_request_count': pending_request_count,
+        # 'all_request_count': all_request_count,
+        'my_request_count': 0,
+        'pending_request_count': 0,
+        'all_request_count': 0,
     }
     return context
 
@@ -185,8 +175,8 @@ def index(request):
     reqs = []
     temp_reqs = Request.objects.filter(status='On Progress') | Request.objects.filter(status='On Hold')
     for req in temp_reqs:
-        isMember = Member.objects.filter(req=req,user=request.user).exists()
-        if isMember:
+        is_member = Member.objects.filter(req=req,user=request.user).exists()
+        if is_member:
             reqs.append(req)
     context = {
         'reqs': reqs,
@@ -196,11 +186,7 @@ def index(request):
 
 @login_required(login_url='/')
 def request_pending(request):
-    reqs = []
-    if request.user.employee.view_type != 'ALL':
-        reqs = Request.objects.filter(status='Pending',req_to=request.user.employee.view_type)
-    else:
-        reqs = Request.objects.filter(status='Pending')
+    reqs = Request.objects.filter(status='Pending')
     context = {
         'reqs': reqs,
     }
@@ -209,21 +195,11 @@ def request_pending(request):
 
 @login_required(login_url='/')
 def request_all(request):
-    reqs = []
-    if request.user.employee.view_type != 'ALL':
-        reqs = Request.objects.filter(status='On Progress',req_to=request.user.employee.view_type) | Request.objects.filter(status='On Hold',req_to=request.user.employee.view_type)
-    else:
-        reqs = Request.objects.filter(status='On Progress')  | Request.objects.filter(status='On Hold')
-    joinings = []
-    for req in reqs:
-        isMember = Member.objects.filter(req=req,user=request.user).exists()
-        if isMember:
-            joinings.append('YES')
-        else:
-            joinings.append('NO')
+    reqs = Request.objects.filter(status='On Progress')  | Request.objects.filter(status='On Hold')
+    is_members = get_is_members(reqs, request)
     context = {
         'reqs': reqs,
-        'joinings': joinings,
+        'is_members': is_members,
     }
     context['all_page_data'] = (all_page_data(request))
     return render(request, 'request_all.html', context)
@@ -234,23 +210,13 @@ def request_history(request, fstartdate, fstopdate):
         fstartdate = datetime.today().strftime('%Y-%m-%d')
     if fstopdate == "NOW":
         fstopdate = datetime.today().strftime('%Y-%m-%d')
-    reqs = []
-    if request.user.employee.view_type != 'ALL':
-        reqs = Request.objects.filter(status='Rejected',req_to=request.user.employee.view_type) | Request.objects.filter(status='Complete',req_to=request.user.employee.view_type) | Request.objects.filter(status='Canceled',req_to=request.user.employee.view_type)
-    else:
-        reqs = Request.objects.filter(status='Rejected')  | Request.objects.filter(status='Complete') | Request.objects.filter(status='Canceled')
-    joinings = []
-    for req in reqs:
-        isMember = Member.objects.filter(req=req,user=request.user).exists()
-        if isMember:
-            joinings.append('YES')
-        else:
-            joinings.append('NO')
+    reqs = Request.objects.filter(status='Rejected')  | Request.objects.filter(status='Complete') | Request.objects.filter(status='Canceled')
+    is_members = get_is_members(reqs, request)
     context = {
         'fstartdate': fstartdate,
         'fstopdate': fstopdate,
         'reqs': reqs,
-        'joinings': joinings,
+        'is_members': is_members,
     }
     context['all_page_data'] = (all_page_data(request))
     return render(request, 'request_history.html', context)
@@ -259,14 +225,7 @@ def request_history(request, fstartdate, fstopdate):
 
 @login_required(login_url='/')
 def master_emp(request):
-    users = []
-    temp_users = User.objects.all()
-    if request.user.employee.view_type != 'ALL':
-        for user in temp_users:
-            if user.employee.view_type == request.user.employee.view_type:
-                users.append(user)
-    else:
-        users = temp_users
+    users = User.objects.all()
     context = {
         'users': users,
     }
@@ -275,14 +234,7 @@ def master_emp(request):
 
 @login_required(login_url='/')
 def master_mc(request):
-    mcs = []
-    temp_mcs = Machine.objects.all()
-    if request.user.employee.view_type != 'ALL':
-        for mc in temp_mcs:
-            if mc.mc_of == request.user.employee.view_type:
-                mcs.append(mc)
-    else:
-        mcs = temp_mcs
+    mcs = Machine.objects.all()
     context = {
         'mcs': mcs,
     }
@@ -300,14 +252,7 @@ def master_vendor(request):
 
 @login_required(login_url='/')
 def master_cat(request):
-    cats = []
-    temp_cats = Category.objects.all()
-    if request.user.employee.view_type != 'ALL':
-        for cat in temp_cats:
-            if cat.cat_of == request.user.employee.view_type:
-                cats.append(cat)
-    else:
-        cats = temp_cats
+    cats = Category.objects.all()
     context = {
         'cats': cats,
     }
@@ -316,14 +261,7 @@ def master_cat(request):
 
 @login_required(login_url='/')
 def master_sub_cat(request):
-    sub_cats = []
-    temp_sub_cats = SubCategory.objects.all()
-    if request.user.employee.view_type != 'ALL':
-        for sub_cat in temp_sub_cats:
-            if sub_cat.cat.cat_of == request.user.employee.view_type:
-                sub_cats.append(sub_cat)
-    else:
-        sub_cats = temp_sub_cats
+    sub_cats = SubCategory.objects.all()
     context = {
         'sub_cats': sub_cats,
     }
@@ -363,11 +301,7 @@ def new_cat(request):
 
 @login_required(login_url='/')
 def new_sub_cat(request):
-    cats = []
-    if request.user.employee.view_type != 'ALL':
-        cats = Category.objects.filter(cat_of=request.user.employee.view_type)
-    else:
-        cats = Category.objects.all()
+    cats = Category.objects.all()
     context = {
         'cats': cats,
     }
@@ -380,21 +314,20 @@ def new_request_save(request):
     name = request.POST['name']
     section = request.POST['section']
     phone_no = request.POST['phone_no']
-    req_to = request.POST['req_to']
-    ma_mc_no = request.POST['ma_mc_no']
-    ad_ser_mc_no = request.POST['ad_ser_mc_no']
+    sg_name = request.POST['sg_name']
     description = request.POST['description']
-    type = 'Breakdown'
+    type = 'User Request'
     status = 'Pending'
     request_date = datetime.now().date()
-    mc_no = ma_mc_no if req_to == 'MA' else ad_ser_mc_no
-    mc = None
-    if mc_no != "Select":
-        mc = Machine.objects.get(mc_no=mc_no)
-    request_new = Request(emp_id=emp_id,name=name,section=section,phone_no=phone_no,req_to=req_to,type=type,status=status,request_date=request_date,mc=mc,description=description)
+    sg = SectionGroup.objects.get(name=sg_name)
+    request_new = Request(emp_id=emp_id,name=name,section=section,phone_no=phone_no,sg=sg,type=type,status=status,request_date=request_date,description=description)
     request_new.save()
     request_new.req_no = create_req_no(request_new.id)
     request_new.save()
+    return redirect('/')
+
+def new_pv_request_save(request):
+
     return redirect('/')
 
 def new_emp_save(request):
@@ -402,18 +335,16 @@ def new_emp_save(request):
     password = request.POST['new_password']
     name = request.POST['name']
     section = request.POST['section']
-    view_type = request.POST['view_type']
     phone_no = request.POST['phone_no']
     user_new = User.objects.create_user(username, '', password)
     user_new.save()
-    employee_new = Employee(user=user_new,name=name,section=section,view_type=view_type,phone_no=phone_no)
+    employee_new = Employee(user=user_new,name=name,section=section,phone_no=phone_no)
     employee_new.save()
     return redirect('/new_emp/')
 
 def new_cat_save(request):
     name = request.POST['name']
-    cat_of = request.POST['cat_of']
-    cat_new = Category(name=name,cat_of=cat_of)
+    cat_new = Category(name=name)
     cat_new.save()
     return redirect('/new_cat/')
 
@@ -441,9 +372,8 @@ def validate_username(request):
 
 def validate_category_name(request):
     name = request.GET['name']
-    cat_of = request.GET['cat_of']
     canUse = True
-    isExist = Category.objects.filter(name=name,cat_of=cat_of).exists()
+    isExist = Category.objects.filter(name=name).exists()
     if isExist:
         canUse = False
     data = {
@@ -486,9 +416,13 @@ def find_emp_info(request):
 
 def accept_request(request):
     req_id = request.GET['req_id']
+    mc_no = request.GET['mc_no'] if request.GET['mc_no'] != 'Select' else None
     username_list = request.GET.getlist('username_list[]')
     sub_cat_id_list = request.GET.getlist('sub_cat_id_list[]')
     req = Request.objects.get(id=req_id)
+    if mc_no != None:
+        mc = Machine.objects.get(mc_no=mc_no)
+        req.mc = mc
     for username in username_list:
         user = User.objects.get(username=username)
         member_new = Member(req=req,user=user)
@@ -507,10 +441,11 @@ def reject_request(request):
     req_id = request.GET['req_id']
     is_nms = True if request.GET['is_nms'] == 'true' else False
     reject_reason = request.GET['reject_reason']
+    sg_name = request.GET['sg_name']
     req = Request.objects.get(id=req_id)
     if is_nms:
-        req.req_to = 'MA' if req.req_to == 'AD-SER' else 'AD-SER'
-        req.mc = None
+        sg = SectionGroup.objects.get(name=sg_name)
+        req.sg = sg
     else:
         req.status = 'Rejected'
         req.reason = reject_reason
@@ -720,16 +655,34 @@ def create_req_no(id):
     req_no = "CMS" + req_no
     return req_no
 
-def get_section_group(mcs):
-    section_group = []
+def sort_user_by_section(users):
+    f_users = []
+    emps = Employee.objects.filter(user__in=users).order_by('section')
+    for emp in emps:
+        f_users.append(emp.user)
+    return f_users
+
+def get_mc_group(mcs):
+    mc_group = []
     temp = ""
     for mc in mcs:
         if temp != mc.section:
             temp = mc.section
-            section_group.append(mc.section)
+            mc_group.append(mc.section)
         else:
-            section_group.append(None)
-    return section_group
+            mc_group.append(None)
+    return mc_group
+
+def get_user_group(users):
+    user_group = []
+    temp = ""
+    for user in users:
+        if temp != user.employee.section:
+            temp = user.employee.section
+            user_group.append(user.employee.section)
+        else:
+            user_group.append(None)
+    return user_group
 
 def get_sub_cat_group(sub_cats):
     sub_cat_group = []
@@ -752,3 +705,33 @@ def get_req_sub_cat_group(req_sub_cats):
         else:
             req_sub_cat_group.append(None)
     return req_sub_cat_group
+
+def get_is_members(reqs, request):
+    is_members = []
+    for req in reqs:
+        is_member = Member.objects.filter(req=req,user=request.user).exists()
+        if is_member:
+            is_members.append(True)
+        else:
+            is_members.append(False)
+    return is_members
+
+def get_select_members(req, users):
+    select_members = []
+    for user in users:
+        is_member_exist = Member.objects.filter(req=req,user=user).exists()
+        if is_member_exist:
+            select_members.append(True)
+        else:
+            select_members.append(False)
+    return select_members
+
+def get_select_sub_cats(req, sub_cats):
+    select_sub_cats = []
+    for sub_cat in sub_cats:
+        is_sub_cat_exist = RequestSubCategory.objects.filter(req=req,sub_cat=sub_cat).exists()
+        if is_sub_cat_exist:
+            select_sub_cats.append(True)
+        else:
+            select_sub_cats.append(False)
+    return select_sub_cats

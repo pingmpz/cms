@@ -72,7 +72,7 @@
                                         <label class="form-label">Category <i class="mdi mdi-asterisk text-danger small"></i></label>
                                         <select class="form-control select2" data-toggle="select2" name="cat_id" id="cat_id">
                                           {% for cat in cats %}
-                                          <option value="{{cat.id}}">{{cat.name}} {% if request.user.employee.view_type == 'ALL' %}({{cat.cat_of}}){% endif %}</option>
+                                          <option value="{{cat.id}}">{{cat.name}}</option>
                                           {% endfor %}
                                         </select>
                                     </div>
@@ -147,7 +147,7 @@
                     return;
                   } else {
                     invalid("name");
-                    set_text_value("invalid_text","This sub-category name is already exists.")
+                    set_text_value("invalid_text","This sub-category name in this category is already exists.")
                     _callback(false);
                   }
                 }

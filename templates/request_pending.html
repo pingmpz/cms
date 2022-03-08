@@ -62,14 +62,11 @@
                                       <tr>
                                           <th>Request No</th>
                                           <th>Type</th>
-                                          <th>Status</th>
+                                          <!-- <th>Status</th> -->
+                                          <th>Request to</th>
                                           <th>Description</th>
-                                          <th>Machine No</th>
                                           <th>Request By</th>
                                           <th>Request Date</th>
-                                          {% if request.user.employee.view_type == 'ALL' %}
-                                          <th>Request to</th>
-                                          {% endif %}
                                       </tr>
                                   </thead>
                                   <tbody>
@@ -77,7 +74,7 @@
                                       <tr>
                                           <td><a href="/request_page/{{req.req_no}}">{{req.req_no}}</a></td>
                                           <td>{{req.type}}</td>
-                                          <td>
+                                          <!-- <td>
                                             {% if req.status == 'Pending' %}<strong class="text-warning"><i class='mdi mdi-clock-time-eight-outline'></i> Pending</strong>
                                             {% elif req.status == 'On Progress' %}<strong class="text-primary"><i class='mdi mdi-play'></i> On Progress</strong>
                                             {% elif req.status == 'On Hold' %}<strong class="text-dark"><i class='mdi mdi-pause'></i> On Hold</strong>
@@ -85,14 +82,11 @@
                                             {% elif req.status == 'Complete' %}<strong class="text-dark"><i class='mdi mdi-check-all'></i> Complete</strong>
                                             {% elif req.status == 'Canceled' %}<strong class="text-dark"><i class='uil-ban'></i> Canceled</strong>
                                             {% else %}{{req.status}}{% endif %}
-                                          </td>
+                                          </td> -->
+                                          <td>{{req.sg.name}}</td>
                                           <td>{{req.description}}</td>
-                                          <td>{{req.mc.mc_no}}</td>
                                           <td>{{req.emp_id}} | {{req.name|title}} ({{req.section}}) <i class="uil-phone"></i> {{req.phone_no}}</td>
                                           <td>{{req.request_date}}</td>
-                                          {% if request.user.employee.view_type == 'ALL' %}
-                                          <td>{{req.req_to}}</td>
-                                          {% endif %}
                                       </tr>
                                       {% endfor %}
                                   </tbody>

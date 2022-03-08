@@ -63,14 +63,6 @@
                               <div class="card-body">
                                 <form action="/new_cat_save/" method="POST" id="form">
                                     {% csrf_token %}
-                                    <div class="mb-3" {% if request.user.employee.view_type == 'MA' or request.user.employee.view_type == 'AD-SER' %}hidden{% endif %}>
-                                        <label class="form-label">Category Of.. <i class="mdi mdi-asterisk text-danger small"></i></label>
-                                        <select class="form-select" name="cat_of" id="cat_of">
-                                          {% if request.user.employee.view_type == 'MA' or request.user.employee.view_type == 'ALL' %}<option value="MA">MA</option>{% endif %}
-                                          {% if request.user.employee.view_type == 'AD-SER' or request.user.employee.view_type == 'ALL' %}<option value="AD-SER">AD-SER</option>{% endif %}
-                                        </select>
-                                    </div>
-
                                     <div class="mb-3">
                                         <label class="form-label">Category Name <i class="mdi mdi-asterisk text-danger small"></i></label>
                                         <input class="form-control" type="text" name="name" id="name">
@@ -107,7 +99,7 @@
 
           function save(){
             // Clear Validate
-            remove_valids(['cat_of','name']);
+            remove_valids(['name']);
             set_text_emptys(['invalid_text']);
             // Function
             validate_category_name(function(result) {
@@ -120,7 +112,6 @@
 
           function validate_category_name(_callback){
             var name = $('#name').val();
-            var cat_of = $('#cat_of').val();
             if(name.length == 0){
               invalid("name");
               set_text_value("invalid_text","Please fill 'Category Name'.");
@@ -130,7 +121,6 @@
                 url: '/validate_category_name/',
                 data: {
                   'name': name,
-                  'cat_of': cat_of,
                 },
                 dataType: 'json',
                 success: function (data) {

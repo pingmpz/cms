@@ -132,7 +132,7 @@
                                   <div class="card-body">
                                       <h6 class="header-title mt-0">Request Detail</h6>
                                       <p class="my-2 small">{{req.description}}</p>
-                                      {% if request.user.is_superuser %}<p class="mb-0 text-muted small">Request To: {{req.req_to}}</p>{% endif %}
+                                      <p class="mb-0 text-muted small">Request To: {{req.sg.name}}</p>
                                       <p class="mb-0 text-muted small">Type: {{req.type}}</p>
                                       <p class="mb-0 text-muted small">Request Date: {{req.request_date}}</p>
                                       {% if req.status == 'Complete' or req.status == 'Canceled' %}
@@ -240,7 +240,7 @@
                                     <div class="card-body">
                                         <h6 class="header-title mt-0">Request Detail</h6>
                                         <p class="my-3">{{req.description}}</p>
-                                        {% if request.user.is_superuser %}<p class="mb-0 text-muted small">Request To: {{req.req_to}}</p>{% endif %}
+                                        <p class="mb-0 text-muted small">Request To: {{req.sg.name}}</p>
                                         <p class="mb-0 text-muted small">Type: {{req.type}}</p>
                                         <p class="mb-0 text-muted small">Request Date: {{req.request_date}}</p>
                                         {% if req.status == 'Rejected' %}
@@ -403,7 +403,7 @@
                                                         <div class="mb-3">
                                                           <select class="select2 form-control select2-multiple" data-toggle="select2" multiple="multiple" data-placeholder="Choose ..." id="owt_username_list">
                                                               {% for member in members %}
-                                                              <option value="{{member.user.username}}">{{member.user.username}} | {{member.user.employee.name|title}}</option>
+                                                              <option value="{{member.user.username}}">{{member.user.username}} | {{member.user.employee.name|title}} ({{member.user.employee.section}})</option>
                                                               {% endfor %}
                                                           </select>
                                                         </div>
@@ -676,7 +676,7 @@
                                             {% for member in members %}
                                             <div class="inbox-item">
                                                 <p class="inbox-item-author">{{member.user.username}} | {{member.user.employee.name|title}} {% if request.user.is_superuser %}[{{member.id}}]{% endif %}</p>
-                                                <p class="inbox-item-text">Member</p>
+                                                <p class="inbox-item-text font-12">Section : {{member.user.employee.section}}</p>
                                             </div>
                                             {% endfor %}
                                         </div>
@@ -722,11 +722,32 @@
                       <div class="modal-body">
                           <h5 class="mt-3 mb-3 text-center">Are you sure that you want to accept this request ?</h5>
                           <div class="mb-3">
+                            <label class="form-label">Machine</label>
+                            <select class="form-control select2" data-toggle="select2" name="accept_mc_no" id="accept_mc_no">
+                              <option>Select</option>
+                              {% for mc in mcs %}
+                              {% if mc_group|index:forloop.counter0 != None %}
+                              <optgroup label="{{mc_group|index:forloop.counter0}}">
+                              {% endif %}
+                              <option value="{{mc.mc_no}}">▪️ {{mc.mc_no}}</option>
+                              {% if mc_group|index:forloop.counter1 != None %}
+                              </optgroup>
+                              {% endif %}
+                              {% endfor %}
+                            </select>
+                          </div>
+                          <div class="mb-3">
                             <label class="form-label">Add Member</label>
                             <p class="text-muted font-12">Use 'CTRL' to select multiple item, Please select at least 1 person.</p>
                             <select class="select2 form-control select2-multiple" data-toggle="select2" multiple="multiple" data-placeholder="Choose ..." id="accept_username_list">
                                 {% for user in users %}
-                                <option value="{{user.username}}">{{user.username}} | {{user.employee.name|title}}</option>
+                                {% if user_group|index:forloop.counter0 != None %}
+                                <optgroup label="{{user_group|index:forloop.counter0}}">
+                                {% endif %}
+                                <option value="{{user.username}}">▪️ {{user.username}} | {{user.employee.name|title}}</option>
+                                {% if user_group|index:forloop.counter1 != None %}
+                                </optgroup>
+                                {% endif %}
                                 {% endfor %}
                             </select>
                           </div>
@@ -763,13 +784,21 @@
                       </div>
                       <div class="modal-body">
                           <h5 class="mt-3 mb-3 text-center">Are you sure that you want to reject this request ?</h5>
-                          <div class="form-check form-checkbox-danger mb-2">
+                          <div class="form-check form-checkbox-danger mb-3">
                             <input type="checkbox" class="form-check-input" id="is_nms">
-                            <label class="form-check-label" for="reject_type">This request is not for my section.</label>
+                            <label class="form-check-label" for="is_nms">This request is not for <span class="text-danger">{{req.sg.name}}</span> section.</label>
                           </div>
-                          <div class="mb-0">
+                          <div class="mb-0" id="ms_group">
                               <label class="form-label">Reject Reason</label>
                               <textarea class="form-control" name="reject_reason" id="reject_reason" rows="5"></textarea>
+                          </div>
+                          <div class="mb-3" id="nms_group" hidden>
+                            <label class="form-label">Request To..</label><br>
+                            <select class="form-control select2" data-toggle="select2" name="reject_sg_name" id="reject_sg_name">
+                              {% for sg in sgs %}
+                              <option value="{{sg.name}}" {% if re.sg.name == sg.name %}selected{% endif %}>{{sg.name}}</option>
+                              {% endfor %}
+                            </select>
                           </div>
                       </div>
                       <div class="modal-footer">
@@ -891,7 +920,13 @@
                             <p class="text-muted font-12">Use 'CTRL' to select multiple item, Please select at least 1 person.</p>
                             <select class="select2 form-control select2-multiple" data-toggle="select2" multiple="multiple" data-placeholder="Choose ..." id="mm_username_list">
                                 {% for user in users %}
+                                {% if user_group|index:forloop.counter0 != None %}
+                                <optgroup label="{{user_group|index:forloop.counter0}}">
+                                {% endif %}
                                 <option value="{{user.username}}" {% if select_members|index:forloop.counter0 %}selected{% endif %}>{{user.username}} | {{user.employee.name|title}}</option>
+                                {% if user_group|index:forloop.counter1 != None %}
+                                </optgroup>
+                                {% endif %}
                                 {% endfor %}
                             </select>
                           </div>
@@ -1026,12 +1061,20 @@
               ]
           });
 
+          $('#accept_mc_no').select2({
+              dropdownParent: $('#accept_modal')
+          });
+
           $('#accept_username_list').select2({
               dropdownParent: $('#accept_modal')
           });
 
           $('#accept_sub_cat_id_list').select2({
               dropdownParent: $('#accept_modal')
+          });
+
+          $('#reject_sg_name').select2({
+              dropdownParent: $('#reject_modal')
           });
 
           $('#mm_username_list').select2({
@@ -1044,6 +1087,7 @@
 
           function accept_request(){
             var req_id = $("#req_id").val();
+            var mc_no = $("#accept_mc_no").val();
             var username_list = $("#accept_username_list").val();
             var sub_cat_id_list = $("#accept_sub_cat_id_list").val();
             if(username_list.length > 0){
@@ -1051,6 +1095,7 @@
                 url: '/accept_request/',
                 data: {
                   'req_id': req_id,
+                  'mc_no': mc_no,
                   'username_list': username_list,
                   'sub_cat_id_list': sub_cat_id_list,
                 },
@@ -1066,12 +1111,14 @@
             var req_id = $("#req_id").val();
             var is_nms = $('#is_nms').is(':checked');
             var reject_reason = $("#reject_reason").val();
+            var sg_name = $("#reject_sg_name").val();
             $.ajax({
               url: '/reject_request/',
               data: {
                 'req_id': req_id,
                 'is_nms': is_nms,
                 'reject_reason': reject_reason,
+                'sg_name': sg_name,
               },
               dataType: 'json',
               success: function (data) {
@@ -1335,6 +1382,18 @@
               }
             });
           }
+
+          //-- Toggle
+          $('#is_nms').on("change", function() {
+            var is_nms = $('#is_nms').is(':checked')
+            if(is_nms){
+              unhide("nms_group");
+              hide("ms_group");
+            } else {
+              hide("nms_group");
+              unhide("ms_group");
+            }
+          });
         </script>
 
     </body>

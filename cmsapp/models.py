@@ -6,13 +6,11 @@ class Employee(models.Model):
     name = models.CharField(max_length=100)
     section = models.CharField(max_length=10)
     phone_no = models.CharField(max_length=10)
-    view_type = models.CharField(max_length=10)
     date_modified = models.DateTimeField(auto_now=True)
     date_published = models.DateTimeField(auto_now_add=True)
 
 class Machine(models.Model):
     mc_no = models.CharField(max_length=50, primary_key=True)
-    mc_of = models.CharField(max_length=10)
     section = models.CharField(max_length=50, null=True)
     register_no = models.CharField(max_length=50, null=True)
     asset_no = models.CharField(max_length=50, null=True)
@@ -32,7 +30,6 @@ class Category(models.Model):
     id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=100)
     description = models.CharField(max_length=1000, null=True)
-    cat_of = models.CharField(max_length=10)
     date_modified = models.DateTimeField(auto_now=True)
     date_published = models.DateTimeField(auto_now_add=True)
 
@@ -44,6 +41,18 @@ class SubCategory(models.Model):
     date_modified = models.DateTimeField(auto_now=True)
     date_published = models.DateTimeField(auto_now_add=True)
 
+class SectionGroup(models.Model):
+    name = models.CharField(max_length=50, primary_key=True)
+    date_modified = models.DateTimeField(auto_now=True)
+    date_published = models.DateTimeField(auto_now_add=True)
+
+class SectionGroupMember(models.Model):
+    id = models.AutoField(primary_key=True)
+    sg = models.ForeignKey(SectionGroup, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    date_modified = models.DateTimeField(auto_now=True)
+    date_published = models.DateTimeField(auto_now_add=True)
+
 class Request(models.Model):
     id = models.AutoField(primary_key=True)
     req_no = models.CharField(max_length=10)
@@ -51,11 +60,11 @@ class Request(models.Model):
     name = models.CharField(max_length=100)
     section = models.CharField(max_length=10)
     phone_no = models.CharField(max_length=10)
-    req_to = models.CharField(max_length=10)
+    sg = models.ForeignKey(SectionGroup, null=True, on_delete=models.SET_NULL)
     mc = models.ForeignKey(Machine, null=True, on_delete=models.SET_NULL)
     request_date = models.DateField(null=True)
     finish_datetime = models.DateTimeField(null=True)
-    type = models.CharField(max_length=10) # Preventive, Breakdown
+    type = models.CharField(max_length=10) # Preventive, User Request
     status = models.CharField(max_length=20) # Pending, Rejected, On Progress, On Hold, Complete, Canceled
     reason = models.CharField(max_length=1000, null=True)
     description = models.CharField(max_length=1000)

@@ -32,6 +32,7 @@ urlpatterns = [
     path('new_sub_cat/', views.new_sub_cat, name='new_sub_cat'),
     ### POST
     path('new_request_save/', views.new_request_save, name='new_request_save'),
+    path('new_pv_request_save/', views.new_pv_request_save, name='new_pv_request_save'),
     path('new_emp_save/', views.new_emp_save, name='new_emp_save'),
     path('new_cat_save/', views.new_cat_save, name='new_cat_save'),
     path('new_sub_cat_save/', views.new_sub_cat_save, name='new_sub_cat_save'),

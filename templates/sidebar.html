@@ -4,14 +4,10 @@
     <div class="leftbar-user">
         <a href="javascript: void(0);">
             <h3 class="leftbar-user-name">{{request.user}}</h3>
-            {% if request.user.is_superuser %}
-              <img src="{% static "assets/images/users/avatar-1.png" %}" alt="user-image" height="64" class="rounded-circle shadow-sm">
-            {% elif request.user.is_staff %}
-              <img src="{% static "assets/images/users/avatar-1.png" %}" alt="user-image" height="64" class="rounded-circle shadow-sm">
-            {% elif request.user.section == '' %}
-              <img src="{% static "assets/images/users/avatar-3.png" %}" alt="user-image" height="64" class="rounded-circle shadow-sm">
+            {% if request.user.is_superuser or request.user.is_staff %}
+              <img src="{% static "custom/img/avatar-1.png" %}" alt="user-image" height="64" class="rounded-circle shadow-sm">
             {% else %}
-              <img src="{% static "assets/images/users/avatar-2.png" %}" alt="user-image" height="64" class="rounded-circle shadow-sm">
+              <img src="{% static "custom/img/avatar-3.png" %}" alt="user-image" height="64" class="rounded-circle shadow-sm">
             {% endif %}
             <span class="leftbar-user-name small" style="margin-bottom:0px;">{{request.user.employee.name}}</span>
             <span class="leftbar-user-name small" style="margin-top:0px; color:#acb3bd">{{request.user.employee.section}}</span>

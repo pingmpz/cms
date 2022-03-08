@@ -65,11 +65,12 @@
                                           <th>Type</th>
                                           <th>Status</th>
                                           <th>Reason</th>
+                                          <th>Request To</th>
                                           <th>Description</th>
                                           <th>Machine No</th>
                                           <th>Request By</th>
                                           <th>Request Date</th>
-                                          <th>Joining</th>
+                                          <th>IsMember</th>
                                           {% if request.user.employee.view_type == 'ALL' %}
                                           <th>Request To</th>
                                           {% endif %}
@@ -90,13 +91,17 @@
                                             {% else %}{{req.status}}{% endif %}
                                           </td>
                                           <td>{{req.reason|default_if_none:""}}</td>
+                                          <td>{{req.sq.name}}</td>
                                           <td>{{req.description}}</td>
                                           <td>{{req.mc.mc_no}}</td>
                                           <td>{{req.emp_id}} | {{req.name|title}} ({{req.section}}) <i class="uil-phone"></i> {{req.phone_no}}</td>
                                           <td>{{req.request_date}}</td>
                                           <td>
-                                            {% if joinings|index:forloop.counter0 == 'YES' %}<strong class="text-success">YES</strong>
-                                            {% else%}<strong class="text-danger">NO</strong>{% endif %}
+                                            {% if is_members|index:forloop.counter0 %}
+                                            <i class='mdi mdi-check text-success'></i><span hidden>True</span>
+                                            {% else %}
+                                            <i class='uil-times text-danger'></i><span hidden>False</span>
+                                            {% endif %}
                                           </td>
                                           {% if request.user.employee.view_type == 'ALL' %}
                                           <td>{{req.req_to}}</td>

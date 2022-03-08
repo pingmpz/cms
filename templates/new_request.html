@@ -92,52 +92,11 @@
 
                                               <div class="mb-3">
                                                 <label class="form-label">Request To.. <i class="mdi mdi-asterisk text-danger small"></i></label><br>
-                                                <div class="form-check form-check-inline">
-                                                    <input type="radio" class="form-check-input" name="req_to" id="req_to_ma" value="MA" checked>
-                                                    <label class="form-check-label" for="req_to_ma">Maintenance (MA)</label>
-                                                </div>
-                                                <div class="form-check form-check-inline">
-                                                    <input type="radio" class="form-check-input" name="req_to" id="req_to_ad" value="AD-SER">
-                                                    <label class="form-check-label" for="req_to_ad">Admin Service (AD-SER)</label>
-                                                </div>
-                                              </div>
-
-                                              <div id="ma_mc_group">
-                                                <div class="mb-3">
-                                                    <label class="form-label">Machine</label>
-                                                    <p class="text-muted font-12">* If there is no machine to select please fill in the description.</p>
-                                                    <select class="form-control select2" data-toggle="select2" name="ma_mc_no" id="ma_mc_no">
-                                                        <option>Select</option>
-                                                        {% for mc in ma_mcs %}
-                                                            {% if ma_section_group|index:forloop.counter0 != None %}
-                                                            <optgroup label="{{ma_section_group|index:forloop.counter0}}">
-                                                            {% endif %}
-                                                            <option value="{{mc.mc_no}}">▪️ {{mc.mc_no}}</option>
-                                                            {% if ma_section_group|index:forloop.counter1 != None %}
-                                                            </optgroup>
-                                                            {% endif %}
-                                                        {% endfor %}
-                                                    </select>
-                                                </div>
-                                              </div>
-
-                                              <div id="ad_ser_mc_group" hidden>
-                                                <div class="mb-3">
-                                                    <label class="form-label">Machine</label>
-                                                    <p class="text-muted font-12">* If there is no machine to select please fill in the description.</p>
-                                                    <select class="form-control select2" data-toggle="select2" name="ad_ser_mc_no" id="ad_ser_mc_no">
-                                                        <option>Select</option>
-                                                        {% for mc in ad_ser_mcs %}
-                                                            {% if ad_ser_section_group|index:forloop.counter0 != None %}
-                                                            <optgroup label="{{ad_ser_section_group|index:forloop.counter0}}">
-                                                            {% endif %}
-                                                            <option value="{{mc.mc_no}}">▪️ {{mc.mc_no}}</option>
-                                                            {% if ad_ser_section_group|index:forloop.counter1 != None %}
-                                                            </optgroup>
-                                                            {% endif %}
-                                                        {% endfor %}
-                                                    </select>
-                                                </div>
+                                                <select class="form-control select2" data-toggle="select2" name="sg_name" id="sg_name">
+                                                  {% for sg in sgs %}
+                                                  <option value="{{sg.name}}">{{sg.name}}</option>
+                                                  {% endfor %}
+                                                </select>
                                               </div>
 
                                               <div class="mb-3">
@@ -287,22 +246,6 @@
               valid("description");
               set_text_emptys("invalid_text");
               return true;
-            }
-          }
-
-          //-- Toggle
-          $('input[type=radio][name=req_to]').on("change", function() {
-            toggle();
-          });
-
-          function toggle(){
-            var req_to = $('input[type=radio][name=req_to]:checked').val();
-            if(req_to == 'MA'){
-              unhide("ma_mc_group");
-              hide("ad_ser_mc_group");
-            } else {
-              hide("ma_mc_group");
-              unhide("ad_ser_mc_group");
             }
           }
 

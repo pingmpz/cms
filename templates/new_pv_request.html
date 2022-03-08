@@ -17,6 +17,7 @@
         <link href="{% static "assets/css/app-modern.min.css" %}" rel="stylesheet" type="text/css" id="light-style" />
         <link href="{% static "assets/css/app-modern-dark.min.css" %}" rel="stylesheet" type="text/css" id="dark-style" />
 
+        <link href="{% static "custom/drag-drop-image-uploader/dist/image-uploader.min.css" %}" rel="stylesheet">
     </head>
 
     <body class="loading" data-layout="detached" data-layout-config='{"leftSidebarCondensed":false,"darkMode":false, "showRightSidebarOnStart": false}'>
@@ -39,7 +40,7 @@
                             <div class="col-12">
                                 <div class="page-title-box">
                                     <div class="page-title-right d-flex">
-                                        <button type="button" class="btn btn-success ms-2"><i class="mdi mdi-content-save"></i></button>
+                                        <button type="button" class="btn btn-success ms-2" id="save_button" onclick="save()" title="Save"><i class="mdi mdi-content-save"></i></button>
                                     </div>
                                     <h4 class="page-title"><i class="uil-comment-plus"></i> New Preventive Request</h4>
                                 </div>
@@ -51,32 +52,27 @@
                             <div class="col-12">
                                 <div class="card">
                                     <div class="card-body">
-                                        <div class="row">
+                                      <form action="/new_pv_request_save/" method="POST" id="form">
+                                          {% csrf_token %}
+                                          <div class="row">
                                             <!-- ========== Left Content ========== -->
                                             <div class="col-xl-6">
+                                              <div class="mb-3">
+                                                <label class="form-label">Request To.. <i class="mdi mdi-asterisk text-danger small"></i></label><br>
+                                                <select class="form-control select2" data-toggle="select2" name="sg_name" id="sg_name">
+                                                  {% for sg in sgs %}
+                                                  <option value="{{sg.name}}" {% if request.user.employee.section == sg.name %}selected{% endif %}>{{sg.name}}</option>
+                                                  {% endfor %}
+                                                </select>
+                                              </div>
+
                                               <div class="mb-3">
                                                 <label class="form-label">Request Date <i class="mdi mdi-asterisk text-danger small"></i></label>
                                                 <input type="date" class="form-control" name="req_date" id="req_date">
                                               </div>
 
                                               <div class="mb-3">
-                                                  <label class="form-label">Machine <i class="mdi mdi-asterisk text-danger small"></i></label>
-                                                  <select class="form-control select2" data-toggle="select2" name="mc_no" id="mc_no">
-                                                      <option>Select</option>
-                                                      {% for mc in mcs %}
-                                                          {% if section_group|index:forloop.counter0 != None %}
-                                                          <optgroup label="{{section_group|index:forloop.counter0}}">
-                                                          {% endif %}
-                                                          <option value="{{mc.mc_no}}">▪️ {{mc.mc_no}}</option>
-                                                          {% if section_group|index:forloop.counter1 != None %}
-                                                          </optgroup>
-                                                          {% endif %}
-                                                      {% endfor %}
-                                                  </select>
-                                              </div>
-
-                                              <div class="mb-3">
-                                                  <label class="form-label">Description <i class="mdi mdi-asterisk text-danger small"></i></label>
+                                                  <label class="form-label">Description</label>
                                                   <textarea class="form-control" name="description" id="description" rows="5"></textarea>
                                               </div>
 
@@ -84,53 +80,17 @@
                                             <!-- ========== Right Content ========== -->
                                             <div class="col-xl-6">
                                                 <div class="mb-3 mt-3 mt-xl-0">
-                                                    <label class="mb-0">Files</label>
+                                                    <label class="mb-0">Files (Not Working)</label>
                                                     <p class="text-muted font-12">* Do not upload files that have # in the file name.</p>
-
-                                                    <form action="/" method="post" class="dropzone" name="attachments" id="attachments" data-plugin="dropzone" data-previews-container="#file-previews"
-                                                        data-upload-preview-template="#uploadPreviewTemplate">
-                                                        <div class="fallback">
-                                                            <input name="file" type="file" />
-                                                        </div>
-
-                                                        <div class="dz-message needsclick">
-                                                            <i class="h3 text-muted dripicons-cloud-upload"></i>
-                                                            <h4>Drop files here or click to upload.</h4>
-                                                        </div>
-                                                    </form>
-
-                                                    <!-- Preview -->
-                                                    <div class="dropzone-previews mt-3" id="file-previews"></div>
-
-                                                    <!-- file preview template -->
-                                                    <div class="d-none" id="uploadPreviewTemplate">
-                                                        <div class="card mt-1 mb-0 shadow-none border">
-                                                            <div class="p-2">
-                                                                <div class="row align-items-center">
-                                                                    <div class="col-auto">
-                                                                        <img data-dz-thumbnail src="#" class="avatar-sm rounded bg-light" alt="">
-                                                                    </div>
-                                                                    <div class="col ps-0">
-                                                                        <a href="javascript:void(0);" class="text-muted fw-bold" data-dz-name></a>
-                                                                        <p class="mb-0" data-dz-size></p>
-                                                                    </div>
-                                                                    <div class="col-auto">
-                                                                        <!-- Button -->
-                                                                        <a href="" class="btn btn-link btn-lg text-muted" data-dz-remove>
-                                                                            <i class="dripicons-cross"></i>
-                                                                        </a>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
+                                                    <div style="width: 100%">
+                                                      <div class="input-images" style="padding-top: .5rem;"></div>
                                                     </div>
                                                 </div>
-
-                                                <div class="mb-3">
-
-                                                </div>
                                             </div>
+
+                                            <p class="text-danger text-center small mb-4" id="invalid_text"></p>
                                         </div>
+                                      </form>
                                     </div>
                                 </div>
                             </div>
@@ -155,11 +115,61 @@
         <script src="{% static "assets/js/vendor/dropzone.min.js" %}"></script>
         <!-- init js -->
         <script src="{% static "assets/js/ui/component.fileupload.js" %}"></script>
+
+        <script src="{% static "custom/drag-drop-image-uploader/dist/image-uploader.min.js" %}"></script>
         <script>
         //-- Prevent Back
         window.addEventListener( "pageshow", function (event) {
           if (event.persisted || (typeof window.performance != "undefined" && window.performance.navigation.type === 2)) window.location.reload();
         });
+
+        toggle();
+
+        $('.input-images').imageUploader({
+          extensions: ['.jpg', '.jpeg', '.png', '.gif', '.svg', '.xlsx', '.csv', '.ppt'],
+          // mimes: ['image/jpeg', 'image/png', 'image/gif', 'image/svg+xml', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'],
+          mimes: null,
+        });
+
+        function save(){
+          // Clear Validate
+          remove_valids(['req_date','ma_mc_no','ad_ser_mc_no','description']);
+          set_text_emptys(['invalid_text']);
+          // Function
+          if(validate_req_date()){
+            document.getElementById('form').submit();
+            $('#save_button').prop('disabled', true);
+          }
+        }
+
+        function validate_req_date(){
+          var req_date = $('#req_date').val();
+          if(req_date == ""){
+            invalid("req_date");
+            set_text_value("invalid_text","Please fill 'Request Date'.");
+            return false;
+          } else {
+            valid("req_date");
+            set_text_emptys("invalid_text");
+            return true;
+          }
+        }
+
+        //-- Toggle
+        $('input[type=radio][name=req_to]').on("change", function() {
+          toggle();
+        });
+
+        function toggle(){
+          var req_to = $('input[type=radio][name=req_to]:checked').val();
+          if(req_to == 'MA'){
+            unhide("ma_mc_group");
+            hide("ad_ser_mc_group");
+          } else {
+            hide("ma_mc_group");
+            unhide("ad_ser_mc_group");
+          }
+        }
         </script>
     </body>
 </html>
