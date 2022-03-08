@@ -143,34 +143,23 @@ def request_page(request, request_no):
 #------------------------------------ Main ------------------------------------#
 
 def all_page_data(request):
-    # my_reqs = []
-    # temp_reqs = Request.objects.filter(status='On Progress') | Request.objects.filter(status='On Hold')
-    # for req in temp_reqs:
-    #     is_member = Member.objects.filter(req=req,user=request.user).exists()
-    #     if is_member:
-    #         my_reqs.append(req)
-    # my_request_count = len(my_reqs)
-    #
-    # pending_reqs = []
-    # if request.user.employee.view_type != 'ALL':
-    #     pending_reqs = Request.objects.filter(status='Pending',req_to=request.user.employee.view_type)
-    # else:
-    #     pending_reqs = Request.objects.filter(status='Pending')
-    # pending_request_count = len(pending_reqs)
-    #
-    # all_reqs = []
-    # if request.user.employee.view_type != 'ALL':
-    #     all_reqs = Request.objects.filter(status='On Progress',req_to=request.user.employee.view_type) | Request.objects.filter(status='On Hold',req_to=request.user.employee.view_type)
-    # else:
-    #     all_reqs = temp_reqs
-    # all_request_count = len(all_reqs)
+    my_reqs = []
+    temp_reqs = Request.objects.filter(status='On Progress') | Request.objects.filter(status='On Hold')
+    for req in temp_reqs:
+        is_member = Member.objects.filter(req=req,user=request.user).exists()
+        if is_member:
+            my_reqs.append(req)
+    my_request_count = len(my_reqs)
+
+    pending_reqs = Request.objects.filter(status='Pending')
+    pending_request_count = len(pending_reqs)
+
+    all_reqs = Request.objects.filter(status='On Progress')  | Request.objects.filter(status='On Hold')
+    all_request_count = len(all_reqs)
     context = {
-        # 'my_request_count': my_request_count,
-        # 'pending_request_count': pending_request_count,
-        # 'all_request_count': all_request_count,
-        'my_request_count': 0,
-        'pending_request_count': 0,
-        'all_request_count': 0,
+        'my_request_count': my_request_count,
+        'pending_request_count': pending_request_count,
+        'all_request_count': all_request_count,
     }
     return context
 
@@ -214,7 +203,7 @@ def request_history(request, fstartdate, fstopdate):
         fstartdate = datetime.today().strftime('%Y-%m-%d')
     if fstopdate == "NOW":
         fstopdate = datetime.today().strftime('%Y-%m-%d')
-    reqs = Request.objects.filter(status='Rejected')  | Request.objects.filter(status='Complete') | Request.objects.filter(status='Canceled')
+    reqs = Request.objects.filter(status='Rejected',finish_datetime__date__range=[fstartdate, fstopdate])  | Request.objects.filter(status='Complete',finish_datetime__date__range=[fstartdate, fstopdate]) | Request.objects.filter(status='Canceled',finish_datetime__date__range=[fstartdate, fstopdate])
     is_members = get_is_members(reqs, request)
     context = {
         'fstartdate': fstartdate,

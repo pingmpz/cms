@@ -84,8 +84,8 @@
                                           {% elif req.status == 'On Progress' %}<strong class="text-primary"><i class='mdi mdi-play'></i> On Progress</strong>
                                           {% elif req.status == 'On Hold' %}<strong class="text-dark"><i class='mdi mdi-pause'></i> On Hold</strong>
                                           {% elif req.status == 'Rejected' %}<strong class="text-danger"><i class='uil-times'></i> Rejected</strong>
-                                          {% elif req.status == 'Complete' %}<strong class="text-dark"><i class='mdi mdi-check-all'></i> Complete</strong>
-                                          {% elif req.status == 'Canceled' %}<strong class="text-dark"><i class='uil-ban'></i> Canceled</strong>
+                                          {% elif req.status == 'Complete' %}<strong class="text-success"><i class='mdi mdi-check-all'></i> Complete</strong>
+                                          {% elif req.status == 'Canceled' %}<strong class="text-danger"><i class='uil-ban'></i> Canceled</strong>
                                           {% else %}{{req.status}}{% endif %}
                                         </td>
                                         <td>{{req.reason|default_if_none:""}}</td>
