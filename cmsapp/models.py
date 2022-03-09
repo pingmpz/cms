@@ -62,6 +62,14 @@ class SubCategory(models.Model):
     date_modified = models.DateTimeField(auto_now=True)
     date_published = models.DateTimeField(auto_now_add=True)
 
+class MailGroup(models.Model):
+    id = models.AutoField(primary_key=True)
+    sg = models.ForeignKey(SectionGroup, on_delete=models.CASCADE)
+    is_cc = models.BooleanField(default=False)
+    email = models.CharField(max_length=100)
+    date_modified = models.DateTimeField(auto_now=True)
+    date_published = models.DateTimeField(auto_now_add=True)
+
 class Request(models.Model):
     id = models.AutoField(primary_key=True)
     req_no = models.CharField(max_length=10)

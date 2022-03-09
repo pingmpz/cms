@@ -11,7 +11,7 @@ from openpyxl import load_workbook, Workbook
 # Date Time
 from datetime import datetime, timedelta
 
-from .models import SectionGroup, Employee, Machine, Vendor, Category, SubCategory, Request, File, Member, RequestVendor, Comment, RequestSubCategory, OperatorWorkingTime, VendorWorkingTime, MachineDowntime
+from .models import SectionGroup, Employee, Machine, Vendor, Category, SubCategory, MailGroup, Request, File, Member, RequestVendor, Comment, RequestSubCategory, OperatorWorkingTime, VendorWorkingTime, MachineDowntime
 
 ################################# Authenticate #################################
 
@@ -435,6 +435,15 @@ def master_sg(request):
     context['all_page_data'] = (all_page_data(request))
     return render(request, 'master_sg.html', context)
 
+@login_required(login_url='/')
+def master_mg(request):
+    mgs = MailGroup.objects.all()
+    context = {
+        'mgs': mgs,
+    }
+    context['all_page_data'] = (all_page_data(request))
+    return render(request, 'master_mg.html', context)
+
 #---------------------------------- New Data ----------------------------------#
 
 @login_required(login_url='/')
@@ -475,8 +484,19 @@ def new_sub_cat(request):
     context['all_page_data'] = (all_page_data(request))
     return render(request, 'new_sub_cat.html', context)
 
+@login_required(login_url='/')
+def new_mg(request):
+    sgs = SectionGroup.objects.all()
+    context = {
+        'sgs': sgs,
+    }
+    context['all_page_data'] = (all_page_data(request))
+    return render(request, 'new_mg.html', context)
+
 #################################### POST ######################################
 def setting_save(request):
+    is_reset = True if request.POST.get('is_reset', False) == 'on' else False
+    new_password = request.POST['new_password']
     name = request.POST['name']
     section = request.POST['section']
     phone_no = request.POST['phone_no']
@@ -484,6 +504,10 @@ def setting_save(request):
     sidebar = request.POST['sidebar']
     pv_created = request.POST['pv_created']
     auto_add = request.POST['auto_add']
+    user = request.user
+    if(is_reset):
+        user.set_password(new_password)
+        user.save()
     emp = request.user.employee
     emp.name = name
     emp.section = section
@@ -564,6 +588,17 @@ def new_mc_save(request):
     mc_new.save()
     return redirect('/new_mc/')
 
+def new_ven_save(request):
+    code = request.POST['code']
+    name = request.POST['name']
+    address = request.POST['address']
+    email = request.POST['email']
+    phone_no = request.POST['phone_no']
+    note = request.POST['note']
+    ven_new = Vendor(code=code,name=name,address=address,email=email,phone_no=phone_no,note=note)
+    ven_new.save()
+    return redirect('/new_ven/')
+
 def new_cat_save(request):
     name = request.POST['name']
     cat_new = Category(name=name)
@@ -579,7 +614,28 @@ def new_sub_cat_save(request):
     sub_cat_new.save()
     return redirect('/new_sub_cat/')
 
+def new_mg_save(request):
+    sg_name = request.POST['sg_name']
+    email = request.POST['email']
+    is_cc = True if request.POST.get('is_cc', False) == 'on' else False
+    sg = SectionGroup.objects.get(name=sg_name)
+    mg_new = MailGroup(sg=sg,email=email,is_cc=is_cc)
+    mg_new.save()
+    return redirect('/new_mg/')
+
 ##################################### GET ######################################
+
+def validate_old_password(request):
+    username = request.GET['username']
+    old_password = request.GET['old_password']
+    isCorrect = True
+    user = authenticate(request,username=username,password=old_password)
+    if user == None:
+        isCorrect = False
+    data = {
+        'isCorrect': isCorrect,
+    }
+    return JsonResponse(data)
 
 def validate_username(request):
     username = request.GET['username']
@@ -596,6 +652,17 @@ def validate_mc_no(request):
     mc_no = request.GET['mc_no']
     canUse = True
     isExist = Machine.objects.filter(mc_no=mc_no).exists()
+    if isExist:
+        canUse = False
+    data = {
+        'canUse': canUse,
+    }
+    return JsonResponse(data)
+
+def validate_vendor_code(request):
+    code = request.GET['code']
+    canUse = True
+    isExist = Vendor.objects.filter(code=code).exists()
     if isExist:
         canUse = False
     data = {
@@ -620,6 +687,19 @@ def validate_sub_category_name(request):
     canUse = True
     cat = Category.objects.get(id=cat_id)
     isExist = SubCategory.objects.filter(name=name,cat=cat).exists()
+    if isExist:
+        canUse = False
+    data = {
+        'canUse': canUse,
+    }
+    return JsonResponse(data)
+
+def validate_email_in_group(request):
+    sg_name = request.GET['sg_name']
+    email = request.GET['email']
+    canUse = True
+    sg = SectionGroup.objects.get(name=sg_name)
+    isExist = MailGroup.objects.filter(sg=sg,email=email).exists()
     if isExist:
         canUse = False
     data = {

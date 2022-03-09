@@ -68,7 +68,7 @@
 
                                     <div class="mb-3">
                                         <label class="form-label">Username (Employee ID) <i class="mdi mdi-asterisk text-danger small"></i></label>
-                                        <input class="form-control" type="text" name="new_username" id="new_username">
+                                        <input class="form-control" type="text" name="new_username" id="new_username" required>
                                     </div>
 
                                     <div class="mb-3">
@@ -143,7 +143,7 @@
             var username = $('#new_username').val();
             if(username.length < 4){
               invalid("new_username");
-              set_text_value("invalid_text","Please correct your username.")
+              set_text_value("invalid_text","Please correct your 'Username'.")
               _callback(false);
               return;
             }
@@ -161,7 +161,7 @@
                   return;
                 } else {
                   invalid("new_username");
-                  set_text_value("invalid_text","This username is already exist.")
+                  set_text_value("invalid_text","This 'Username' is already exist.")
                   _callback(false);
                 }
               }
@@ -172,7 +172,7 @@
             var password = $('#new_password').val();
             if(password.length < 4){
               invalid("new_password");
-              set_text_value("invalid_text","Password need at least 4 letters.")
+              set_text_value("invalid_text","Please correct your 'Password'.")
               return false;
             } else {
               valid("new_password");

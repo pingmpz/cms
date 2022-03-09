@@ -4,7 +4,7 @@
 <html lang="en">
     <head>
         <meta charset="utf-8" />
-        <title>New Category | C.C.S. Maintenance Service</title>
+        <title>Mail Group Master | C.C.S. Maintenance Service</title>
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <meta content="A fully featured admin theme which can be used to build CRM, CMS, etc." name="description" />
         <meta content="Coderthemes" name="author" />
@@ -46,30 +46,44 @@
                             <div class="col-12">
                                 <div class="page-title-box">
                                     <div class="page-title-right d-flex">
-                                      <button type="button" class="btn btn-success ms-2" id="save_button" onclick="save()"><i class="mdi mdi-content-save"></i></button>
+                                        <!-- Filter Here -->
                                     </div>
-                                    <h4 class="page-title"><i class="mdi mdi-database-plus-outline"></i> New Category</h4>
+                                    <h4 class="page-title"><i class="uil-database"></i> Mail Group ({{mgs|length}})</h4>
                                 </div>
                             </div>
                         </div>
 
                         <!-- ========== Main Content ========== -->
                         <div class="row">
-                          <div class="col-3">
-
-                          </div>
-                          <div class="col-6">
+                          <div class="col-12">
                             <div class="card">
                               <div class="card-body">
-                                <form action="/new_cat_save/" method="POST" id="form">
-                                    {% csrf_token %}
-                                    <div class="mb-3">
-                                        <label class="form-label">Category Name <i class="mdi mdi-asterisk text-danger small"></i></label>
-                                        <input class="form-control" type="text" name="name" id="name" required>
-                                    </div>
-
-                                    <p class="text-danger text-center small mb-4" id="invalid_text"></p>
-                                </form>
+                                <table id="master_table" class="table table-sm nowrap dt-responsive row-border order-column w-100 small">
+                                  <thead>
+                                      <tr>
+                                          <th>Section Group</th>
+                                          <th>Email</th>
+                                          <th>IsCC</th>
+                                          {% if request.user.is_superuser %}<th>ID</th>{% endif %}
+                                      </tr>
+                                  </thead>
+                                  <tbody>
+                                      {% for mg in mgs %}
+                                      <tr>
+                                          <td>{{mg.sg.name}}</td>
+                                          <td>{{mg.email}}</td>
+                                          <td>
+                                            {% if mg.is_cc %}
+                                            <i class='mdi mdi-check text-success'></i><span hidden>True</span>
+                                            {% else %}
+                                            <i class='uil-times text-danger'></i><span hidden>False</span>
+                                            {% endif %}
+                                          </td>
+                                          {% if request.user.is_superuser %}<td>{{mg.id}}</td>{% endif %}
+                                      </tr>
+                                      {% endfor %}
+                                  </tbody>
+                                </table>
                               </div>
                             </div>
                           </div>
@@ -85,59 +99,39 @@
 
         <!-- ========== Right Side Bar ========== -->
 
+
         <!-- bundle -->
         <script src="{% static "assets/js/vendor.min.js" %}"></script>
         <script src="{% static "assets/js/app.min.js" %}"></script>
         <script src="{% static "custom/custom.js" %}"></script>
         <script src="{% static "custom/topsearch.js" %}"></script>
+        <!-- DataTable -->
+        <script src="{% static "assets/js/vendor/jquery.dataTables.min.js" %}"></script>
+        <script src="{% static "assets/js/vendor/dataTables.bootstrap5.js" %}"></script>
+        <script src="{% static "assets/js/vendor/dataTables.responsive.min.js" %}"></script>
+        <script src="{% static "assets/js/vendor/responsive.bootstrap5.min.js" %}"></script>
+        <script src="{% static "assets/js/vendor/dataTables.buttons.min.js" %}"></script>
+        <script src="{% static "assets/js/vendor/buttons.bootstrap5.min.js" %}"></script>
+        <script src="{% static "assets/js/vendor/buttons.html5.min.js" %}"></script>
+        <script src="{% static "assets/js/vendor/buttons.flash.min.js" %}"></script>
+        <script src="{% static "assets/js/vendor/buttons.print.min.js" %}"></script>
+        <script src="{% static "assets/js/vendor/dataTables.keyTable.min.js" %}"></script>
+        <script src="{% static "assets/js/vendor/dataTables.select.min.js" %}"></script>
+        <script src="{% static "assets/js/vendor/fixedColumns.bootstrap5.min.js" %}"></script>
+        <script src="{% static "assets/js/vendor/fixedHeader.bootstrap5.min.js" %}"></script>
 
-        <script>
-          //-- Prevent Back
-          window.addEventListener( "pageshow", function (event) {
-            if (event.persisted || (typeof window.performance != "undefined" && window.performance.navigation.type === 2)) window.location.reload();
+        <script type="text/javascript">
+          $('#master_table').DataTable( {
+              "order": [[ 0, "asc" ]],
+              'iDisplayLength': 100,
+              "scrollX": true,
+              dom: 'Bfrtip',
+              buttons: [
+                // 'excelHtml5',
+                // 'csvHtml5',
+              ]
           });
-
-          function save(){
-            // Clear Validate
-            remove_valids(['name']);
-            set_text_emptys(['invalid_text']);
-            // Function
-            validate_category_name(function(result) {
-              if(result){
-                document.getElementById('form').submit();
-                $('#save_button').prop('disabled', true);
-              }
-            });
-          }
-
-          function validate_category_name(_callback){
-            var name = $('#name').val();
-            if(name.length == 0){
-              invalid("name");
-              set_text_value("invalid_text","Please fill 'Category Name'.");
-              return false;
-            } else {
-              $.ajax({
-                url: '/validate_category_name/',
-                data: {
-                  'name': name,
-                },
-                dataType: 'json',
-                success: function (data) {
-                  if (data.canUse) {
-                    valid("name");
-                    set_text_emptys("invalid_text");
-                    _callback(true);
-                    return;
-                  } else {
-                    invalid("name");
-                    set_text_value("invalid_text","This 'Category Name' is already exists.")
-                    _callback(false);
-                  }
-                }
-              });
-            }
-          }
         </script>
+
     </body>
 </html>

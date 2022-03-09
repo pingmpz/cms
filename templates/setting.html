@@ -60,12 +60,41 @@
                               <div class="card-body">
                                 <form action="/setting_save/" method="POST" id="form">
                                     {% csrf_token %}
+                                    <input type="password" name="password" id="password" hidden>
+
                                     <div class="row">
                                       <div class="col-6">
 
                                         <div class="mb-3">
-                                            <label class="form-label">Employee ID</label>
+                                            <label class="form-label">Username (Employee ID)</label>
                                             <input class="form-control" type="text" name="username" id="username" value="{{request.user.username}}" readonly>
+                                        </div>
+
+                                        <div class="form-check form-checkbox-primary mb-3">
+                                          <input type="checkbox" class="form-check-input" name="is_reset" id="is_reset">
+                                          <label class="form-check-label" for="is_reset">Reset Password</label>
+                                        </div>
+
+                                        <div class="mb-3">
+                                            <label class="form-label">Old Password <i class="mdi mdi-asterisk text-danger small"></i></label>
+                                            <p class="text-muted font-12">If you just let admin reset your password, your password is 'Ccs.1234'.</p>
+                                            <div class="input-group input-group-merge">
+                                                <input type="password" class="form-control" name="old_password" id="old_password">
+                                                <div class="input-group-text" data-password="false">
+                                                    <span class="password-eye"></span>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="mb-3">
+                                            <label class="form-label">New Password <i class="mdi mdi-asterisk text-danger small"></i></label>
+                                            <p class="text-muted font-12">* At least 4 letters.</p>
+                                            <div class="input-group input-group-merge">
+                                                <input type="password" class="form-control" name="new_password" id="new_password">
+                                                <div class="input-group-text" data-password="false">
+                                                    <span class="password-eye"></span>
+                                                </div>
+                                            </div>
                                         </div>
 
                                         <div class="mb-3">
@@ -152,12 +181,68 @@
 
           function save(){
             // Clear Validate
-            remove_valids(['name','section','phone_no']);
+            remove_valids(['old_password','new_password','name','section','phone_no']);
             set_text_emptys(['invalid_text']);
             // Function
-            if(validate_name() && validate_section() && validate_phone_no()){
-              document.getElementById('form').submit();
-              $('#save_button').prop('disabled', true);
+            validate_old_password(function(result) {
+              if(result && validate_new_password() && validate_name() && validate_section() && validate_phone_no()){
+                document.getElementById('form').submit();
+                $('#save_button').prop('disabled', true);
+              }
+            });
+          }
+
+          function validate_old_password(_callback){
+            var is_reset = $('#is_reset').is(':checked');
+            var username = $('#username').val();
+            var old_password = $('#old_password').val();
+            if(!is_reset){
+              set_text_emptys("invalid_text");
+              _callback(true);
+              return;
+            } else if(old_password.length == 0){
+              invalid("old_password");
+              set_text_value("invalid_text","Please fill 'Old Password'.")
+              _callback(false);
+              return;
+            } else {
+              $.ajax({
+                url: '/validate_old_password/',
+                data: {
+                  'username': username,
+                  'old_password': old_password,
+                },
+                dataType: 'json',
+                success: function (data) {
+                  if (data.isCorrect) {
+                    valid("old_password");
+                    set_text_emptys("invalid_text");
+                    _callback(true);
+                    return;
+                  } else {
+                    invalid("old_password");
+                    set_text_value("invalid_text","This 'Old Password' is not correct.")
+                    _callback(false);
+                  }
+                }
+              });
+            }
+          }
+
+          function validate_new_password(){
+            var is_reset = $('#is_reset').is(':checked');
+            var new_password = $('#new_password').val();
+            if(!is_reset){
+              set_text_emptys("invalid_text");
+              return true;
+            } else if(new_password.length < 4){
+              invalid("new_password");
+              set_text_value("invalid_text","Please correct your 'New Password'.");
+              return false;
+            } else {
+              valid("new_password");
+              set_text_emptys("invalid_text");
+              return true;
             }
           }
 

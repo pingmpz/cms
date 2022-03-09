@@ -74,6 +74,7 @@
                                           <th>Status</th>
                                           <th>Request to</th>
                                           <th>Description</th>
+                                          <th>Machine No</th>
                                           <th>Request By</th>
                                       </tr>
                                   </thead>
@@ -94,6 +95,7 @@
                                           </td>
                                           <td>{{req.sg.name}}</td>
                                           <td>{{req.description}}</td>
+                                          <td>{{req.mc.mc_no|default_if_none:""}}</td>
                                           <td>{{req.emp_id}} | {{req.name|title}} ({{req.section}}) <i class="uil-phone"></i> {{req.phone_no}}</td>
                                       </tr>
                                       {% endfor %}

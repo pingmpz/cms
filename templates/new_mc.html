@@ -65,12 +65,12 @@
 
                                         <div class="mb-3">
                                             <label class="form-label">Machine No <i class="mdi mdi-asterisk text-danger small"></i></label>
-                                            <input class="form-control" type="text" name="mc_no" id="mc_no">
+                                            <input class="form-control" type="text" name="mc_no" id="mc_no" required>
                                         </div>
 
                                         <div class="mb-3">
                                             <label class="form-label">Section <i class="mdi mdi-asterisk text-danger small"></i></label>
-                                            <input class="form-control" type="text" name="section" id="section">
+                                            <input class="form-control" type="text" name="section" id="section" required>
                                         </div>
 
                                         <div class="mb-3">
@@ -193,7 +193,7 @@
                   return;
                 } else {
                   invalid("mc_no");
-                  set_text_value("invalid_text","This machine no is already exist.")
+                  set_text_value("invalid_text","This 'Machine No' is already exist.")
                   _callback(false);
                 }
               }

@@ -4,7 +4,7 @@
 <html lang="en">
     <head>
         <meta charset="utf-8" />
-        <title>New Category | C.C.S. Maintenance Service</title>
+        <title>New Mail Group | C.C.S. Maintenance Service</title>
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <meta content="A fully featured admin theme which can be used to build CRM, CMS, etc." name="description" />
         <meta content="Coderthemes" name="author" />
@@ -48,7 +48,7 @@
                                     <div class="page-title-right d-flex">
                                       <button type="button" class="btn btn-success ms-2" id="save_button" onclick="save()"><i class="mdi mdi-content-save"></i></button>
                                     </div>
-                                    <h4 class="page-title"><i class="mdi mdi-database-plus-outline"></i> New Category</h4>
+                                    <h4 class="page-title"><i class="mdi mdi-database-plus-outline"></i> New Mail Group</h4>
                                 </div>
                             </div>
                         </div>
@@ -61,11 +61,25 @@
                           <div class="col-6">
                             <div class="card">
                               <div class="card-body">
-                                <form action="/new_cat_save/" method="POST" id="form">
+                                <form action="/new_mg_save/" method="POST" id="form">
                                     {% csrf_token %}
                                     <div class="mb-3">
-                                        <label class="form-label">Category Name <i class="mdi mdi-asterisk text-danger small"></i></label>
-                                        <input class="form-control" type="text" name="name" id="name" required>
+                                        <label class="form-label">Section Group <i class="mdi mdi-asterisk text-danger small"></i></label>
+                                        <select class="form-control select2" data-toggle="select2" name="sg_name" id="sg_name" required>
+                                          {% for sg in sgs %}
+                                          <option value="{{sg.name}}" {% if request.user.employee.section == sg.name %}selected{% endif %}>{{sg.name}}</option>
+                                          {% endfor %}
+                                        </select>
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label class="form-label">Email <i class="mdi mdi-asterisk text-danger small"></i></label>
+                                        <input class="form-control" type="text" name="email" id="email" required>
+                                    </div>
+
+                                    <div class="form-check form-checkbox-success mb-3">
+                                      <input type="checkbox" class="form-check-input" name="is_cc" id="is_cc">
+                                      <label class="form-check-label" for="is_cc">Is CC</label>
                                     </div>
 
                                     <p class="text-danger text-center small mb-4" id="invalid_text"></p>
@@ -99,10 +113,10 @@
 
           function save(){
             // Clear Validate
-            remove_valids(['name']);
+            remove_valids(['sg_name','email']);
             set_text_emptys(['invalid_text']);
             // Function
-            validate_category_name(function(result) {
+            validate_email_in_group(function(result) {
               if(result){
                 document.getElementById('form').submit();
                 $('#save_button').prop('disabled', true);
@@ -110,28 +124,30 @@
             });
           }
 
-          function validate_category_name(_callback){
-            var name = $('#name').val();
-            if(name.length == 0){
-              invalid("name");
-              set_text_value("invalid_text","Please fill 'Category Name'.");
+          function validate_email_in_group(_callback){
+            var sg_name = $('#sg_name').val();
+            var email = $('#email').val();
+            if(email.length == 0){
+              invalid("email");
+              set_text_value("invalid_text","Please fill 'Email'.");
               return false;
             } else {
               $.ajax({
-                url: '/validate_category_name/',
+                url: '/validate_email_in_group/',
                 data: {
-                  'name': name,
+                  'sg_name': sg_name,
+                  'email': email,
                 },
                 dataType: 'json',
                 success: function (data) {
                   if (data.canUse) {
-                    valid("name");
+                    valid("email");
                     set_text_emptys("invalid_text");
                     _callback(true);
                     return;
                   } else {
-                    invalid("name");
-                    set_text_value("invalid_text","This 'Category Name' is already exists.")
+                    invalid("email");
+                    set_text_value("invalid_text","This 'Email' is already in "+sg_name+" group.")
                     _callback(false);
                   }
                 }
