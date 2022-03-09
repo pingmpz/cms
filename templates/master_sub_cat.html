@@ -61,18 +61,18 @@
                                 <table id="master_table" class="table table-sm nowrap dt-responsive row-border order-column w-100 small">
                                   <thead>
                                       <tr>
-                                          {% if request.user.is_superuser %}<th>ID</th>{% endif %}
-                                          <th>Name</th>
                                           <th>Category</th>
+                                          <th {% if not request.user.is_superuser %}hidden{% endif %}>ID</th>
+                                          <th>Name</th>
                                           <th>Description</th>
                                       </tr>
                                   </thead>
                                   <tbody>
                                       {% for sub_cat in sub_cats %}
                                       <tr>
-                                          {% if request.user.is_superuser %}<td>{{sub_cat.id}}</td>{% endif %}
-                                          <td>{{sub_cat.name}}</td>
                                           <td>{{sub_cat.cat.name}}</td>
+                                          <td {% if not request.user.is_superuser %}hidden{% endif %}>{{sub_cat.id}}</td>
+                                          <td>{{sub_cat.name}}</td>
                                           <td>{{sub_cat.description}}</td>
                                       </tr>
                                       {% endfor %}
@@ -115,15 +115,25 @@
         <script src="{% static "assets/js/vendor/fixedHeader.bootstrap5.min.js" %}"></script>
 
         <script type="text/javascript">
-          $('#master_table').DataTable( {
-              "order": [[ 0, "asc" ]],
-              'iDisplayLength': 100,
-              "scrollX": true,
-              dom: 'Bfrtip',
-              buttons: [
-                // 'excelHtml5',
-                // 'csvHtml5',
-              ]
+          var table = $('#master_table').DataTable( {
+            "columnDefs": [{ "visible": true, "targets": 0 }],
+            "order": [[ 0, "asc" ]],
+            "displayLength": 100,
+            "scrollX": true,
+            "drawCallback": function ( settings ) {
+                  var api = this.api();
+                  var rows = api.rows( {page:'current'} ).nodes();
+                  var last=null;
+
+                  api.column(0, {page:'current'} ).data().each( function ( group, i ) {
+                      if ( last !== group ) {
+                          $(rows).eq( i ).before(
+                              '<tr class="group"><td colspan="10">⎯<b><i> '+group+'</i></b></td></tr>'
+                          );
+                          last = group;
+                      }
+                });
+              }
           });
         </script>
 

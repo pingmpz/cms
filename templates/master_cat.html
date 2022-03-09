@@ -61,14 +61,14 @@
                                 <table id="master_table" class="table table-sm nowrap dt-responsive row-border order-column w-100 small">
                                   <thead>
                                       <tr>
-                                          {% if request.user.is_superuser %}<th>ID</th>{% endif %}
+                                          <th {% if not request.user.is_superuser %}hidden{% endif %}>ID</th>
                                           <th>Name</th>
                                       </tr>
                                   </thead>
                                   <tbody>
                                       {% for cat in cats %}
                                       <tr>
-                                          {% if request.user.is_superuser %}<td>{{cat.id}}</td>{% endif %}
+                                          <td {% if not request.user.is_superuser %}hidden{% endif %}>{{cat.id}}</td>
                                           <td>{{cat.name}}</td>
                                       </tr>
                                       {% endfor %}
@@ -112,7 +112,7 @@
 
         <script type="text/javascript">
           $('#master_table').DataTable( {
-              "order": [[ 0, "asc" ]],
+              "order": [[ 1, "asc" ]],
               'iDisplayLength': 100,
               "scrollX": true,
               dom: 'Bfrtip',

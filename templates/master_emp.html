@@ -62,7 +62,7 @@
                                   <thead>
                                       <tr>
                                           <th>Employee ID</th>
-                                          {% if request.user.is_superuser %}<th>ID</th>{% endif %}
+                                          <th {% if not request.user.is_superuser %}hidden{% endif %}>ID</th>
                                           <th>Name</th>
                                           <th>Section</th>
                                           <th>PhoneNo</th>
@@ -82,7 +82,7 @@
                                       {% for user in users %}
                                       <tr>
                                           <td>{{user.username}}</td>
-                                          {% if request.user.is_superuser %}<td>{{user.employee.id}}</td>{% endif %}
+                                          <td {% if not request.user.is_superuser %}hidden{% endif %}>{{user.employee.id}}</td>
                                           <td>{{user.employee.name}}</td>
                                           <td>{{user.employee.section}}</td>
                                           <td>{{user.employee.phone_no}}</td>
