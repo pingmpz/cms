@@ -11,12 +11,14 @@ from openpyxl import load_workbook, Workbook
 # Date Time
 from datetime import datetime, timedelta
 
-from .models import Employee, Machine, Category, SubCategory, SectionGroup, SectionGroupMember, Request, File, Member, Comment, RequestSubCategory, OperatorWorkingTime, MachineDowntime
+from .models import Employee, Machine, Category, SubCategory, SectionGroup, Request, File, Member, Comment, RequestSubCategory, OperatorWorkingTime, MachineDowntime
 
 ################################# Authenticate #################################
 
 def first_page(request):
+    sgs = SectionGroup.objects.all()
     context = {
+        'sgs': sgs,
     }
     return render(request, 'first_page.html', context)
 
@@ -66,6 +68,12 @@ def new_request(request):
         'sgs': sgs,
     }
     return render(request, 'new_request.html', context)
+
+def new_request_success(request, request_no):
+    context = {
+        'request_no': request_no,
+    }
+    return render(request, 'new_request_success.html', context)
 
 def new_pv_request(request):
     sgs = SectionGroup.objects.all()
@@ -235,14 +243,25 @@ def request_all(request, fsg):
     return render(request, 'request_all.html', context)
 
 @login_required(login_url='/')
-def request_history(request, fstartdate, fstopdate):
-    if fstartdate == "NOW":
-        fstartdate = datetime.today().strftime('%Y-%m-%d')
-    if fstopdate == "NOW":
+def request_history(request, fsg, fstartdate, fstopdate):
+    sgs = SectionGroup.objects.all()
+    reqs = []
+    if fsg == 'MY' and is_in_section_group(request):
+        fsg = request.user.employee.section
+    elif fsg == 'MY':
+        fsg = sgs[0].name
+    if fstartdate == "LASTWEEK":
+        fstartdate = (datetime.today() - timedelta(days=7)).strftime('%Y-%m-%d')
+    if fstopdate == "TODAY":
         fstopdate = datetime.today().strftime('%Y-%m-%d')
-    reqs = Request.objects.filter(status='Rejected',finish_datetime__date__range=[fstartdate, fstopdate])  | Request.objects.filter(status='Complete',finish_datetime__date__range=[fstartdate, fstopdate]) | Request.objects.filter(status='Canceled',finish_datetime__date__range=[fstartdate, fstopdate])
+    if fsg == 'ALL':
+        reqs = Request.objects.filter(status='Rejected',finish_datetime__date__range=[fstartdate, fstopdate])  | Request.objects.filter(status='Complete',finish_datetime__date__range=[fstartdate, fstopdate]) | Request.objects.filter(status='Canceled',finish_datetime__date__range=[fstartdate, fstopdate])
+    else:
+        reqs = Request.objects.filter(status='Rejected',sg=fsg,finish_datetime__date__range=[fstartdate, fstopdate])  | Request.objects.filter(status='Complete',sg=fsg,finish_datetime__date__range=[fstartdate, fstopdate]) | Request.objects.filter(status='Canceled',sg=fsg,finish_datetime__date__range=[fstartdate, fstopdate])
     is_members = get_is_members(reqs, request)
     context = {
+        'sgs': sgs,
+        'fsg': fsg,
         'fstartdate': fstartdate,
         'fstopdate': fstopdate,
         'reqs': reqs,
@@ -254,8 +273,93 @@ def request_history(request, fstartdate, fstopdate):
 #----------------------------------- Report -----------------------------------#
 
 @login_required(login_url='/')
-def summary(request):
+def summary(request, fsg):
+    sgs = SectionGroup.objects.all()
+    pending_req_count = 0
+    rejected_req_count = 0
+    on_process_req_count = 0
+    on_hold_req_count = 0
+    complete_req_count = 0
+    canceled_req_count = 0
+
+    pending_us_req_count = 0
+    rejected_us_req_count = 0
+    on_process_us_req_count = 0
+    on_hold_us_req_count = 0
+    complete_us_req_count = 0
+    canceled_us_req_count = 0
+
+    pending_pv_req_count = 0
+    rejected_pv_req_count = 0
+    on_process_pv_req_count = 0
+    on_hold_pv_req_count = 0
+    complete_pv_req_count = 0
+    canceled_pv_req_count = 0
+    if fsg == 'MY' and is_in_section_group(request):
+        fsg = request.user.employee.section
+    elif fsg == 'MY':
+        fsg = sgs[0].name
+    if fsg == 'ALL':
+        pending_us_req_count = len(Request.objects.filter(status='Pending',type='User Request'))
+        pending_pv_req_count = len(Request.objects.filter(status='Pending',type='Preventive'))
+        pending_req_count = pending_us_req_count + pending_pv_req_count
+        rejected_us_req_count = len(Request.objects.filter(status='Rejected',type='User Request'))
+        rejected_pv_req_count = len(Request.objects.filter(status='Rejected',type='Preventive'))
+        rejected_req_count = rejected_us_req_count + rejected_pv_req_count
+        on_process_us_req_count = len(Request.objects.filter(status='On Progress',type='User Request'))
+        on_process_pv_req_count = len(Request.objects.filter(status='On Progress',type='Preventive'))
+        on_process_req_count = on_process_us_req_count + on_process_pv_req_count
+        on_hold_us_req_count = len(Request.objects.filter(status='On Hold',type='User Request'))
+        on_hold_pv_req_count = len(Request.objects.filter(status='On Hold',type='Preventive'))
+        on_hold_req_count = on_hold_us_req_count + on_hold_pv_req_count
+        complete_us_req_count = len(Request.objects.filter(status='Complete',type='User Request'))
+        complete_pv_req_count = len(Request.objects.filter(status='Complete',type='Preventive'))
+        complete_req_count = complete_us_req_count + complete_pv_req_count
+        canceled_us_req_count = len(Request.objects.filter(status='Canceled',type='User Request'))
+        canceled_pv_req_count = len(Request.objects.filter(status='Canceled',type='Preventive'))
+        canceled_req_count = canceled_us_req_count + canceled_pv_req_count
+    else:
+        pending_us_req_count = len(Request.objects.filter(status='Pending',type='User Request',sg=fsg))
+        pending_pv_req_count = len(Request.objects.filter(status='Pending',type='Preventive',sg=fsg))
+        pending_req_count = pending_us_req_count + pending_pv_req_count
+        rejected_us_req_count = len(Request.objects.filter(status='Rejected',type='User Request',sg=fsg))
+        rejected_pv_req_count = len(Request.objects.filter(status='Rejected',type='Preventive',sg=fsg))
+        rejected_req_count = rejected_us_req_count + rejected_pv_req_count
+        on_process_us_req_count = len(Request.objects.filter(status='On Progress',type='User Request',sg=fsg))
+        on_process_pv_req_count = len(Request.objects.filter(status='On Progress',type='Preventive',sg=fsg))
+        on_process_req_count = on_process_us_req_count + on_process_pv_req_count
+        on_hold_us_req_count = len(Request.objects.filter(status='On Hold',type='User Request',sg=fsg))
+        on_hold_pv_req_count = len(Request.objects.filter(status='On Hold',type='Preventive',sg=fsg))
+        on_hold_req_count = on_hold_us_req_count + on_hold_pv_req_count
+        complete_us_req_count = len(Request.objects.filter(status='Complete',type='User Request',sg=fsg))
+        complete_pv_req_count = len(Request.objects.filter(status='Complete',type='Preventive',sg=fsg))
+        complete_req_count = complete_us_req_count + complete_pv_req_count
+        canceled_us_req_count = len(Request.objects.filter(status='Canceled',type='User Request',sg=fsg))
+        canceled_pv_req_count = len(Request.objects.filter(status='Canceled',type='Preventive',sg=fsg))
+        canceled_req_count = canceled_us_req_count + canceled_pv_req_count
     context = {
+        'sgs': sgs,
+        'fsg': fsg,
+        'pending_req_count': pending_req_count,
+        'rejected_req_count': rejected_req_count,
+        'on_process_req_count': on_process_req_count,
+        'on_hold_req_count': on_hold_req_count,
+        'complete_req_count': complete_req_count,
+        'canceled_req_count': canceled_req_count,
+
+        'pending_us_req_count': pending_us_req_count,
+        'rejected_us_req_count': rejected_us_req_count,
+        'on_process_us_req_count': on_process_us_req_count,
+        'on_hold_us_req_count': on_hold_us_req_count,
+        'complete_us_req_count': complete_us_req_count,
+        'canceled_us_req_count': canceled_us_req_count,
+
+        'pending_pv_req_count': pending_pv_req_count,
+        'rejected_pv_req_count': rejected_pv_req_count,
+        'on_process_pv_req_count': on_process_pv_req_count,
+        'on_hold_pv_req_count': on_hold_pv_req_count,
+        'complete_pv_req_count': complete_pv_req_count,
+        'canceled_pv_req_count': canceled_pv_req_count,
     }
     context['all_page_data'] = (all_page_data(request))
     return render(request, 'summary.html', context)
@@ -380,7 +484,7 @@ def new_request_save(request):
     request_new.save()
     request_new.req_no = create_req_no(request_new.id)
     request_new.save()
-    return redirect('/')
+    return redirect('/new_request_success/' + request_new.req_no)
 
 def new_pv_request_save(request):
     sg_name = request.POST['sg_name']
@@ -724,7 +828,7 @@ def upload_machine():
 
 def create_req_no(id):
     req_no = str(id)
-    for i in range(6 - len(str(id))):
+    for i in range(7 - len(str(id))):
         req_no = "0" + req_no
     req_no = "CMS" + req_no
     return req_no

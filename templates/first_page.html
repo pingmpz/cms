@@ -33,9 +33,9 @@
                             <p class="mb-4 font-16 text-white-50">
                               Welcome to C.C.S. Maintenance Service.<br>
                               <u>Support Sections</u><br>
-                              &nbsp;▪️ MA (Maintenance)<br>
-                              &nbsp;▪️ AD-SER (Admin Service)<br>
-                              &nbsp;▪️ OHS (Safety)<br>
+                              {% for sg in sgs %}
+                              &nbsp;▪️ {{sg.name}} ({{sg.full_name}})<br>
+                              {% endfor %}
                             </p>
 
                             <a class="btn btn-success rounded-pill" href="/new_request/"><i class="uil-comment-plus"></i> New Request</a>

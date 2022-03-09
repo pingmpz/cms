@@ -46,13 +46,7 @@ class SubCategory(models.Model):
 
 class SectionGroup(models.Model):
     name = models.CharField(max_length=50, primary_key=True)
-    date_modified = models.DateTimeField(auto_now=True)
-    date_published = models.DateTimeField(auto_now_add=True)
-
-class SectionGroupMember(models.Model):
-    id = models.AutoField(primary_key=True)
-    sg = models.ForeignKey(SectionGroup, on_delete=models.CASCADE)
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    full_name = models.CharField(max_length=100, null=True)
     date_modified = models.DateTimeField(auto_now=True)
     date_published = models.DateTimeField(auto_now_add=True)
 

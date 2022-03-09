@@ -12,15 +12,16 @@ urlpatterns = [
     path('setting/', views.setting, name='setting'),
     ### Page
     path('new_request/', views.new_request, name='new_request'),
+    path('new_request_success/<str:request_no>', views.new_request_success, name='new_request_success'),
     path('new_pv_request/', views.new_pv_request, name='new_pv_request'),
     path('request_page/<str:request_no>', views.request_page, name='request_page'),
     #--
     path('index/', views.index, name='index'),
     path('request_pending/<str:fsg>', views.request_pending, name='request_pending'),
     path('request_all/<str:fsg>', views.request_all, name='request_all'),
-    path('request_history/<str:fstartdate>&<str:fstopdate>', views.request_history, name='request_history'),
+    path('request_history/<str:fsg>&<str:fstartdate>&<str:fstopdate>', views.request_history, name='request_history'),
     #-- Report
-    path('summary/', views.summary, name='summary'),
+    path('summary/<str:fsg>', views.summary, name='summary'),
     #-- Master
     path('master_emp/', views.master_emp, name='master_emp'),
     path('master_mc/', views.master_mc, name='master_mc'),
