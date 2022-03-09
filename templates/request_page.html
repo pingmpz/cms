@@ -32,7 +32,7 @@
         <!-- ========== Pre-Loader ========== -->
         <div id="preloader">
             <div id="status">
-                <div class="bouncing-loader"><div ></div><div ></div><div ></div></div>
+                <div class="bouncing-loader"><div></div><div></div><div></div></div>
             </div>
         </div>
 
@@ -476,6 +476,7 @@
                                                   <div class="tab-pane show" id="vendor">
                                                     <!-- ========== Add Operate Time ========== -->
                                                     {% if req.status == 'On Progress' or req.status == 'On Hold' %}
+                                                    {% if is_member %}
                                                     <p class="text-muted font-12">Use 'CTRL' to select multiple item</p>
                                                     <div class="row">
                                                       <div class="col-10">
@@ -506,6 +507,7 @@
                                                       </div>
                                                     </div>
                                                     <hr>
+                                                    {% endif %}
                                                     {% endif %}
                                                     <!-- ========== Vendor Working Time Table ========== -->
                                                     {% if vwts|length > 0 %}
@@ -649,7 +651,7 @@
                                             {% elif req.status == 'On Hold' and not is_member %}
                                             <button type="button" class="btn btn-xs mb-1 btn-outline-success" onclick="join_request()"><i class='uil-sign-in-alt me-1'></i>Join</button>
                                             {% elif req.status == 'On Hold' %}
-                                            <button type="button" class="btn btn-xs mb-1 btn-warning"><i class='uil-pen me-1'></i><del>Edit Request</del></button>
+                                            <button type="button" class="btn btn-xs mb-1 btn-warning"><i class='mdi mdi-lead-pencil me-1'></i><del>Edit Request</del></button>
                                             <button type="button" class="btn btn-xs mb-1 btn-info" data-bs-toggle="modal" data-bs-target="#manage_member_modal"><i class='mdi mdi-account-edit me-1'></i>Manage Member</button>
                                             <button type="button" class="btn btn-xs mb-1 btn-info" data-bs-toggle="modal" data-bs-target="#manage_vendor_modal"><i class='mdi mdi-briefcase-edit me-1'></i>Manage Vendor</button>
                                             <button type="button" class="btn btn-xs mb-1 btn-info" data-bs-toggle="modal" data-bs-target="#manage_category_modal"><i class='mdi mdi-puzzle-edit me-1'></i>Manage Category</button>
@@ -662,7 +664,7 @@
                                             {% elif req.status == 'On Progress' and not is_member %}
                                             <button type="button" class="btn btn-xs mb-1 btn-outline-success" onclick="join_request()"><i class='uil-sign-in-alt me-1'></i>Join</button>
                                             {% elif req.status == 'On Progress' %}
-                                            <button type="button" class="btn btn-xs mb-1 btn-warning"><i class='uil-pen me-1'></i><del>Edit Request</del></button>
+                                            <button type="button" class="btn btn-xs mb-1 btn-warning"><i class='mdi mdi-lead-pencil me-1'></i><del>Edit Request</del></button>
                                             <button type="button" class="btn btn-xs mb-1 btn-info" data-bs-toggle="modal" data-bs-target="#manage_member_modal"><i class='mdi mdi-account-edit me-1'></i>Manage Member</button>
                                             <button type="button" class="btn btn-xs mb-1 btn-info" data-bs-toggle="modal" data-bs-target="#manage_vendor_modal"><i class='mdi mdi-briefcase-edit me-1'></i>Manage Vendor</button>
                                             <button type="button" class="btn btn-xs mb-1 btn-info" data-bs-toggle="modal" data-bs-target="#manage_category_modal"><i class='mdi mdi-puzzle-edit me-1'></i>Manage Category</button>
@@ -990,6 +992,9 @@
                                 {% endfor %}
                             </select>
                           </div>
+                          <div class="mb-3">
+                            <p class="text-info text-center font-12"><i class='mdi mdi-information-outline'></i> Leaving member working time won't be deleted.</p>
+                          </div>
                       </div>
                       <div class="modal-footer">
                           <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
@@ -1015,6 +1020,9 @@
                                 <option value="{{ven.code}}" {% if select_vendors|index:forloop.counter0 %}selected{% endif %}>{{ven.code}} | {{ven.name}}</option>
                                 {% endfor %}
                             </select>
+                          </div>
+                          <div class="mb-3">
+                            <p class="text-info text-center font-12"><i class='mdi mdi-information-outline'></i> Leaving vendor working time won't be deleted.</p>
                           </div>
                       </div>
                       <div class="modal-footer">
