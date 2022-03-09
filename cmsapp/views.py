@@ -11,7 +11,7 @@ from openpyxl import load_workbook, Workbook
 # Date Time
 from datetime import datetime, timedelta
 
-from .models import Employee, Machine, Category, SubCategory, SectionGroup, Request, File, Member, Comment, RequestSubCategory, OperatorWorkingTime, MachineDowntime
+from .models import SectionGroup, Employee, Machine, Vendor, Category, SubCategory, Request, File, Member, Comment, RequestSubCategory, OperatorWorkingTime, MachineDowntime
 
 ################################# Authenticate #################################
 
@@ -385,13 +385,13 @@ def master_mc(request):
     return render(request, 'master_mc.html', context)
 
 @login_required(login_url='/')
-def master_vendor(request):
-    users = User.objects.all()
+def master_ven(request):
+    vens = Vendor.objects.all()
     context = {
-        'users': users,
+        'vens': vens,
     }
     context['all_page_data'] = (all_page_data(request))
-    return render(request, 'master_vendor.html', context)
+    return render(request, 'master_ven.html', context)
 
 @login_required(login_url='/')
 def master_cat(request):
@@ -411,6 +411,15 @@ def master_sub_cat(request):
     context['all_page_data'] = (all_page_data(request))
     return render(request, 'master_sub_cat.html', context)
 
+@login_required(login_url='/')
+def master_sg(request):
+    sgs = SectionGroup.objects.all()
+    context = {
+        'sgs': sgs,
+    }
+    context['all_page_data'] = (all_page_data(request))
+    return render(request, 'master_sg.html', context)
+
 #---------------------------------- New Data ----------------------------------#
 
 @login_required(login_url='/')
@@ -429,11 +438,11 @@ def new_mc(request):
     return render(request, 'new_mc.html', context)
 
 @login_required(login_url='/')
-def new_vendor(request):
+def new_ven(request):
     context = {
     }
     context['all_page_data'] = (all_page_data(request))
-    return render(request, 'new_vendor.html', context)
+    return render(request, 'new_ven.html', context)
 
 @login_required(login_url='/')
 def new_cat(request):
@@ -523,6 +532,23 @@ def new_emp_save(request):
     employee_new.save()
     return redirect('/new_emp/')
 
+def new_mc_save(request):
+    mc_no = request.POST['mc_no']
+    section = request.POST['section']
+    register_no = request.POST['register_no']
+    asset_no = request.POST['asset_no']
+    serial_no = request.POST['serial_no']
+    manufacture = request.POST['manufacture']
+    model = request.POST['model']
+    plant = request.POST['plant']
+    power = request.POST['power']
+    install_date = request.POST['install_date'] if request.POST['install_date'] != "" else None
+    capacity = request.POST['capacity']
+    note = request.POST['note']
+    mc_new = Machine(mc_no=mc_no,section=section,register_no=register_no,asset_no=asset_no,serial_no=serial_no,manufacture=manufacture,model=model,plant=plant,power=power,install_date=install_date,capacity=capacity,note=note)
+    mc_new.save()
+    return redirect('/new_mc/')
+
 def new_cat_save(request):
     name = request.POST['name']
     cat_new = Category(name=name)
@@ -544,6 +570,17 @@ def validate_username(request):
     username = request.GET['username']
     canUse = True
     isExist = User.objects.filter(username=username).exists()
+    if isExist:
+        canUse = False
+    data = {
+        'canUse': canUse,
+    }
+    return JsonResponse(data)
+
+def validate_mc_no(request):
+    mc_no = request.GET['mc_no']
+    canUse = True
+    isExist = Machine.objects.filter(mc_no=mc_no).exists()
     if isExist:
         canUse = False
     data = {

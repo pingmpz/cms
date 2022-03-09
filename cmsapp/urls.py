@@ -25,13 +25,14 @@ urlpatterns = [
     #-- Master
     path('master_emp/', views.master_emp, name='master_emp'),
     path('master_mc/', views.master_mc, name='master_mc'),
-    path('master_vendor/', views.master_vendor, name='master_vendor'),
+    path('master_ven/', views.master_ven, name='master_ven'),
     path('master_cat/', views.master_cat, name='master_cat'),
     path('master_sub_cat/', views.master_sub_cat, name='master_sub_cat'),
+    path('master_sg/', views.master_sg, name='master_sg'),
     #-- New Data
     path('new_emp/', views.new_emp, name='new_emp'),
     path('new_mc/', views.new_mc, name='new_mc'),
-    path('new_vendor/', views.new_vendor, name='new_vendor'),
+    path('new_ven/', views.new_ven, name='new_ven'),
     path('new_cat/', views.new_cat, name='new_cat'),
     path('new_sub_cat/', views.new_sub_cat, name='new_sub_cat'),
     ### POST
@@ -39,10 +40,12 @@ urlpatterns = [
     path('new_request_save/', views.new_request_save, name='new_request_save'),
     path('new_pv_request_save/', views.new_pv_request_save, name='new_pv_request_save'),
     path('new_emp_save/', views.new_emp_save, name='new_emp_save'),
+    path('new_mc_save/', views.new_mc_save, name='new_mc_save'),
     path('new_cat_save/', views.new_cat_save, name='new_cat_save'),
     path('new_sub_cat_save/', views.new_sub_cat_save, name='new_sub_cat_save'),
     ### GET
     path('validate_username/', views.validate_username, name='validate_username'),
+    path('validate_mc_no/', views.validate_mc_no, name='validate_mc_no'),
     path('validate_category_name/', views.validate_category_name, name='validate_category_name'),
     path('validate_sub_category_name/', views.validate_sub_category_name, name='validate_sub_category_name'),
     path('find_emp_info/', views.find_emp_info, name='find_emp_info'),

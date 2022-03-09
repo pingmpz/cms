@@ -1,6 +1,12 @@
 from django.db import models
 from django.contrib.auth.models import User
 
+class SectionGroup(models.Model):
+    name = models.CharField(max_length=50, primary_key=True)
+    full_name = models.CharField(max_length=100, null=True)
+    date_modified = models.DateTimeField(auto_now=True)
+    date_published = models.DateTimeField(auto_now_add=True)
+
 class Employee(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     name = models.CharField(max_length=100)
@@ -24,8 +30,19 @@ class Machine(models.Model):
     plant = models.CharField(max_length=10, null=True)
     power = models.CharField(max_length=50, null=True)
     install_date = models.DateField(null=True)
-    capacity = models.CharField(max_length=1000, null=True)
-    note = models.CharField(max_length=1000, null=True)
+    capacity = models.TextField(max_length=1000, null=True)
+    note = models.TextField(max_length=1000, null=True)
+    is_active = models.BooleanField(default=True)
+    date_modified = models.DateTimeField(auto_now=True)
+    date_published = models.DateTimeField(auto_now_add=True)
+
+class Vendor(models.Model):
+    code = models.CharField(max_length=50, primary_key=True)
+    name = models.CharField(max_length=100, null=True)
+    address = models.CharField(max_length=1000, null=True)
+    email = models.CharField(max_length=100, null=True)
+    phone_no = models.CharField(max_length=20, null=True)
+    note = models.TextField(max_length=1000, null=True)
     is_active = models.BooleanField(default=True)
     date_modified = models.DateTimeField(auto_now=True)
     date_published = models.DateTimeField(auto_now_add=True)
@@ -33,7 +50,7 @@ class Machine(models.Model):
 class Category(models.Model):
     id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=100)
-    description = models.CharField(max_length=1000, null=True)
+    description = models.TextField(max_length=1000, null=True)
     date_modified = models.DateTimeField(auto_now=True)
     date_published = models.DateTimeField(auto_now_add=True)
 
@@ -41,13 +58,7 @@ class SubCategory(models.Model):
     id = models.AutoField(primary_key=True)
     cat = models.ForeignKey(Category, on_delete=models.CASCADE)
     name = models.CharField(max_length=100)
-    description = models.CharField(max_length=1000, null=True)
-    date_modified = models.DateTimeField(auto_now=True)
-    date_published = models.DateTimeField(auto_now_add=True)
-
-class SectionGroup(models.Model):
-    name = models.CharField(max_length=50, primary_key=True)
-    full_name = models.CharField(max_length=100, null=True)
+    description = models.TextField(max_length=1000, null=True)
     date_modified = models.DateTimeField(auto_now=True)
     date_published = models.DateTimeField(auto_now_add=True)
 
@@ -64,8 +75,8 @@ class Request(models.Model):
     finish_datetime = models.DateTimeField(null=True)
     type = models.CharField(max_length=10) # Preventive, User Request
     status = models.CharField(max_length=20) # Pending, Rejected, On Progress, On Hold, Complete, Canceled
-    reason = models.CharField(max_length=1000, null=True)
-    description = models.CharField(max_length=1000)
+    reason = models.TextField(max_length=1000, null=True)
+    description = models.TextField(max_length=1000)
     date_modified = models.DateTimeField(auto_now=True)
     date_published = models.DateTimeField(auto_now_add=True)
 
@@ -84,7 +95,7 @@ class Comment(models.Model):
     id = models.AutoField(primary_key=True)
     req = models.ForeignKey(Request, on_delete=models.CASCADE)
     user = models.ForeignKey(User, null=True, on_delete=models.SET_NULL)
-    text = models.CharField(max_length=1000, null=True)
+    text = models.TextField(max_length=1000, null=True)
     date_published = models.DateTimeField(auto_now_add=True)
 
 class RequestSubCategory(models.Model):

@@ -63,21 +63,31 @@
                                       <tr>
                                           <th>Vendor Code</th>
                                           <th>Vendor Name</th>
+                                          <th>IsActive</th>
+                                          <th>Address</th>
+                                          <th>Email</th>
+                                          <th>Phone No</th>
+                                          <th>Note</th>
                                       </tr>
                                   </thead>
                                   <tbody>
+                                      {% for ven in vens %}
                                       <tr>
-                                          <td>10000</td>
-                                          <td>Vendor #1</td>
+                                          <td>{{ven.code}}</td>
+                                          <td>{{ven.name}}</td>
+                                          <td>
+                                            {% if ven.is_active %}
+                                            <i class='mdi mdi-check text-success'></i><span hidden>True</span>
+                                            {% else %}
+                                            <i class='uil-times text-danger'></i><span hidden>False</span>
+                                            {% endif %}
+                                          </td>
+                                          <td>{{ven.address}}</td>
+                                          <td>{{ven.email}}</td>
+                                          <td>{{ven.phone_no}}</td>
+                                          <td>{{ven.note|linebreaks}}</td>
                                       </tr>
-                                      <tr>
-                                          <td>11000</td>
-                                          <td>Vendor #2</td>
-                                      </tr>
-                                      <tr>
-                                          <td>12000</td>
-                                          <td>Vendor #3</td>
-                                      </tr>
+                                      {% endfor %}
                                   </tbody>
                                 </table>
                               </div>
