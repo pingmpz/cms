@@ -1,5 +1,7 @@
 <!DOCTYPE html>
 {% load static %}
+{% load extra %}
+{% load humanize %}
 
 <html lang="en">
     <head>
@@ -66,18 +68,19 @@
                                 <table id="request_table" class="table table-sm nowrap dt-responsive row-border order-column w-100 small">
                                   <thead>
                                       <tr>
+                                          <th>Request Date</th>
                                           <th>Request No</th>
                                           <th>Type</th>
                                           <!-- <th>Status</th> -->
                                           <th>Request to</th>
                                           <th>Description</th>
                                           <th>Request By</th>
-                                          <th>Request Date</th>
                                       </tr>
                                   </thead>
                                   <tbody>
                                       {% for req in reqs %}
                                       <tr>
+                                          <td data-order="{{req.request_date|date:"U"}}">{{req.request_date}}</td>
                                           <td><a href="/request_page/{{req.req_no}}">{{req.req_no}}</a></td>
                                           <td>{{req.type}}</td>
                                           <!-- <td>
@@ -92,7 +95,6 @@
                                           <td>{{req.sg.name}}</td>
                                           <td>{{req.description}}</td>
                                           <td>{{req.emp_id}} | {{req.name|title}} ({{req.section}}) <i class="uil-phone"></i> {{req.phone_no}}</td>
-                                          <td>{{req.request_date}}</td>
                                       </tr>
                                       {% endfor %}
                                   </tbody>

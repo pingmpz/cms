@@ -69,9 +69,10 @@
                                           <th>IsActive</th>
                                           <th>DateJoined</th>
                                           {% if request.user.is_superuser %}
-                                          <th>Color Scheme</th>
-                                          <th>Left Sidebar</th>
-                                          <th>On Preventive Request Created..</th>
+                                          <th>Scheme</th>
+                                          <th>Sidebar</th>
+                                          <th>PV Created</th>
+                                          <th>Auto Add</th>
                                           {% endif %}
                                           <th>Permission Level</th>
 
@@ -97,6 +98,7 @@
                                           <td>{{user.employee.scheme}}</td>
                                           <td>{{user.employee.sidebar}}</td>
                                           <td>{{user.employee.pv_created}}</td>
+                                          <td>{{user.employee.auto_add}}</td>
                                           {% endif %}
                                           <td>{% if user.is_superuser %}Super Administrator{% elif user.is_staff %}Administrator{% else %}-{% endif %}</td>
                                       </tr>

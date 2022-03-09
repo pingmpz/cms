@@ -9,6 +9,7 @@ class Employee(models.Model):
     scheme = models.CharField(max_length=10, default="Light Mode") # Light Mode, Dark Mode
     sidebar = models.CharField(max_length=10, default="Scrollable") # Scrollable, Condensed
     pv_created = models.CharField(max_length=20, default="Request Page") # Request Page, New Preventive Request
+    auto_add = models.BooleanField(default=True)
     date_modified = models.DateTimeField(auto_now=True)
     date_published = models.DateTimeField(auto_now_add=True)
 

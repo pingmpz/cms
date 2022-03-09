@@ -103,10 +103,18 @@
                                         </div>
 
                                         <div class="mb-3">
-                                            <label class="form-label">On Preventive Request Created..</label>
+                                            <label class="form-label">On Preventive Request Created, Go To ..</label>
                                             <select class="form-control select2" data-toggle="select2" name="pv_created" id="pv_created">
                                               <option value="Request Page" {% if request.user.employee.pv_created == 'Request Page' %}selected{% endif %}>Request Page</option>
                                               <option value="New Preventive Request" {% if request.user.employee.pv_created == 'New Preventive Request' %}selected{% endif %}>New Preventive Request</option>
+                                            </select>
+                                        </div>
+
+                                        <div class="mb-3">
+                                            <label class="form-label">On Accept Request, Auto Add Myself</label>
+                                            <select class="form-control select2" data-toggle="select2" name="auto_add" id="auto_add">
+                                              <option value="True" {% if request.user.employee.auto_add %}selected{% endif %}>True</option>
+                                              <option value="False" {% if not request.user.employee.auto_add %}selected{% endif %}>False</option>
                                             </select>
                                         </div>
 

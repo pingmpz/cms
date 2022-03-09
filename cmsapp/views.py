@@ -459,6 +459,7 @@ def setting_save(request):
     scheme = request.POST['scheme']
     sidebar = request.POST['sidebar']
     pv_created = request.POST['pv_created']
+    auto_add = request.POST['auto_add']
     emp = request.user.employee
     emp.name = name
     emp.section = section
@@ -466,6 +467,7 @@ def setting_save(request):
     emp.scheme = scheme
     emp.sidebar = sidebar
     emp.pv_created = pv_created
+    emp.auto_add = auto_add
     emp.save()
     return redirect('/setting/')
 

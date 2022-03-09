@@ -744,7 +744,7 @@
                                 {% if user_group|index:forloop.counter0 != None %}
                                 <optgroup label="{{user_group|index:forloop.counter0}}">
                                 {% endif %}
-                                <option value="{{user.username}}">▪️ {{user.username}} | {{user.employee.name|title}}</option>
+                                <option value="{{user.username}}" {% if request.user == user and request.user.employee.auto_add %}selected{% endif %}>▪️ {{user.username}} | {{user.employee.name|title}}</option>
                                 {% if user_group|index:forloop.counter1 != None %}
                                 </optgroup>
                                 {% endif %}

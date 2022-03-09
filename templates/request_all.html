@@ -67,6 +67,7 @@
                                 <table id="request_table" class="table table-sm nowrap dt-responsive row-border order-column w-100 small">
                                   <thead>
                                       <tr>
+                                          <th>Request Date</th>
                                           <th>Request No</th>
                                           <th>Type</th>
                                           <th>Status</th>
@@ -75,16 +76,13 @@
                                           <th>Description</th>
                                           <th>Machine No</th>
                                           <th>Request By</th>
-                                          <th>Request Date</th>
                                           <th>IsMember</th>
-                                          {% if request.user.employee.view_type == 'ALL' %}
-                                          <th>Request To</th>
-                                          {% endif %}
                                       </tr>
                                   </thead>
                                   <tbody>
                                       {% for req in reqs %}
                                       <tr>
+                                          <td data-order="{{req.request_date|date:"U"}}">{{req.request_date}}</td>
                                           <td><a href="/request_page/{{req.req_no}}">{{req.req_no}}</a></td>
                                           <td>{{req.type}}</td>
                                           <td>
@@ -101,7 +99,6 @@
                                           <td>{{req.description}}</td>
                                           <td>{{req.mc.mc_no}}</td>
                                           <td>{{req.emp_id}} | {{req.name|title}} ({{req.section}}) <i class="uil-phone"></i> {{req.phone_no}}</td>
-                                          <td>{{req.request_date}}</td>
                                           <td>
                                             {% if is_members|index:forloop.counter0 %}
                                             <i class='mdi mdi-check text-success'></i><span hidden>True</span>
@@ -109,9 +106,6 @@
                                             <i class='uil-times text-danger'></i><span hidden>False</span>
                                             {% endif %}
                                           </td>
-                                          {% if request.user.employee.view_type == 'ALL' %}
-                                          <td>{{req.req_to}}</td>
-                                          {% endif %}
                                       </tr>
                                       {% endfor %}
                                   </tbody>
