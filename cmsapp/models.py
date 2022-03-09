@@ -91,6 +91,12 @@ class Member(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     date_published = models.DateTimeField(auto_now_add=True)
 
+class RequestVendor(models.Model):
+    id = models.AutoField(primary_key=True)
+    req = models.ForeignKey(Request, on_delete=models.CASCADE)
+    ven = models.ForeignKey(Vendor, on_delete=models.CASCADE)
+    date_published = models.DateTimeField(auto_now_add=True)
+
 class Comment(models.Model):
     id = models.AutoField(primary_key=True)
     req = models.ForeignKey(Request, on_delete=models.CASCADE)
@@ -108,6 +114,14 @@ class OperatorWorkingTime(models.Model):
     id = models.AutoField(primary_key=True)
     req = models.ForeignKey(Request, on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
+    start_datetime = models.DateTimeField(null=True)
+    stop_datetime = models.DateTimeField(null=True)
+    date_published = models.DateTimeField(auto_now_add=True)
+
+class VendorWorkingTime(models.Model):
+    id = models.AutoField(primary_key=True)
+    req = models.ForeignKey(Request, on_delete=models.CASCADE)
+    ven = models.ForeignKey(Vendor, on_delete=models.CASCADE)
     start_datetime = models.DateTimeField(null=True)
     stop_datetime = models.DateTimeField(null=True)
     date_published = models.DateTimeField(auto_now_add=True)

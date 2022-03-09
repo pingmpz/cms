@@ -304,7 +304,7 @@
                                             <li class="nav-item">
                                                 <a href="#operate_time" data-bs-toggle="tab" aria-expanded="true" class="nav-link px-3 py-2">
                                                     <i class="mdi mdi-book-open-variant font-18 d-md-none d-block"></i>
-                                                    <span class="d-none d-md-block small">Working Time</span>
+                                                    <span class="d-none d-md-block small">Working Time ({{wt_len}})</span>
                                                 </a>
                                             </li>
                                             {% if req.mc %}
@@ -342,6 +342,7 @@
                                                 {% endif %}
                                                 {% endif %}
                                                 <!-- ========== Comment List ========== -->
+                                                {% if comments|length > 0 %}
                                                 <div class="timeline-alt pb-0">
 
                                                     {% for comment in comments %}
@@ -364,28 +365,30 @@
                                                     </div>
                                                     {% endfor %}
 
-                                                    {% if comments|length == 0 %}
-                                                    <div class="timeline-item">
-                                                        <h4 class="text-center">There is no comment in this request.</h4>
-                                                    </div>
-                                                    {% endif %}
-
                                                 </div>
+                                                {% endif %}
+
+                                                {% if comments|length == 0 %}
+                                                <div class="timeline-item">
+                                                    <h4 class="text-center pt-3 pb-3">There is no comment in this request.</h4>
+                                                </div>
+                                                {% endif %}
+
                                             </div>
 
                                             <!-- ========== Operate Time Tab ========== -->
                                             <div class="tab-pane p-0" id="operate_time">
                                               <ul class="nav nav-pills bg-nav-pills nav-justified mb-3">
-                                                  <li class="nav-item">
+                                                  <li class="nav-item small">
                                                       <a href="#operator" data-bs-toggle="tab" aria-expanded="false" class="nav-link active">
                                                           <i class="mdi mdi-home-variant d-md-none d-block"></i>
                                                           <span class="d-none d-md-block">Operator ({{owts|length}})</span>
                                                       </a>
                                                   </li>
-                                                  <li class="nav-item">
+                                                  <li class="nav-item small">
                                                       <a href="#vendor" data-bs-toggle="tab" aria-expanded="true" class="nav-link">
                                                           <i class="mdi mdi-account-circle d-md-none d-block"></i>
-                                                          <span class="d-none d-md-block"><del>External Vendor</del></span>
+                                                          <span class="d-none d-md-block">Vendor ({{vwts|length}})</span>
                                                       </a>
                                                   </li>
                                               </ul>
@@ -429,9 +432,9 @@
                                                     <hr>
                                                     {% endif %}
                                                     {% endif %}
-                                                    <!-- ========== Operate Time Table ========== -->
+                                                    <!-- ========== Operate Working Time Table ========== -->
                                                     {% if owts|length > 0 %}
-                                                    <table id="operate_time_table" class="table table-sm nowrap dt-responsive row-border order-column w-100 small">
+                                                    <table id="operate_work_time_table" class="table table-sm nowrap dt-responsive row-border order-column w-100 small">
                                                       <thead class="table-light">
                                                           <tr>
                                                               {% if request.user.is_superuser %}<th>ID</th>{% endif %}
@@ -464,7 +467,7 @@
                                                     </table>
                                                     {% else %}
                                                     <div class="timeline-item">
-                                                        <h4 class="text-center">There is no operator working time in this request.</h4>
+                                                        <h4 class="text-center pt-3 pb-3">There is no operator working time in this request.</h4>
                                                     </div>
                                                     {% endif %}
                                                   </div>
@@ -477,52 +480,71 @@
                                                     <div class="row">
                                                       <div class="col-10">
                                                         <div class="mb-3">
-                                                          <select class="select2 form-control select2-multiple" data-toggle="select2" multiple="multiple" data-placeholder="Choose ...">
-                                                              <option value="10000">10000 | Vendor #1</option>
-                                                              <option value="11000">11000 | Vendor #2</option>
-                                                              <option value="12000">12000 | Vendor #3</option>
+                                                          <select class="select2 form-control select2-multiple" data-toggle="select2" multiple="multiple" data-placeholder="Choose ..." id="vwt_ven_code_list">
+                                                              {% for req_ven in req_vens %}
+                                                              <option value="{{req_ven.ven.code}}">{{req_ven.ven.code}} | {{req_ven.ven.name}}</option>
+                                                              {% endfor %}
                                                           </select>
                                                         </div>
                                                       </div>
                                                       <div class="col-2">
                                                         <div class="mb-3">
-                                                          <button type="submit" class="btn btn-sm btn-success"><i class='mdi mdi-content-save me-1'></i>Save</button>
+                                                          <button type="submit" class="btn btn-sm btn-success" onclick="vwt_save()"><i class='mdi mdi-content-save me-1'></i>Save</button>
                                                         </div>
                                                       </div>
                                                       <div class="col-6">
                                                         <div class="mb-0">
                                                           <label class="form-label">StartDateTime</label>
-                                                          <input type="datetime-local" class="form-control" name="section"  id="operate_start_date_time">
+                                                          <input type="datetime-local" class="form-control" name="section"  id="vwt_start_datetime">
                                                         </div>
                                                       </div>
                                                       <div class="col-6">
                                                         <div class="mb-0">
                                                           <label class="form-label">StopDateTime</label>
-                                                          <input type="datetime-local" class="form-control" name="phone_no"  id="operate_stop_date_time">
+                                                          <input type="datetime-local" class="form-control" name="phone_no"  id="vwt_stop_datetime">
                                                         </div>
                                                       </div>
                                                     </div>
                                                     <hr>
                                                     {% endif %}
-                                                    <!-- ========== Operate Time Table ========== -->
-                                                    <table id="operate_time_table" class="table table-sm nowrap dt-responsive row-border order-column w-100 small">
+                                                    <!-- ========== Vendor Working Time Table ========== -->
+                                                    {% if vwts|length > 0 %}
+                                                    <table id="operate_work_time_table" class="table table-sm nowrap dt-responsive row-border order-column w-100 small">
                                                       <thead class="table-light">
                                                           <tr>
+                                                              {% if request.user.is_superuser %}<th>ID</th>{% endif %}
                                                               <th>Vendor Code</th>
                                                               <th>Name</th>
                                                               <th>StartDateTime</th>
                                                               <th>StopDateTime</th>
+                                                              <th></th>
                                                           </tr>
                                                       </thead>
                                                       <tbody>
+                                                          {% for vwt in vwts %}
                                                           <tr>
-                                                              <td>10000</td>
-                                                              <td>Vendor #1</td>
-                                                              <td>10:51 13/01/2022</td>
-                                                              <td>10:51 13/01/2022</td>
+                                                              {% if request.user.is_superuser %}<td>{{vwt.id}}</td>{% endif %}
+                                                              <td>{{vwt.ven.code}}</td>
+                                                              <td>{{vwt.ven.name}}</td>
+                                                              <td>{{vwt.start_datetime}}</td>
+                                                              <td>{{vwt.stop_datetime}}</td>
+                                                              <td>
+                                                                {% if req.status == 'On Progress' or req.status == 'On Hold' %}
+                                                                {% if is_member %}
+                                                                <button type="button" class="btn btn-sm btn-link text-muted pt-0 pb-0"  data-bs-toggle="modal" data-bs-target="#delete_vwt_modal"
+                                                                onclick="prepare_delete_vwt({{vwt.id}})"><i class="uil-trash"></i></button>
+                                                                {% endif %}
+                                                                {% endif %}
+                                                              </td>
                                                           </tr>
+                                                          {% endfor %}
                                                       </tbody>
                                                     </table>
+                                                    {% else %}
+                                                    <div class="timeline-item">
+                                                        <h4 class="text-center pt-3 pb-3">There is no vendor working time in this request.</h4>
+                                                    </div>
+                                                    {% endif %}
                                                   </div>
                                               </div>
                                             </div>
@@ -592,15 +614,15 @@
                                               </table>
                                               {% else %}
                                               <div class="timeline-item">
-                                                  <h4 class="text-center">There is no machine downtime in this request.</h4>
+                                                  <h4 class="text-center pt-3 pb-3">There is no machine downtime in this request.</h4>
                                               </div>
                                               {% endif %}
                                             </div>
 
                                             <!-- ========== Costing Tab ========== -->
-                                            <div class="tab-pane p-3" id="costing">
+                                            <div class="tab-pane p-0" id="costing">
                                               <div class="timeline-item">
-                                                  <h4 class="text-center">This function is on development.</h4>
+                                                  <h4 class="text-center pt-3 pb-3">This function is on development.</h4>
                                               </div>
                                             </div>
 
@@ -628,8 +650,9 @@
                                             <button type="button" class="btn btn-xs mb-1 btn-outline-success" onclick="join_request()"><i class='uil-sign-in-alt me-1'></i>Join</button>
                                             {% elif req.status == 'On Hold' %}
                                             <button type="button" class="btn btn-xs mb-1 btn-warning"><i class='uil-pen me-1'></i><del>Edit Request</del></button>
-                                            <button type="button" class="btn btn-xs mb-1 btn-info" data-bs-toggle="modal" data-bs-target="#manage_member_modal"><i class='mdi mdi-account-cog me-1'></i>Manage Member</button>
-                                            <button type="button" class="btn btn-xs mb-1 btn-info" data-bs-toggle="modal" data-bs-target="#manage_category_modal"><i class='mdi mdi-application-cog me-1'></i>Manage Category</button>
+                                            <button type="button" class="btn btn-xs mb-1 btn-info" data-bs-toggle="modal" data-bs-target="#manage_member_modal"><i class='mdi mdi-account-edit me-1'></i>Manage Member</button>
+                                            <button type="button" class="btn btn-xs mb-1 btn-info" data-bs-toggle="modal" data-bs-target="#manage_vendor_modal"><i class='mdi mdi-briefcase-edit me-1'></i>Manage Vendor</button>
+                                            <button type="button" class="btn btn-xs mb-1 btn-info" data-bs-toggle="modal" data-bs-target="#manage_category_modal"><i class='mdi mdi-puzzle-edit me-1'></i>Manage Category</button>
                                             <button type="button" class="btn btn-xs mb-1 btn-primary" data-bs-toggle="modal" data-bs-target="#start_work_modal"><i class='uil-play me-1'></i>Start Work</button>
                                             <button type="button" class="btn btn-xs mb-1 btn-danger" data-bs-toggle="modal" data-bs-target="#cancel_modal"><i class='mdi mdi-cancel me-1'></i>Cancel</button>
                                               {% if members|length > 1 %}
@@ -640,8 +663,9 @@
                                             <button type="button" class="btn btn-xs mb-1 btn-outline-success" onclick="join_request()"><i class='uil-sign-in-alt me-1'></i>Join</button>
                                             {% elif req.status == 'On Progress' %}
                                             <button type="button" class="btn btn-xs mb-1 btn-warning"><i class='uil-pen me-1'></i><del>Edit Request</del></button>
-                                            <button type="button" class="btn btn-xs mb-1 btn-info" data-bs-toggle="modal" data-bs-target="#manage_member_modal"><i class='mdi mdi-account-cog me-1'></i>Manage Member</button>
-                                            <button type="button" class="btn btn-xs mb-1 btn-info" data-bs-toggle="modal" data-bs-target="#manage_category_modal"><i class='mdi mdi-application-cog me-1'></i>Manage Category</button>
+                                            <button type="button" class="btn btn-xs mb-1 btn-info" data-bs-toggle="modal" data-bs-target="#manage_member_modal"><i class='mdi mdi-account-edit me-1'></i>Manage Member</button>
+                                            <button type="button" class="btn btn-xs mb-1 btn-info" data-bs-toggle="modal" data-bs-target="#manage_vendor_modal"><i class='mdi mdi-briefcase-edit me-1'></i>Manage Vendor</button>
+                                            <button type="button" class="btn btn-xs mb-1 btn-info" data-bs-toggle="modal" data-bs-target="#manage_category_modal"><i class='mdi mdi-puzzle-edit me-1'></i>Manage Category</button>
                                             <button type="button" class="btn btn-xs mb-1 btn-dark" data-bs-toggle="modal" data-bs-target="#hold_modal"><i class='uil-pause me-1'></i>Hold</button>
                                             <button type="button" class="btn btn-xs mb-1 btn-success" data-bs-toggle="modal" data-bs-target="#complete_modal"><i class='mdi mdi-check-all me-1'></i>Complete</button>
                                             <button type="button" class="btn btn-xs mb-1 btn-danger" data-bs-toggle="modal" data-bs-target="#cancel_modal"><i class='mdi mdi-cancel me-1'></i>Cancel</button>
@@ -663,7 +687,7 @@
                                     </div>
                                 </div>
 
-                                <!-- ========== Team ========== -->
+                                <!-- ========== Member ========== -->
                                 {% if req.status != 'Pending' and req.status != 'Rejected' %}
                                 <div class="card">
                                     <div class="card-body pb-0">
@@ -679,6 +703,33 @@
                                                 <p class="inbox-item-text font-12">Section : {{member.user.employee.section}}</p>
                                             </div>
                                             {% endfor %}
+                                        </div>
+                                    </div>
+                                </div>
+                                {% endif %}
+
+                                <!-- ========== Request Vendor ========== -->
+                                {% if req.status != 'Pending' and req.status != 'Rejected' %}
+                                <div class="card">
+                                    <div class="card-body pb-0">
+                                        <div class="dropdown float-end">
+                                        </div>
+
+                                        <h4 class="header-title mb-3">Vendors ({{req_vens|length}})</h4>
+
+                                        <div class="inbox-widget">
+                                            {% for req_ven in req_vens %}
+                                            <div class="inbox-item">
+                                              <p class="inbox-item-author">{{req_ven.ven.name}} {% if request.user.is_superuser %}[{{req_ven.id}}]{% endif %}</p>
+                                              <p class="inbox-item-text font-12">Vendor Code : {{req_ven.ven.code}}</p>
+                                              <small class="inbox-item-text font-12">
+                                                Note : {{req_ven.ven.note|linebreaks}}
+                                              </small>
+                                            </div>
+                                            {% endfor %}
+                                            {% if req_vens|length == 0 %}
+                                            <p class="text-center">There is no vendor for this request.</p>
+                                            {% endif %}
                                         </div>
                                     </div>
                                 </div>
@@ -748,6 +799,15 @@
                                 {% if user_group|index:forloop.counter1 != None %}
                                 </optgroup>
                                 {% endif %}
+                                {% endfor %}
+                            </select>
+                          </div>
+                          <div class="mb-3">
+                            <label class="form-label">Add Vendor</label>
+                            <p class="text-muted font-12">Use 'CTRL' to select multiple item</p>
+                            <select class="select2 form-control select2-multiple" data-toggle="select2" multiple="multiple" data-placeholder="Choose ..." id="accept_ven_code_list">
+                                {% for ven in vens %}
+                                <option value="{{ven.code}}">{{ven.code}} | {{ven.name}}</option>
                                 {% endfor %}
                             </select>
                           </div>
@@ -911,7 +971,7 @@
               <div class="modal-dialog">
                   <div class="modal-content">
                       <div class="modal-header modal-colored-header bg-info">
-                          <h4 class="modal-title"><i class='mdi mdi-account-cog me-1'></i>Manage Member</h4>
+                          <h4 class="modal-title"><i class='mdi mdi-account-edit me-1'></i>Manage Member</h4>
                           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                       </div>
                       <div class="modal-body">
@@ -938,12 +998,38 @@
                   </div>
               </div>
           </div>
+          <!-- Manage Vendor -->
+          <div id="manage_vendor_modal" class="modal fade" tabindex="-1" role="dialog">
+              <div class="modal-dialog">
+                  <div class="modal-content">
+                      <div class="modal-header modal-colored-header bg-info">
+                          <h4 class="modal-title"><i class='mdi mdi-briefcase-edit me-1'></i>Manage Vendor</h4>
+                          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                      </div>
+                      <div class="modal-body">
+                          <div class="mb-3">
+                            <label class="form-label">Vendor</label>
+                            <p class="text-muted font-12">Use 'CTRL' to select multiple item</p>
+                            <select class="select2 form-control select2-multiple" data-toggle="select2" multiple="multiple" data-placeholder="Choose ..." id="mv_ven_code_list">
+                                {% for ven in vens %}
+                                <option value="{{ven.code}}" {% if select_vendors|index:forloop.counter0 %}selected{% endif %}>{{ven.code}} | {{ven.name}}</option>
+                                {% endfor %}
+                            </select>
+                          </div>
+                      </div>
+                      <div class="modal-footer">
+                          <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
+                          <button type="button" class="btn btn-info" onclick="manage_vendor()">Confirm</button>
+                      </div>
+                  </div>
+              </div>
+          </div>
           <!-- Manage Category -->
           <div id="manage_category_modal" class="modal fade" tabindex="-1" role="dialog">
               <div class="modal-dialog">
                   <div class="modal-content">
                       <div class="modal-header modal-colored-header bg-info">
-                          <h4 class="modal-title"><i class='mdi mdi-application-cog me-1'></i>Manage Category</h4>
+                          <h4 class="modal-title"><i class='mdi mdi-puzzle-edit me-1'></i>Manage Category</h4>
                           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                       </div>
                       <div class="modal-body">
@@ -989,21 +1075,40 @@
                   </div>
               </div>
           </div>
-          <!-- Delete Operator Work Time -->
+          <!-- Delete Operator Working Time -->
           <div id="delete_owt_modal" class="modal fade" tabindex="-1" role="dialog">
               <div class="modal-dialog">
                   <div class="modal-content">
                       <div class="modal-header modal-colored-header bg-danger">
-                          <h4 class="modal-title"><i class='uil-trash me-1'></i>Delete Operator Work Time</h4>
+                          <h4 class="modal-title"><i class='uil-trash me-1'></i>Delete Operator Working Time</h4>
                           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                       </div>
                       <div class="modal-body">
-                          <h5 class="mt-3 mb-3 text-center">Are you sure that you want to delete this operator work time ?</h5>
+                          <h5 class="mt-3 mb-3 text-center">Are you sure that you want to delete this operator working time ?</h5>
                           <input type="text" id="delete_owt_id" hidden>
                       </div>
                       <div class="modal-footer">
                           <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
                           <button type="button" class="btn btn-danger" onclick="delete_owt()">Confirm</button>
+                      </div>
+                  </div>
+              </div>
+          </div>
+          <!-- Delete Vendor Working Time -->
+          <div id="delete_vwt_modal" class="modal fade" tabindex="-1" role="dialog">
+              <div class="modal-dialog">
+                  <div class="modal-content">
+                      <div class="modal-header modal-colored-header bg-danger">
+                          <h4 class="modal-title"><i class='uil-trash me-1'></i>Delete Vendor Working Time</h4>
+                          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                      </div>
+                      <div class="modal-body">
+                          <h5 class="mt-3 mb-3 text-center">Are you sure that you want to delete this vendor working time ?</h5>
+                          <input type="text" id="delete_vwt_id" hidden>
+                      </div>
+                      <div class="modal-footer">
+                          <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
+                          <button type="button" class="btn btn-danger" onclick="delete_vwt()">Confirm</button>
                       </div>
                   </div>
               </div>
@@ -1069,6 +1174,10 @@
               dropdownParent: $('#accept_modal')
           });
 
+          $('#accept_ven_code_list').select2({
+              dropdownParent: $('#accept_modal')
+          });
+
           $('#accept_sub_cat_id_list').select2({
               dropdownParent: $('#accept_modal')
           });
@@ -1081,6 +1190,10 @@
               dropdownParent: $('#manage_member_modal')
           });
 
+          $('#mv_ven_code_list').select2({
+              dropdownParent: $('#manage_vendor_modal')
+          });
+
           $('#mc_sub_cat_id_list').select2({
               dropdownParent: $('#manage_category_modal')
           });
@@ -1089,6 +1202,7 @@
             var req_id = $("#req_id").val();
             var mc_no = $("#accept_mc_no").val();
             var username_list = $("#accept_username_list").val();
+            var ven_code_list = $("#accept_ven_code_list").val();
             var sub_cat_id_list = $("#accept_sub_cat_id_list").val();
             if(username_list.length > 0){
               $.ajax({
@@ -1097,6 +1211,7 @@
                   'req_id': req_id,
                   'mc_no': mc_no,
                   'username_list': username_list,
+                  'ven_code_list': ven_code_list,
                   'sub_cat_id_list': sub_cat_id_list,
                 },
                 dataType: 'json',
@@ -1251,6 +1366,22 @@
             }
           }
 
+          function manage_vendor(){
+            var req_id = $("#req_id").val();
+            var ven_code_list = $("#mv_ven_code_list").val();
+            $.ajax({
+              url: '/manage_vendor/',
+              data: {
+                'req_id': req_id,
+                'ven_code_list': ven_code_list,
+              },
+              dataType: 'json',
+              success: function (data) {
+                location.reload();
+              }
+            });
+          }
+
           function manage_category(){
             var req_id = $("#req_id").val();
             var sub_cat_id_list = $("#mc_sub_cat_id_list").val();
@@ -1335,6 +1466,46 @@
               url: '/delete_owt/',
               data: {
                 'owt_id': owt_id,
+              },
+              dataType: 'json',
+              success: function (data) {
+                location.reload();
+              }
+            });
+          }
+
+          function vwt_save(){
+            var req_id = $("#req_id").val();
+            var ven_code_list = $("#vwt_ven_code_list").val();
+            var start_datetime = $("#vwt_start_datetime").val();
+            var stop_datetime = $("#vwt_stop_datetime").val();
+            if(ven_code_list.length > 0 && start_datetime != "" && stop_datetime != "" && stop_datetime > start_datetime){
+              $.ajax({
+                url: '/vwt_save/',
+                data: {
+                  'req_id': req_id,
+                  'ven_code_list': ven_code_list,
+                  'start_datetime': start_datetime,
+                  'stop_datetime': stop_datetime,
+                },
+                dataType: 'json',
+                success: function (data) {
+                  location.reload();
+                }
+              });
+            }
+          }
+
+          function prepare_delete_vwt(vwt_id){
+            $("#delete_vwt_id").val(vwt_id);
+          }
+
+          function delete_vwt(){
+            var vwt_id = $("#delete_vwt_id").val();
+            $.ajax({
+              url: '/delete_vwt/',
+              data: {
+                'vwt_id': vwt_id,
               },
               dataType: 'json',
               success: function (data) {

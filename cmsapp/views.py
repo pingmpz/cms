@@ -11,7 +11,7 @@ from openpyxl import load_workbook, Workbook
 # Date Time
 from datetime import datetime, timedelta
 
-from .models import SectionGroup, Employee, Machine, Vendor, Category, SubCategory, Request, File, Member, Comment, RequestSubCategory, OperatorWorkingTime, MachineDowntime
+from .models import SectionGroup, Employee, Machine, Vendor, Category, SubCategory, Request, File, Member, RequestVendor, Comment, RequestSubCategory, OperatorWorkingTime, VendorWorkingTime, MachineDowntime
 
 ################################# Authenticate #################################
 
@@ -93,16 +93,20 @@ def request_page(request, request_no):
     req = None
     is_member = False
     members = [] # Member (User)
+    req_vens = [] # RequestVendor
     comments = [] # Comment
     req_sub_cats = [] # RequestSubCategory
     req_sub_cat_group = [] # RequestSubCategory Group (Category)
     files = [] # Files
     owts = [] # OpereatorWorkTime
+    vwts = [] # VendorWorkingTime
     mcdts = [] # MachineDowntime
+    wt_len = 0
 
     sgs = [] # All Available SectionGroup
     mcs = [] # All Available Machine
     users = [] # All Available User
+    vens = [] # All Available Vendor
     sub_cats = [] # All Available SubCategory
 
     mc_group = [] # Machine Group (Section)
@@ -110,25 +114,31 @@ def request_page(request, request_no):
     sub_cat_group = [] # SubCategory Group (Category)
 
     select_members = [] # For Manage Member
+    select_vendors = [] # For Manage Vendor
     select_sub_cats = [] # For Manage Category
     if req_is_exist:
         req = Request.objects.get(req_no=request_no)
         is_member = Member.objects.filter(req=req,user=request.user).exists()
         members = Member.objects.filter(req=req)
+        req_vens = RequestVendor.objects.filter(req=req)
         comments = Comment.objects.filter(req=req).order_by('-date_published')
         req_sub_cats = RequestSubCategory.objects.filter(req=req)
         req_sub_cat_group = get_req_sub_cat_group(req_sub_cats)
         files = File.objects.filter(req=req)
         owts = OperatorWorkingTime.objects.filter(req=req).order_by('-start_datetime')
+        vwts = VendorWorkingTime.objects.filter(req=req).order_by('-start_datetime')
         mcdts = MachineDowntime.objects.filter(req=req).order_by('-start_datetime')
+        wt_len = len(owts) + len(vwts)
         sgs = SectionGroup.objects.all()
         mcs = Machine.objects.filter(is_active=True).order_by('section')
         users = sort_user_by_section(User.objects.filter(is_active=True))
+        vens = Vendor.objects.filter(is_active=True)
         sub_cats = SubCategory.objects.all().order_by('cat')
         mc_group = get_mc_group(mcs)
         user_group = get_user_group(users)
         sub_cat_group = get_sub_cat_group(sub_cats)
         select_members = get_select_members(req, users)
+        select_vendors = get_select_vendors(req, vens)
         select_sub_cats = get_select_sub_cats(req, sub_cats)
     context = {
         'request_no': request_no,
@@ -136,20 +146,25 @@ def request_page(request, request_no):
         'req': req,
         'is_member': is_member,
         'members': members,
+        'req_vens': req_vens,
         'comments': comments,
         'req_sub_cats': req_sub_cats,
         'req_sub_cat_group': req_sub_cat_group,
         'files': files,
         'owts': owts,
+        'vwts': vwts,
         'mcdts': mcdts,
+        'wt_len': wt_len,
         'sgs': sgs,
         'mcs': mcs,
         'users': users,
+        'vens': vens,
         'sub_cats': sub_cats,
         'mc_group': mc_group,
         'user_group': user_group,
         'sub_cat_group': sub_cat_group,
         'select_members': select_members,
+        'select_vendors': select_vendors,
         'select_sub_cats': select_sub_cats,
     }
     context['all_page_data'] = (all_page_data(request))
@@ -636,6 +651,7 @@ def accept_request(request):
     req_id = request.GET['req_id']
     mc_no = request.GET['mc_no'] if request.GET['mc_no'] != 'Select' else None
     username_list = request.GET.getlist('username_list[]')
+    ven_code_list = request.GET.getlist('ven_code_list[]')
     sub_cat_id_list = request.GET.getlist('sub_cat_id_list[]')
     req = Request.objects.get(id=req_id)
     if mc_no != None:
@@ -645,6 +661,10 @@ def accept_request(request):
         user = User.objects.get(username=username)
         member_new = Member(req=req,user=user)
         member_new.save()
+    for ven_code in ven_code_list:
+        ven = Vendor.objects.get(code=ven_code)
+        req_ven_new = RequestVendor(req=req,ven=ven)
+        req_ven_new.save()
     for sub_cat_id in sub_cat_id_list:
         sub_cat = SubCategory.objects.get(id=sub_cat_id)
         req_sub_cat_new = RequestSubCategory(req=req,sub_cat=sub_cat)
@@ -759,6 +779,20 @@ def manage_member(request):
     }
     return JsonResponse(data)
 
+def manage_vendor(request):
+    req_id = request.GET['req_id']
+    ven_code_list = request.GET.getlist('ven_code_list[]')
+    req = Request.objects.get(id=req_id)
+    req_vens = RequestVendor.objects.filter(req=req)
+    req_vens.delete()
+    for ven_code in ven_code_list:
+        ven = Vendor.objects.get(code=ven_code)
+        req_ven_new = RequestVendor(req=req,ven=ven)
+        req_ven_new.save()
+    data = {
+    }
+    return JsonResponse(data)
+
 def manage_category(request):
     req_id = request.GET['req_id']
     sub_cat_id_list = request.GET.getlist('sub_cat_id_list[]')
@@ -809,6 +843,28 @@ def delete_owt(request):
     owt_id = request.GET['owt_id']
     owt = OperatorWorkingTime.objects.get(id=owt_id)
     owt.delete()
+    data = {
+    }
+    return JsonResponse(data)
+
+def vwt_save(request):
+    req_id = request.GET['req_id']
+    ven_code_list = request.GET.getlist('ven_code_list[]')
+    start_datetime = request.GET['start_datetime']
+    stop_datetime = request.GET['stop_datetime']
+    req = Request.objects.get(id=req_id)
+    for ven_code in ven_code_list:
+        ven = Vendor.objects.get(code=ven_code)
+        owt_new = VendorWorkingTime(req=req,ven=ven,start_datetime=start_datetime,stop_datetime=stop_datetime)
+        owt_new.save()
+    data = {
+    }
+    return JsonResponse(data)
+
+def delete_vwt(request):
+    vwt_id = request.GET['vwt_id']
+    vwt = VendorWorkingTime.objects.get(id=vwt_id)
+    vwt.delete()
     data = {
     }
     return JsonResponse(data)
@@ -942,6 +998,16 @@ def get_select_members(req, users):
         else:
             select_members.append(False)
     return select_members
+
+def get_select_vendors(req, vens):
+    select_vendors = []
+    for ven in vens:
+        is_ven_exist = RequestVendor.objects.filter(req=req,ven=ven).exists()
+        if is_ven_exist:
+            select_vendors.append(True)
+        else:
+            select_vendors.append(False)
+    return select_vendors
 
 def get_select_sub_cats(req, sub_cats):
     select_sub_cats = []
