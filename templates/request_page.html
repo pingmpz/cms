@@ -434,10 +434,10 @@
                                                     {% endif %}
                                                     <!-- ========== Operate Working Time Table ========== -->
                                                     {% if owts|length > 0 %}
-                                                    <table id="operate_work_time_table" class="table table-sm nowrap dt-responsive row-border order-column w-100 small">
+                                                    <table id="owt_table" class="table table-sm nowrap dt-responsive row-border order-column w-100 small">
                                                       <thead class="table-light">
                                                           <tr>
-                                                              {% if request.user.is_superuser %}<th>ID</th>{% endif %}
+                                                              <th {% if not request.user.is_superuser %}hidden{% endif %}>ID</th>
                                                               <th>Employee ID</th>
                                                               <th>Name</th>
                                                               <th>StartDateTime</th>
@@ -448,7 +448,7 @@
                                                       <tbody>
                                                           {% for owt in owts %}
                                                           <tr>
-                                                              {% if request.user.is_superuser %}<td>{{owt.id}}</td>{% endif %}
+                                                              <td {% if not request.user.is_superuser %}hidden{% endif %}>{{owt.id}}</td>
                                                               <td>{{owt.user.username}}</td>
                                                               <td>{{owt.user.employee.name|title}}</td>
                                                               <td>{{owt.start_datetime}}</td>
@@ -511,10 +511,10 @@
                                                     {% endif %}
                                                     <!-- ========== Vendor Working Time Table ========== -->
                                                     {% if vwts|length > 0 %}
-                                                    <table id="operate_work_time_table" class="table table-sm nowrap dt-responsive row-border order-column w-100 small">
+                                                    <table id="vwt_table" class="table table-sm nowrap dt-responsive row-border order-column w-100 small">
                                                       <thead class="table-light">
                                                           <tr>
-                                                              {% if request.user.is_superuser %}<th>ID</th>{% endif %}
+                                                              <th {% if not request.user.is_superuser %}hidden{% endif %}>ID</th>
                                                               <th>Vendor Code</th>
                                                               <th>Name</th>
                                                               <th>StartDateTime</th>
@@ -525,7 +525,7 @@
                                                       <tbody>
                                                           {% for vwt in vwts %}
                                                           <tr>
-                                                              {% if request.user.is_superuser %}<td>{{vwt.id}}</td>{% endif %}
+                                                              <td {% if not request.user.is_superuser %}hidden{% endif %}>{{vwt.id}}</td>
                                                               <td>{{vwt.ven.code}}</td>
                                                               <td>{{vwt.ven.name}}</td>
                                                               <td>{{vwt.start_datetime}}</td>
@@ -587,10 +587,10 @@
                                               {% endif %}
                                               <!-- ========== Machine Downtime Table ========== -->
                                               {% if mcdts|length > 0 %}
-                                              <table id="operate_time_table" class="table table-sm nowrap dt-responsive row-border order-column w-100 small">
+                                              <table id="mcdt_table" class="table table-sm nowrap dt-responsive row-border order-column w-100 small">
                                                 <thead class="table-light">
                                                     <tr>
-                                                        {% if request.user.is_superuser %}<th>ID</th>{% endif %}
+                                                        <th>ID</th>
                                                         <th>StartDateTime</th>
                                                         <th>StopDateTime</th>
                                                         <th></th>
@@ -599,7 +599,7 @@
                                                 <tbody>
                                                     {% for mcdt in mcdts %}
                                                     <tr>
-                                                        {% if request.user.is_superuser %}<td>{{mcdt.id}}</td>{% endif %}
+                                                        <td {% if not request.user.is_superuser %}hidden{% endif %}>{{mcdt.id}}</td>
                                                         <td>{{mcdt.start_datetime}}</td>
                                                         <td>{{mcdt.stop_datetime}}</td>
                                                         <td>
