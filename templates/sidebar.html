@@ -1,7 +1,7 @@
 {% load static %}
 <div class="leftside-menu leftside-menu-detached">
 
-    <div class="leftbar-user">
+    <div class="leftbar-user pb-1">
         <a href="javascript: void(0);">
             <h3 class="leftbar-user-name">{{request.user}}</h3>
             {% if request.user.is_superuser or request.user.is_staff %}
@@ -9,8 +9,12 @@
             {% else %}
               <img src="{% static "custom/img/avatar-3.png" %}" alt="user-image" height="64" class="rounded-circle shadow-sm">
             {% endif %}
-            <span class="leftbar-user-name small" style="margin-bottom:0px;">{{request.user.employee.name}}</span>
-            <span class="leftbar-user-name small" style="margin-top:0px; color:#acb3bd">{{request.user.employee.section}}</span>
+            <span class="leftbar-user-name small mb-0">{{request.user.employee.name}}</span>
+            <span class="leftbar-user-name small text-muted mt-0">Section : {{request.user.employee.section}}</span>
+            {% if not all_page_data.is_in %}
+            <span class="leftbar-user-name small text-muted mt-0" style="">You are not in any 'Section Group', your default view is 'ALL Section'</span>
+            {% endif %}
+            <hr>
         </a>
     </div>
 

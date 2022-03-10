@@ -87,6 +87,57 @@ def new_pv_request(request):
     context['all_page_data'] = (all_page_data(request))
     return render(request, 'new_pv_request.html', context)
 
+def edit_request(request,  request_no):
+    req = Request.objects.get(req_no=request_no)
+    members = Member.objects.filter(req=req)
+    req_vens = RequestVendor.objects.filter(req=req)
+    comments = Comment.objects.filter(req=req).order_by('-date_published')
+    req_sub_cats = RequestSubCategory.objects.filter(req=req)
+    req_sub_cat_group = get_req_sub_cat_group(req_sub_cats)
+    files = File.objects.filter(req=req)
+    owts = OperatorWorkingTime.objects.filter(req=req).order_by('-start_datetime')
+    vwts = VendorWorkingTime.objects.filter(req=req).order_by('-start_datetime')
+    mcdts = MachineDowntime.objects.filter(req=req).order_by('-start_datetime')
+    wt_len = len(owts) + len(vwts)
+    sgs = SectionGroup.objects.all()
+    mcs = Machine.objects.filter(is_active=True).order_by('section')
+    users = sort_user_by_section(User.objects.filter(is_active=True))
+    vens = Vendor.objects.filter(is_active=True)
+    sub_cats = SubCategory.objects.all().order_by('cat')
+    mc_group = get_mc_group(mcs)
+    user_group = get_user_group(users)
+    sub_cat_group = get_sub_cat_group(sub_cats)
+    select_members = get_select_members(req, users)
+    select_vendors = get_select_vendors(req, vens)
+    select_sub_cats = get_select_sub_cats(req, sub_cats)
+    context = {
+        'request_no': request_no,
+        'req': req,
+        'members': members,
+        'req_vens': req_vens,
+        'comments': comments,
+        'req_sub_cats': req_sub_cats,
+        'req_sub_cat_group': req_sub_cat_group,
+        'files': files,
+        'owts': owts,
+        'vwts': vwts,
+        'mcdts': mcdts,
+        'wt_len': wt_len,
+        'sgs': sgs,
+        'mcs': mcs,
+        'users': users,
+        'vens': vens,
+        'sub_cats': sub_cats,
+        'mc_group': mc_group,
+        'user_group': user_group,
+        'sub_cat_group': sub_cat_group,
+        'select_members': select_members,
+        'select_vendors': select_vendors,
+        'select_sub_cats': select_sub_cats,
+    }
+    context['all_page_data'] = (all_page_data(request))
+    return render(request, 'edit_request.html', context)
+
 @login_required(login_url='/')
 def request_page(request, request_no):
     req_is_exist = Request.objects.filter(req_no=request_no).exists()
@@ -173,6 +224,7 @@ def request_page(request, request_no):
 #------------------------------------ Main ------------------------------------#
 
 def all_page_data(request):
+    is_in = is_in_section_group(request)
     my_reqs = []
     temp_reqs = Request.objects.filter(status='On Progress') | Request.objects.filter(status='On Hold')
     for req in temp_reqs:
@@ -195,6 +247,7 @@ def all_page_data(request):
         all_reqs = Request.objects.filter(status='On Progress') | Request.objects.filter(status='On Hold')
     all_request_count = len(all_reqs)
     context = {
+        'is_in': is_in,
         'my_request_count': my_request_count,
         'pending_request_count': pending_request_count,
         'all_request_count': all_request_count,
@@ -222,7 +275,7 @@ def request_pending(request, fsg):
     if fsg == 'MY' and is_in_section_group(request):
         fsg = request.user.employee.section
     elif fsg == 'MY':
-        fsg = sgs[0].name
+        fsg = 'ALL'
     if fsg == 'ALL':
         reqs = Request.objects.filter(status='Pending')
     else:
@@ -242,7 +295,7 @@ def request_all(request, fsg):
     if fsg == 'MY' and is_in_section_group(request):
         fsg = request.user.employee.section
     elif fsg == 'MY':
-        fsg = sgs[0].name
+        fsg = 'ALL'
     if fsg == 'ALL':
         reqs = Request.objects.filter(status='On Progress')  | Request.objects.filter(status='On Hold')
     else:
@@ -264,7 +317,7 @@ def request_history(request, fsg, fstartdate, fstopdate):
     if fsg == 'MY' and is_in_section_group(request):
         fsg = request.user.employee.section
     elif fsg == 'MY':
-        fsg = sgs[0].name
+        fsg = 'ALL'
     if fstartdate == "LASTWEEK":
         fstartdate = (datetime.today() - timedelta(days=7)).strftime('%Y-%m-%d')
     if fstopdate == "TODAY":
@@ -313,7 +366,7 @@ def summary(request, fsg):
     if fsg == 'MY' and is_in_section_group(request):
         fsg = request.user.employee.section
     elif fsg == 'MY':
-        fsg = sgs[0].name
+        fsg = 'ALL'
     if fsg == 'ALL':
         pending_us_req_count = len(Request.objects.filter(status='Pending',type='User Request'))
         pending_pv_req_count = len(Request.objects.filter(status='Pending',type='Preventive'))

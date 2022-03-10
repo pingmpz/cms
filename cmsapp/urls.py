@@ -14,6 +14,7 @@ urlpatterns = [
     path('new_request/', views.new_request, name='new_request'),
     path('new_request_success/<str:request_no>', views.new_request_success, name='new_request_success'),
     path('new_pv_request/', views.new_pv_request, name='new_pv_request'),
+    path('edit_request/<str:request_no>', views.edit_request, name='edit_request'),
     path('request_page/<str:request_no>', views.request_page, name='request_page'),
     #--
     path('index/', views.index, name='index'),
