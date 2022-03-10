@@ -16,6 +16,14 @@
         <link href="{% static "assets/css/app-modern.min.css" %}" rel="stylesheet" type="text/css" id="light-style" />
         <link href="{% static "assets/css/app-modern-dark.min.css" %}" rel="stylesheet" type="text/css" id="dark-style" />
 
+        <!-- DataTable css -->
+        <link href="{% static "assets/css/vendor/dataTables.bootstrap5.css" %}" rel="stylesheet" type="text/css" />
+        <link href="{% static "assets/css/vendor/responsive.bootstrap5.css" %}" rel="stylesheet" type="text/css" />
+        <link href="{% static "assets/css/vendor/buttons.bootstrap5.css" %}" rel="stylesheet" type="text/css" />
+        <link href="{% static "assets/css/vendor/select.bootstrap5.css" %}" rel="stylesheet" type="text/css" />
+        <link href="{% static "assets/css/vendor/fixedHeader.bootstrap5.css" %}" rel="stylesheet" type="text/css" />
+        <link href="{% static "assets/css/vendor/fixedColumns.bootstrap5.css" %}" rel="stylesheet" type="text/css" />
+
     </head>
 
     <body class="loading authentication-bg bg-primary" data-layout-config='{"darkMode":false}'>
@@ -33,7 +41,7 @@
                                         <button class="input-group-text btn-primary" type="button" onclick="search()"><span class="mdi mdi-magnify"></span></button>
                                   </div>
                                 </div>
-                                <br><br><hr>
+                                <br><hr>
                                 <table id="request_table" class="table table-sm nowrap dt-responsive row-border order-column w-100 small">
                                   <thead>
                                       <tr>
@@ -98,9 +106,37 @@
         <script src="{% static "assets/js/app.min.js" %}"></script>
         <script src="{% static "custom/custom.js" %}"></script>
 
-        <script>
-          function search(){
+        <!-- DataTable -->
+        <script src="{% static "assets/js/vendor/jquery.dataTables.min.js" %}"></script>
+        <script src="{% static "assets/js/vendor/dataTables.bootstrap5.js" %}"></script>
+        <script src="{% static "assets/js/vendor/dataTables.responsive.min.js" %}"></script>
+        <script src="{% static "assets/js/vendor/responsive.bootstrap5.min.js" %}"></script>
+        <script src="{% static "assets/js/vendor/dataTables.buttons.min.js" %}"></script>
+        <script src="{% static "assets/js/vendor/buttons.bootstrap5.min.js" %}"></script>
+        <script src="{% static "assets/js/vendor/buttons.html5.min.js" %}"></script>
+        <script src="{% static "assets/js/vendor/buttons.flash.min.js" %}"></script>
+        <script src="{% static "assets/js/vendor/buttons.print.min.js" %}"></script>
+        <script src="{% static "assets/js/vendor/dataTables.keyTable.min.js" %}"></script>
+        <script src="{% static "assets/js/vendor/dataTables.select.min.js" %}"></script>
+        <script src="{% static "assets/js/vendor/fixedColumns.bootstrap5.min.js" %}"></script>
+        <script src="{% static "assets/js/vendor/fixedHeader.bootstrap5.min.js" %}"></script>
 
+        <script>
+          $('#request_table').DataTable( {
+              "order": [[ 0, "asc" ]],
+              'iDisplayLength': 100,
+              "scrollX": true,
+              searching: false,
+              paging: false,
+              info: false,
+              dom: 'Bfrtip',
+              buttons: [
+                // 'excelHtml5',
+                // 'csvHtml5',
+              ]
+          });
+
+          function search(){
             var search_text = $("#search_text").val();
             if(search_text == ""){
               search_text = "0";
