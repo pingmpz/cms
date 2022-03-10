@@ -724,6 +724,9 @@
                                             <div class="inbox-item">
                                               <p class="inbox-item-author">{{req_ven.ven.name}} {% if request.user.is_superuser %}[{{req_ven.id}}]{% endif %}</p>
                                               <p class="inbox-item-text font-12">Vendor Code : {{req_ven.ven.code}}</p>
+                                              <p class="inbox-item-text font-12">Address : {{req_ven.ven.address}}</p>
+                                              <p class="inbox-item-text font-12">Email : {{req_ven.ven.email}}</p>
+                                              <p class="inbox-item-text font-12">Phone No : {{req_ven.ven.phone_no}}</p>
                                               <small class="inbox-item-text font-12">
                                                 Note : {{req_ven.ven.note|linebreaks}}
                                               </small>

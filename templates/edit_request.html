@@ -41,6 +41,7 @@
                                 <div class="page-title-box">
                                     <div class="page-title-right d-flex">
                                         <button type="button" class="btn btn-success ms-2" id="save_button" onclick="save()" title="Save"><i class="mdi mdi-content-save"></i></button>
+                                        <a class="btn btn-secondary ms-2" href="/request_page/{{request_no}}" title="Back"><i class="mdi mdi-logout"></i></a>
                                     </div>
                                     <h4 class="page-title"><i class="uil-comment-plus"></i> Edit Request</h4>
                                 </div>
@@ -54,10 +55,16 @@
                                     <div class="card-body">
                                       <form action="/edit_request_save/" method="POST" id="form">
                                           {% csrf_token %}
+                                          <input type="text" name="req_id" id="req_id" value="{{req.id}}" hidden>
                                           <div class="row">
                                             <!-- ========== Left Content ========== -->
                                             <div class="col-xl-6">
-                                              
+
+                                              <div class="mb-3">
+                                                  <label class="form-label">Request No</label>
+                                                  <input class="form-control" type="text" name="req_no" id="req_no" value="{{req.req_no}}" readonly>
+                                              </div>
+
                                               <div class="mb-3">
                                                 <label class="form-label">Request Date <i class="mdi mdi-asterisk text-danger small"></i></label>
                                                 <input type="date" class="form-control" name="req_date" id="req_date" value="{{req.request_date|date:'Y-m-d'}}">

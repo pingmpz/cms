@@ -89,51 +89,11 @@ def new_pv_request(request):
 
 def edit_request(request,  request_no):
     req = Request.objects.get(req_no=request_no)
-    members = Member.objects.filter(req=req)
-    req_vens = RequestVendor.objects.filter(req=req)
-    comments = Comment.objects.filter(req=req).order_by('-date_published')
-    req_sub_cats = RequestSubCategory.objects.filter(req=req)
-    req_sub_cat_group = get_req_sub_cat_group(req_sub_cats)
-    files = File.objects.filter(req=req)
-    owts = OperatorWorkingTime.objects.filter(req=req).order_by('-start_datetime')
-    vwts = VendorWorkingTime.objects.filter(req=req).order_by('-start_datetime')
-    mcdts = MachineDowntime.objects.filter(req=req).order_by('-start_datetime')
-    wt_len = len(owts) + len(vwts)
-    sgs = SectionGroup.objects.all()
     mcs = Machine.objects.filter(is_active=True).order_by('section')
-    users = sort_user_by_section(User.objects.filter(is_active=True))
-    vens = Vendor.objects.filter(is_active=True)
-    sub_cats = SubCategory.objects.all().order_by('cat')
-    mc_group = get_mc_group(mcs)
-    user_group = get_user_group(users)
-    sub_cat_group = get_sub_cat_group(sub_cats)
-    select_members = get_select_members(req, users)
-    select_vendors = get_select_vendors(req, vens)
-    select_sub_cats = get_select_sub_cats(req, sub_cats)
     context = {
         'request_no': request_no,
         'req': req,
-        'members': members,
-        'req_vens': req_vens,
-        'comments': comments,
-        'req_sub_cats': req_sub_cats,
-        'req_sub_cat_group': req_sub_cat_group,
-        'files': files,
-        'owts': owts,
-        'vwts': vwts,
-        'mcdts': mcdts,
-        'wt_len': wt_len,
-        'sgs': sgs,
         'mcs': mcs,
-        'users': users,
-        'vens': vens,
-        'sub_cats': sub_cats,
-        'mc_group': mc_group,
-        'user_group': user_group,
-        'sub_cat_group': sub_cat_group,
-        'select_members': select_members,
-        'select_vendors': select_vendors,
-        'select_sub_cats': select_sub_cats,
     }
     context['all_page_data'] = (all_page_data(request))
     return render(request, 'edit_request.html', context)
@@ -611,6 +571,27 @@ def new_pv_request_save(request):
     if request.user.employee.pv_created == 'Request Page':
         return redirect('/request_page/' + request_new.req_no)
     return redirect('/new_pv_request/')
+
+def edit_request_save(request):
+    req_id = request.POST['req_id']
+    request_date = request.POST['req_date']
+    description = request.POST['description']
+    mc_no = request.POST['mc_no'] if request.POST['mc_no'] != 'Select' else None
+    mc = None
+    is_same_mc = False
+    req = Request.objects.get(id=req_id)
+    if mc_no != None:
+        mc = Machine.objects.get(mc_no=mc_no)
+        if req.mc == mc:
+            is_same_mc = True
+    req.request_date = request_date
+    req.mc = mc
+    req.description = description
+    if not is_same_mc:
+        mcdts = MachineDowntime.objects.filter(req=req)
+        mcdts.delete()
+    req.save()
+    return redirect('/request_page/' + req.req_no)
 
 def new_emp_save(request):
     username = request.POST['new_username']
