@@ -22,6 +22,18 @@ def first_page(request):
     }
     return render(request, 'first_page.html', context)
 
+def track_request(request, search_text):
+    reqs = []
+    if search_text != '0':
+        reqs = Request.objects.filter(type="User Request",emp_id=search_text).order_by('-request_date')[:12]
+    else:
+        search_text = ""
+    context = {
+        'search_text': search_text,
+        'reqs': reqs,
+    }
+    return render(request, 'track_request.html', context)
+
 def login_page(request):
     context = {
     }

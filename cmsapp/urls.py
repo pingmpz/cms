@@ -5,6 +5,7 @@ from . import views
 urlpatterns = [
     ### Authenticate
     path('', views.first_page, name='first_page'),
+    path('track_request/<str:search_text>', views.track_request, name='track_request'),
     path('login_page/', views.login_page, name='login_page'),
     path('validate_login/', views.validate_login, name='validate_login'),
     path('login_action/', views.login_action, name='login_action'),

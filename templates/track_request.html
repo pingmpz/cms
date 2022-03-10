@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+{% load static %}
+
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <title>Log In | C.C.S. Maintenance Service</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta content="A fully featured admin theme which can be used to build CRM, CMS, etc." name="description" />
+        <meta content="Coderthemes" name="author" />
+        <!-- App favicon -->
+        <link rel="shortcut icon" href="assets/images/favicon.ico">
+
+        <!-- App css -->
+        <link href="{% static "assets/css/icons.min.css" %}" rel="stylesheet" type="text/css" />
+        <link href="{% static "assets/css/app-modern.min.css" %}" rel="stylesheet" type="text/css" id="light-style" />
+        <link href="{% static "assets/css/app-modern-dark.min.css" %}" rel="stylesheet" type="text/css" id="dark-style" />
+
+    </head>
+
+    <body class="loading authentication-bg bg-primary" data-layout-config='{"darkMode":false}'>
+        <div class="account-pages pt-2 pt-sm-5 pb-4 pb-sm-5">
+            <div class="container">
+                <div class="row justify-content-center">
+                    <div class="col-12">
+                        <div class="card" style="height:660px">
+
+                            <div class="card-body p-4 pb-0">
+                                <a class="btn btn-success rounded-pill" href="/new_request/"><i class="uil-comment-plus"></i> New Request</a>
+                                <div class="float-end">
+                                  <div class="input-group">
+                                        <input type="text" class="form-control form-control-sm" id="search_text" placeholder="Employee ID" value="{{search_text}}">
+                                        <button class="input-group-text btn-primary" type="button" onclick="search()"><span class="mdi mdi-magnify"></span></button>
+                                  </div>
+                                </div>
+                                <br><br><hr>
+                                <table id="request_table" class="table table-sm nowrap dt-responsive row-border order-column w-100 small">
+                                  <thead>
+                                      <tr>
+                                          <th>Request Date</th>
+                                          <th>Finish Date</th>
+                                          <th>Request No</th>
+                                          <th>Request to</th>
+                                          <th>Status</th>
+                                          <th>Reason</th>
+                                          <th>Description</th>
+                                          <th>Machine No</th>
+                                          <th>Request By</th>
+                                      </tr>
+                                  </thead>
+                                  <tbody>
+                                    {% for req in reqs %}
+                                    <tr>
+                                        <td data-order="{{req.request_date|date:"U"}}">{{req.request_date}}</td>
+                                        <td data-order="{{req.finish_datetime|date:"U"}}">{{req.finish_datetime|date}}</td>
+                                        <td>{{req.req_no}}</td>
+                                        <td>{{req.sg.name}}</td>
+                                        <td>
+                                          {% if req.status == 'Pending' %}<strong class="text-warning"><i class='mdi mdi-clock-time-eight-outline'></i> Pending</strong>
+                                          {% elif req.status == 'On Progress' %}<strong class="text-primary"><i class='mdi mdi-play'></i> On Progress</strong>
+                                          {% elif req.status == 'On Hold' %}<strong class="text-dark"><i class='mdi mdi-pause'></i> On Hold</strong>
+                                          {% elif req.status == 'Rejected' %}<strong class="text-danger"><i class='uil-times'></i> Rejected</strong>
+                                          {% elif req.status == 'Complete' %}<strong class="text-success"><i class='mdi mdi-check-all'></i> Complete</strong>
+                                          {% elif req.status == 'Canceled' %}<strong class="text-danger"><i class='uil-ban'></i> Canceled</strong>
+                                          {% else %}{{req.status}}{% endif %}
+                                        </td>
+                                        <td>{{req.reason|default_if_none:""}}</td>
+                                        <td>{{req.description}}</td>
+                                        <td>{{req.mc.mc_no}}</td>
+                                        <td>{{req.emp_id}} | {{req.name|title}} ({{req.section}})</td>
+                                    </tr>
+                                    {% endfor %}
+                                  </tbody>
+                                </table>
+
+                            </div>
+
+                            <div class="card-footer">
+                              <div class="row mt-3">
+                                  <div class="col-12 text-center">
+                                      <p class="text-muted">Back to<a href="/" class="text-muted ms-1"><b>First Page</b></a></p>
+                                  </div>
+                              </div>
+                            </div>
+                        </div>
+                        <!-- end card -->
+
+                    </div> <!-- end col -->
+                </div>
+                <!-- end row -->
+            </div>
+            <!-- end container -->
+        </div>
+        <!-- end page -->
+
+        <!-- bundle -->
+        <script src="{% static "assets/js/vendor.min.js" %}"></script>
+        <script src="{% static "assets/js/app.min.js" %}"></script>
+        <script src="{% static "custom/custom.js" %}"></script>
+
+        <script>
+          function search(){
+
+            var search_text = $("#search_text").val();
+            if(search_text == ""){
+              search_text = "0";
+            }
+            window.location.href = "/track_request/" + search_text;
+          }
+        </script>
+    </body>
+</html>
