@@ -592,7 +592,7 @@
                                               <table id="mcdt_table" class="table table-sm nowrap dt-responsive row-border order-column w-100 small">
                                                 <thead class="table-light">
                                                     <tr>
-                                                        <th>ID</th>
+                                                        <th {% if not request.user.is_superuser %}hidden{% endif %}>ID</th>
                                                         <th>StartDateTime</th>
                                                         <th>StopDateTime</th>
                                                         <th></th>
