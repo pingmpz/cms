@@ -5,6 +5,7 @@ from . import views
 urlpatterns = [
     ### Authenticate
     path('', views.first_page, name='first_page'),
+    path('track_request/<str:search_text>', views.track_request, name='track_request'),
     path('login_page/', views.login_page, name='login_page'),
     path('validate_login/', views.validate_login, name='validate_login'),
     path('login_action/', views.login_action, name='login_action'),
@@ -42,6 +43,7 @@ urlpatterns = [
     path('setting_save/', views.setting_save, name='setting_save'),
     path('new_request_save/', views.new_request_save, name='new_request_save'),
     path('new_pv_request_save/', views.new_pv_request_save, name='new_pv_request_save'),
+    path('edit_request_save/', views.edit_request_save, name='edit_request_save'),
     path('new_emp_save/', views.new_emp_save, name='new_emp_save'),
     path('new_mc_save/', views.new_mc_save, name='new_mc_save'),
     path('new_ven_save/', views.new_ven_save, name='new_ven_save'),

@@ -3,6 +3,7 @@ tr.even td {
 }
 
 tr.odd td {
+  background-color: #ffffff;
   background-color: #f9f9f9;
 }
 
