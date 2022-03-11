@@ -1036,12 +1036,12 @@ def upload_machine():
     for i in range(ws.max_row + 1):
         if i < skip_count:
             continue
-        mc_no = ws['A' + str(i)].value
-        section = ws['B' + str(i)].value
-        register_no = ws['C' + str(i)].value
+        section = ws['A' + str(i)].value
+        register_no = ws['B' + str(i)].value
+        mc_no = ws['C' + str(i)].value
         asset_no = ws['D' + str(i)].value
-        manufacture = ws['E' + str(i)].value
-        plant = ws['F' + str(i)].value
+        plant = ws['E' + str(i)].value
+        manufacture = ws['F' + str(i)].value
         model = ws['G' + str(i)].value
         serial_no = ws['H' + str(i)].value
         capacity = ws['I' + str(i)].value
