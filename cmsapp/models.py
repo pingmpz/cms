@@ -76,6 +76,7 @@ class Request(models.Model):
     emp_id = models.CharField(max_length=10)
     name = models.CharField(max_length=100)
     section = models.CharField(max_length=10)
+    email = models.CharField(max_length=20, null=True, default=None)
     phone_no = models.CharField(max_length=10)
     sg = models.ForeignKey(SectionGroup, null=True, on_delete=models.SET_NULL)
     mc = models.ForeignKey(Machine, null=True, on_delete=models.SET_NULL)

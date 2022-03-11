@@ -93,6 +93,11 @@
                                     </div>
 
                                     <div class="mb-3">
+                                      <label class="form-label">Email <i class="mdi mdi-asterisk text-danger small"></i></label>
+                                      <input type="text" class="form-control" name="email"  id="email">
+                                    </div>
+
+                                    <div class="mb-3">
                                         <label class="form-label">Phone No <i class="mdi mdi-asterisk text-danger small"></i></label>
                                         <input class="form-control" type="text" name="phone_no" id="phone_no" required>
                                     </div>
@@ -128,11 +133,11 @@
 
           function save(){
             // Clear Validate
-            remove_valids(['new_username','new_password','name','section','phone_no']);
+            remove_valids(['new_username','new_password','name','section','email','phone_no']);
             set_text_emptys(['invalid_text']);
             // Function
             validate_username(function(result) {
-              if(result && validate_password() && validate_name() && validate_section() && validate_phone_no()){
+              if(result && validate_password() && validate_name() && validate_section() && validate_email() && validate_phone_no()){
                 document.getElementById('form').submit();
                 $('#save_button').prop('disabled', true);
               }
@@ -202,6 +207,19 @@
               return false;
             } else {
               valid("section");
+              set_text_emptys("invalid_text");
+              return true;
+            }
+          }
+
+          function validate_email(){
+            var email = $('#email').val();
+            if(email.length == 0){
+              invalid("email");
+              set_text_value("invalid_text","Please fill 'Email'.");
+              return false;
+            } else {
+              valid("email");
               set_text_emptys("invalid_text");
               return true;
             }

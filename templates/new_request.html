@@ -75,13 +75,19 @@
                                                     </div>
                                                   </div>
                                                   <div class="col-6">
-                                                    <div class="mb-0">
+                                                    <div class="mb-3">
                                                       <label class="form-label">Section <i class="mdi mdi-asterisk text-danger small"></i></label>
                                                       <input type="text" class="form-control" name="section"  id="section" autocomplete="off">
                                                     </div>
                                                   </div>
                                                   <div class="col-6">
-                                                    <div class="mb-0">
+                                                    <div class="mb-3">
+                                                      <label class="form-label">Email <i class="mdi mdi-asterisk text-danger small"></i></label>
+                                                      <input type="text" class="form-control" name="email"  id="email" autocomplete="off">
+                                                    </div>
+                                                  </div>
+                                                  <div class="col-6">
+                                                    <div class="mb-3">
                                                       <label class="form-label">Phone No <i class="mdi mdi-asterisk text-danger small"></i></label>
                                                       <input type="text" class="form-control" name="phone_no"  id="phone_no" autocomplete="off">
                                                     </div>
@@ -166,6 +172,7 @@
                   if (data.found) {
                     $('#name').val(data.name);
                     $('#section').val(data.section);
+                    $('#email').val(data.email);
                     $('#phone_no').val(data.phone_no);
                   }
                 }
@@ -175,10 +182,10 @@
 
           function save(){
             // Clear Validate
-            remove_valids(['emp_id','name','section','phone_no','ma_mc_no','ad_ser_mc_no','description']);
+            remove_valids(['emp_id','name','section','email','phone_no','ma_mc_no','ad_ser_mc_no','description']);
             set_text_emptys(['invalid_text']);
             // Function
-            if(validate_emp_id() && validate_name() && validate_section() && validate_phone_no() && validate_description()){
+            if(validate_emp_id() && validate_name() && validate_section() && validate_email() && validate_phone_no() && validate_description()){
               document.getElementById('form').submit();
               $('#save_button').prop('disabled', true);
             }
@@ -218,6 +225,19 @@
               return false;
             } else {
               valid("section");
+              set_text_emptys("invalid_text");
+              return true;
+            }
+          }
+
+          function validate_email(){
+            var email = $('#email').val();
+            if(email.length == 0){
+              invalid("email");
+              set_text_value("invalid_text","Please fill 'Email'.");
+              return false;
+            } else {
+              valid("email");
               set_text_emptys("invalid_text");
               return true;
             }

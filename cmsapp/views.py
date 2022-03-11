@@ -524,15 +524,17 @@ def setting_save(request):
     new_password = request.POST['new_password']
     name = request.POST['name']
     section = request.POST['section']
+    email = request.POST['email']
     phone_no = request.POST['phone_no']
     scheme = request.POST['scheme']
     sidebar = request.POST['sidebar']
     pv_created = request.POST['pv_created']
     auto_add = request.POST['auto_add']
     user = request.user
+    user.email = email
     if(is_reset):
         user.set_password(new_password)
-        user.save()
+    user.save()
     emp = request.user.employee
     emp.name = name
     emp.section = section
@@ -548,6 +550,7 @@ def new_request_save(request):
     emp_id = request.POST['emp_id']
     name = request.POST['name']
     section = request.POST['section']
+    email = request.POST['email']
     phone_no = request.POST['phone_no']
     sg_name = request.POST['sg_name']
     description = request.POST['description']
@@ -555,7 +558,7 @@ def new_request_save(request):
     status = 'Pending'
     request_date = datetime.now().date()
     sg = SectionGroup.objects.get(name=sg_name)
-    request_new = Request(emp_id=emp_id,name=name,section=section,phone_no=phone_no,sg=sg,type=type,status=status,request_date=request_date,description=description)
+    request_new = Request(emp_id=emp_id,name=name,section=section,email=email,phone_no=phone_no,sg=sg,type=type,status=status,request_date=request_date,description=description)
     request_new.save()
     request_new.req_no = create_req_no(request_new.id)
     request_new.save()
@@ -575,8 +578,9 @@ def new_pv_request_save(request):
     emp_id = request.user.username
     name = request.user.employee.name
     section = request.user.employee.section
+    email = request.user.email
     phone_no = request.user.employee.phone_no
-    request_new = Request(emp_id=emp_id,name=name,section=section,phone_no=phone_no,sg=sg,type=type,status=status,request_date=request_date,description=description,mc=mc)
+    request_new = Request(emp_id=emp_id,name=name,section=section,email=email,phone_no=phone_no,sg=sg,type=type,status=status,request_date=request_date,description=description,mc=mc)
     request_new.save()
     request_new.req_no = create_req_no(request_new.id)
     request_new.save()
@@ -610,8 +614,10 @@ def new_emp_save(request):
     password = request.POST['new_password']
     name = request.POST['name']
     section = request.POST['section']
+    email = request.POST['email']
     phone_no = request.POST['phone_no']
     user_new = User.objects.create_user(username, '', password)
+    user_new.email = email
     user_new.save()
     employee_new = Employee(user=user_new,name=name,section=section,phone_no=phone_no)
     employee_new.save()
@@ -758,17 +764,20 @@ def find_emp_info(request):
     found = False
     name = ""
     section = ""
+    email = ""
     phone_no = ""
     reqs = Request.objects.filter(emp_id=emp_id).order_by('-date_published')
     if reqs:
         found = True
         name = reqs[0].name
         section = reqs[0].section
+        email = reqs[0].email
         phone_no = reqs[0].phone_no
     data = {
         'found': found,
         'name': name,
         'section': section,
+        'email': email,
         'phone_no': phone_no,
     }
     return JsonResponse(data)
