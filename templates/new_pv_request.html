@@ -72,9 +72,48 @@
                                               </div>
 
                                               <div class="mb-3">
+                                                <label class="form-label">Object Type</label>
+                                                <select class="form-control select2" data-toggle="select2" name="obj_type" id="obj_type">
+                                                  <option>Select</option>
+                                                  <option value="MACHINE">Machine</option>
+                                                  <option value="DEVICE">Device</option>
+                                                  <option value="TASK">Task</option>
+                                                </select>
+                                              </div>
+
+                                              <div class="mb-3" id="mc_group">
                                                 <label class="form-label">Machine</label>
                                                 <select class="form-control select2" data-toggle="select2" name="mc_no" id="mc_no">
-                                                  <option>Select</option>
+                                                  {% for mc in mcs %}
+                                                  {% if mc_group|index:forloop.counter0 != None %}
+                                                  <optgroup label="{{mc_group|index:forloop.counter0}}">
+                                                  {% endif %}
+                                                  <option value="{{mc.mc_no}}">▪️ {{mc.mc_no}}</option>
+                                                  {% if mc_group|index:forloop.counter1 != None %}
+                                                  </optgroup>
+                                                  {% endif %}
+                                                  {% endfor %}
+                                                </select>
+                                              </div>
+
+                                              <div class="mb-3" id="dv_group">
+                                                <label class="form-label">Device</label>
+                                                <select class="form-control select2" data-toggle="select2" name="dv_no" id="dv_no">
+                                                  {% for mc in mcs %}
+                                                  {% if mc_group|index:forloop.counter0 != None %}
+                                                  <optgroup label="{{mc_group|index:forloop.counter0}}">
+                                                  {% endif %}
+                                                  <option value="{{mc.mc_no}}">▪️ {{mc.mc_no}}</option>
+                                                  {% if mc_group|index:forloop.counter1 != None %}
+                                                  </optgroup>
+                                                  {% endif %}
+                                                  {% endfor %}
+                                                </select>
+                                              </div>
+
+                                              <div class="mb-3" id="task_group">
+                                                <label class="form-label">Task</label>
+                                                <select class="form-control select2" data-toggle="select2" name="task_id" id="task_id">
                                                   {% for mc in mcs %}
                                                   {% if mc_group|index:forloop.counter0 != None %}
                                                   <optgroup label="{{mc_group|index:forloop.counter0}}">
@@ -145,6 +184,8 @@
           mimes: null,
         });
 
+        obj_type_change();
+
         function save(){
           // Clear Validate
           remove_valids(['req_date','mc_no','description']);
@@ -166,6 +207,32 @@
             valid("req_date");
             set_text_emptys("invalid_text");
             return true;
+          }
+        }
+
+        //-- Toggle
+        $('#obj_type').on("change", function() {
+          obj_type_change();
+        });
+
+        function obj_type_change(){
+          var obj_type = $('#obj_type').val();
+          if(obj_type == 'MACHINE'){
+            unhide("mc_group");
+            hide("dv_group");
+            hide("task_group");
+          } else if(obj_type == 'DEVICE'){
+            hide("mc_group");
+            unhide("dv_group");
+            hide("task_group");
+          }  else if(obj_type == 'TASK'){
+            hide("mc_group");
+            hide("dv_group");
+            unhide("task_group");
+          } else {
+            hide("mc_group");
+            hide("dv_group");
+            hide("task_group");
           }
         }
         </script>
