@@ -11,7 +11,7 @@ from openpyxl import load_workbook, Workbook
 # Date Time
 from datetime import datetime, timedelta
 
-from .models import SectionGroup, Employee, Machine, Device, Task, Vendor, Category, SubCategory, MailGroup, Request, File, Member, RequestVendor, Comment, RequestSubCategory, OperatorWorkingTime, VendorWorkingTime, MachineDowntime
+from .models import SectionGroup, Employee, Machine, Task, Vendor, Category, SubCategory, MailGroup, Request, File, Member, RequestVendor, Comment, RequestSubCategory, OperatorWorkingTime, VendorWorkingTime, MachineDowntime
 
 ################################# Authenticate #################################
 
@@ -88,13 +88,19 @@ def new_request_success(request, request_no):
     return render(request, 'new_request_success.html', context)
 
 def new_pv_request(request):
+    # upload_machine()
+    # upload_task()
     sgs = SectionGroup.objects.all()
     mcs = Machine.objects.filter(is_active=True).order_by('section')
+    tasks = Task.objects.filter(is_active=True).order_by('type')
     mc_group = get_mc_group(mcs)
+    task_group = get_task_group(tasks)
     context = {
         'sgs': sgs,
         'mcs': mcs,
+        'tasks': tasks,
         'mc_group': mc_group,
+        'task_group': task_group,
     }
     context['all_page_data'] = (all_page_data(request))
     return render(request, 'new_pv_request.html', context)
@@ -434,15 +440,6 @@ def master_task(request):
     return render(request, 'master_task.html', context)
 
 @login_required(login_url='/')
-def master_dv(request):
-    dvs = Device.objects.all()
-    context = {
-        'dvs': dvs,
-    }
-    context['all_page_data'] = (all_page_data(request))
-    return render(request, 'master_dv.html', context)
-
-@login_required(login_url='/')
 def master_ven(request):
     vens = Vendor.objects.all()
     context = {
@@ -529,9 +526,6 @@ def new_sub_cat(request):
 
 @login_required(login_url='/')
 def new_mg(request):
-    # upload_machine()
-    # upload_device()
-    # upload_task()
     sgs = SectionGroup.objects.all()
     context = {
         'sgs': sgs,
@@ -589,10 +583,15 @@ def new_pv_request_save(request):
     sg_name = request.POST['sg_name']
     request_date = request.POST['req_date']
     description = request.POST['description']
-    mc_no = request.POST['mc_no'] if request.POST['mc_no'] != 'Select' else None
+    obj_type = request.POST['obj_type']
+    mc_no = request.POST['mc_no'] if request.POST['obj_type'] == 'MACHINE' else None
+    task_id = request.POST['task_id'] if request.POST['obj_type'] == 'TASK' else None
     mc = None
     if mc_no != None:
         mc = Machine.objects.get(mc_no=mc_no)
+    task = None
+    if task_id != None:
+        task = Task.objects.get(id=task_id)
     type = 'Preventive'
     status = 'Pending'
     sg = SectionGroup.objects.get(name=sg_name)
@@ -601,7 +600,7 @@ def new_pv_request_save(request):
     section = request.user.employee.section
     email = request.user.email
     phone_no = request.user.employee.phone_no
-    request_new = Request(emp_id=emp_id,name=name,section=section,email=email,phone_no=phone_no,sg=sg,type=type,status=status,request_date=request_date,description=description,mc=mc)
+    request_new = Request(emp_id=emp_id,name=name,section=section,email=email,phone_no=phone_no,sg=sg,type=type,status=status,request_date=request_date,description=description,mc=mc,task=task)
     request_new.save()
     request_new.req_no = create_req_no(request_new.id)
     request_new.save()
@@ -1075,31 +1074,6 @@ def upload_machine():
             mc_new.save()
     return
 
-def upload_device():
-    entries = Device.objects.all()
-    entries.delete()
-    wb = load_workbook(filename = 'media/CMS Device Master.xlsx')
-    ws = wb.active
-    skip_count = 2
-    for i in range(ws.max_row + 1):
-        if i < skip_count:
-            continue
-        dv_no = ws['A' + str(i)].value
-        type = ws['B' + str(i)].value
-        serial_no = ws['C' + str(i)].value
-        manufacture = ws['D' + str(i)].value
-        model = ws['E' + str(i)].value
-        building = ws['F' + str(i)].value
-        floor = ws['G' + str(i)].value
-        location = ws['H' + str(i)].value
-        capacity = ws['I' + str(i)].value
-        note = ws['J' + str(i)].value
-        if dv_no != None and dv_no != "":
-            print(dv_no)
-            dv_new = Device(dv_no=dv_no,type=type,serial_no=serial_no,manufacture=manufacture,model=model,building=building,floor=floor,location=location,capacity=capacity,note=note)
-            dv_new.save()
-    return
-
 def upload_task():
     entries = Task.objects.all()
     entries.delete()
@@ -1144,6 +1118,17 @@ def get_mc_group(mcs):
         else:
             mc_group.append(None)
     return mc_group
+
+def get_task_group(tasks):
+    task_group = []
+    temp = ""
+    for task in tasks:
+        if temp != task.type:
+            temp = task.type
+            task_group.append(task.type)
+        else:
+            task_group.append(None)
+    return task_group
 
 def get_user_group(users):
     user_group = []

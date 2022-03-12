@@ -68,7 +68,7 @@
                                           <th>Status</th>
                                           <th>Reason</th>
                                           <th>Description</th>
-                                          <th>Machine No</th>
+                                          <th>Machine/Device/Task</th>
                                           <th>Request By</th>
                                       </tr>
                                   </thead>
@@ -90,7 +90,7 @@
                                         </td>
                                         <td>{{req.reason|default_if_none:""}}</td>
                                         <td>{{req.description}}</td>
-                                        <td>{{req.mc.mc_no}}</td>
+                                        <td>{{req.mc.mc_no|default_if_none:""}}{{req.task.name|default_if_none:""}}</td>
                                         <td>{{req.emp_id}} | {{req.name|title}} ({{req.section}})</td>
                                     </tr>
                                     {% endfor %}

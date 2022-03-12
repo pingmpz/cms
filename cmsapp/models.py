@@ -36,21 +36,6 @@ class Machine(models.Model):
     date_modified = models.DateTimeField(auto_now=True)
     date_published = models.DateTimeField(auto_now_add=True)
 
-class Device(models.Model):
-    dv_no = models.CharField(max_length=50, primary_key=True)
-    type = models.CharField(max_length=50, null=True)
-    serial_no = models.CharField(max_length=50, null=True)
-    manufacture = models.CharField(max_length=50, null=True)
-    model = models.CharField(max_length=50, null=True)
-    building = models.CharField(max_length=50, null=True)
-    floor = models.CharField(max_length=50, null=True)
-    location = models.CharField(max_length=50, null=True)
-    capacity = models.TextField(max_length=1000, null=True)
-    note = models.TextField(max_length=1000, null=True)
-    is_active = models.BooleanField(default=True)
-    date_modified = models.DateTimeField(auto_now=True)
-    date_published = models.DateTimeField(auto_now_add=True)
-#
 class Task(models.Model):
     id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=50, null=True)
@@ -104,6 +89,7 @@ class Request(models.Model):
     phone_no = models.CharField(max_length=10)
     sg = models.ForeignKey(SectionGroup, null=True, on_delete=models.SET_NULL)
     mc = models.ForeignKey(Machine, null=True, on_delete=models.SET_NULL)
+    task = models.ForeignKey(Task, null=True, on_delete=models.SET_NULL)
     request_date = models.DateField(null=True)
     finish_datetime = models.DateTimeField(null=True)
     type = models.CharField(max_length=10) # Preventive, User Request

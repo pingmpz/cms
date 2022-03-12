@@ -74,7 +74,7 @@
                                           <th>Reason</th>
                                           <th>Request To</th>
                                           <th>Description</th>
-                                          <th>Machine No</th>
+                                          <th>Machine/Device/Task</th>
                                           <th>Request By</th>
                                           <th>IsMember</th>
                                       </tr>
@@ -97,7 +97,7 @@
                                           <td>{{req.reason|default_if_none:""}}</td>
                                           <td>{{req.sg.name}}</td>
                                           <td>{{req.description}}</td>
-                                          <td>{{req.mc.mc_no}}</td>
+                                          <td>{{req.mc.mc_no|default_if_none:""}}{{req.task.name|default_if_none:""}}</td>
                                           <td>{{req.emp_id}} | {{req.name|title}} ({{req.section}})</td>
                                           <td>
                                             {% if is_members|index:forloop.counter0 %}

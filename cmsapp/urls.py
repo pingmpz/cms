@@ -27,7 +27,6 @@ urlpatterns = [
     #-- Master
     path('master_emp/', views.master_emp, name='master_emp'),
     path('master_mc/', views.master_mc, name='master_mc'),
-    path('master_dv/', views.master_dv, name='master_dv'),
     path('master_task/', views.master_task, name='master_task'),
     path('master_ven/', views.master_ven, name='master_ven'),
     path('master_cat/', views.master_cat, name='master_cat'),
