@@ -1,9 +1,11 @@
 from django.contrib import admin
-from .models import SectionGroup, Employee, Machine, Vendor, Category, SubCategory, MailGroup, Request, File, Member, RequestVendor, Comment, RequestSubCategory, OperatorWorkingTime, VendorWorkingTime, MachineDowntime
+from .models import SectionGroup, Employee, Machine, Device, Task, Vendor, Category, SubCategory, MailGroup, Request, File, Member, RequestVendor, Comment, RequestSubCategory, OperatorWorkingTime, VendorWorkingTime, MachineDowntime
 
 admin.site.register(SectionGroup)
 admin.site.register(Employee)
 admin.site.register(Machine)
+admin.site.register(Device)
+admin.site.register(Task)
 admin.site.register(Vendor)
 admin.site.register(Category)
 admin.site.register(SubCategory)

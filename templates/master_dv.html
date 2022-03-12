@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+{% load static %}
+
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <title>Device Master | C.C.S. Maintenance Service</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta content="A fully featured admin theme which can be used to build CRM, CMS, etc." name="description" />
+        <meta content="Coderthemes" name="author" />
+        <!-- App favicon -->
+        <link rel="shortcut icon" href="assets/images/favicon.ico">
+
+        <!-- App css -->
+        <link href="{% static "assets/css/icons.min.css" %}" rel="stylesheet" type="text/css" />
+        <link href="{% static "assets/css/app-modern.min.css" %}" rel="stylesheet" type="text/css" id="light-style" />
+        <link href="{% static "assets/css/app-modern-dark.min.css" %}" rel="stylesheet" type="text/css" id="dark-style" />
+
+        <!-- DataTable css -->
+        <link href="{% static "assets/css/vendor/dataTables.bootstrap5.css" %}" rel="stylesheet" type="text/css" />
+        <link href="{% static "assets/css/vendor/responsive.bootstrap5.css" %}" rel="stylesheet" type="text/css" />
+        <link href="{% static "assets/css/vendor/buttons.bootstrap5.css" %}" rel="stylesheet" type="text/css" />
+        <link href="{% static "assets/css/vendor/select.bootstrap5.css" %}" rel="stylesheet" type="text/css" />
+        <link href="{% static "assets/css/vendor/fixedHeader.bootstrap5.css" %}" rel="stylesheet" type="text/css" />
+        <!-- <link href="{% static "assets/css/vendor/fixedColumns.bootstrap5.css" %}" rel="stylesheet" type="text/css" /> -->
+
+    </head>
+
+    <body class="loading" data-layout="detached" data-layout-config='{"leftSidebarCondensed":{% if request.user.employee.sidebar == 'Condensed' %}true{% else %}false{% endif %},"darkMode":{% if request.user.employee.scheme == 'Dark Mode' %}true{% else %}false{% endif %}, "showRightSidebarOnStart":false}'>
+
+        <!-- ========== Header Bar ========== -->
+        {% include 'header.html' %}
+
+        <div class="container-fluid">
+            <div class="wrapper">
+
+                <!-- ========== Left Sidebar ========== -->
+                {% include 'sidebar.html' %}
+
+                <!-- ========== Page Content ========== -->
+                <div class="content-page">
+                    <div class="content">
+
+                        <!-- ========== Inner Top Bar ========== -->
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="page-title-box">
+                                    <div class="page-title-right d-flex">
+                                        <!-- Filter Here -->
+                                    </div>
+                                    <h4 class="page-title"><i class="uil-database"></i> Device Master ({{dvs|length}})</h4>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- ========== Main Content ========== -->
+                        <div class="row">
+                          <div class="col-12">
+                            <div class="card">
+                              <div class="card-body">
+                                <table id="master_table" class="table table-sm nowrap dt-responsive row-border order-column w-100 small">
+                                  <thead>
+                                      <tr>
+                                          <th>Type</th>
+                                          <th>Device No</th>
+                                          <th>IsActive</th>
+                                          <th>Serial No</th>
+                                          <th>Manufacture</th>
+                                          <th>Model</th>
+                                          <th>Building</th>
+                                          <th>Floor</th>
+                                          <th>Location</th>
+                                          <th>Capacity</th>
+                                          <th>Note</th>
+                                      </tr>
+                                  </thead>
+                                  <tbody>
+                                      {% for dv in dvs %}
+                                      <tr>
+                                          <td>{{dv.type|default_if_none:""}}</td>
+                                          <td>{{dv.dv_no|default_if_none:""}}</td>
+                                          <td>
+                                            {% if dv.is_active %}
+                                            <i class='mdi mdi-check text-success'></i><span hidden>True</span>
+                                            {% else %}
+                                            <i class='uil-times text-danger'></i><span hidden>False</span>
+                                            {% endif %}
+                                          </td>
+                                          <td>{{dv.serial_no|default_if_none:""}}</td>
+                                          <td>{{dv.manufacture|default_if_none:""}}</td>
+                                          <td>{{dv.model|default_if_none:""}}</td>
+                                          <td>{{dv.building|default_if_none:""}}</td>
+                                          <td>{{dv.floor|default_if_none:""}}</td>
+                                          <td>{{dv.location|default_if_none:""}}</td>
+                                          <td>{{dv.capacity|default_if_none:""}}</td>
+                                          <td>{{dv.note|default_if_none:""}}</td>
+                                      </tr>
+                                      {% endfor %}
+                                  </tbody>
+                                </table>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                    </div>
+
+                    <!-- ========== Footer ========== -->
+                    {% include 'footer.html' %}
+
+                </div>
+            </div>
+        </div>
+
+        <!-- ========== Right Side Bar ========== -->
+
+
+        <!-- bundle -->
+        <script src="{% static "assets/js/vendor.min.js" %}"></script>
+        <script src="{% static "assets/js/app.min.js" %}"></script>
+        <script src="{% static "custom/custom.js" %}"></script>
+        <script src="{% static "custom/topsearch.js" %}"></script>
+        <!-- DataTable -->
+        <script src="{% static "assets/js/vendor/jquery.dataTables.min.js" %}"></script>
+        <script src="{% static "assets/js/vendor/dataTables.bootstrap5.js" %}"></script>
+        <script src="{% static "assets/js/vendor/dataTables.responsive.min.js" %}"></script>
+        <script src="{% static "assets/js/vendor/responsive.bootstrap5.min.js" %}"></script>
+        <script src="{% static "assets/js/vendor/dataTables.buttons.min.js" %}"></script>
+        <script src="{% static "assets/js/vendor/buttons.bootstrap5.min.js" %}"></script>
+        <script src="{% static "assets/js/vendor/buttons.html5.min.js" %}"></script>
+        <script src="{% static "assets/js/vendor/buttons.flash.min.js" %}"></script>
+        <script src="{% static "assets/js/vendor/buttons.print.min.js" %}"></script>
+        <script src="{% static "assets/js/vendor/dataTables.keyTable.min.js" %}"></script>
+        <script src="{% static "assets/js/vendor/dataTables.select.min.js" %}"></script>
+        <script src="{% static "assets/js/vendor/fixedColumns.bootstrap5.min.js" %}"></script>
+        <script src="{% static "assets/js/vendor/fixedHeader.bootstrap5.min.js" %}"></script>
+
+        <script type="text/javascript">
+          var table = $('#master_table').DataTable( {
+            "columnDefs": [{ "visible": true, "targets": 0 }],
+            "order": [[ 0, "asc" ]],
+            "displayLength": 100,
+            "scrollX": true,
+            "drawCallback": function ( settings ) {
+                  var api = this.api();
+                  var rows = api.rows( {page:'current'} ).nodes();
+                  var last=null;
+
+                  api.column(0, {page:'current'} ).data().each( function ( group, i ) {
+                      if ( last !== group ) {
+                          $(rows).eq( i ).before(
+                              '<tr class="group"><td colspan="10">⎯<b><i> '+group+'</i></b></td></tr>'
+                          );
+                          last = group;
+                      }
+                });
+              }
+          });
+        </script>
+
+    </body>
+</html>

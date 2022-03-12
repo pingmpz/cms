@@ -11,7 +11,7 @@ from openpyxl import load_workbook, Workbook
 # Date Time
 from datetime import datetime, timedelta
 
-from .models import SectionGroup, Employee, Machine, Vendor, Category, SubCategory, MailGroup, Request, File, Member, RequestVendor, Comment, RequestSubCategory, OperatorWorkingTime, VendorWorkingTime, MachineDowntime
+from .models import SectionGroup, Employee, Machine, Device, Task, Vendor, Category, SubCategory, MailGroup, Request, File, Member, RequestVendor, Comment, RequestSubCategory, OperatorWorkingTime, VendorWorkingTime, MachineDowntime
 
 ################################# Authenticate #################################
 
@@ -425,6 +425,24 @@ def master_mc(request):
     return render(request, 'master_mc.html', context)
 
 @login_required(login_url='/')
+def master_task(request):
+    tasks = Task.objects.all()
+    context = {
+        'tasks': tasks,
+    }
+    context['all_page_data'] = (all_page_data(request))
+    return render(request, 'master_task.html', context)
+
+@login_required(login_url='/')
+def master_dv(request):
+    dvs = Device.objects.all()
+    context = {
+        'dvs': dvs,
+    }
+    context['all_page_data'] = (all_page_data(request))
+    return render(request, 'master_dv.html', context)
+
+@login_required(login_url='/')
 def master_ven(request):
     vens = Vendor.objects.all()
     context = {
@@ -511,6 +529,9 @@ def new_sub_cat(request):
 
 @login_required(login_url='/')
 def new_mg(request):
+    # upload_machine()
+    # upload_device()
+    # upload_task()
     sgs = SectionGroup.objects.all()
     context = {
         'sgs': sgs,
@@ -1036,22 +1057,65 @@ def upload_machine():
     for i in range(ws.max_row + 1):
         if i < skip_count:
             continue
-        section = ws['A' + str(i)].value
-        register_no = ws['B' + str(i)].value
-        mc_no = ws['C' + str(i)].value
+        mc_no = ws['A' + str(i)].value
+        section = ws['B' + str(i)].value
+        register_no = ws['C' + str(i)].value
         asset_no = ws['D' + str(i)].value
-        plant = ws['E' + str(i)].value
+        serial_no = ws['E' + str(i)].value
         manufacture = ws['F' + str(i)].value
         model = ws['G' + str(i)].value
-        serial_no = ws['H' + str(i)].value
-        capacity = ws['I' + str(i)].value
-        power  = ws['J' + str(i)].value
-        install_date = ws['K' + str(i)].value
+        plant = ws['H' + str(i)].value
+        power  = ws['I' + str(i)].value
+        install_date = ws['J' + str(i)].value
+        capacity = ws['K' + str(i)].value
         note = ws['L' + str(i)].value
         if mc_no != None and mc_no != "":
             print(mc_no)
             mc_new = Machine(mc_no=mc_no,section=section,register_no=register_no,asset_no=asset_no,serial_no=serial_no,manufacture=manufacture,model=model,plant=plant,power=power,install_date=install_date,capacity=capacity,note=note)
             mc_new.save()
+    return
+
+def upload_device():
+    entries = Device.objects.all()
+    entries.delete()
+    wb = load_workbook(filename = 'media/CMS Device Master.xlsx')
+    ws = wb.active
+    skip_count = 2
+    for i in range(ws.max_row + 1):
+        if i < skip_count:
+            continue
+        dv_no = ws['A' + str(i)].value
+        type = ws['B' + str(i)].value
+        serial_no = ws['C' + str(i)].value
+        manufacture = ws['D' + str(i)].value
+        model = ws['E' + str(i)].value
+        building = ws['F' + str(i)].value
+        floor = ws['G' + str(i)].value
+        location = ws['H' + str(i)].value
+        capacity = ws['I' + str(i)].value
+        note = ws['J' + str(i)].value
+        if dv_no != None and dv_no != "":
+            print(dv_no)
+            dv_new = Device(dv_no=dv_no,type=type,serial_no=serial_no,manufacture=manufacture,model=model,building=building,floor=floor,location=location,capacity=capacity,note=note)
+            dv_new.save()
+    return
+
+def upload_task():
+    entries = Task.objects.all()
+    entries.delete()
+    wb = load_workbook(filename = 'media/CMS Task Master.xlsx')
+    ws = wb.active
+    skip_count = 2
+    for i in range(ws.max_row + 1):
+        if i < skip_count:
+            continue
+        name = ws['A' + str(i)].value
+        type = ws['B' + str(i)].value
+        note = ws['C' + str(i)].value
+        if name != None and name != "":
+            print(name)
+            task_new = Task(name=name,type=type,note=note)
+            task_new.save()
     return
 
 ################################ Other Function ################################
