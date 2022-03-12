@@ -4,7 +4,7 @@
 <html lang="en">
     <head>
         <meta charset="utf-8" />
-        <title>New Machine | C.C.S. Maintenance Service</title>
+        <title>New Machine / Device | C.C.S. Maintenance Service</title>
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <meta content="A fully featured admin theme which can be used to build CRM, CMS, etc." name="description" />
         <meta content="Coderthemes" name="author" />
@@ -48,7 +48,7 @@
                                     <div class="page-title-right d-flex">
                                       <button type="button" class="btn btn-success ms-2" id="save_button" onclick="save()" title="Save"><i class="mdi mdi-content-save"></i></button>
                                     </div>
-                                    <h4 class="page-title"><i class="mdi mdi-database-plus-outline"></i> New Machine</h4>
+                                    <h4 class="page-title"><i class="mdi mdi-database-plus-outline"></i> New Machine / Device</h4>
                                 </div>
                             </div>
                         </div>
@@ -64,7 +64,7 @@
                                       <div class="col-6">
 
                                         <div class="mb-3">
-                                            <label class="form-label">Machine No <i class="mdi mdi-asterisk text-danger small"></i></label>
+                                            <label class="form-label">Machine / Device No <i class="mdi mdi-asterisk text-danger small"></i></label>
                                             <input class="form-control" type="text" name="mc_no" id="mc_no" required>
                                         </div>
 
@@ -175,7 +175,7 @@
             var mc_no = $('#mc_no').val();
             if(mc_no.length == 0){
               invalid("mc_no");
-              set_text_value("invalid_text","Please fill 'Machine No'.")
+              set_text_value("invalid_text","Please fill 'Machine / Device No'.")
               _callback(false);
               return;
             }

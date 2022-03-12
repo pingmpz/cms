@@ -495,11 +495,17 @@ def new_emp(request):
 
 @login_required(login_url='/')
 def new_mc(request):
-    # upload_machine()
     context = {
     }
     context['all_page_data'] = (all_page_data(request))
     return render(request, 'new_mc.html', context)
+
+@login_required(login_url='/')
+def new_task(request):
+    context = {
+    }
+    context['all_page_data'] = (all_page_data(request))
+    return render(request, 'new_task.html', context)
 
 @login_required(login_url='/')
 def new_ven(request):

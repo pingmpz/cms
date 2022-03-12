@@ -36,6 +36,7 @@ urlpatterns = [
     #-- New Data
     path('new_emp/', views.new_emp, name='new_emp'),
     path('new_mc/', views.new_mc, name='new_mc'),
+    path('new_task/', views.new_task, name='new_task'),
     path('new_ven/', views.new_ven, name='new_ven'),
     path('new_cat/', views.new_cat, name='new_cat'),
     path('new_sub_cat/', views.new_sub_cat, name='new_sub_cat'),
