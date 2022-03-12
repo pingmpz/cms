@@ -66,12 +66,17 @@
                                               </div>
 
                                               <div class="mb-3">
-                                                <label class="form-label">Request Date <i class="mdi mdi-asterisk text-danger small"></i></label>
-                                                <input type="date" class="form-control" name="req_date" id="req_date" value="{{req.request_date|date:'Y-m-d'}}">
+                                                  <label class="form-label">Type</label>
+                                                  <input class="form-control" type="text" name="type" id="type" value="{{req.type}}" readonly>
                                               </div>
 
                                               <div class="mb-3">
-                                                <label class="form-label">Machine</label>
+                                                <label class="form-label">Request Date {% if req.type == 'Preventive' %}<i class="mdi mdi-asterisk text-danger small"></i>{% endif %}</label>
+                                                <input type="date" class="form-control" name="req_date" id="req_date" value="{{req.request_date|date:'Y-m-d'}}" {% if req.type == 'User Request' %}readonly{% endif %}>
+                                              </div>
+
+                                              <div class="mb-3" {% if req.type == 'Preventive' %}hidden{% endif %}>
+                                                <label class="form-label">Machine & Device</label>
                                                 <p class="text-muted font-12">* If you remove machine, it will also remove all machine downtime in this request.</p>
                                                 <select class="form-control select2" data-toggle="select2" name="mc_no" id="mc_no">
                                                   <option>Select</option>
@@ -86,6 +91,20 @@
                                                   {% endfor %}
                                                 </select>
                                               </div>
+
+                                              {% if req.type == 'Preventive' and req.mc %}
+                                              <div class="mb-3">
+                                                <label class="form-label">Machine</label>
+                                                <input type="text" class="form-control" value="{{req.mc.mc_no}}" readonly>
+                                              </div>
+                                              {% endif %}
+
+                                              {% if req.type == 'Preventive' and req.task %}
+                                              <div class="mb-3">
+                                                <label class="form-label">Task</label>
+                                                <input type="text" class="form-control" value="{{req.task.name}}" readonly>
+                                              </div>
+                                              {% endif %}
 
                                               <div class="mb-3">
                                                   <label class="form-label">Description</label>

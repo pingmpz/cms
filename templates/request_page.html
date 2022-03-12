@@ -806,7 +806,7 @@
                       <div class="modal-body">
                           <h5 class="mt-3 mb-3 text-center">Are you sure that you want to accept this request ?</h5>
                           <div class="mb-3" {% if req.type == 'Preventive' %}hidden{% endif %}>
-                            <label class="form-label">Machine</label>
+                            <label class="form-label">Machine & Device</label>
                             <select class="form-control select2" data-toggle="select2" name="accept_mc_no" id="accept_mc_no">
                               <option>Select</option>
                               {% for mc in mcs %}
