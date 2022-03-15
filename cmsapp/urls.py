@@ -43,6 +43,8 @@ urlpatterns = [
     path('new_mg/', views.new_mg, name='new_mg'),
     #-- Edit Data
     path('edit_mc/<str:fmc>', views.edit_mc, name='edit_mc'),
+    path('edit_task/<str:ftask>', views.edit_task, name='edit_task'),
+    path('edit_ven/<str:fven>', views.edit_ven, name='edit_ven'),
     ### POST
     path('setting_save/', views.setting_save, name='setting_save'),
     path('new_request_save/', views.new_request_save, name='new_request_save'),
@@ -58,6 +60,8 @@ urlpatterns = [
     path('new_mg_save/', views.new_mg_save, name='new_mg_save'),
     #-- Edit Data
     path('edit_mc_save/', views.edit_mc_save, name='edit_mc_save'),
+    path('edit_task_save/', views.edit_task_save, name='edit_task_save'),
+    path('edit_ven_save/', views.edit_ven_save, name='edit_ven_save'),
     ### GET
     path('validate_old_password/', views.validate_old_password, name='validate_old_password'),
     path('validate_username/', views.validate_username, name='validate_username'),

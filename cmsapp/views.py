@@ -572,6 +572,36 @@ def edit_mc(request, fmc):
     context['all_page_data'] = (all_page_data(request))
     return render(request, 'edit_mc.html', context)
 
+@login_required(login_url='/')
+def edit_task(request, ftask):
+    tasks = Task.objects.all().order_by('type')
+    task_group = get_task_group(tasks)
+    if ftask == 'FIRST':
+        ftask = tasks[0].id
+    task = Task.objects.get(id=ftask)
+    context = {
+        'ftask': ftask,
+        'tasks': tasks,
+        'task_group': task_group,
+        'task': task,
+    }
+    context['all_page_data'] = (all_page_data(request))
+    return render(request, 'edit_task.html', context)
+
+@login_required(login_url='/')
+def edit_ven(request, fven):
+    vens = Vendor.objects.all().order_by('code')
+    if fven == 'FIRST':
+        fven = vens[0].code
+    ven = Vendor.objects.get(code=fven)
+    context = {
+        'fven': fven,
+        'vens': vens,
+        'ven': ven,
+    }
+    context['all_page_data'] = (all_page_data(request))
+    return render(request, 'edit_ven.html', context)
+
 #################################### POST ######################################
 def setting_save(request):
     is_reset = True if request.POST.get('is_reset', False) == 'on' else False
@@ -783,6 +813,32 @@ def edit_mc_save(request):
     mc.note = note
     mc.save()
     return redirect('/edit_mc/' + mc.mc_no)
+
+def edit_task_save(request):
+    is_active = True if request.POST.get('is_active', False) == 'on' else False
+    id = request.POST['id']
+    note = request.POST['note']
+    task = Task.objects.get(id=id)
+    task.is_active = is_active
+    task.note = note
+    task.save()
+    return redirect('/edit_task/' + str(task.id))
+
+def edit_ven_save(request):
+    is_active = True if request.POST.get('is_active', False) == 'on' else False
+    code = request.POST['code']
+    address = request.POST['address']
+    email = request.POST['email']
+    phone_no = request.POST['phone_no']
+    note = request.POST['note']
+    ven = Vendor.objects.get(code=code)
+    ven.is_active = is_active
+    ven.address = address
+    ven.email = email
+    ven.phone_no = phone_no
+    ven.note = note
+    ven.save()
+    return redirect('/edit_ven/' + str(ven.code))
 
 ##################################### GET ######################################
 

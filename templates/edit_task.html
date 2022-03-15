@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+{% load static %}
+{% load extra %}
+{% load humanize %}
+
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <title>Edit Task | C.C.S. Maintenance Service</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta content="A fully featured admin theme which can be used to build CRM, CMS, etc." name="description" />
+        <meta content="Coderthemes" name="author" />
+        <!-- App favicon -->
+        <link rel="shortcut icon" href="assets/images/favicon.ico">
+
+        <!-- App css -->
+        <link href="{% static "assets/css/icons.min.css" %}" rel="stylesheet" type="text/css" />
+        <link href="{% static "assets/css/app-modern.min.css" %}" rel="stylesheet" type="text/css" id="light-style" />
+        <link href="{% static "assets/css/app-modern-dark.min.css" %}" rel="stylesheet" type="text/css" id="dark-style" />
+
+        <!-- DataTable css -->
+        <link href="{% static "assets/css/vendor/dataTables.bootstrap5.css" %}" rel="stylesheet" type="text/css" />
+        <link href="{% static "assets/css/vendor/responsive.bootstrap5.css" %}" rel="stylesheet" type="text/css" />
+        <link href="{% static "assets/css/vendor/buttons.bootstrap5.css" %}" rel="stylesheet" type="text/css" />
+        <link href="{% static "assets/css/vendor/select.bootstrap5.css" %}" rel="stylesheet" type="text/css" />
+        <link href="{% static "assets/css/vendor/fixedHeader.bootstrap5.css" %}" rel="stylesheet" type="text/css" />
+        <link href="{% static "assets/css/vendor/fixedColumns.bootstrap5.css" %}" rel="stylesheet" type="text/css" />
+
+    </head>
+
+    <body class="loading" data-layout="detached" data-layout-config='{"leftSidebarCondensed":{% if request.user.employee.sidebar == 'Condensed' %}true{% else %}false{% endif %},"darkMode":{% if request.user.employee.scheme == 'Dark Mode' %}true{% else %}false{% endif %}, "showRightSidebarOnStart":false}'>
+
+        <!-- ========== Header Bar ========== -->
+        {% include 'header.html' %}
+
+        <div class="container-fluid">
+            <div class="wrapper">
+
+                <!-- ========== Left Sidebar ========== -->
+                {% include 'sidebar.html' %}
+
+                <!-- ========== Page Content ========== -->
+                <div class="content-page">
+                    <div class="content">
+
+                        <!-- ========== Inner Top Bar ========== -->
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="page-title-box">
+                                    <div class="page-title-right d-flex">
+                                      <div style="width:100%">
+                                        <select class="form-control" name="ftask" id="ftask">
+                                          {% for itask in tasks %}
+                                          {% if task_group|index:forloop.counter0 != None %}
+                                          <optgroup label="{{task_group|index:forloop.counter0}}">
+                                          {% endif %}
+                                          <option value="{{itask.id}}" {% if ftask == itask.id|intcomma %}selected{% endif %}>▪️ {{itask.name}}</option>
+                                          {% if task_group|index:forloop.counter1 != None %}
+                                          </optgroup>
+                                          {% endif %}
+                                          {% endfor %}
+                                        </select>
+                                      </div>
+                                      <button type="button" class="btn btn-success ms-2" id="save_button" onclick="save()"><i class="mdi mdi-content-save"></i></button>
+                                    </div>
+                                    <h4 class="page-title"><i class="mdi mdi-database-edit-outline"></i> Edit Task</h4>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- ========== Main Content ========== -->
+                        <div class="row">
+                          <div class="col-3">
+
+                          </div>
+                          <div class="col-6">
+                            <div class="card">
+                              <div class="card-body">
+                                <form action="/edit_task_save/" method="POST" id="form">
+                                    {% csrf_token %}
+                                    <input type="text" name="id" id="id" value="{{task.id}}" hidden>
+
+                                    <div class="form-check form-checkbox-success mb-3">
+                                      <input type="checkbox" class="form-check-input" name="is_active" id="is_active" {% if task.is_active %}checked{% endif %}>
+                                      <label class="form-check-label" for="is_reset">Is Active</label>
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label class="form-label">Task Type</label>
+                                        <input class="form-control" type="text" name="type" id="type" value="{{task.type}}" readonly>
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label class="form-label">Task Name</label>
+                                        <input class="form-control" type="text" name="name" id="name" value="{{task.name}}" readonly>
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label class="form-label">Note</label>
+                                        <textarea class="form-control" name="note" id="note" rows="5">{{task.note|default_if_none:""}}</textarea>
+                                    </div>
+
+                                    <p class="text-danger text-center small mb-4" id="invalid_text"></p>
+                                </form>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                    </div>
+
+                    <!-- ========== Footer ========== -->
+                    {% include 'footer.html' %}
+
+                </div>
+            </div>
+        </div>
+
+        <!-- ========== Right Side Bar ========== -->
+
+        <!-- bundle -->
+        <script src="{% static "assets/js/vendor.min.js" %}"></script>
+        <script src="{% static "assets/js/app.min.js" %}"></script>
+        <script src="{% static "custom/custom.js" %}"></script>
+        <script src="{% static "custom/topsearch.js" %}"></script>
+
+        <script>
+          //-- Prevent Back
+          window.addEventListener( "pageshow", function (event) {
+            if (event.persisted || (typeof window.performance != "undefined" && window.performance.navigation.type === 2)) window.location.reload();
+          });
+
+          function save(){
+            // Clear Validate
+            remove_valids(['type','name','note']);
+            set_text_emptys(['invalid_text']);
+            // Function
+            document.getElementById('form').submit();
+            $('#save_button').prop('disabled', true);
+          }
+
+          $('#ftask').change(function() {
+            filter();
+          });
+
+          function filter(){
+            var ftask = $("#ftask").val();
+            window.location.href = "/edit_task/" + ftask;
+          }
+        </script>
+    </body>
+</html>
