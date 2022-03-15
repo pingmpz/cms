@@ -1134,11 +1134,11 @@ def upload_task():
     for i in range(ws.max_row + 1):
         if i < skip_count:
             continue
-        name = ws['A' + str(i)].value
-        type = ws['B' + str(i)].value
+        name = (ws['A' + str(i)].value).strip()
+        type = (ws['B' + str(i)].value).strip()
         note = ws['C' + str(i)].value
         if name != None and name != "":
-            print(name)
+            print(type, name)
             task_new = Task(name=name,type=type,note=note)
             task_new.save()
     return
