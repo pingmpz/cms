@@ -69,14 +69,12 @@
                                           <th>PhoneNo</th>
                                           <th>IsActive</th>
                                           <th>DateJoined</th>
-                                          {% if request.user.is_superuser %}
-                                          <th>Scheme</th>
+                                          <th>LastLogin</th>
+                                          <!-- <th>Scheme</th>
                                           <th>Sidebar</th>
                                           <th>PV Created</th>
-                                          <th>Auto Add</th>
-                                          {% endif %}
+                                          <th>Auto Add</th> -->
                                           <th>Permission Level</th>
-
                                       </tr>
                                   </thead>
                                   <tbody>
@@ -96,12 +94,11 @@
                                             {% endif %}
                                           </td>
                                           <td>{{user.employee.date_published}}</td>
-                                          {% if request.user.is_superuser %}
-                                          <td>{{user.employee.scheme}}</td>
+                                          <!-- <td>{{user.employee.scheme}}</td>
                                           <td>{{user.employee.sidebar}}</td>
                                           <td>{{user.employee.pv_created}}</td>
-                                          <td>{{user.employee.auto_add}}</td>
-                                          {% endif %}
+                                          <td>{{user.employee.auto_add}}</td> -->
+                                          <td>{{user.last_login|default_if_none:""}}</td>
                                           <td>{% if user.is_superuser %}Super Administrator{% elif user.is_staff %}Administrator{% else %}-{% endif %}</td>
                                       </tr>
                                       {% endfor %}

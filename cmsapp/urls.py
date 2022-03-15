@@ -41,11 +41,14 @@ urlpatterns = [
     path('new_cat/', views.new_cat, name='new_cat'),
     path('new_sub_cat/', views.new_sub_cat, name='new_sub_cat'),
     path('new_mg/', views.new_mg, name='new_mg'),
+    #-- Edit Data
+    path('edit_mc/<str:fmc>', views.edit_mc, name='edit_mc'),
     ### POST
     path('setting_save/', views.setting_save, name='setting_save'),
     path('new_request_save/', views.new_request_save, name='new_request_save'),
     path('new_pv_request_save/', views.new_pv_request_save, name='new_pv_request_save'),
     path('edit_request_save/', views.edit_request_save, name='edit_request_save'),
+    #-- New Data
     path('new_emp_save/', views.new_emp_save, name='new_emp_save'),
     path('new_mc_save/', views.new_mc_save, name='new_mc_save'),
     path('new_task_save/', views.new_task_save, name='new_task_save'),
@@ -53,6 +56,8 @@ urlpatterns = [
     path('new_cat_save/', views.new_cat_save, name='new_cat_save'),
     path('new_sub_cat_save/', views.new_sub_cat_save, name='new_sub_cat_save'),
     path('new_mg_save/', views.new_mg_save, name='new_mg_save'),
+    #-- Edit Data
+    path('edit_mc_save/', views.edit_mc_save, name='edit_mc_save'),
     ### GET
     path('validate_old_password/', views.validate_old_password, name='validate_old_password'),
     path('validate_username/', views.validate_username, name='validate_username'),

@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+{% load static %}
+{% load extra %}
+
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <title>Edit Machine / Device | C.C.S. Maintenance Service</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta content="A fully featured admin theme which can be used to build CRM, CMS, etc." name="description" />
+        <meta content="Coderthemes" name="author" />
+        <!-- App favicon -->
+        <link rel="shortcut icon" href="assets/images/favicon.ico">
+
+        <!-- App css -->
+        <link href="{% static "assets/css/icons.min.css" %}" rel="stylesheet" type="text/css" />
+        <link href="{% static "assets/css/app-modern.min.css" %}" rel="stylesheet" type="text/css" id="light-style" />
+        <link href="{% static "assets/css/app-modern-dark.min.css" %}" rel="stylesheet" type="text/css" id="dark-style" />
+
+        <!-- DataTable css -->
+        <link href="{% static "assets/css/vendor/dataTables.bootstrap5.css" %}" rel="stylesheet" type="text/css" />
+        <link href="{% static "assets/css/vendor/responsive.bootstrap5.css" %}" rel="stylesheet" type="text/css" />
+        <link href="{% static "assets/css/vendor/buttons.bootstrap5.css" %}" rel="stylesheet" type="text/css" />
+        <link href="{% static "assets/css/vendor/select.bootstrap5.css" %}" rel="stylesheet" type="text/css" />
+        <link href="{% static "assets/css/vendor/fixedHeader.bootstrap5.css" %}" rel="stylesheet" type="text/css" />
+        <link href="{% static "assets/css/vendor/fixedColumns.bootstrap5.css" %}" rel="stylesheet" type="text/css" />
+
+    </head>
+
+    <body class="loading" data-layout="detached" data-layout-config='{"leftSidebarCondensed":{% if request.user.employee.sidebar == 'Condensed' %}true{% else %}false{% endif %},"darkMode":{% if request.user.employee.scheme == 'Dark Mode' %}true{% else %}false{% endif %}, "showRightSidebarOnStart":false}'>
+
+        <!-- ========== Header Bar ========== -->
+        {% include 'header.html' %}
+
+        <div class="container-fluid">
+            <div class="wrapper">
+
+                <!-- ========== Left Sidebar ========== -->
+                {% include 'sidebar.html' %}
+
+                <!-- ========== Page Content ========== -->
+                <div class="content-page">
+                    <div class="content">
+
+                        <!-- ========== Inner Top Bar ========== -->
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="page-title-box">
+                                    <div class="page-title-right d-flex">
+                                      <div style="width:100%">
+                                        <select class="form-control" name="fmc" id="fmc">
+                                          {% for mc in mcs %}
+                                          {% if mc_group|index:forloop.counter0 != None %}
+                                          <optgroup label="{{mc_group|index:forloop.counter0}}">
+                                          {% endif %}
+                                          <option value="{{mc.mc_no}}" {% if fmc == mc.mc_no %}selected{% endif %}>▪️ {{mc.mc_no}}</option>
+                                          {% if mc_group|index:forloop.counter1 != None %}
+                                          </optgroup>
+                                          {% endif %}
+                                          {% endfor %}
+                                        </select>
+                                      </div>
+                                      <button type="button" class="btn btn-success ms-2" id="save_button" onclick="save()" title="Save"><i class="mdi mdi-content-save"></i></button>
+                                    </div>
+                                    <h4 class="page-title"><i class="mdi mdi-database-plus-outline"></i> Edit Machine / Device</h4>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- ========== Main Content ========== -->
+                        <div class="row">
+                          <div class="col-12">
+                            <div class="card">
+                              <div class="card-body">
+                                <form action="/edit_mc_save/" method="POST" id="form">
+                                    {% csrf_token %}
+                                    <div class="row">
+                                      <div class="col-6">
+
+                                        <div class="mb-3">
+                                            <label class="form-label">Machine / Device No</label>
+                                            <input class="form-control" type="text" name="mc_no" id="mc_no" value='{{mc.mc_no}}' readonly>
+                                        </div>
+
+                                        <div class="mb-3">
+                                            <label class="form-label">Section</label>
+                                            <input class="form-control" type="text" name="section" id="section" value='{{mc.section}}' readonly>
+                                        </div>
+
+                                        <div class="mb-3">
+                                            <label class="form-label">Register No</label>
+                                            <input class="form-control" type="text" name="register_no" id="register_no" value='{{mc.register_no|default_if_none:""}}'>
+                                        </div>
+
+                                        <div class="mb-3">
+                                            <label class="form-label">Asset No</label>
+                                            <input class="form-control" type="text" name="asset_no" id="asset_no" value='{{mc.asset_no|default_if_none:""}}'>
+                                        </div>
+
+                                        <div class="mb-3">
+                                            <label class="form-label">Serial No</label>
+                                            <input class="form-control" type="text" name="serial_no" id="serial_no" value='{{mc.serial_no|default_if_none:""}}'>
+                                        </div>
+
+                                        <div class="mb-3">
+                                            <label class="form-label">Manufacture</label>
+                                            <input class="form-control" type="text" name="manufacture" id="manufacture" value='{{mc.manufacture|default_if_none:""}}'>
+                                        </div>
+
+                                        <div class="mb-3">
+                                            <label class="form-label">Model</label>
+                                            <input class="form-control" type="text" name="model" id="model" value='{{mc.model|default_if_none:""}}'>
+                                        </div>
+
+                                      </div>
+                                      <div class="col-6">
+
+                                        <div class="mb-3">
+                                            <label class="form-label">Plant</label>
+                                            <input class="form-control" type="text" name="plant" id="plant" value='{{mc.plant|default_if_none:""}}'>
+                                        </div>
+
+                                        <div class="mb-3">
+                                            <label class="form-label">Power</label>
+                                            <input class="form-control" type="text" name="power" id="power" value='{{mc.power|default_if_none:""}}'>
+                                        </div>
+
+                                        <div class="mb-3">
+                                            <label class="form-label">Install Date</label>
+                                            <input class="form-control" type="date" name="install_date" id="install_date" value='{{mc.install_date|date:'Y-m-d'|default_if_none:""}}'>
+                                        </div>
+
+                                        <div class="mb-3">
+                                            <label class="form-label">Capacity</label>
+                                            <textarea class="form-control" name="capacity" id="capacity" rows="5">{{mc.capacity|default_if_none:""}}</textarea>
+                                        </div>
+
+                                        <div class="mb-3">
+                                            <label class="form-label">Note</label>
+                                            <textarea class="form-control" name="note" id="note" rows="5">{{mc.note|default_if_none:""}}</textarea>
+                                        </div>
+
+                                      </div>
+                                    </div>
+
+                                    <p class="text-danger text-center small mb-4" id="invalid_text"></p>
+                                </form>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                    </div>
+
+                    <!-- ========== Footer ========== -->
+                    {% include 'footer.html' %}
+
+                </div>
+            </div>
+        </div>
+
+        <!-- ========== Right Side Bar ========== -->
+
+        <!-- bundle -->
+        <script src="{% static "assets/js/vendor.min.js" %}"></script>
+        <script src="{% static "assets/js/app.min.js" %}"></script>
+        <script src="{% static "custom/custom.js" %}"></script>
+        <script src="{% static "custom/topsearch.js" %}"></script>
+
+        <script>
+          //-- Prevent Back
+          window.addEventListener( "pageshow", function (event) {
+            if (event.persisted || (typeof window.performance != "undefined" && window.performance.navigation.type === 2)) window.location.reload();
+          });
+
+          function save(){
+            // Clear Validate
+            remove_valids(['mc_no','section','register_no','asset_no','serial_no','manufacture','model','plant','power','install_date','capacity','note']);
+            set_text_emptys(['invalid_text']);
+            // Function
+            document.getElementById('form').submit();
+            $('#save_button').prop('disabled', true);
+          }
+
+          $('#fmc').change(function() {
+            filter();
+          });
+
+          function filter(){
+            var fmc = $("#fmc").val();
+            window.location.href = "/edit_mc/" + fmc;
+          }
+        </script>
+    </body>
+</html>

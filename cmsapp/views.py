@@ -21,7 +21,7 @@ from django.template.loader import get_template
 from .models import SectionGroup, Employee, Machine, Task, Vendor, Category, SubCategory, MailGroup, Request, File, Member, RequestVendor, Comment, RequestSubCategory, OperatorWorkingTime, VendorWorkingTime, MachineDowntime
 
 HOST_URL = 'http://129.1.100.185:8200/'
-TEMPLATE_NEW_REQUEST = 'email_templates/new_request.html'
+TEMPLATE_REQUEST = 'email_templates/request.html'
 
 ################################# Authenticate #################################
 
@@ -77,6 +77,7 @@ def logout_action(request):
 
 @login_required(login_url='/')
 def setting(request):
+    # upload_machine()
     context = {
     }
     context['all_page_data'] = (all_page_data(request))
@@ -553,6 +554,24 @@ def new_mg(request):
     context['all_page_data'] = (all_page_data(request))
     return render(request, 'new_mg.html', context)
 
+#--------------------------------- Edit Data ----------------------------------#
+
+@login_required(login_url='/')
+def edit_mc(request, fmc):
+    mcs = Machine.objects.all()
+    mc_group = get_mc_group(mcs)
+    if fmc == 'FIRST':
+        fmc = mcs[0].mc_no
+    mc = Machine.objects.get(mc_no=fmc)
+    context = {
+        'fmc': fmc,
+        'mcs': mcs,
+        'mc_group': mc_group,
+        'mc': mc,
+    }
+    context['all_page_data'] = (all_page_data(request))
+    return render(request, 'edit_mc.html', context)
+
 #################################### POST ######################################
 def setting_save(request):
     is_reset = True if request.POST.get('is_reset', False) == 'on' else False
@@ -603,10 +622,11 @@ def new_request_save(request):
     cc_to = get_mail_group(sg, True)
     if cc_to_me:
         cc_to.append(request_new.email)
-    email_template = get_template(TEMPLATE_NEW_REQUEST)
+    email_template = get_template(TEMPLATE_REQUEST)
     email_content = email_template.render({
+        'type' : 'New Request',
         'req' : request_new,
-        'link' : HOST_URL + '/request_page/'  + request_new.req_no,
+        'host_url' : HOST_URL,
     })
     send_email(subject, email_content, send_to, cc_to)
     return redirect('/new_request_success/' + request_new.req_no)
@@ -735,6 +755,32 @@ def new_mg_save(request):
     mg_new = MailGroup(sg=sg,user=user,is_cc=is_cc)
     mg_new.save()
     return redirect('/new_mg/')
+
+def edit_mc_save(request):
+    mc_no = request.POST['mc_no']
+    register_no = request.POST['register_no'].strip()
+    asset_no = request.POST['asset_no'].strip()
+    serial_no = request.POST['serial_no'].strip()
+    manufacture = request.POST['manufacture'].strip()
+    model = request.POST['model'].strip()
+    plant = request.POST['plant'].strip()
+    power = request.POST['power'].strip()
+    install_date = request.POST['install_date'] if request.POST['install_date'] != "" else None
+    capacity = request.POST['capacity']
+    note = request.POST['note']
+    mc = Machine.objects.get(mc_no=mc_no)
+    mc.register_no = register_no
+    mc.asset_no = asset_no
+    mc.serial_no = serial_no
+    mc.manufacture = manufacture
+    mc.model = model
+    mc.plant = plant
+    mc.power = power
+    mc.install_date = install_date
+    mc.capacity = capacity
+    mc.note = note
+    mc.save()
+    return redirect('/edit_mc/' + mc.mc_no)
 
 ##################################### GET ######################################
 
