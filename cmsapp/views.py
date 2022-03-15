@@ -558,7 +558,7 @@ def new_mg(request):
 
 @login_required(login_url='/')
 def edit_mc(request, fmc):
-    mcs = Machine.objects.all()
+    mcs = Machine.objects.all().order_by('section')
     mc_group = get_mc_group(mcs)
     if fmc == 'FIRST':
         fmc = mcs[0].mc_no
@@ -757,6 +757,7 @@ def new_mg_save(request):
     return redirect('/new_mg/')
 
 def edit_mc_save(request):
+    is_active = True if request.POST.get('is_active', False) == 'on' else False
     mc_no = request.POST['mc_no']
     register_no = request.POST['register_no'].strip()
     asset_no = request.POST['asset_no'].strip()
@@ -769,6 +770,7 @@ def edit_mc_save(request):
     capacity = request.POST['capacity']
     note = request.POST['note']
     mc = Machine.objects.get(mc_no=mc_no)
+    mc.is_active = is_active
     mc.register_no = register_no
     mc.asset_no = asset_no
     mc.serial_no = serial_no

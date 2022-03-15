@@ -76,6 +76,10 @@
                                     {% csrf_token %}
                                     <div class="row">
                                       <div class="col-6">
+                                        <div class="form-check form-checkbox-success mb-3">
+                                          <input type="checkbox" class="form-check-input" name="is_active" id="is_active" {% if mc.is_active %}checked{% endif %}>
+                                          <label class="form-check-label" for="is_reset">Is Active</label>
+                                        </div>
 
                                         <div class="mb-3">
                                             <label class="form-label">Machine / Device No</label>
@@ -84,7 +88,7 @@
 
                                         <div class="mb-3">
                                             <label class="form-label">Section</label>
-                                            <input class="form-control" type="text" name="section" id="section" value='{{mc.section}}' readonly>
+                                            <input class="form-control" type="text" name="section" id="section" value='{{mc.section|default_if_none:""}}' readonly>
                                         </div>
 
                                         <div class="mb-3">
