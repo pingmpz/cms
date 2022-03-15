@@ -62,7 +62,7 @@
                                   <thead>
                                       <tr>
                                           <th>Type</th>
-                                          <th>Task ID</th>
+                                          <th {% if not request.user.is_superuser %}hidden{% endif %}>Task ID</th>
                                           <th>Task Name</th>
                                           <th>IsActive</th>
                                           <th>Note</th>
@@ -72,7 +72,7 @@
                                       {% for task in tasks %}
                                       <tr>
                                           <td>{{task.type}}</td>
-                                          <td>{{task.id}}</td>
+                                          <td {% if not request.user.is_superuser %}hidden{% endif %}>{{task.id}}</td>
                                           <td>{{task.name}}</td>
                                           <td>
                                             {% if task.is_active %}
