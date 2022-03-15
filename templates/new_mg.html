@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 {% load static %}
+{% load extra %}
 
 <html lang="en">
     <head>
@@ -73,8 +74,18 @@
                                     </div>
 
                                     <div class="mb-3">
-                                        <label class="form-label">Email <i class="mdi mdi-asterisk text-danger small"></i></label>
-                                        <input class="form-control" type="text" name="email" id="email" required>
+                                        <label class="form-label">User <i class="mdi mdi-asterisk text-danger small"></i></label>
+                                        <select class="select2 form-control" data-toggle="select2" name="username" id="username">
+                                            {% for user in users %}
+                                            {% if user_group|index:forloop.counter0 != None %}
+                                            <optgroup label="{{user_group|index:forloop.counter0}}">
+                                            {% endif %}
+                                            <option value="{{user.username}}">▪️ {{user.username}} | {{user.employee.name|title}} [{{user.email}}] </option>
+                                            {% if user_group|index:forloop.counter1 != None %}
+                                            </optgroup>
+                                            {% endif %}
+                                            {% endfor %}
+                                        </select>
                                     </div>
 
                                     <div class="form-check form-checkbox-success mb-3">
@@ -113,10 +124,10 @@
 
           function save(){
             // Clear Validate
-            remove_valids(['sg_name','email']);
+            remove_valids(['sg_name','username']);
             set_text_emptys(['invalid_text']);
             // Function
-            validate_email_in_group(function(result) {
+            validate_user_in_mailgroup(function(result) {
               if(result){
                 document.getElementById('form').submit();
                 $('#save_button').prop('disabled', true);
@@ -124,35 +135,27 @@
             });
           }
 
-          function validate_email_in_group(_callback){
+          function validate_user_in_mailgroup(_callback){
             var sg_name = $('#sg_name').val();
-            var email = $('#email').val();
-            if(email.length == 0){
-              invalid("email");
-              set_text_value("invalid_text","Please fill 'Email'.");
-              return false;
-            } else {
-              $.ajax({
-                url: '/validate_email_in_group/',
-                data: {
-                  'sg_name': sg_name,
-                  'email': email,
-                },
-                dataType: 'json',
-                success: function (data) {
-                  if (data.canUse) {
-                    valid("email");
-                    set_text_emptys("invalid_text");
-                    _callback(true);
-                    return;
-                  } else {
-                    invalid("email");
-                    set_text_value("invalid_text","This 'Email' is already in "+sg_name+" group.")
-                    _callback(false);
-                  }
+            var username = $('#username').val();
+            $.ajax({
+              url: '/validate_user_in_mailgroup/',
+              data: {
+                'sg_name': sg_name,
+                'username': username,
+              },
+              dataType: 'json',
+              success: function (data) {
+                if (data.canUse) {
+                  set_text_emptys("invalid_text");
+                  _callback(true);
+                  return;
+                } else {
+                  set_text_value("invalid_text", "'"+username+"' is already in "+sg_name+" group.")
+                  _callback(false);
                 }
-              });
-            }
+              }
+            });
           }
         </script>
     </body>

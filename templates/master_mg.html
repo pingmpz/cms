@@ -63,6 +63,9 @@
                                       <tr>
                                           <th>Section Group</th>
                                           <th {% if not request.user.is_superuser %}hidden{% endif %}>ID</th>
+                                          <th>Employee ID</th>
+                                          <th>Name</th>
+                                          <th>Section</th>
                                           <th>Email</th>
                                           <th>IsCC</th>
                                       </tr>
@@ -72,7 +75,10 @@
                                       <tr>
                                           <td>{{mg.sg.name}}</td>
                                           <td {% if not request.user.is_superuser %}hidden{% endif %}>{{mg.id}}</td>
-                                          <td>{{mg.email}}</td>
+                                          <td>{{mg.user.username}}</td>
+                                          <td>{{mg.user.employee.name}}</td>
+                                          <td>{{mg.user.employee.section}}</td>
+                                          <td>{{mg.user.email}}</td>
                                           <td>
                                             {% if mg.is_cc %}
                                             <i class='mdi mdi-check text-success'></i><span hidden>True</span>

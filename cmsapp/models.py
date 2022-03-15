@@ -75,7 +75,7 @@ class MailGroup(models.Model):
     id = models.AutoField(primary_key=True)
     sg = models.ForeignKey(SectionGroup, on_delete=models.CASCADE)
     is_cc = models.BooleanField(default=False)
-    email = models.CharField(max_length=100)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
     date_modified = models.DateTimeField(auto_now=True)
     date_published = models.DateTimeField(auto_now_add=True)
 

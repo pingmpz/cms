@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+  <body style="background-color:#5c74d4; padding:30px; ">
+    <table width="100%">
+      <tbody>
+        <td style="background-color:#ffffff; padding:30px; border-radius: 5px;">
+          <h1 style="text-align: center; color:#5c74d4; font-family: Helvetica, sans-serif; margin-bottom:0px;">CMS</h1>
+          <h4 style="text-align: center; color:#82b1fe; font-family: Helvetica, sans-serif; margin-top:0px;">C.C.S. Maintenance Service</h4>
+          <table style="border: 1px solid #d9dbdd; border-radius: 5px; width: 100%; font-family: Helvetica, sans-serif; font-size: 14px;">
+            <tbody>
+              <tr style="height:40px">
+                <td style="text-align: right; background-color:#ffffff; padding:0px;" width="25%">Email Type: </td>
+                <td style="background-color:#ffffff; padding:0px;" width="5%"></td>
+                <td style="text-align: left; background-color:#ffffff; color:#36c9a3; padding:0px;" width="70%"><b>New Request</b></td>
+              </tr>
+              <tr style="height:40px">
+                <td style="text-align: right; background-color:#ffffff;">Request No: </td>
+                <td style="background-color:#ffffff;"></td>
+                <td style="text-align: left; background-color:#ffffff;" width="70%"><b>{{req.req_no}}</b></td>
+              </tr>
+              <tr style="height:40px">
+                <td style="text-align: right; background-color:#ffffff;">Request Link: </td>
+                <td style="background-color:#ffffff;"></td>
+                <td style="text-align: left; background-color:#ffffff;" width="70%"><a href='{{link}}'>Go to {{req.req_no}}</a></td>
+              </tr>
+              <tr style="height:40px">
+                <td style="text-align: right; background-color:#ffffff;">Request Date: </td>
+                <td style="background-color:#ffffff;"></td>
+                <td style="text-align: left; background-color:#ffffff;">{{req.request_date}}</td>
+              </tr>
+              <tr style="height:40px">
+                <td style="text-align: right; background-color:#ffffff;">Request To: </td>
+                <td style="background-color:#ffffff;"></td>
+                <td style="text-align: left; background-color:#ffffff;">{{req.sg.name}} ({{req.sg.full_name}})</td>
+              </tr>
+              <tr style="height:40px">
+                <td style="text-align: right; background-color:#ffffff;">Description: </td>
+                <td style="background-color:#ffffff;"></td>
+                <td style="text-align: left; background-color:#ffffff;">{{req.description}}</td>
+              </tr>
+              <tr style="height:40px">
+                <td style="text-align: right; background-color:#ffffff;">Request By: </td>
+                <td style="background-color:#ffffff;"></td>
+                <td style="text-align: left; background-color:#ffffff;">{{req.emp_id}} | {{req.name|title}} ({{req.section}})</td>
+              </tr>
+              <tr style="height:40px">
+                <td style="text-align: right; background-color:#ffffff;">Email: </td>
+                <td style="background-color:#ffffff;"></td>
+                <td style="text-align: left; background-color:#ffffff;">{{req.email}}</td>
+              </tr>
+              <tr style="height:40px">
+                <td style="text-align: right; background-color:#ffffff;">Phone No: </td>
+                <td style="background-color:#ffffff;"></td>
+                <td style="text-align: left; background-color:#ffffff;">{{req.phone_no}}</td>
+              </tr>
+            </tbody>
+          </table>
+          <p style="text-align: right; color:#07031a; font-family: Helvetica, sans-serif; font-size: 11px;">This is an auto email please don't reply this email.</p>
+          <br><br>
+        </td>
+      </tbody>
+    </table>
+  </body>
+</html>

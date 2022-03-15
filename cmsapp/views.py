@@ -10,8 +10,18 @@ from django.contrib.auth.models import User
 from openpyxl import load_workbook, Workbook
 # Date Time
 from datetime import datetime, timedelta
+# EMAIL
+from django.core.mail import EmailMessage
+from cms.settings import EMAIL_HOST_USER
+import smtplib
+import traceback
+import threading
+from django.template.loader import get_template
 
 from .models import SectionGroup, Employee, Machine, Task, Vendor, Category, SubCategory, MailGroup, Request, File, Member, RequestVendor, Comment, RequestSubCategory, OperatorWorkingTime, VendorWorkingTime, MachineDowntime
+
+HOST_URL = 'http://129.1.100.185:8200/'
+TEMPLATE_NEW_REQUEST = 'email_templates/new_request.html'
 
 ################################# Authenticate #################################
 
@@ -533,8 +543,12 @@ def new_sub_cat(request):
 @login_required(login_url='/')
 def new_mg(request):
     sgs = SectionGroup.objects.all()
+    users = sort_user_by_section(User.objects.all())
+    user_group = get_user_group(users)
     context = {
         'sgs': sgs,
+        'users': users,
+        'user_group': user_group,
     }
     context['all_page_data'] = (all_page_data(request))
     return render(request, 'new_mg.html', context)
@@ -568,11 +582,11 @@ def setting_save(request):
     return redirect('/setting/')
 
 def new_request_save(request):
-    emp_id = request.POST['emp_id']
-    name = request.POST['name']
-    section = request.POST['section']
-    email = request.POST['email']
-    phone_no = request.POST['phone_no']
+    emp_id = request.POST['emp_id'].strip()
+    name = request.POST['name'].strip()
+    section = request.POST['section'].strip()
+    email = request.POST['email'].strip()
+    phone_no = request.POST['phone_no'].strip()
     sg_name = request.POST['sg_name']
     description = request.POST['description']
     type = 'User Request'
@@ -583,6 +597,15 @@ def new_request_save(request):
     request_new.save()
     request_new.req_no = create_req_no(request_new.id)
     request_new.save()
+    subject = '[CMS] New Request #' + request_new.req_no
+    send_to = get_mail_group(sg, False)
+    cc_to = get_mail_group(sg, True)
+    email_template = get_template(TEMPLATE_NEW_REQUEST)
+    email_content = email_template.render({
+        'req' : request_new,
+        'link' : HOST_URL + '/request_page/'  + request_new.req_no,
+    })
+    send_email(subject, email_content, send_to, cc_to)
     return redirect('/new_request_success/' + request_new.req_no)
 
 def new_pv_request_save(request):
@@ -636,12 +659,12 @@ def edit_request_save(request):
     return redirect('/request_page/' + req.req_no)
 
 def new_emp_save(request):
-    username = request.POST['new_username']
+    username = request.POST['new_username'].strip()
     password = request.POST['new_password']
-    name = request.POST['name']
-    section = request.POST['section']
-    email = request.POST['email']
-    phone_no = request.POST['phone_no']
+    name = request.POST['name'].strip()
+    section = request.POST['section'].strip()
+    email = request.POST['email'].strip()
+    phone_no = request.POST['phone_no'].strip()
     user_new = User.objects.create_user(username, '', password)
     user_new.email = email
     user_new.save()
@@ -650,15 +673,15 @@ def new_emp_save(request):
     return redirect('/new_emp/')
 
 def new_mc_save(request):
-    mc_no = request.POST['mc_no']
-    section = request.POST['section']
-    register_no = request.POST['register_no']
-    asset_no = request.POST['asset_no']
-    serial_no = request.POST['serial_no']
-    manufacture = request.POST['manufacture']
-    model = request.POST['model']
-    plant = request.POST['plant']
-    power = request.POST['power']
+    mc_no = request.POST['mc_no'].strip()
+    section = request.POST['section'].strip()
+    register_no = request.POST['register_no'].strip()
+    asset_no = request.POST['asset_no'].strip()
+    serial_no = request.POST['serial_no'].strip()
+    manufacture = request.POST['manufacture'].strip()
+    model = request.POST['model'].strip()
+    plant = request.POST['plant'].strip()
+    power = request.POST['power'].strip()
     install_date = request.POST['install_date'] if request.POST['install_date'] != "" else None
     capacity = request.POST['capacity']
     note = request.POST['note']
@@ -666,25 +689,33 @@ def new_mc_save(request):
     mc_new.save()
     return redirect('/new_mc/')
 
+def new_task_save(request):
+    type = request.POST['type'].strip()
+    name = request.POST['name'].strip()
+    note = request.POST['note']
+    task_new = Task(type=type,name=name,note=note)
+    task_new.save()
+    return redirect('/new_task/')
+
 def new_ven_save(request):
-    code = request.POST['code']
-    name = request.POST['name']
+    code = request.POST['code'].strip()
+    name = request.POST['name'].strip()
     address = request.POST['address']
-    email = request.POST['email']
-    phone_no = request.POST['phone_no']
+    email = request.POST['email'].strip()
+    phone_no = request.POST['phone_no'].strip()
     note = request.POST['note']
     ven_new = Vendor(code=code,name=name,address=address,email=email,phone_no=phone_no,note=note)
     ven_new.save()
     return redirect('/new_ven/')
 
 def new_cat_save(request):
-    name = request.POST['name']
+    name = request.POST['name'].strip()
     cat_new = Category(name=name)
     cat_new.save()
     return redirect('/new_cat/')
 
 def new_sub_cat_save(request):
-    name = request.POST['name']
+    name = request.POST['name'].strip()
     cat_id = request.POST['cat_id']
     description = request.POST['description']
     cat = Category.objects.get(id=cat_id)
@@ -694,10 +725,11 @@ def new_sub_cat_save(request):
 
 def new_mg_save(request):
     sg_name = request.POST['sg_name']
-    email = request.POST['email']
+    username = request.POST['username']
     is_cc = True if request.POST.get('is_cc', False) == 'on' else False
     sg = SectionGroup.objects.get(name=sg_name)
-    mg_new = MailGroup(sg=sg,email=email,is_cc=is_cc)
+    user = User.objects.get(username=username)
+    mg_new = MailGroup(sg=sg,user=user,is_cc=is_cc)
     mg_new.save()
     return redirect('/new_mg/')
 
@@ -727,9 +759,21 @@ def validate_username(request):
     return JsonResponse(data)
 
 def validate_mc_no(request):
-    mc_no = request.GET['mc_no']
+    mc_no = request.GET['mc_no'].strip()
     canUse = True
-    isExist = Machine.objects.filter(mc_no=mc_no).exists()
+    isExist = Machine.objects.filter(mc_no__iexact=mc_no).exists()
+    if isExist:
+        canUse = False
+    data = {
+        'canUse': canUse,
+    }
+    return JsonResponse(data)
+
+def validate_task(request):
+    type = request.GET['type'].strip()
+    name = request.GET['name'].strip()
+    canUse = True
+    isExist = Task.objects.filter(name__iexact=name,type__iexact=type).exists()
     if isExist:
         canUse = False
     data = {
@@ -738,9 +782,9 @@ def validate_mc_no(request):
     return JsonResponse(data)
 
 def validate_vendor_code(request):
-    code = request.GET['code']
+    code = request.GET['code'].strip()
     canUse = True
-    isExist = Vendor.objects.filter(code=code).exists()
+    isExist = Vendor.objects.filter(code__iexact=code).exists()
     if isExist:
         canUse = False
     data = {
@@ -749,9 +793,9 @@ def validate_vendor_code(request):
     return JsonResponse(data)
 
 def validate_category_name(request):
-    name = request.GET['name']
+    name = request.GET['name'].strip()
     canUse = True
-    isExist = Category.objects.filter(name=name).exists()
+    isExist = Category.objects.filter(name__iexact=name).exists()
     if isExist:
         canUse = False
     data = {
@@ -760,11 +804,11 @@ def validate_category_name(request):
     return JsonResponse(data)
 
 def validate_sub_category_name(request):
-    name = request.GET['name']
+    name = request.GET['name'].strip()
     cat_id = request.GET['cat_id']
     canUse = True
     cat = Category.objects.get(id=cat_id)
-    isExist = SubCategory.objects.filter(name=name,cat=cat).exists()
+    isExist = SubCategory.objects.filter(name__iexact=name,cat=cat).exists()
     if isExist:
         canUse = False
     data = {
@@ -772,12 +816,13 @@ def validate_sub_category_name(request):
     }
     return JsonResponse(data)
 
-def validate_email_in_group(request):
+def validate_user_in_mailgroup(request):
     sg_name = request.GET['sg_name']
-    email = request.GET['email']
+    username = request.GET['username']
     canUse = True
     sg = SectionGroup.objects.get(name=sg_name)
-    isExist = MailGroup.objects.filter(sg=sg,email=email).exists()
+    user = User.objects.get(username=username)
+    isExist = MailGroup.objects.filter(sg=sg,user=user).exists()
     if isExist:
         canUse = False
     data = {
@@ -1216,3 +1261,30 @@ def is_in_section_group(request):
         if sg.name == request.user.employee.section:
             is_in = True
     return is_in
+
+def get_mail_group(sg, is_cc):
+    list = []
+    mgs = MailGroup.objects.filter(sg=sg,is_cc=is_cc)
+    for mg in mgs:
+        list.append(mg.user.email)
+    return list
+
+##################################### Email ####################################
+
+class EmailThread(threading.Thread):
+
+    def __init__(self, email):
+        self.email = email
+        threading.Thread.__init__(self)
+
+    def run(self):
+        self.email.send(fail_silently=False)
+
+def send_email(subject, email_content, send_to, cc_to):
+    try:
+        email = EmailMessage(subject, email_content, EMAIL_HOST_USER, send_to, cc_to)
+        email.content_subtype = "html"
+        EmailThread(email).start()
+    except Exception:
+        traceback.print_exc()
+    return
