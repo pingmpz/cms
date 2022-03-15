@@ -589,6 +589,7 @@ def new_request_save(request):
     phone_no = request.POST['phone_no'].strip()
     sg_name = request.POST['sg_name']
     description = request.POST['description']
+    cc_to_me = True if request.POST.get('cc_to_me', False) == 'on' else False
     type = 'User Request'
     status = 'Pending'
     request_date = datetime.now().date()
@@ -600,6 +601,8 @@ def new_request_save(request):
     subject = '[CMS] New Request #' + request_new.req_no
     send_to = get_mail_group(sg, False)
     cc_to = get_mail_group(sg, True)
+    if cc_to_me:
+        cc_to.append(request_new.email)
     email_template = get_template(TEMPLATE_NEW_REQUEST)
     email_content = email_template.render({
         'req' : request_new,

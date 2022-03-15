@@ -76,7 +76,7 @@
                                           <td>{{mg.sg.name}}</td>
                                           <td {% if not request.user.is_superuser %}hidden{% endif %}>{{mg.id}}</td>
                                           <td>{{mg.user.username}}</td>
-                                          <td>{{mg.user.employee.name}}</td>
+                                          <td>{{mg.user.employee.name|title}}</td>
                                           <td>{{mg.user.employee.section}}</td>
                                           <td>{{mg.user.email}}</td>
                                           <td>
@@ -129,7 +129,7 @@
         <script type="text/javascript">
           var table = $('#master_table').DataTable( {
             "columnDefs": [{ "visible": true, "targets": 0 }],
-            "order": [[ 0, "asc" ]],
+            "order": [[ 0, "asc" ],[ 6, "asc" ]],
             "displayLength": 100,
             "scrollX": true,
             "drawCallback": function ( settings ) {
