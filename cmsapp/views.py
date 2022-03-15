@@ -78,7 +78,14 @@ def logout_action(request):
 @login_required(login_url='/')
 def setting(request):
     # upload_machine()
+    users = []
+    user_group = []
+    if request.user.is_superuser or request.user.is_staff:
+        users = sort_user_by_section(User.objects.all())
+        user_group = get_user_group(users)
     context = {
+        'users': users,
+        'user_group': user_group,
     }
     context['all_page_data'] = (all_page_data(request))
     return render(request, 'setting.html', context)
@@ -614,6 +621,7 @@ def setting_save(request):
     sidebar = request.POST['sidebar']
     pv_created = request.POST['pv_created']
     auto_add = request.POST['auto_add']
+    reset_password_username = request.POST['reset_password_username'] if request.POST['reset_password_username'] != 'Select' else None
     user = request.user
     user.email = email
     if(is_reset):
@@ -628,6 +636,11 @@ def setting_save(request):
     emp.pv_created = pv_created
     emp.auto_add = auto_add
     emp.save()
+    #-- Admin Function
+    if reset_password_username != None:
+        u = User.objects.get(username=reset_password_username)
+        u.set_password('Ccs.1234')
+        u.save()
     return redirect('/setting/')
 
 def new_request_save(request):
