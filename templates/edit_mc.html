@@ -48,7 +48,7 @@
                                 <div class="page-title-box">
                                     <div class="page-title-right d-flex">
                                       <div style="width:100%">
-                                        <select class="form-control" name="fmc" id="fmc">
+                                        <select class="form-control select2" name="fmc" id="fmc">
                                           {% for imc in mcs %}
                                           {% if mc_group|index:forloop.counter0 != None %}
                                           <optgroup label="{{mc_group|index:forloop.counter0}}">
