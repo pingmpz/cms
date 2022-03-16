@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 {% load static %}
+{% load extra %}
 
 <html lang="en">
     <head>
@@ -150,6 +151,27 @@
                                               <option value="True" {% if request.user.employee.auto_add %}selected{% endif %}>True</option>
                                               <option value="False" {% if not request.user.employee.auto_add %}selected{% endif %}>False</option>
                                             </select>
+                                        </div>
+
+                                        <div {% if not request.user.is_superuser and not request.user.is_staff %}hidden{% endif %}>
+                                          <hr>
+                                          <h4 class="text-center">Admin Function</h4>
+                                          <div class="mb-3">
+                                              <label class="form-label">Reset User Password</label>
+                                              <p class="text-muted font-12">Default password is 'Ccs.1234'.</p>
+                                              <select class="select2 form-control" name="reset_password_username" id="reset_password_username">
+                                                  <option>Select</option>
+                                                  {% for user in users %}
+                                                  {% if user_group|index:forloop.counter0 != None %}
+                                                  <optgroup label="{{user_group|index:forloop.counter0}}">
+                                                  {% endif %}
+                                                  <option value="{{user.username}}">▪️ {{user.username}} | {{user.employee.name|title}}</option>
+                                                  {% if user_group|index:forloop.counter1 != None %}
+                                                  </optgroup>
+                                                  {% endif %}
+                                                  {% endfor %}
+                                              </select>
+                                          </div>
                                         </div>
 
                                       </div>

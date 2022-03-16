@@ -49,11 +49,11 @@
                                     <div class="page-title-right d-flex">
                                       <div style="width:100%">
                                         <select class="form-control" name="fmc" id="fmc">
-                                          {% for mc in mcs %}
+                                          {% for imc in mcs %}
                                           {% if mc_group|index:forloop.counter0 != None %}
                                           <optgroup label="{{mc_group|index:forloop.counter0}}">
                                           {% endif %}
-                                          <option value="{{mc.mc_no}}" {% if fmc == mc.mc_no %}selected{% endif %}>▪️ {{mc.mc_no}}</option>
+                                          <option value="{{imc.mc_no}}" {% if fmc == imc.mc_no %}selected{% endif %}>▪️ {{imc.mc_no}}</option>
                                           {% if mc_group|index:forloop.counter1 != None %}
                                           </optgroup>
                                           {% endif %}

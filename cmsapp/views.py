@@ -78,7 +78,14 @@ def logout_action(request):
 @login_required(login_url='/')
 def setting(request):
     # upload_machine()
+    users = []
+    user_group = []
+    if request.user.is_superuser or request.user.is_staff:
+        users = sort_user_by_section(User.objects.all())
+        user_group = get_user_group(users)
     context = {
+        'users': users,
+        'user_group': user_group,
     }
     context['all_page_data'] = (all_page_data(request))
     return render(request, 'setting.html', context)
@@ -572,6 +579,36 @@ def edit_mc(request, fmc):
     context['all_page_data'] = (all_page_data(request))
     return render(request, 'edit_mc.html', context)
 
+@login_required(login_url='/')
+def edit_task(request, ftask):
+    tasks = Task.objects.all().order_by('type')
+    task_group = get_task_group(tasks)
+    if ftask == 'FIRST':
+        ftask = tasks[0].id
+    task = Task.objects.get(id=ftask)
+    context = {
+        'ftask': ftask,
+        'tasks': tasks,
+        'task_group': task_group,
+        'task': task,
+    }
+    context['all_page_data'] = (all_page_data(request))
+    return render(request, 'edit_task.html', context)
+
+@login_required(login_url='/')
+def edit_ven(request, fven):
+    vens = Vendor.objects.all().order_by('code')
+    if fven == 'FIRST':
+        fven = vens[0].code
+    ven = Vendor.objects.get(code=fven)
+    context = {
+        'fven': fven,
+        'vens': vens,
+        'ven': ven,
+    }
+    context['all_page_data'] = (all_page_data(request))
+    return render(request, 'edit_ven.html', context)
+
 #################################### POST ######################################
 def setting_save(request):
     is_reset = True if request.POST.get('is_reset', False) == 'on' else False
@@ -584,6 +621,7 @@ def setting_save(request):
     sidebar = request.POST['sidebar']
     pv_created = request.POST['pv_created']
     auto_add = request.POST['auto_add']
+    reset_password_username = request.POST['reset_password_username'] if request.POST['reset_password_username'] != 'Select' else None
     user = request.user
     user.email = email
     if(is_reset):
@@ -598,6 +636,11 @@ def setting_save(request):
     emp.pv_created = pv_created
     emp.auto_add = auto_add
     emp.save()
+    #-- Admin Function
+    if reset_password_username != None:
+        u = User.objects.get(username=reset_password_username)
+        u.set_password('Ccs.1234')
+        u.save()
     return redirect('/setting/')
 
 def new_request_save(request):
@@ -783,6 +826,32 @@ def edit_mc_save(request):
     mc.note = note
     mc.save()
     return redirect('/edit_mc/' + mc.mc_no)
+
+def edit_task_save(request):
+    is_active = True if request.POST.get('is_active', False) == 'on' else False
+    id = request.POST['id']
+    note = request.POST['note']
+    task = Task.objects.get(id=id)
+    task.is_active = is_active
+    task.note = note
+    task.save()
+    return redirect('/edit_task/' + str(task.id))
+
+def edit_ven_save(request):
+    is_active = True if request.POST.get('is_active', False) == 'on' else False
+    code = request.POST['code']
+    address = request.POST['address']
+    email = request.POST['email']
+    phone_no = request.POST['phone_no']
+    note = request.POST['note']
+    ven = Vendor.objects.get(code=code)
+    ven.is_active = is_active
+    ven.address = address
+    ven.email = email
+    ven.phone_no = phone_no
+    ven.note = note
+    ven.save()
+    return redirect('/edit_ven/' + str(ven.code))
 
 ##################################### GET ######################################
 
