@@ -76,26 +76,28 @@
                                           <label class="form-check-label" for="is_reset">Reset Password</label>
                                         </div>
 
-                                        <div class="mb-3">
-                                            <label class="form-label">Old Password <i class="mdi mdi-asterisk text-danger small"></i></label>
-                                            <p class="text-muted font-12">If you just let admin reset your password, your password is 'Ccs.1234'.</p>
-                                            <div class="input-group input-group-merge">
-                                                <input type="password" class="form-control" name="old_password" id="old_password">
-                                                <div class="input-group-text" data-password="false">
-                                                    <span class="password-eye"></span>
-                                                </div>
-                                            </div>
-                                        </div>
+                                        <div id="password_group" hidden>
+                                          <div class="mb-3">
+                                              <label class="form-label">Old Password <i class="mdi mdi-asterisk text-danger small"></i></label>
+                                              <p class="text-muted font-12">If you just let admin reset your password, your password is 'Ccs.1234'.</p>
+                                              <div class="input-group input-group-merge">
+                                                  <input type="password" class="form-control" name="old_password" id="old_password">
+                                                  <div class="input-group-text" data-password="false">
+                                                      <span class="password-eye"></span>
+                                                  </div>
+                                              </div>
+                                          </div>
 
-                                        <div class="mb-3">
-                                            <label class="form-label">New Password <i class="mdi mdi-asterisk text-danger small"></i></label>
-                                            <p class="text-muted font-12">* At least 4 letters.</p>
-                                            <div class="input-group input-group-merge">
-                                                <input type="password" class="form-control" name="new_password" id="new_password">
-                                                <div class="input-group-text" data-password="false">
-                                                    <span class="password-eye"></span>
-                                                </div>
-                                            </div>
+                                          <div class="mb-3">
+                                              <label class="form-label">New Password <i class="mdi mdi-asterisk text-danger small"></i></label>
+                                              <p class="text-muted font-12">* At least 4 letters.</p>
+                                              <div class="input-group input-group-merge">
+                                                  <input type="password" class="form-control" name="new_password" id="new_password">
+                                                  <div class="input-group-text" data-password="false">
+                                                      <span class="password-eye"></span>
+                                                  </div>
+                                              </div>
+                                          </div>
                                         </div>
 
                                         <div class="mb-3">
@@ -322,6 +324,20 @@
               valid("phone_no");
               set_text_emptys("invalid_text");
               return true;
+            }
+          }
+
+          //-- Toggle
+          $('#is_reset').on("change", function() {
+            is_reset_change();
+          });
+
+          function is_reset_change(){
+            var is_reset = $('#is_reset').is(':checked');
+            if(is_reset){
+              unhide("password_group");
+            } else {
+              hide("password_group");
             }
           }
 

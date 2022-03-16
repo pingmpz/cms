@@ -80,6 +80,11 @@
                                     {% csrf_token %}
                                     <input type="text" name="id" id="id" value="{{task.id}}" hidden>
 
+                                    <div class="mb-0 row">
+                                      <p class="text-muted font-12 col-6 text-center">Created Date : {{task.date_published}}</p>
+                                      <p class="text-muted font-12 col-6 text-center">Modified Date : {{task.date_modified}}</p>
+                                    </div>
+
                                     <div class="form-check form-checkbox-success mb-3">
                                       <input type="checkbox" class="form-check-input" name="is_active" id="is_active" {% if task.is_active %}checked{% endif %}>
                                       <label class="form-check-label" for="is_reset">Is Active</label>

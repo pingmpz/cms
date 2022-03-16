@@ -69,6 +69,11 @@
                                 <form action="/edit_ven_save/" method="POST" id="form">
                                     {% csrf_token %}
 
+                                    <div class="mb-0 row">
+                                      <p class="text-muted font-12 col-6 text-center">Created Date : {{ven.date_published}}</p>
+                                      <p class="text-muted font-12 col-6 text-center">Modified Date : {{ven.date_modified}}</p>
+                                    </div>
+
                                     <div class="form-check form-checkbox-success mb-3">
                                       <input type="checkbox" class="form-check-input" name="is_active" id="is_active" {% if ven.is_active %}checked{% endif %}>
                                       <label class="form-check-label" for="is_reset">Is Active</label>
