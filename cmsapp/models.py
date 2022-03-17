@@ -16,6 +16,7 @@ class Employee(models.Model):
     sidebar = models.CharField(max_length=10, default="Scrollable") # Scrollable, Condensed
     pv_created = models.CharField(max_length=20, default="Request Page") # Request Page, New Preventive Request
     auto_add = models.BooleanField(default=True)
+    default_owt = models.CharField(max_length=20, default="None") # None, Only Me, All Member
     date_modified = models.DateTimeField(auto_now=True)
     date_published = models.DateTimeField(auto_now_add=True)
 

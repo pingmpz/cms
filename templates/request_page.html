@@ -434,7 +434,9 @@
                                                         <div class="mb-3">
                                                           <select class="select2 form-control select2-multiple" data-toggle="select2" multiple="multiple" data-placeholder="Choose ..." id="owt_username_list">
                                                               {% for member in members %}
-                                                              <option value="{{member.user.username}}">{{member.user.username}} | {{member.user.employee.name|title}} ({{member.user.employee.section}})</option>
+                                                              <option value="{{member.user.username}}" {% if request.user.employee.default_owt == 'All Member' %}selected{% elif request.user.employee.default_owt == 'Only Me' and request.user == member.user %}selected{% endif %}>
+                                                                {{member.user.username}} | {{member.user.employee.name|title}} ({{member.user.employee.section}})
+                                                              </option>
                                                               {% endfor %}
                                                           </select>
                                                         </div>

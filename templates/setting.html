@@ -155,6 +155,15 @@
                                             </select>
                                         </div>
 
+                                        <div class="mb-3">
+                                            <label class="form-label">For Operator Working Time, Default is ..</label>
+                                            <select class="form-control select2" data-toggle="select2" name="default_owt" id="default_owt">
+                                              <option value="None" {% if request.user.employee.default_owt == 'None' %}selected{% endif %}>None</option>
+                                              <option value="Only Me" {% if request.user.employee.default_owt == 'Only Me' %}selected{% endif %}>Only Me</option>
+                                              <option value="All Member" {% if request.user.employee.default_owt == 'All Member' %}selected{% endif %}>All Member</option>
+                                            </select>
+                                        </div>
+
                                         <div {% if not request.user.is_superuser and not request.user.is_staff %}hidden{% endif %}>
                                           <hr>
                                           <h4 class="text-center">Admin Function</h4>

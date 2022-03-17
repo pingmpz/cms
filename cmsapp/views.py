@@ -621,6 +621,7 @@ def setting_save(request):
     sidebar = request.POST['sidebar']
     pv_created = request.POST['pv_created']
     auto_add = request.POST['auto_add']
+    default_owt = request.POST['default_owt']
     reset_password_username = request.POST['reset_password_username'] if request.POST['reset_password_username'] != 'Select' else None
     user = request.user
     user.email = email
@@ -635,6 +636,7 @@ def setting_save(request):
     emp.sidebar = sidebar
     emp.pv_created = pv_created
     emp.auto_add = auto_add
+    emp.default_owt = default_owt
     emp.save()
     #-- Admin Function
     if reset_password_username != None:
