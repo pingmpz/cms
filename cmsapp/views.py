@@ -113,19 +113,19 @@ def new_request_success(request, request_no):
     return render(request, 'new_request_success.html', context)
 
 def new_pv_request(request):
-    # upload_machine()
-    # upload_task()
     sgs = SectionGroup.objects.all()
     mcs = Machine.objects.filter(is_active=True).order_by('section')
     tasks = Task.objects.filter(is_active=True).order_by('type')
     mc_group = get_mc_group(mcs)
     task_group = get_task_group(tasks)
+    token = secrets.token_urlsafe(16)
     context = {
         'sgs': sgs,
         'mcs': mcs,
         'tasks': tasks,
         'mc_group': mc_group,
         'task_group': task_group,
+        'token': token,
     }
     context['all_page_data'] = (all_page_data(request))
     return render(request, 'new_pv_request.html', context)
@@ -148,7 +148,6 @@ def request_page(request, request_no):
     is_member = False
     members = [] # Member (User)
     files = []
-    extensions = []
     req_vens = [] # RequestVendor
     comments = [] # Comment
     req_sub_cats = [] # RequestSubCategory
@@ -177,7 +176,6 @@ def request_page(request, request_no):
         is_member = Member.objects.filter(req=req,user=request.user).exists()
         members = Member.objects.filter(req=req)
         files = File.objects.filter(req=req)
-        extensions = get_extensions(files)
         req_vens = RequestVendor.objects.filter(req=req)
         comments = Comment.objects.filter(req=req).order_by('-date_published')
         req_sub_cats = RequestSubCategory.objects.filter(req=req)
@@ -700,6 +698,7 @@ def new_request_save(request):
     return redirect('/new_request_success/' + request_new.req_no)
 
 def new_pv_request_save(request):
+    token = request.POST['token']
     sg_name = request.POST['sg_name']
     request_date = request.POST['req_date']
     description = request.POST['description']
@@ -724,6 +723,16 @@ def new_pv_request_save(request):
     request_new.save()
     request_new.req_no = create_req_no(request_new.id)
     request_new.save()
+    #-- File Manage
+    source_dir = 'media/temp/' + token
+    target_dir = 'media/request/' + request_new.req_no
+    os.mkdir(target_dir)
+    for file_name in os.listdir(source_dir):
+        shutil.move(os.path.join(source_dir, file_name), os.path.join(target_dir))
+        file_new = File(req=request_new,file_name=file_name)
+        file_new.save()
+    shutil.rmtree(source_dir, ignore_errors=False, onerror=None)
+    #-- Navigate
     if request.user.employee.pv_created == 'Request Page':
         return redirect('/request_page/' + request_new.req_no)
     return redirect('/new_pv_request/')
@@ -1423,12 +1432,6 @@ def get_mail_group(sg, is_cc):
     for mg in mgs:
         list.append(mg.user.email)
     return list
-
-def get_extensions(files):
-    extensions = []
-    for file in files:
-        extensions.append(file.file_name.split('.')[-1])
-    return extensions
 
 ##################################### Email ####################################
 

@@ -17,8 +17,6 @@
         <link href="{% static "assets/css/app-modern.min.css" %}" rel="stylesheet" type="text/css" id="light-style" />
         <link href="{% static "assets/css/app-modern-dark.min.css" %}" rel="stylesheet" type="text/css" id="dark-style" />
 
-        <link href="{% static "custom/drag-drop-image-uploader/dist/image-uploader.min.css" %}" rel="stylesheet">
-
     </head>
 
     <body class="loading" data-layout="detached" data-layout-config='{"leftSidebarCondensed":{% if request.user.employee.sidebar == 'Condensed' %}true{% else %}false{% endif %},"darkMode":{% if request.user.employee.scheme == 'Dark Mode' %}true{% else %}false{% endif %}, "showRightSidebarOnStart":false}'>
@@ -122,7 +120,9 @@
 
                                           <!-- ========== Right Content ========== -->
                                           <div class="col-xl-6">
+
                                             <div class="mb-3 mt-3 mt-xl-0">
+
                                               <label class="mb-0">Files</label>
                                               <p class="text-muted font-12">* Do not upload files that have '#' & '/' in the file name.</p>
                                               <form action="/file_save/" method="post" class="dropzone" id="file-form" data-plugin="dropzone" data-previews-container="#file-previews"
@@ -137,8 +137,7 @@
                                                   <div class="dz-message needsclick">
                                                       <i class="h1 text-muted dripicons-cloud-upload"></i>
                                                       <h3>Drop files here or click to upload.</h3>
-                                                      <span class="text-muted font-13">(This is just a demo dropzone. Selected files are
-                                                          <strong>not</strong> actually uploaded.)</span>
+                                                      <span class="text-muted font-13"></span>
                                                   </div>
                                               </form>
 
@@ -159,15 +158,16 @@
                                                               </div>
                                                               <div class="col-auto">
                                                                   <!-- Button -->
-                                                                  <a href="" class="btn btn-link btn-lg text-muted" data-dz-remove>
+                                                                  <!-- <a href="" class="btn btn-link btn-lg text-muted" data-dz-remove>
                                                                       <i class="dripicons-cross"></i>
-                                                                  </a>
+                                                                  </a> -->
                                                               </div>
                                                           </div>
                                                       </div>
                                                   </div>
                                               </div>
                                             </div>
+
                                           </div>
 
                                           <p class="text-danger text-center small mb-4" id="invalid_text"></p>
@@ -191,8 +191,6 @@
         <script src="{% static "assets/js/vendor.min.js" %}"></script>
         <script src="{% static "assets/js/app.min.js" %}"></script>
         <script src="{% static "custom/custom.js" %}"></script>
-
-        <script src="{% static "custom/drag-drop-image-uploader/dist/image-uploader.min.js" %}"></script>
         <!-- plugin js -->
         <script src="{% static "assets/js/vendor/dropzone.min.js" %}"></script>
         <!-- init js -->
@@ -202,12 +200,6 @@
           //-- Prevent Back
           window.addEventListener( "pageshow", function (event) {
             if (event.persisted || (typeof window.performance != "undefined" && window.performance.navigation.type === 2)) window.location.reload();
-          });
-
-          $('.input-images').imageUploader({
-            extensions: ['.jpg', '.jpeg', '.png', '.gif', '.svg', '.xlsx', '.csv', '.ppt'],
-            // mimes: ['image/jpeg', 'image/png', 'image/gif', 'image/svg+xml', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'],
-            mimes: null,
           });
 
           $('#emp_id').on("change", function() {

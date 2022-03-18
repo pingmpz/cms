@@ -16,8 +16,6 @@
         <link href="{% static "assets/css/icons.min.css" %}" rel="stylesheet" type="text/css" />
         <link href="{% static "assets/css/app-modern.min.css" %}" rel="stylesheet" type="text/css" id="light-style" />
         <link href="{% static "assets/css/app-modern-dark.min.css" %}" rel="stylesheet" type="text/css" id="dark-style" />
-
-        <link href="{% static "custom/drag-drop-image-uploader/dist/image-uploader.min.css" %}" rel="stylesheet">
     </head>
 
     <body class="loading" data-layout="detached" data-layout-config='{"leftSidebarCondensed":{% if request.user.employee.sidebar == 'Condensed' %}true{% else %}false{% endif %},"darkMode":{% if request.user.employee.scheme == 'Dark Mode' %}true{% else %}false{% endif %}, "showRightSidebarOnStart":false}'>
@@ -52,84 +50,127 @@
                             <div class="col-12">
                                 <div class="card">
                                     <div class="card-body">
-                                      <form action="/new_pv_request_save/" method="POST" id="form">
-                                          {% csrf_token %}
-                                          <div class="row">
-                                            <!-- ========== Left Content ========== -->
-                                            <div class="col-xl-6">
-                                              <div class="mb-3">
-                                                <label class="form-label">Request To.. <i class="mdi mdi-asterisk text-danger small"></i></label><br>
-                                                <select class="form-control select2" data-toggle="select2" name="sg_name" id="sg_name">
-                                                  {% for sg in sgs %}
-                                                  <option value="{{sg.name}}" {% if request.user.employee.section == sg.name %}selected{% endif %}>{{sg.name}}</option>
-                                                  {% endfor %}
-                                                </select>
-                                              </div>
+                                        <div class="row">
+                                          <!-- ========== Left Content ========== -->
+                                          <div class="col-xl-6">
+                                            <form action="/new_pv_request_save/" method="POST" id="form">
+                                            {% csrf_token %}
+                                            <input type="text" name="token" id="token" value="{{token}}" hidden>
 
-                                              <div class="mb-3">
-                                                <label class="form-label">Request Date <i class="mdi mdi-asterisk text-danger small"></i></label>
-                                                <input type="date" class="form-control" name="req_date" id="req_date">
-                                              </div>
-
-                                              <div class="mb-3">
-                                                <label class="form-label">Object Type</label>
-                                                <select class="form-control select2" data-toggle="select2" name="obj_type" id="obj_type">
-                                                  <option>Select</option>
-                                                  <option value="MACHINE">Machine & Device</option>
-                                                  <option value="TASK">Task</option>
-                                                </select>
-                                              </div>
-
-                                              <div class="mb-3" id="mc_group">
-                                                <label class="form-label">Machine & Device <i class="mdi mdi-asterisk text-danger small"></i></label>
-                                                <select class="form-control select2" data-toggle="select2" name="mc_no" id="mc_no">
-                                                  {% for mc in mcs %}
-                                                  {% if mc_group|index:forloop.counter0 != None %}
-                                                  <optgroup label="{{mc_group|index:forloop.counter0}}">
-                                                  {% endif %}
-                                                  <option value="{{mc.mc_no}}">▪️ {{mc.mc_no}}</option>
-                                                  {% if mc_group|index:forloop.counter1 != None %}
-                                                  </optgroup>
-                                                  {% endif %}
-                                                  {% endfor %}
-                                                </select>
-                                              </div>
-
-                                              <div class="mb-3" id="task_group">
-                                                <label class="form-label">Task <i class="mdi mdi-asterisk text-danger small"></i></label>
-                                                <select class="form-control select2" data-toggle="select2" name="task_id" id="task_id">
-                                                  {% for task in tasks %}
-                                                  {% if task_group|index:forloop.counter0 != None %}
-                                                  <optgroup label="{{task_group|index:forloop.counter0}}">
-                                                  {% endif %}
-                                                  <option value="{{task.id}}">▪️ {{task.name}}</option>
-                                                  {% if task_group|index:forloop.counter1 != None %}
-                                                  </optgroup>
-                                                  {% endif %}
-                                                  {% endfor %}
-                                                </select>
-                                              </div>
-
-                                              <div class="mb-3">
-                                                  <label class="form-label">Description</label>
-                                                  <textarea class="form-control" name="description" id="description" rows="5"></textarea>
-                                              </div>
-
-                                            </div>
-                                            <!-- ========== Right Content ========== -->
-                                            <div class="col-xl-6">
-                                                <div class="mb-3 mt-3 mt-xl-0">
-                                                    <label class="mb-0">Files (Not Working)</label>
-                                                    <p class="text-muted font-12">* Do not upload files that have # in the file name.</p>
-                                                    <div style="width: 100%">
-                                                      <div class="input-images" style="padding-top: .5rem;"></div>
-                                                    </div>
+                                                <div class="mb-3">
+                                                  <label class="form-label">Request To.. <i class="mdi mdi-asterisk text-danger small"></i></label><br>
+                                                  <select class="form-control select2" data-toggle="select2" name="sg_name" id="sg_name">
+                                                    {% for sg in sgs %}
+                                                    <option value="{{sg.name}}" {% if request.user.employee.section == sg.name %}selected{% endif %}>{{sg.name}}</option>
+                                                    {% endfor %}
+                                                  </select>
                                                 </div>
+
+                                                <div class="mb-3">
+                                                  <label class="form-label">Request Date <i class="mdi mdi-asterisk text-danger small"></i></label>
+                                                  <input type="date" class="form-control" name="req_date" id="req_date">
+                                                </div>
+
+                                                <div class="mb-3">
+                                                  <label class="form-label">Object Type</label>
+                                                  <select class="form-control select2" data-toggle="select2" name="obj_type" id="obj_type">
+                                                    <option>Select</option>
+                                                    <option value="MACHINE">Machine & Device</option>
+                                                    <option value="TASK">Task</option>
+                                                  </select>
+                                                </div>
+
+                                                <div class="mb-3" id="mc_group">
+                                                  <label class="form-label">Machine & Device <i class="mdi mdi-asterisk text-danger small"></i></label>
+                                                  <select class="form-control select2" data-toggle="select2" name="mc_no" id="mc_no">
+                                                    {% for mc in mcs %}
+                                                    {% if mc_group|index:forloop.counter0 != None %}
+                                                    <optgroup label="{{mc_group|index:forloop.counter0}}">
+                                                    {% endif %}
+                                                    <option value="{{mc.mc_no}}">▪️ {{mc.mc_no}}</option>
+                                                    {% if mc_group|index:forloop.counter1 != None %}
+                                                    </optgroup>
+                                                    {% endif %}
+                                                    {% endfor %}
+                                                  </select>
+                                                </div>
+
+                                                <div class="mb-3" id="task_group">
+                                                  <label class="form-label">Task <i class="mdi mdi-asterisk text-danger small"></i></label>
+                                                  <select class="form-control select2" data-toggle="select2" name="task_id" id="task_id">
+                                                    {% for task in tasks %}
+                                                    {% if task_group|index:forloop.counter0 != None %}
+                                                    <optgroup label="{{task_group|index:forloop.counter0}}">
+                                                    {% endif %}
+                                                    <option value="{{task.id}}">▪️ {{task.name}}</option>
+                                                    {% if task_group|index:forloop.counter1 != None %}
+                                                    </optgroup>
+                                                    {% endif %}
+                                                    {% endfor %}
+                                                  </select>
+                                                </div>
+
+                                                <div class="mb-3">
+                                                    <label class="form-label">Description</label>
+                                                    <textarea class="form-control" name="description" id="description" rows="5"></textarea>
+                                                </div>
+                                            </form>
+                                          </div>
+
+                                          <!-- ========== Right Content ========== -->
+                                          <div class="col-xl-6">
+
+                                            <div class="mb-3 mt-3 mt-xl-0">
+
+                                              <label class="mb-0">Files</label>
+                                              <p class="text-muted font-12">* Do not upload files that have '#' & '/' in the file name.</p>
+                                              <form action="/file_save/" method="post" class="dropzone" id="file-form" data-plugin="dropzone" data-previews-container="#file-previews"
+                                                  data-upload-preview-template="#uploadPreviewTemplate">
+                                              {% csrf_token %}
+                                                  <input type="text" name="token" id="token" value="{{token}}" hidden>
+
+                                                  <div class="fallback">
+                                                      <input name="file" id="file" type="file" multiple />
+                                                  </div>
+
+                                                  <div class="dz-message needsclick">
+                                                      <i class="h1 text-muted dripicons-cloud-upload"></i>
+                                                      <h3>Drop files here or click to upload.</h3>
+                                                      <span class="text-muted font-13"></span>
+                                                  </div>
+                                              </form>
+
+                                              <!-- Preview -->
+                                              <div class="dropzone-previews mt-3" id="file-previews"></div>
+
+                                              <!-- file preview template -->
+                                              <div class="d-none" id="uploadPreviewTemplate">
+                                                  <div class="card mt-1 mb-0 shadow-none border">
+                                                      <div class="p-2">
+                                                          <div class="row align-items-center">
+                                                              <div class="col-auto">
+                                                                  <img data-dz-thumbnail src="#" class="avatar-sm rounded bg-light" alt="">
+                                                              </div>
+                                                              <div class="col ps-0">
+                                                                  <a href="javascript:void(0);" class="text-muted fw-bold" data-dz-name></a>
+                                                                  <p class="mb-0" data-dz-size></p>
+                                                              </div>
+                                                              <div class="col-auto">
+                                                                  <!-- Button -->
+                                                                  <!-- <a href="" class="btn btn-link btn-lg text-muted" data-dz-remove>
+                                                                      <i class="dripicons-cross"></i>
+                                                                  </a> -->
+                                                              </div>
+                                                          </div>
+                                                      </div>
+                                                  </div>
+                                              </div>
                                             </div>
 
-                                            <p class="text-danger text-center small mb-4" id="invalid_text"></p>
+                                          </div>
+
+                                          <p class="text-danger text-center small mb-4" id="invalid_text"></p>
                                         </div>
-                                      </form>
                                     </div>
                                 </div>
                             </div>
@@ -154,18 +195,10 @@
         <script src="{% static "assets/js/vendor/dropzone.min.js" %}"></script>
         <!-- init js -->
         <script src="{% static "assets/js/ui/component.fileupload.js" %}"></script>
-
-        <script src="{% static "custom/drag-drop-image-uploader/dist/image-uploader.min.js" %}"></script>
         <script>
         //-- Prevent Back
         window.addEventListener( "pageshow", function (event) {
           if (event.persisted || (typeof window.performance != "undefined" && window.performance.navigation.type === 2)) window.location.reload();
-        });
-
-        $('.input-images').imageUploader({
-          extensions: ['.jpg', '.jpeg', '.png', '.gif', '.svg', '.xlsx', '.csv', '.ppt'],
-          // mimes: ['image/jpeg', 'image/png', 'image/gif', 'image/svg+xml', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'],
-          mimes: null,
         });
 
         obj_type_change();
