@@ -83,6 +83,8 @@ def logout_action(request):
 @login_required(login_url='/')
 def setting(request):
     # upload_machine()
+    #upload_task()
+    upload_vendor()
     users = []
     user_group = []
     if request.user.is_superuser or request.user.is_staff:
@@ -1341,6 +1343,26 @@ def upload_task():
             print(type, name)
             task_new = Task(name=name,type=type,note=note)
             task_new.save()
+    return
+
+def upload_vendor():
+    entries = Vendor.objects.all()
+    entries.delete()
+    wb = load_workbook(filename = 'media/CMS Vendor Master.xlsx')
+    ws = wb.active
+    skip_count = 2
+    for i in range(ws.max_row + 1):
+        if i < skip_count:
+            continue
+        code = ws['A' + str(i)].value
+        name = (ws['B' + str(i)].value).strip()
+        email = ws['C' + str(i)].value
+        phone_no = ws['D' + str(i)].value
+        note = ws['F' + str(i)].value
+        if code != None and code != "":
+            print(code, name)
+            ven_new = Vendor(code=code,name=name,email=email,phone_no=phone_no,note=note)
+            ven_new.save()
     return
 
 ################################ Other Function ################################
