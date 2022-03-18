@@ -678,12 +678,19 @@ def new_request_save(request):
     #-- File Manage
     source_dir = 'media/temp/' + token
     target_dir = 'media/request/' + request_new.req_no
-    os.mkdir(target_dir)
-    for file_name in os.listdir(source_dir):
-        shutil.move(os.path.join(source_dir, file_name), os.path.join(target_dir))
-        file_new = File(req=request_new,file_name=file_name)
-        file_new.save()
-    shutil.rmtree(source_dir, ignore_errors=False, onerror=None)
+    try:
+        os.listdir(source_dir)
+        os.mkdir(target_dir)
+    except:
+        print('No File Upload')
+    try:
+        for file_name in os.listdir(source_dir):
+            shutil.move(os.path.join(source_dir, file_name), os.path.join(target_dir))
+            file_new = File(req=request_new,file_name=file_name)
+            file_new.save()
+        shutil.rmtree(source_dir, ignore_errors=False, onerror=None)
+    except:
+        print('Path Not Found')
     #-- Email
     subject = '[CMS] New Request #' + request_new.req_no
     send_to = get_mail_group(sg, False)
@@ -728,12 +735,19 @@ def new_pv_request_save(request):
     #-- File Manage
     source_dir = 'media/temp/' + token
     target_dir = 'media/request/' + request_new.req_no
-    os.mkdir(target_dir)
-    for file_name in os.listdir(source_dir):
-        shutil.move(os.path.join(source_dir, file_name), os.path.join(target_dir))
-        file_new = File(req=request_new,file_name=file_name)
-        file_new.save()
-    shutil.rmtree(source_dir, ignore_errors=False, onerror=None)
+    try:
+        os.listdir(source_dir)
+        os.mkdir(target_dir)
+    except:
+        print('No File Upload')
+    try:
+        for file_name in os.listdir(source_dir):
+            shutil.move(os.path.join(source_dir, file_name), os.path.join(target_dir))
+            file_new = File(req=request_new,file_name=file_name)
+            file_new.save()
+        shutil.rmtree(source_dir, ignore_errors=False, onerror=None)
+    except:
+        print('Path Not Found')
     #-- Navigate
     if request.user.employee.pv_created == 'Request Page':
         return redirect('/request_page/' + request_new.req_no)
@@ -762,11 +776,22 @@ def edit_request_save(request):
     #-- File Manage
     source_dir = 'media/temp/' + token
     target_dir = 'media/request/' + req.req_no
-    for file_name in os.listdir(source_dir):
-        shutil.move(os.path.join(source_dir, file_name), os.path.join(target_dir))
-        file_new = File(req=req,file_name=file_name)
-        file_new.save()
-    shutil.rmtree(source_dir, ignore_errors=False, onerror=None)
+    try:
+        os.listdir(source_dir)
+        try:
+            os.mkdir(target_dir)
+        except:
+            print('Folder is already Exist')
+        try:
+            for file_name in os.listdir(source_dir):
+                shutil.move(os.path.join(source_dir, file_name), os.path.join(target_dir))
+                file_new = File(req=req,file_name=file_name)
+                file_new.save()
+            shutil.rmtree(source_dir, ignore_errors=False, onerror=None)
+        except:
+            print('Path Not Found')
+    except:
+        print('No File Upload')
     return redirect('/request_page/' + req.req_no)
 
 def new_emp_save(request):
