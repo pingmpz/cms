@@ -1,0 +1,10 @@
+*.pyc
+__pycache__/
+media/pr
+media/quotation
+media/drawing
+media/po
+media/invoice
+media/standard
+media/outstanding
+media/selection
