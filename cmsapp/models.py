@@ -103,6 +103,7 @@ class Request(models.Model):
 class File(models.Model):
     id = models.AutoField(primary_key=True)
     req = models.ForeignKey(Request, on_delete=models.CASCADE)
+    file_name = models.CharField(max_length=100)
     date_published = models.DateTimeField(auto_now_add=True)
 
 class Member(models.Model):

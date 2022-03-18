@@ -1,6 +1,5 @@
 from django.shortcuts import render, redirect
 from django.http import JsonResponse
-from datetime import datetime
 from dateutil import parser
 # Authenticate
 from django.contrib.auth import authenticate, login, logout
@@ -17,6 +16,12 @@ import smtplib
 import traceback
 import threading
 from django.template.loader import get_template
+# File
+from django.core.files.storage import FileSystemStorage
+from pathlib import Path
+import glob, os, shutil
+# Token Generator
+import secrets
 
 from .models import SectionGroup, Employee, Machine, Task, Vendor, Category, SubCategory, MailGroup, Request, File, Member, RequestVendor, Comment, RequestSubCategory, OperatorWorkingTime, VendorWorkingTime, MachineDowntime
 
@@ -94,8 +99,10 @@ def setting(request):
 
 def new_request(request):
     sgs = SectionGroup.objects.all()
+    token = secrets.token_urlsafe(16)
     context = {
         'sgs': sgs,
+        'token': token,
     }
     return render(request, 'new_request.html', context)
 
@@ -140,6 +147,8 @@ def request_page(request, request_no):
     req = None
     is_member = False
     members = [] # Member (User)
+    files = []
+    extensions = []
     req_vens = [] # RequestVendor
     comments = [] # Comment
     req_sub_cats = [] # RequestSubCategory
@@ -167,6 +176,8 @@ def request_page(request, request_no):
         req = Request.objects.get(req_no=request_no)
         is_member = Member.objects.filter(req=req,user=request.user).exists()
         members = Member.objects.filter(req=req)
+        files = File.objects.filter(req=req)
+        extensions = get_extensions(files)
         req_vens = RequestVendor.objects.filter(req=req)
         comments = Comment.objects.filter(req=req).order_by('-date_published')
         req_sub_cats = RequestSubCategory.objects.filter(req=req)
@@ -193,6 +204,7 @@ def request_page(request, request_no):
         'req': req,
         'is_member': is_member,
         'members': members,
+        'files': files,
         'req_vens': req_vens,
         'comments': comments,
         'req_sub_cats': req_sub_cats,
@@ -646,6 +658,7 @@ def setting_save(request):
     return redirect('/setting/')
 
 def new_request_save(request):
+    token = request.POST['token']
     emp_id = request.POST['emp_id'].strip()
     name = request.POST['name'].strip()
     section = request.POST['section'].strip()
@@ -662,6 +675,16 @@ def new_request_save(request):
     request_new.save()
     request_new.req_no = create_req_no(request_new.id)
     request_new.save()
+    #-- File Manage
+    source_dir = 'media/temp/' + token
+    target_dir = 'media/request/' + request_new.req_no
+    os.mkdir(target_dir)
+    for file_name in os.listdir(source_dir):
+        shutil.move(os.path.join(source_dir, file_name), os.path.join(target_dir))
+        file_new = File(req=request_new,file_name=file_name)
+        file_new.save()
+    shutil.rmtree(source_dir, ignore_errors=False, onerror=None)
+    #-- Email
     subject = '[CMS] New Request #' + request_new.req_no
     send_to = get_mail_group(sg, False)
     cc_to = get_mail_group(sg, True)
@@ -673,7 +696,7 @@ def new_request_save(request):
         'req' : request_new,
         'host_url' : HOST_URL,
     })
-    send_email(subject, email_content, send_to, cc_to)
+    # send_email(subject, email_content, send_to, cc_to)
     return redirect('/new_request_success/' + request_new.req_no)
 
 def new_pv_request_save(request):
@@ -854,6 +877,16 @@ def edit_ven_save(request):
     ven.note = note
     ven.save()
     return redirect('/edit_ven/' + str(ven.code))
+
+def file_save(request):
+    file = request.FILES['file']
+    token = request.POST['token']
+    fs = FileSystemStorage()
+    path = 'temp/' + token + '/' + file.name
+    fs.save(path, file)
+    data = {
+    }
+    return JsonResponse(data)
 
 ##################################### GET ######################################
 
@@ -1390,6 +1423,12 @@ def get_mail_group(sg, is_cc):
     for mg in mgs:
         list.append(mg.user.email)
     return list
+
+def get_extensions(files):
+    extensions = []
+    for file in files:
+        extensions.append(file.file_name.split('.')[-1])
+    return extensions
 
 ##################################### Email ####################################
 

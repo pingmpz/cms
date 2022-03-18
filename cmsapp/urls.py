@@ -1,5 +1,8 @@
-from django.urls import path
-
+from django.urls import path,include
+from django.conf import settings
+from django.conf.urls import url
+from django.conf.urls.static import static
+from django.views.static import serve
 from . import views
 
 urlpatterns = [
@@ -93,4 +96,8 @@ urlpatterns = [
     path('delete_vwt/', views.delete_vwt, name='delete_vwt'),
     path('mcdt_save/', views.mcdt_save, name='mcdt_save'),
     path('delete_mcdt/', views.delete_mcdt, name='delete_mcdt'),
-]
+    #-- File
+    path('file_save/', views.file_save, name='file_save'),
+
+    url(r'^media/(?P<path>.*)$', serve, {'document_root': settings.MEDIA_ROOT, }),
+]+ static(settings.MEDIA_URL, serve, document_root=settings.MEDIA_ROOT)

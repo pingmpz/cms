@@ -53,84 +53,125 @@
                             <div class="col-12">
                                 <div class="card">
                                     <div class="card-body">
-                                      <form action="/new_request_save/" method="POST" id="form">
-                                          {% csrf_token %}
-                                          <div class="row">
-                                            <!-- ========== Left Content ========== -->
-                                            <div class="col-xl-6">
-                                              <div class="mb-3">
-                                                <label class="form-label">Requester Info</label>
-                                                <p class="text-muted font-12">* This will auto fill requester info after enter your employee id, if you ever create a request in CMS.</p>
-                                                <div class="row">
-                                                  <div class="col-6">
-                                                    <div class="mb-3">
-                                                      <label class="form-label">Employee ID <i class="mdi mdi-asterisk text-danger small"></i></label>
-                                                      <input type="text" class="form-control" name="emp_id" id="emp_id" autocomplete="off">
+                                        <div class="row">
+                                          <!-- ========== Left Content ========== -->
+                                          <div class="col-xl-6">
+                                              <form action="/new_request_save/" method="POST" id="form">
+                                              {% csrf_token %}
+                                                  <input type="text" name="token" id="token" value="{{token}}" hidden>
+
+                                                  <div class="mb-3">
+                                                    <label class="form-label">Requester Info</label>
+                                                    <p class="text-muted font-12">* This will auto fill requester info after enter your employee id, if you ever create a request in CMS.</p>
+                                                    <div class="row">
+                                                      <div class="col-6">
+                                                        <div class="mb-3">
+                                                          <label class="form-label">Employee ID <i class="mdi mdi-asterisk text-danger small"></i></label>
+                                                          <input type="text" class="form-control" name="emp_id" id="emp_id" autocomplete="off">
+                                                        </div>
+                                                      </div>
+                                                      <div class="col-6">
+                                                        <div class="mb-3">
+                                                          <label class="form-label">Name <i class="mdi mdi-asterisk text-danger small"></i></label>
+                                                          <input type="text" class="form-control" name="name"  id="name" autocomplete="off">
+                                                        </div>
+                                                      </div>
+                                                      <div class="col-6">
+                                                        <div class="mb-3">
+                                                          <label class="form-label">Section <i class="mdi mdi-asterisk text-danger small"></i></label>
+                                                          <input type="text" class="form-control" name="section"  id="section" autocomplete="off">
+                                                        </div>
+                                                      </div>
+                                                      <div class="col-6">
+                                                        <div class="mb-3">
+                                                          <label class="form-label">Email <i class="mdi mdi-asterisk text-danger small"></i></label>
+                                                          <input type="text" class="form-control" name="email"  id="email" autocomplete="off">
+                                                        </div>
+                                                      </div>
+                                                      <div class="col-6">
+                                                        <div class="mb-3">
+                                                          <label class="form-label">Phone No <i class="mdi mdi-asterisk text-danger small"></i></label>
+                                                          <input type="text" class="form-control" name="phone_no"  id="phone_no" autocomplete="off">
+                                                        </div>
+                                                      </div>
+
                                                     </div>
                                                   </div>
-                                                  <div class="col-6">
-                                                    <div class="mb-3">
-                                                      <label class="form-label">Name <i class="mdi mdi-asterisk text-danger small"></i></label>
-                                                      <input type="text" class="form-control" name="name"  id="name" autocomplete="off">
-                                                    </div>
-                                                  </div>
-                                                  <div class="col-6">
-                                                    <div class="mb-3">
-                                                      <label class="form-label">Section <i class="mdi mdi-asterisk text-danger small"></i></label>
-                                                      <input type="text" class="form-control" name="section"  id="section" autocomplete="off">
-                                                    </div>
-                                                  </div>
-                                                  <div class="col-6">
-                                                    <div class="mb-3">
-                                                      <label class="form-label">Email <i class="mdi mdi-asterisk text-danger small"></i></label>
-                                                      <input type="text" class="form-control" name="email"  id="email" autocomplete="off">
-                                                    </div>
-                                                  </div>
-                                                  <div class="col-6">
-                                                    <div class="mb-3">
-                                                      <label class="form-label">Phone No <i class="mdi mdi-asterisk text-danger small"></i></label>
-                                                      <input type="text" class="form-control" name="phone_no"  id="phone_no" autocomplete="off">
-                                                    </div>
+                                                  <hr>
+
+                                                  <div class="mb-3">
+                                                    <label class="form-label">Request To.. <i class="mdi mdi-asterisk text-danger small"></i></label><br>
+                                                    <select class="form-control select2" data-toggle="select2" name="sg_name" id="sg_name">
+                                                      {% for sg in sgs %}
+                                                      <option value="{{sg.name}}">{{sg.name}}</option>
+                                                      {% endfor %}
+                                                    </select>
                                                   </div>
 
-                                                </div>
+                                                  <div class="mb-3">
+                                                      <label class="form-label">Description <i class="mdi mdi-asterisk text-danger small"></i></label>
+                                                      <textarea class="form-control" name="description" id="description" rows="5"></textarea>
+                                                  </div>
+
+                                                  <div class="form-check form-checkbox-primary mb-3">
+                                                    <input type="checkbox" class="form-check-input" name="cc_to_me" id="cc_to_me">
+                                                    <label class="form-check-label" for="cc_to_me">CC this request email to me</label>
+                                                  </div>
+                                              </form>
+                                          </div>
+
+                                          <!-- ========== Right Content ========== -->
+                                          <div class="col-xl-6">
+                                            <div class="mb-3 mt-3 mt-xl-0">
+                                              <label class="mb-0">Files</label>
+                                              <p class="text-muted font-12">* Do not upload files that have '#' & '/' in the file name.</p>
+                                              <form action="/file_save/" method="post" class="dropzone" id="file-form" data-plugin="dropzone" data-previews-container="#file-previews"
+                                                  data-upload-preview-template="#uploadPreviewTemplate">
+                                              {% csrf_token %}
+                                                  <input type="text" name="token" id="token" value="{{token}}" hidden>
+
+                                                  <div class="fallback">
+                                                      <input name="file" id="file" type="file" multiple />
+                                                  </div>
+
+                                                  <div class="dz-message needsclick">
+                                                      <i class="h1 text-muted dripicons-cloud-upload"></i>
+                                                      <h3>Drop files here or click to upload.</h3>
+                                                      <span class="text-muted font-13">(This is just a demo dropzone. Selected files are
+                                                          <strong>not</strong> actually uploaded.)</span>
+                                                  </div>
+                                              </form>
+
+                                              <!-- Preview -->
+                                              <div class="dropzone-previews mt-3" id="file-previews"></div>
+
+                                              <!-- file preview template -->
+                                              <div class="d-none" id="uploadPreviewTemplate">
+                                                  <div class="card mt-1 mb-0 shadow-none border">
+                                                      <div class="p-2">
+                                                          <div class="row align-items-center">
+                                                              <div class="col-auto">
+                                                                  <img data-dz-thumbnail src="#" class="avatar-sm rounded bg-light" alt="">
+                                                              </div>
+                                                              <div class="col ps-0">
+                                                                  <a href="javascript:void(0);" class="text-muted fw-bold" data-dz-name></a>
+                                                                  <p class="mb-0" data-dz-size></p>
+                                                              </div>
+                                                              <div class="col-auto">
+                                                                  <!-- Button -->
+                                                                  <a href="" class="btn btn-link btn-lg text-muted" data-dz-remove>
+                                                                      <i class="dripicons-cross"></i>
+                                                                  </a>
+                                                              </div>
+                                                          </div>
+                                                      </div>
+                                                  </div>
                                               </div>
-                                              <hr>
-
-                                              <div class="mb-3">
-                                                <label class="form-label">Request To.. <i class="mdi mdi-asterisk text-danger small"></i></label><br>
-                                                <select class="form-control select2" data-toggle="select2" name="sg_name" id="sg_name">
-                                                  {% for sg in sgs %}
-                                                  <option value="{{sg.name}}">{{sg.name}}</option>
-                                                  {% endfor %}
-                                                </select>
-                                              </div>
-
-                                              <div class="mb-3">
-                                                  <label class="form-label">Description <i class="mdi mdi-asterisk text-danger small"></i></label>
-                                                  <textarea class="form-control" name="description" id="description" rows="5"></textarea>
-                                              </div>
-
-                                              <div class="form-check form-checkbox-primary mb-3">
-                                                <input type="checkbox" class="form-check-input" name="cc_to_me" id="cc_to_me">
-                                                <label class="form-check-label" for="cc_to_me">CC this request email to me</label>
-                                              </div>
-
                                             </div>
-                                            <!-- ========== Right Content ========== -->
-                                            <div class="col-xl-6">
-                                                <div class="mb-3 mt-3 mt-xl-0">
-                                                    <label class="mb-0">Files (Not Working)</label>
-                                                    <p class="text-muted font-12">* Do not upload files that have # in the file name.</p>
-                                                    <div style="width: 100%">
-                                                      <div class="input-images" style="padding-top: .5rem;"></div>
-                                                    </div>
-                                                </div>
-                                            </div>
+                                          </div>
 
-                                            <p class="text-danger text-center small mb-4" id="invalid_text"></p>
+                                          <p class="text-danger text-center small mb-4" id="invalid_text"></p>
                                         </div>
-                                      </form>
                                     </div>
                                 </div>
                             </div>
@@ -152,6 +193,10 @@
         <script src="{% static "custom/custom.js" %}"></script>
 
         <script src="{% static "custom/drag-drop-image-uploader/dist/image-uploader.min.js" %}"></script>
+        <!-- plugin js -->
+        <script src="{% static "assets/js/vendor/dropzone.min.js" %}"></script>
+        <!-- init js -->
+        <script src="{% static "assets/js/ui/component.fileupload.js" %}"></script>
 
         <script>
           //-- Prevent Back
