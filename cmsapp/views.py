@@ -84,7 +84,7 @@ def logout_action(request):
 def setting(request):
     # upload_machine()
     #upload_task()
-    upload_vendor()
+    # upload_vendor()
     users = []
     user_group = []
     if request.user.is_superuser or request.user.is_staff:
