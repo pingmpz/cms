@@ -47,11 +47,12 @@
                             <div class="col-12">
                                 <div class="page-title-box">
                                     <div class="page-title-right d-flex">
-                                      <select class="form-control" id="fsg">
+                                      &nbsp;&nbsp;&nbsp;<p class="pt-1 pb-1 mb-0 small">Section</p>&nbsp;&nbsp;&nbsp;
+                                      <select class="form-control form-control-sm" id="fsg">
                                           {% for sg in sgs %}
                                           <option value="{{sg.name}}" {% if fsg == sg.name %}selected{% endif %}>{{sg.name}}</option>
                                           {% endfor %}
-                                          <option value="ALL" {% if fsg == 'ALL' %}selected{% endif %}>ALL</option>
+                                          <option value="ALL" {% if fsg == 'ALL' %}selected{% endif %}>All</option>
                                       </select>
                                     </div>
                                     <h4 class="page-title"><i class="uil-comments"></i> All Request ({{reqs|length}})</h4>

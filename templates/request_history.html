@@ -47,16 +47,17 @@
                             <div class="col-12">
                                 <div class="page-title-box">
                                     <div class="page-title-right d-flex">
-                                      <p class="pt-2 pb-1 mb-0 small">Finish&nbsp;Date&nbsp;</p>
-                                      <input type="date" class="form-control" id="fstartdate" value="{{fstartdate}}" onkeydown="return false">
-                                      <p class="pt-2 pb-1 mb-0">&nbsp;-&nbsp;</p>
-                                      <input type="date" class="form-control" id="fstopdate" value="{{fstopdate}}" onkeydown="return false">
+                                      &nbsp;&nbsp;&nbsp;<p class="pt-1 pb-1 mb-0 small">Finish&nbsp;Date</p>&nbsp;&nbsp;&nbsp;
+                                      <input type="date" class="form-control form-control-sm" id="fstartdate" value="{{fstartdate}}" onkeydown="return false" style="height:20.993px">
+                                      &nbsp;&nbsp;&nbsp;<p class="pt-1 pb-1 mb-0 small">-</p>&nbsp;&nbsp;&nbsp;
+                                      <input type="date" class="form-control form-control-sm" id="fstopdate" value="{{fstopdate}}" onkeydown="return false" style="height:20.993px">
                                       <p class="pt-2 pb-1 mb-0">&nbsp;</p>
-                                      <select class="form-control" id="fsg" style="width:50%">
+                                      &nbsp;&nbsp;&nbsp;<p class="pt-1 pb-1 mb-0 small">Section</p>&nbsp;&nbsp;&nbsp;
+                                      <select class="form-control form-control-sm" id="fsg" style="width:50%">
                                           {% for sg in sgs %}
                                           <option value="{{sg.name}}" {% if fsg == sg.name %}selected{% endif %}>{{sg.name}}</option>
                                           {% endfor %}
-                                          <option value="ALL" {% if fsg == 'ALL' %}selected{% endif %}>ALL</option>
+                                          <option value="ALL" {% if fsg == 'ALL' %}selected{% endif %}>All</option>
                                       </select>
                                     </div>
                                     <h4 class="page-title"><i class="uil-comment-verify"></i> History Request ({{reqs|length}})</h4>

@@ -48,11 +48,18 @@
                             <div class="col-12">
                                 <div class="page-title-box">
                                     <div class="page-title-right d-flex">
-                                      <select class="form-control" id="fsg">
+                                      &nbsp;&nbsp;&nbsp;<p class="pt-1 pb-1 mb-0 small">Type</p>&nbsp;&nbsp;&nbsp;
+                                      <select class="form-control form-control-sm" id="ftype">
+                                          <option value="ALL" {% if ftype == 'ALL' %}selected{% endif %}>All</option>
+                                          <option value="USERREQUEST" {% if ftype == 'USERREQUEST' %}selected{% endif %}>User Request</option>
+                                          <option value="PREVENTVE" {% if ftype == 'PREVENTVE' %}selected{% endif %}>Preventive</option>
+                                      </select>
+                                      &nbsp;&nbsp;&nbsp;<p class="pt-1 pb-1 mb-0 small">Section</p>&nbsp;&nbsp;&nbsp;
+                                      <select class="form-control form-control-sm" id="fsg">
                                           {% for sg in sgs %}
                                           <option value="{{sg.name}}" {% if fsg == sg.name %}selected{% endif %}>{{sg.name}}</option>
                                           {% endfor %}
-                                          <option value="ALL" {% if fsg == 'ALL' %}selected{% endif %}>ALL</option>
+                                          <option value="ALL" {% if fsg == 'ALL' %}selected{% endif %}>All</option>
                                       </select>
                                     </div>
                                     <h4 class="page-title"><i class="uil-comment-exclamation"></i> Pending Request ({{reqs|length}})</h4>
@@ -149,13 +156,18 @@
               ]
           });
 
+          $('#ftype').change(function() {
+            filter();
+          });
+
           $('#fsg').change(function() {
             filter();
           });
 
           function filter(){
+            var ftype = $("#ftype").val();
             var fsg = $("#fsg").val();
-            window.location.href = "/request_pending/" + fsg;
+            window.location.href = "/request_pending/" + ftype + '&' + fsg;
           }
         </script>
 

@@ -83,7 +83,7 @@ def logout_action(request):
 @login_required(login_url='/')
 def setting(request):
     # upload_machine()
-    #upload_task()
+    # upload_task()
     # upload_vendor()
     users = []
     user_group = []
@@ -279,7 +279,12 @@ def index(request):
     return render(request, 'index.html', context)
 
 @login_required(login_url='/')
-def request_pending(request, fsg):
+def request_pending(request, ftype, fsg):
+    type = 'ALL'
+    if ftype == 'USERREQUEST':
+        type = 'User Request'
+    elif ftype == 'PREVENTVE':
+        type = 'Preventive'
     sgs = SectionGroup.objects.all()
     reqs = []
     if fsg == 'MY' and is_in_section_group(request):
@@ -287,10 +292,17 @@ def request_pending(request, fsg):
     elif fsg == 'MY':
         fsg = 'ALL'
     if fsg == 'ALL':
-        reqs = Request.objects.filter(status='Pending')
+        if type == 'ALL':
+            reqs = Request.objects.filter(status='Pending')
+        else:
+            reqs = Request.objects.filter(status='Pending',type=type)
     else:
-        reqs = Request.objects.filter(status='Pending',sg=fsg)
+        if type == 'ALL':
+            reqs = Request.objects.filter(status='Pending',sg=fsg)
+        else:
+            reqs = Request.objects.filter(status='Pending',sg=fsg,type=type)
     context = {
+        'ftype': ftype,
         'sgs': sgs,
         'fsg': fsg,
         'reqs': reqs,
