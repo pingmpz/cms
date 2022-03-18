@@ -283,7 +283,7 @@ def request_pending(request, ftype, fsg):
     type = 'ALL'
     if ftype == 'USERREQUEST':
         type = 'User Request'
-    elif ftype == 'PREVENTVE':
+    elif ftype == 'PREVENTIVE':
         type = 'Preventive'
     sgs = SectionGroup.objects.all()
     reqs = []
