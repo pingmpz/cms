@@ -133,10 +133,12 @@ def new_pv_request(request):
 def edit_request(request,  request_no):
     req = Request.objects.get(req_no=request_no)
     mcs = Machine.objects.filter(is_active=True).order_by('section')
+    token = secrets.token_urlsafe(16)
     context = {
         'request_no': request_no,
         'req': req,
         'mcs': mcs,
+        'token': token,
     }
     context['all_page_data'] = (all_page_data(request))
     return render(request, 'edit_request.html', context)
@@ -738,6 +740,7 @@ def new_pv_request_save(request):
     return redirect('/new_pv_request/')
 
 def edit_request_save(request):
+    token = request.POST['token']
     req_id = request.POST['req_id']
     request_date = request.POST['req_date']
     description = request.POST['description']
@@ -756,6 +759,14 @@ def edit_request_save(request):
         mcdts = MachineDowntime.objects.filter(req=req)
         mcdts.delete()
     req.save()
+    #-- File Manage
+    source_dir = 'media/temp/' + token
+    target_dir = 'media/request/' + req.req_no
+    for file_name in os.listdir(source_dir):
+        shutil.move(os.path.join(source_dir, file_name), os.path.join(target_dir))
+        file_new = File(req=req,file_name=file_name)
+        file_new.save()
+    shutil.rmtree(source_dir, ignore_errors=False, onerror=None)
     return redirect('/request_page/' + req.req_no)
 
 def new_emp_save(request):

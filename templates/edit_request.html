@@ -16,8 +16,6 @@
         <link href="{% static "assets/css/icons.min.css" %}" rel="stylesheet" type="text/css" />
         <link href="{% static "assets/css/app-modern.min.css" %}" rel="stylesheet" type="text/css" id="light-style" />
         <link href="{% static "assets/css/app-modern-dark.min.css" %}" rel="stylesheet" type="text/css" id="dark-style" />
-
-        <link href="{% static "custom/drag-drop-image-uploader/dist/image-uploader.min.css" %}" rel="stylesheet">
     </head>
 
     <body class="loading" data-layout="detached" data-layout-config='{"leftSidebarCondensed":{% if request.user.employee.sidebar == 'Condensed' %}true{% else %}false{% endif %},"darkMode":{% if request.user.employee.scheme == 'Dark Mode' %}true{% else %}false{% endif %}, "showRightSidebarOnStart":false}'>
@@ -53,79 +51,122 @@
                             <div class="col-12">
                                 <div class="card">
                                     <div class="card-body">
-                                      <form action="/edit_request_save/" method="POST" id="form">
-                                          {% csrf_token %}
-                                          <input type="text" name="req_id" id="req_id" value="{{req.id}}" hidden>
-                                          <div class="row">
+                                        <div class="row">
                                             <!-- ========== Left Content ========== -->
                                             <div class="col-xl-6">
+                                              <form action="/edit_request_save/" method="POST" id="form">
+                                              {% csrf_token %}
+                                                  <input type="text" name="token" id="token" value="{{token}}" hidden>
+                                                  <input type="text" name="req_id" id="req_id" value="{{req.id}}" hidden>
 
-                                              <div class="mb-3">
-                                                  <label class="form-label">Request No</label>
-                                                  <input class="form-control" type="text" name="req_no" id="req_no" value="{{req.req_no}}" readonly>
-                                              </div>
+                                                  <div class="mb-3">
+                                                      <label class="form-label">Request No</label>
+                                                      <input class="form-control" type="text" name="req_no" id="req_no" value="{{req.req_no}}" readonly>
+                                                  </div>
 
-                                              <div class="mb-3">
-                                                  <label class="form-label">Type</label>
-                                                  <input class="form-control" type="text" name="type" id="type" value="{{req.type}}" readonly>
-                                              </div>
+                                                  <div class="mb-3">
+                                                      <label class="form-label">Type</label>
+                                                      <input class="form-control" type="text" name="type" id="type" value="{{req.type}}" readonly>
+                                                  </div>
 
-                                              <div class="mb-3">
-                                                <label class="form-label">Request Date {% if req.type == 'Preventive' %}<i class="mdi mdi-asterisk text-danger small"></i>{% endif %}</label>
-                                                <input type="date" class="form-control" name="req_date" id="req_date" value="{{req.request_date|date:'Y-m-d'}}" {% if req.type == 'User Request' %}readonly{% endif %}>
-                                              </div>
+                                                  <div class="mb-3">
+                                                    <label class="form-label">Request Date {% if req.type == 'Preventive' %}<i class="mdi mdi-asterisk text-danger small"></i>{% endif %}</label>
+                                                    <input type="date" class="form-control" name="req_date" id="req_date" value="{{req.request_date|date:'Y-m-d'}}" {% if req.type == 'User Request' %}readonly{% endif %}>
+                                                  </div>
 
-                                              <div class="mb-3" {% if req.type == 'Preventive' %}hidden{% endif %}>
-                                                <label class="form-label">Machine & Device</label>
-                                                <p class="text-muted font-12">* If you remove machine, it will also remove all machine downtime in this request.</p>
-                                                <select class="form-control select2" data-toggle="select2" name="mc_no" id="mc_no">
-                                                  <option>Select</option>
-                                                  {% for mc in mcs %}
-                                                  {% if mc_group|index:forloop.counter0 != None %}
-                                                  <optgroup label="{{mc_group|index:forloop.counter0}}">
+                                                  <div class="mb-3" {% if req.type == 'Preventive' %}hidden{% endif %}>
+                                                    <label class="form-label">Machine & Device</label>
+                                                    <p class="text-muted font-12">* If you remove machine, it will also remove all machine downtime in this request.</p>
+                                                    <select class="form-control select2" data-toggle="select2" name="mc_no" id="mc_no">
+                                                      <option>Select</option>
+                                                      {% for mc in mcs %}
+                                                      {% if mc_group|index:forloop.counter0 != None %}
+                                                      <optgroup label="{{mc_group|index:forloop.counter0}}">
+                                                      {% endif %}
+                                                      <option value="{{mc.mc_no}}" {% if req.mc == mc %}selected{% endif %}>▪️ {{mc.mc_no}}</option>
+                                                      {% if mc_group|index:forloop.counter1 != None %}
+                                                      </optgroup>
+                                                      {% endif %}
+                                                      {% endfor %}
+                                                    </select>
+                                                  </div>
+
+                                                  {% if req.type == 'Preventive' and req.mc %}
+                                                  <div class="mb-3">
+                                                    <label class="form-label">Machine</label>
+                                                    <input type="text" class="form-control" value="{{req.mc.mc_no}}" readonly>
+                                                  </div>
                                                   {% endif %}
-                                                  <option value="{{mc.mc_no}}" {% if req.mc == mc %}selected{% endif %}>▪️ {{mc.mc_no}}</option>
-                                                  {% if mc_group|index:forloop.counter1 != None %}
-                                                  </optgroup>
+
+                                                  {% if req.type == 'Preventive' and req.task %}
+                                                  <div class="mb-3">
+                                                    <label class="form-label">Task</label>
+                                                    <input type="text" class="form-control" value="{{req.task.name}}" readonly>
+                                                  </div>
                                                   {% endif %}
-                                                  {% endfor %}
-                                                </select>
-                                              </div>
 
-                                              {% if req.type == 'Preventive' and req.mc %}
-                                              <div class="mb-3">
-                                                <label class="form-label">Machine</label>
-                                                <input type="text" class="form-control" value="{{req.mc.mc_no}}" readonly>
-                                              </div>
-                                              {% endif %}
+                                                  <div class="mb-3">
+                                                      <label class="form-label">Description</label>
+                                                      <textarea class="form-control" name="description" id="description" rows="5">{{req.description}}</textarea>
+                                                  </div>
 
-                                              {% if req.type == 'Preventive' and req.task %}
-                                              <div class="mb-3">
-                                                <label class="form-label">Task</label>
-                                                <input type="text" class="form-control" value="{{req.task.name}}" readonly>
-                                              </div>
-                                              {% endif %}
-
-                                              <div class="mb-3">
-                                                  <label class="form-label">Description</label>
-                                                  <textarea class="form-control" name="description" id="description" rows="5">{{req.description}}</textarea>
-                                              </div>
+                                                </form>
 
                                             </div>
                                             <!-- ========== Right Content ========== -->
                                             <div class="col-xl-6">
-                                                <div class="mb-3 mt-3 mt-xl-0">
-                                                    <label class="mb-0">Files (Not Working)</label>
-                                                    <p class="text-muted font-12">* Do not upload files that have # in the file name.</p>
-                                                    <div style="width: 100%">
-                                                      <div class="input-images" style="padding-top: .5rem;"></div>
+
+                                              <div class="mb-3 mt-3 mt-xl-0">
+
+                                                <label class="mb-0">Files</label>
+                                                <p class="text-muted font-12">* Do not upload files that have '#' & '/' in the file name.</p>
+                                                <form action="/file_save/" method="post" class="dropzone" id="file-form" data-plugin="dropzone" data-previews-container="#file-previews"
+                                                    data-upload-preview-template="#uploadPreviewTemplate">
+                                                {% csrf_token %}
+                                                    <input type="text" name="token" id="token" value="{{token}}" hidden>
+
+                                                    <div class="fallback">
+                                                        <input name="file" id="file" type="file" multiple />
+                                                    </div>
+
+                                                    <div class="dz-message needsclick">
+                                                        <i class="h1 text-muted dripicons-cloud-upload"></i>
+                                                        <h3>Drop files here or click to upload.</h3>
+                                                        <span class="text-muted font-13"></span>
+                                                    </div>
+                                                </form>
+
+                                                <!-- Preview -->
+                                                <div class="dropzone-previews mt-3" id="file-previews"></div>
+
+                                                <!-- file preview template -->
+                                                <div class="d-none" id="uploadPreviewTemplate">
+                                                    <div class="card mt-1 mb-0 shadow-none border">
+                                                        <div class="p-2">
+                                                            <div class="row align-items-center">
+                                                                <div class="col-auto">
+                                                                    <img data-dz-thumbnail src="#" class="avatar-sm rounded bg-light" alt="">
+                                                                </div>
+                                                                <div class="col ps-0">
+                                                                    <a href="javascript:void(0);" class="text-muted fw-bold" data-dz-name></a>
+                                                                    <p class="mb-0" data-dz-size></p>
+                                                                </div>
+                                                                <div class="col-auto">
+                                                                    <!-- Button -->
+                                                                    <!-- <a href="" class="btn btn-link btn-lg text-muted" data-dz-remove>
+                                                                        <i class="dripicons-cross"></i>
+                                                                    </a> -->
+                                                                </div>
+                                                            </div>
+                                                        </div>
                                                     </div>
                                                 </div>
+                                              </div>
+
                                             </div>
 
                                             <p class="text-danger text-center small mb-4" id="invalid_text"></p>
                                         </div>
-                                      </form>
                                     </div>
                                 </div>
                             </div>
@@ -150,18 +191,10 @@
         <script src="{% static "assets/js/vendor/dropzone.min.js" %}"></script>
         <!-- init js -->
         <script src="{% static "assets/js/ui/component.fileupload.js" %}"></script>
-
-        <script src="{% static "custom/drag-drop-image-uploader/dist/image-uploader.min.js" %}"></script>
         <script>
         //-- Prevent Back
         window.addEventListener( "pageshow", function (event) {
           if (event.persisted || (typeof window.performance != "undefined" && window.performance.navigation.type === 2)) window.location.reload();
-        });
-
-        $('.input-images').imageUploader({
-          extensions: ['.jpg', '.jpeg', '.png', '.gif', '.svg', '.xlsx', '.csv', '.ppt'],
-          // mimes: ['image/jpeg', 'image/png', 'image/gif', 'image/svg+xml', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'],
-          mimes: null,
         });
 
         function save(){
