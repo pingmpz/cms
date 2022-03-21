@@ -85,6 +85,7 @@ def setting(request):
     # upload_machine()
     # upload_task()
     # upload_vendor()
+    # upload_ma_pm()
     users = []
     user_group = []
     if request.user.is_superuser or request.user.is_staff:
@@ -1375,6 +1376,37 @@ def upload_vendor():
             print(code, name)
             ven_new = Vendor(code=code,name=name,email=email,phone_no=phone_no,note=note)
             ven_new.save()
+    return
+
+def upload_ma_pm():
+    entries = Request.objects.all()
+    entries.delete()
+    type = 'Preventive'
+    sg = SectionGroup.objects.get(name='MA')
+    wb = load_workbook(filename = 'media/CMS MA PM Schedule 2022.xlsx')
+    ws = wb.active
+    skip_count = 2
+    for i in range(ws.max_row + 1):
+        if i < skip_count:
+            continue
+        mc_no = ws['A' + str(i)].value.strip()
+        request_date = (ws['B' + str(i)].value)
+        finish_datetime = ws['C' + str(i)].value
+        description = ws['D' + str(i)].value
+        is_mc_exist = Machine.objects.filter(mc_no=mc_no).exists()
+        status = 'Pending'
+        if finish_datetime != None:
+            status = 'Complete'
+        if description == None:
+            description = ''
+        if is_mc_exist:
+            mc = Machine.objects.get(mc_no=mc_no)
+            request_new = Request(emp_id='0000',name='SYSTEM',section='CMS',email='cmsadmin@ccsadvancetech.co.th',phone_no='-',sg=sg,type=type,status=status,request_date=request_date,finish_datetime=finish_datetime,description=description,mc=mc,task=None)
+            request_new.save()
+            request_new.req_no = create_req_no(request_new.id)
+            request_new.save()
+        else:
+            print(mc_no, 'MC NOT FOUND')
     return
 
 ################################ Other Function ################################
