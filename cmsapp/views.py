@@ -718,7 +718,7 @@ def new_request_save(request):
         'req' : request_new,
         'host_url' : HOST_URL,
     })
-    # send_email(subject, email_content, send_to, cc_to)
+    send_email(subject, email_content, send_to, cc_to)
     return redirect('/new_request_success/' + request_new.req_no)
 
 def new_pv_request_save(request):
