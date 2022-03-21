@@ -246,10 +246,17 @@ def all_page_data(request):
 
     pending_reqs = []
     if is_in_section_group(request):
-        pending_reqs = Request.objects.filter(status='Pending',sg=request.user.employee.section)
+        pending_reqs = Request.objects.filter(status='Pending',type='User Request',sg=request.user.employee.section)
     else :
-        pending_reqs = Request.objects.filter(status='Pending')
+        pending_reqs = Request.objects.filter(status='Pending',type='User Request')
     pending_request_count = len(pending_reqs)
+
+    pv_pending_reqs = []
+    if is_in_section_group(request):
+        pv_pending_reqs = Request.objects.filter(status='Pending',type='Preventive',sg=request.user.employee.section)
+    else :
+        pv_pending_reqs = Request.objects.filter(status='Pending',type='Preventive')
+    pv_pending_request_count = len(pv_pending_reqs)
 
     all_reqs = []
     if is_in_section_group(request):
@@ -261,6 +268,7 @@ def all_page_data(request):
         'is_in': is_in,
         'my_request_count': my_request_count,
         'pending_request_count': pending_request_count,
+        'pv_pending_request_count': pv_pending_request_count,
         'all_request_count': all_request_count,
     }
     return context
@@ -280,12 +288,7 @@ def index(request):
     return render(request, 'index.html', context)
 
 @login_required(login_url='/')
-def request_pending(request, ftype, fsg):
-    type = 'ALL'
-    if ftype == 'USERREQUEST':
-        type = 'User Request'
-    elif ftype == 'PREVENTIVE':
-        type = 'Preventive'
+def request_pending(request, fsg):
     sgs = SectionGroup.objects.all()
     reqs = []
     if fsg == 'MY' and is_in_section_group(request):
@@ -293,23 +296,36 @@ def request_pending(request, ftype, fsg):
     elif fsg == 'MY':
         fsg = 'ALL'
     if fsg == 'ALL':
-        if type == 'ALL':
-            reqs = Request.objects.filter(status='Pending')
-        else:
-            reqs = Request.objects.filter(status='Pending',type=type)
+        reqs = Request.objects.filter(status='Pending',type='User Request')
     else:
-        if type == 'ALL':
-            reqs = Request.objects.filter(status='Pending',sg=fsg)
-        else:
-            reqs = Request.objects.filter(status='Pending',sg=fsg,type=type)
+        reqs = Request.objects.filter(status='Pending',type='User Request',sg=fsg)
     context = {
-        'ftype': ftype,
         'sgs': sgs,
         'fsg': fsg,
         'reqs': reqs,
     }
     context['all_page_data'] = (all_page_data(request))
     return render(request, 'request_pending.html', context)
+
+@login_required(login_url='/')
+def request_pv_pending(request, fsg):
+    sgs = SectionGroup.objects.all()
+    reqs = []
+    if fsg == 'MY' and is_in_section_group(request):
+        fsg = request.user.employee.section
+    elif fsg == 'MY':
+        fsg = 'ALL'
+    if fsg == 'ALL':
+        reqs = Request.objects.filter(status='Pending',type='Preventive')
+    else:
+        reqs = Request.objects.filter(status='Pending',type='Preventive',sg=fsg)
+    context = {
+        'sgs': sgs,
+        'fsg': fsg,
+        'reqs': reqs,
+    }
+    context['all_page_data'] = (all_page_data(request))
+    return render(request, 'request_pv_pending.html', context)
 
 @login_required(login_url='/')
 def request_all(request, fsg):
@@ -1105,6 +1121,17 @@ def reject_request(request):
     if is_nms:
         sg = SectionGroup.objects.get(name=sg_name)
         req.sg = sg
+        #-- Email
+        subject = '[CMS] New Request #' + req.req_no
+        send_to = get_mail_group(sg, False)
+        cc_to = get_mail_group(sg, True)
+        email_template = get_template(TEMPLATE_REQUEST)
+        email_content = email_template.render({
+            'type' : 'New Request',
+            'req' : req,
+            'host_url' : HOST_URL,
+        })
+        send_email(subject, email_content, send_to, cc_to)
     else:
         req.status = 'Rejected'
         req.reason = reject_reason

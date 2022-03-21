@@ -20,7 +20,7 @@
 
         <li class="side-nav-item">
             <a href="/index/" class="side-nav-link">
-                <i class="uil-comment-dots"></i>
+                <i class="uil-comment-dots m-0"></i>
                 <span>My Request</span>
                 {% if all_page_data.my_request_count != 0 %}
                 <span class="badge bg-danger rounded-pill float-end">{{all_page_data.my_request_count}}</span>
@@ -29,8 +29,8 @@
         </li>
 
         <li class="side-nav-item">
-            <a href="/request_pending/ALL&MY" class="side-nav-link">
-                <i class="uil-comment-exclamation"></i>
+            <a href="/request_pending/MY" class="side-nav-link">
+                <i class="uil-comment-exclamation m-0"></i>
                 <span>Pending Request</span>
                 {% if all_page_data.pending_request_count != 0 %}
                 <span class="badge bg-warning rounded-pill float-end">{{all_page_data.pending_request_count}}</span>
@@ -39,8 +39,18 @@
         </li>
 
         <li class="side-nav-item">
+            <a href="/request_pv_pending/MY" class="side-nav-link">
+                <i class="uil-comment-exclamation m-0"></i>
+                <span>Pending PM Request</span>
+                {% if all_page_data.pv_pending_request_count != 0 %}
+                <span class="badge bg-warning rounded-pill float-end">{{all_page_data.pv_pending_request_count}}</span>
+                {% endif %}
+            </a>
+        </li>
+
+        <li class="side-nav-item">
             <a href="/request_all/MY" class="side-nav-link">
-                <i class="uil-comments"></i>
+                <i class="uil-comments m-0 m-0"></i>
                 <span>All Request</span>
                 {% if all_page_data.all_request_count != 0 %}
                 <span class="badge bg-primary rounded-pill float-end">{{all_page_data.all_request_count}}</span>
@@ -50,7 +60,7 @@
 
         <li class="side-nav-item">
             <a data-bs-toggle="collapse" href="#report" class="side-nav-link">
-                <i class="uil-comment-chart-line"></i>
+                <i class="uil-comment-chart-line m-0"></i>
                 <span>Report</span>
                 <span class="menu-arrow"></span>
             </a>
@@ -63,14 +73,14 @@
 
         <li class="side-nav-item">
             <a href="/request_history/MY&LASTWEEK&TODAY" class="side-nav-link">
-                <i class="uil-comment-verify"></i>
+                <i class="uil-comment-verify m-0"></i>
                 <span>History Request</span>
             </a>
         </li>
 
         <li class="side-nav-item">
             <a href="/new_pv_request/" class="side-nav-link">
-                <i class="uil-comment-plus text-success"></i>
+                <i class="uil-comment-plus text-success m-0"></i>
                 <span class="text-success">New Preventive Request</span>
             </a>
         </li>
@@ -79,7 +89,7 @@
 
         <li class="side-nav-item">
             <a data-bs-toggle="collapse" href="#master_data" class="side-nav-link">
-                <i class="uil-database"></i>
+                <i class="uil-database m-0"></i>
                 <span>Master Data</span>
                 <span class="menu-arrow"></span>
             </a>
@@ -99,7 +109,7 @@
 
         <li class="side-nav-item">
             <a data-bs-toggle="collapse" href="#new_data" class="side-nav-link">
-                <i class="mdi mdi-database-plus-outline"></i>
+                <i class="mdi mdi-database-plus-outline m-0"></i>
                 <span>New Data</span>
                 <span class="menu-arrow"></span>
             </a>
@@ -118,7 +128,7 @@
 
         <li class="side-nav-item">
             <a data-bs-toggle="collapse" href="#edit_data" class="side-nav-link">
-                <i class="mdi mdi-database-edit-outline"></i>
+                <i class="mdi mdi-database-edit-outline m-0"></i>
                 <span>Edit Data</span>
                 <span class="menu-arrow"></span>
             </a>
@@ -135,14 +145,14 @@
 
         <li class="side-nav-item">
             <a href="/setting/" class="side-nav-link">
-                <i class="uil-cog"></i>
+                <i class="uil-cog m-0"></i>
                 <span>Setting</span>
             </a>
         </li>
 
         <li class="side-nav-item">
             <a href="/logout_action/" class="side-nav-link">
-                <i class="dripicons-power text-danger"></i>
+                <i class="dripicons-power text-danger m-0"></i>
                 <span class="text-danger">Log Out</span>
             </a>
         </li>
