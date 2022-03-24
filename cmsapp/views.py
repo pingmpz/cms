@@ -42,7 +42,8 @@ def first_page(request):
 def track_request(request, search_text):
     reqs = []
     if search_text != '0':
-        reqs = Request.objects.filter(type="User Request",emp_id=search_text).order_by('-request_date')
+        mcs = Machine.objects.filter(mc_no__icontains=search_text) | Machine.objects.filter(section__icontains=search_text)
+        reqs = Request.objects.filter(type="User Request",emp_id=search_text).order_by('-request_date') | Request.objects.filter(type="User Request",mc__in=mcs).order_by('-request_date')
         reqs = reqs[:12]
     else:
         search_text = ""

@@ -36,13 +36,14 @@
                             <div class="card-body p-4 pb-0">
                                 <a class="btn btn-success rounded-pill" href="/new_request/"><i class="uil-comment-plus"></i> New Request</a>
                                 <div class="float-end">
-                                  
+
                                   <div class="input-group">
-                                        <input type="text" class="form-control form-control-sm" id="search_text" placeholder="Employee ID" value="{{search_text}}">
+                                        <input type="text" class="form-control form-control-sm" id="search_text" placeholder="Search.." value="{{search_text}}">
                                         <button class="input-group-text btn-primary" type="button" onclick="search()"><span class="mdi mdi-magnify"></span></button>
                                   </div>
+                                  <small class="text-muted">Searchable: Employee ID, Machine No, Machine Section</small>
                                 </div>
-                                <br><hr>
+                                <br><br><hr>
                                 <table id="request_table" class="table table-sm nowrap dt-responsive row-border order-column w-100 small">
                                   <thead>
                                       <tr>
