@@ -28,7 +28,6 @@ from django_line_notification.line_notify import Line
 from .models import SectionGroup, Employee, Machine, Task, Vendor, Category, SubCategory, MailGroup, Request, File, Member, RequestVendor, Comment, RequestSubCategory, OperatorWorkingTime, VendorWorkingTime, MachineDowntime
 
 HOST_URL = 'http://129.1.100.185:8200/'
-HOST_URL_SHORTHEN = '129.1.100.185:8200/'
 TEMPLATE_REQUEST = 'email_templates/request.html'
 
 ################################# Authenticate #################################
