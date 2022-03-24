@@ -20,6 +20,7 @@ urlpatterns = [
     path('new_pv_request/', views.new_pv_request, name='new_pv_request'),
     path('edit_request/<str:request_no>', views.edit_request, name='edit_request'),
     path('request_page/<str:request_no>', views.request_page, name='request_page'),
+    path('req/<str:request_id>', views.req, name='req'),
     #--
     path('index/', views.index, name='index'),
     path('request_pending/<str:fsg>', views.request_pending, name='request_pending'),

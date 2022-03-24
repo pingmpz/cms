@@ -28,6 +28,7 @@ from django_line_notification.line_notify import Line
 from .models import SectionGroup, Employee, Machine, Task, Vendor, Category, SubCategory, MailGroup, Request, File, Member, RequestVendor, Comment, RequestSubCategory, OperatorWorkingTime, VendorWorkingTime, MachineDowntime
 
 HOST_URL = 'http://129.1.100.185:8200/'
+HOST_URL_SHORTHEN = '129.1.100.185:8200/'
 TEMPLATE_REQUEST = 'email_templates/request.html'
 
 ################################# Authenticate #################################
@@ -42,7 +43,8 @@ def first_page(request):
 def track_request(request, search_text):
     reqs = []
     if search_text != '0':
-        reqs = Request.objects.filter(type="User Request",emp_id=search_text).order_by('-request_date')[:12]
+        reqs = Request.objects.filter(type="User Request",emp_id=search_text).order_by('-request_date')
+        reqs = reqs[:12]
     else:
         search_text = ""
     context = {
@@ -233,6 +235,10 @@ def request_page(request, request_no):
     }
     context['all_page_data'] = (all_page_data(request))
     return render(request, 'request_page.html', context)
+
+def req(request, request_id):
+    req_no = create_req_no(request_id)
+    return redirect('/request_page/' + req_no)
 
 #------------------------------------ Main ------------------------------------#
 
@@ -739,7 +745,7 @@ def new_request_save(request):
     send_email(subject, email_content, send_to, cc_to)
     #-- Line
     line = Line(sg.line_token)
-    line.send_msg('\n New Request: ' + request_new.req_no + '\n Request Link: ' + HOST_URL + 'request_page/' + request_new.req_no  + '\n Request By: ' + str(request_new.emp_id) + ' | ' + request_new.name + '\n Phone No: ' + request_new.phone_no + '\n Description: ' + description)
+    line.send_msg('\n New Request: ' + request_new.req_no + '\n Request Link: ' + HOST_URL + 'req/' + str(request_new.id)  + '\n Request By: ' + str(request_new.emp_id) + ' | ' + request_new.name + '\n Phone No: ' + request_new.phone_no + '\n Description: ' + description)
     return redirect('/new_request_success/' + request_new.req_no)
 
 def new_pv_request_save(request):
