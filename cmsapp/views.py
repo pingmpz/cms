@@ -738,9 +738,8 @@ def new_request_save(request):
     })
     send_email(subject, email_content, send_to, cc_to)
     #-- Line
-    # line_token = 'yCn5hP27S15BcoDpISCTP8yQ19gEMAAhqdiJBGtRytu'
     line = Line(sg.line_token)
-    line.send_msg('\n New Request: ' + request_new.req_no '\n Request Link: ' + HOST_URL + 'request_page/' + request_new.req_no  + '\n Request By: ' + str(request_new.emp_id) + ' | ' + request_new.name + '\n Phone No: ' + request_new.phone_no + '\n Description: ' + description)
+    line.send_msg('\n New Request: ' + request_new.req_no + '\n Request Link: ' + HOST_URL + 'request_page/' + request_new.req_no  + '\n Request By: ' + str(request_new.emp_id) + ' | ' + request_new.name + '\n Phone No: ' + request_new.phone_no + '\n Description: ' + description)
     return redirect('/new_request_success/' + request_new.req_no)
 
 def new_pv_request_save(request):
