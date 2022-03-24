@@ -22,6 +22,8 @@ from pathlib import Path
 import glob, os, shutil
 # Token Generator
 import secrets
+# Line Noti
+from django_line_notification.line_notify import Line
 
 from .models import SectionGroup, Employee, Machine, Task, Vendor, Category, SubCategory, MailGroup, Request, File, Member, RequestVendor, Comment, RequestSubCategory, OperatorWorkingTime, VendorWorkingTime, MachineDowntime
 
@@ -735,6 +737,10 @@ def new_request_save(request):
         'host_url' : HOST_URL,
     })
     send_email(subject, email_content, send_to, cc_to)
+    #-- Line
+    # line_token = 'yCn5hP27S15BcoDpISCTP8yQ19gEMAAhqdiJBGtRytu'
+    line = Line(sg.line_token)
+    line.send_msg('\n New Request: ' + request_new.req_no '\n Request Link: ' + HOST_URL + 'request_page/' + request_new.req_no  + '\n Request By: ' + str(request_new.emp_id) + ' | ' + request_new.name + '\n Phone No: ' + request_new.phone_no + '\n Description: ' + description)
     return redirect('/new_request_success/' + request_new.req_no)
 
 def new_pv_request_save(request):
