@@ -5,9 +5,13 @@
         <a href="javascript: void(0);">
             <h3 class="leftbar-user-name">{{request.user}}</h3>
             {% if request.user.is_superuser or request.user.is_staff %}
-              <img src="{% static "custom/img/avatar-1.png" %}" alt="user-image" height="64" class="rounded-circle shadow-sm">
+              <img src="{% static "custom/img/ADMIN.png" %}" alt="user-image" height="64" class="rounded-circle shadow-sm">
+            {% elif request.user.employee.section == 'MA' %}
+              <img src="{% static "custom/img/MA.png" %}" alt="user-image" height="64" class="rounded-circle shadow-sm">
+            {% elif request.user.employee.section == 'OHS' or request.user.employee.section == 'AD-SER' %}
+              <img src="{% static "custom/img/MA.png" %}" alt="user-image" height="64" class="rounded-circle shadow-sm">
             {% else %}
-              <img src="{% static "custom/img/avatar-3.png" %}" alt="user-image" height="64" class="rounded-circle shadow-sm">
+              <img src="{% static "custom/img/USER.png" %}" alt="user-image" height="64" class="rounded-circle shadow-sm">
             {% endif %}
             <span class="leftbar-user-name small mb-0">{{request.user.employee.name}}</span>
             <span class="leftbar-user-name small text-muted mt-0">View Type: {% if all_page_data.is_in %}{{request.user.employee.section}}{% else %}ALL{% endif %}</span>
