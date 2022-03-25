@@ -9,7 +9,7 @@
             {% elif request.user.employee.section == 'MA' %}
               <img src="{% static "custom/img/MA.png" %}" alt="user-image" height="64" class="rounded-circle shadow-sm">
             {% elif request.user.employee.section == 'OHS' or request.user.employee.section == 'AD-SER' %}
-              <img src="{% static "custom/img/MA.png" %}" alt="user-image" height="64" class="rounded-circle shadow-sm">
+              <img src="{% static "custom/img/OPERATOR.png" %}" alt="user-image" height="64" class="rounded-circle shadow-sm">
             {% else %}
               <img src="{% static "custom/img/USER.png" %}" alt="user-image" height="64" class="rounded-circle shadow-sm">
             {% endif %}
@@ -76,7 +76,7 @@
         </li>
 
         <li class="side-nav-item">
-            <a href="/request_history/MY&LASTWEEK&TODAY" class="side-nav-link">
+            <a href="/request_history/MY&ALL&LASTWEEK&TODAY" class="side-nav-link">
                 <i class="uil-comment-verify m-0"></i>
                 <span>History Request</span>
             </a>
@@ -162,7 +162,7 @@
         </li>
 
         <li class="side-nav-title side-nav-item">Admin Contact</li>
-        <li class="leftbar-user text-dark text-center" style="font-size:12px; padding-top:0px; padding-left:20px; padding-right:20px;">
+        <li class="text-dark text-center" style="font-size:10px; padding-top:0px; padding-left:20px; padding-right:20px;">
           Yashawantatul Mangalmurti (6624)<br>
           yashawantatul.man@ccsadvancetech.co.th
         </li>

@@ -162,7 +162,7 @@ def request_page(request, request_no):
     req_sub_cats = [] # RequestSubCategory
     req_sub_cat_group = [] # RequestSubCategory Group (Category)
     files = [] # Files
-    owts = [] # OpereatorWorkTime
+    owts = [] # OperatorWorkTime
     vwts = [] # VendorWorkingTime
     mcdts = [] # MachineDowntime
     wt_len = 0
@@ -289,8 +289,12 @@ def index(request):
         is_member = Member.objects.filter(req=req,user=request.user).exists()
         if is_member:
             reqs.append(req)
+    has_wts = get_has_wts(reqs)
+    has_mcdts = get_has_mcdts(reqs)
     context = {
         'reqs': reqs,
+        'has_wts': has_wts,
+        'has_mcdts': has_mcdts,
     }
     context['all_page_data'] = (all_page_data(request))
     return render(request, 'index.html', context)
@@ -348,19 +352,24 @@ def request_all(request, fsg):
     else:
         reqs = Request.objects.filter(status='On Progress',sg=fsg)  | Request.objects.filter(status='On Hold',sg=fsg)
     is_members = get_is_members(reqs, request)
+    has_wts = get_has_wts(reqs)
+    has_mcdts = get_has_mcdts(reqs)
     context = {
         'sgs': sgs,
         'fsg': fsg,
         'reqs': reqs,
         'is_members': is_members,
+        'has_wts': has_wts,
+        'has_mcdts': has_mcdts,
     }
     context['all_page_data'] = (all_page_data(request))
     return render(request, 'request_all.html', context)
 
 @login_required(login_url='/')
-def request_history(request, fsg, fstartdate, fstopdate):
+def request_history(request, fsg, fstatus, fstartdate, fstopdate):
     sgs = SectionGroup.objects.all()
     reqs = []
+    status = fstatus.capitalize()
     if fsg == 'MY' and is_in_section_group(request):
         fsg = request.user.employee.section
     elif fsg == 'MY':
@@ -369,18 +378,30 @@ def request_history(request, fsg, fstartdate, fstopdate):
         fstartdate = (datetime.today() - timedelta(days=7)).strftime('%Y-%m-%d')
     if fstopdate == "TODAY":
         fstopdate = datetime.today().strftime('%Y-%m-%d')
+
     if fsg == 'ALL':
-        reqs = Request.objects.filter(status='Rejected',finish_datetime__date__range=[fstartdate, fstopdate])  | Request.objects.filter(status='Complete',finish_datetime__date__range=[fstartdate, fstopdate]) | Request.objects.filter(status='Canceled',finish_datetime__date__range=[fstartdate, fstopdate])
+        if fstatus == 'ALL':
+            reqs = Request.objects.filter(status='Rejected',finish_datetime__date__range=[fstartdate, fstopdate])  | Request.objects.filter(status='Complete',finish_datetime__date__range=[fstartdate, fstopdate]) | Request.objects.filter(status='Canceled',finish_datetime__date__range=[fstartdate, fstopdate])
+        else:
+            reqs = Request.objects.filter(status=status,finish_datetime__date__range=[fstartdate, fstopdate])
     else:
-        reqs = Request.objects.filter(status='Rejected',sg=fsg,finish_datetime__date__range=[fstartdate, fstopdate])  | Request.objects.filter(status='Complete',sg=fsg,finish_datetime__date__range=[fstartdate, fstopdate]) | Request.objects.filter(status='Canceled',sg=fsg,finish_datetime__date__range=[fstartdate, fstopdate])
+        if fstatus == 'ALL':
+            reqs = Request.objects.filter(status='Rejected',sg=fsg,finish_datetime__date__range=[fstartdate, fstopdate])  | Request.objects.filter(status='Complete',sg=fsg,finish_datetime__date__range=[fstartdate, fstopdate]) | Request.objects.filter(status='Canceled',sg=fsg,finish_datetime__date__range=[fstartdate, fstopdate])
+        else:
+            reqs = Request.objects.filter(status=status,sg=fsg,finish_datetime__date__range=[fstartdate, fstopdate])
     is_members = get_is_members(reqs, request)
+    has_wts = get_has_wts(reqs)
+    has_mcdts = get_has_mcdts(reqs)
     context = {
         'sgs': sgs,
         'fsg': fsg,
+        'fstatus': fstatus,
         'fstartdate': fstartdate,
         'fstopdate': fstopdate,
         'reqs': reqs,
         'is_members': is_members,
+        'has_wts': has_wts,
+        'has_mcdts': has_mcdts,
     }
     context['all_page_data'] = (all_page_data(request))
     return render(request, 'request_history.html', context)
@@ -744,8 +765,7 @@ def new_request_save(request):
     })
     send_email(subject, email_content, send_to, cc_to)
     #-- Line
-    line = Line(sg.line_token)
-    line.send_msg('\n New Request: ' + request_new.req_no + '\n Request Link: ' + HOST_URL + 'req/' + str(request_new.id)  + '\n Request By: ' + str(request_new.emp_id) + ' | ' + request_new.name + '\n Phone No: ' + request_new.phone_no + '\n Description: ' + description)
+    send_line(sg.line_token, request_new)
     return redirect('/new_request_success/' + request_new.req_no)
 
 def new_pv_request_save(request):
@@ -1143,6 +1163,8 @@ def reject_request(request):
             'host_url' : HOST_URL,
         })
         send_email(subject, email_content, send_to, cc_to)
+        #-- Line
+        send_line(sg.line_token, request_new)
     else:
         req.status = 'Rejected'
         req.reason = reject_reason
@@ -1528,6 +1550,30 @@ def get_is_members(reqs, request):
             is_members.append(False)
     return is_members
 
+def get_has_wts(reqs):
+    has_wts = []
+    for req in reqs:
+        has_owt = OperatorWorkingTime.objects.filter(req=req).exists()
+        has_vwt = VendorWorkingTime.objects.filter(req=req).exists()
+        if has_owt or has_vwt:
+            has_wts.append(True)
+        else:
+            has_wts.append(False)
+    return has_wts
+
+def get_has_mcdts(reqs):
+    has_mcdts = []
+    for req in reqs:
+        if req.mc != None:
+            has_mcdt = MachineDowntime.objects.filter(req=req).exists()
+            if has_mcdt:
+                has_mcdts.append(True)
+            else:
+                has_mcdts.append(False)
+        else:
+            has_mcdts.append(None)
+    return has_mcdts
+
 def get_select_members(req, users):
     select_members = []
     for user in users:
@@ -1591,4 +1637,10 @@ def send_email(subject, email_content, send_to, cc_to):
         EmailThread(email).start()
     except Exception:
         traceback.print_exc()
+    return
+
+def send_line(token, req):
+    #-- Line
+    line = Line(token)
+    line.send_msg('\n New Request: ' + req.req_no + '\n Request Link: ' + HOST_URL + 'req/' + str(req.id)  + '\n Request By: ' + str(req.emp_id) + ' | ' + req.name + '\n Phone No: ' + req.phone_no + '\n Description: ' + req.description)
     return

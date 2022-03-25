@@ -52,6 +52,13 @@
                                       &nbsp;&nbsp;&nbsp;<p class="pt-1 pb-1 mb-0 small">-</p>&nbsp;&nbsp;&nbsp;
                                       <input type="date" class="form-control form-control-sm" id="fstopdate" value="{{fstopdate}}" onkeydown="return false" style="height:20.993px">
                                       <p class="pt-2 pb-1 mb-0">&nbsp;</p>
+                                      &nbsp;&nbsp;&nbsp;<p class="pt-1 pb-1 mb-0 small">Status</p>&nbsp;&nbsp;&nbsp;
+                                      <select class="form-control form-control-sm" id="fstatus" style="width:50%">
+                                          <option value="COMPLETE" {% if fstatus == 'COMPLETE' %}selected{% endif %}>Complete</option>
+                                          <option value="REJECTED" {% if fstatus == 'REJECTED' %}selected{% endif %}>Rejected</option>
+                                          <option value="CANCELED" {% if fstatus == 'CANCELED' %}selected{% endif %}>Canceled</option>
+                                          <option value="ALL" {% if fstatus == 'ALL' %}selected{% endif %}>All</option>
+                                      </select>
                                       &nbsp;&nbsp;&nbsp;<p class="pt-1 pb-1 mb-0 small">Section</p>&nbsp;&nbsp;&nbsp;
                                       <select class="form-control form-control-sm" id="fsg" style="width:50%">
                                           {% for sg in sgs %}
@@ -59,6 +66,7 @@
                                           {% endfor %}
                                           <option value="ALL" {% if fsg == 'ALL' %}selected{% endif %}>All</option>
                                       </select>
+                                      <button type="button" class="btn btn-sm btn-link py-0" style="height:30px" onclick="window.scrollTo(0,document.body.scrollHeight);"><i class='mdi mdi-chevron-double-down'></i></a>
                                     </div>
                                     <h4 class="page-title"><i class="uil-comment-verify"></i> History Request ({{reqs|length}})</h4>
                                 </div>
@@ -84,6 +92,8 @@
                                           <th>Request To</th>
                                           <th>Request By</th>
                                           <th>IsMember</th>
+                                          <th>Worktime</th>
+                                          <th>Downtime</th>
                                       </tr>
                                   </thead>
                                   <tbody>
@@ -107,11 +117,33 @@
                                           <td>{{req.description}}</td>
                                           <td>{{req.sg.name}}</td>
                                           <td>{{req.emp_id}} | {{req.name|title}} ({{req.section}})</td>
-                                          <td>
+                                          <td class="text-center">
                                             {% if is_members|index:forloop.counter0 %}
-                                            <i class='mdi mdi-check text-success'></i><span hidden>True</span>
+                                            <button type="button" class="btn btn-sm p-0" onclick="set_search('IsMember:True')"><i class='mdi mdi-check text-success'></i></button>
+                                            <span hidden>IsMember:True</span>
                                             {% else %}
-                                            <i class='uil-times text-danger'></i><span hidden>False</span>
+                                            <button type="button" class="btn btn-sm p-0" onclick="set_search('IsMember:False')"><i class='uil-times text-danger'></i></button>
+                                            <span hidden>IsMember:False</span>
+                                            {% endif %}
+                                          </td>
+                                          <td class="text-center">
+                                            {% if has_wts|index:forloop.counter0 %}
+                                            <button type="button" class="btn btn-sm p-0" onclick="set_search('Worktime:True')"><i class='mdi mdi-check text-success'></i></button>
+                                            <span hidden>Worktime:True</span>
+                                            {% else %}
+                                            <button type="button" class="btn btn-sm p-0" onclick="set_search('Worktime:False')"><i class='uil-times text-danger'></i></button>
+                                            <span hidden>Worktime:False</span>
+                                            {% endif %}
+                                          </td>
+                                          <td class="text-center">
+                                            {% if has_mcdts|index:forloop.counter0 %}
+                                            <button type="button" class="btn btn-sm p-0" onclick="set_search('Downtime:True')"><i class='mdi mdi-check text-success'></i></button>
+                                            <span hidden>Downtime:True</span>
+                                            {% elif has_mcdts|index:forloop.counter0 == False %}
+                                            <button type="button" class="btn btn-sm p-0" onclick="set_search('Downtime:False')"><i class='uil-times text-danger'></i></button>
+                                            <span hidden>Downtime:False</span>
+                                            {% else %}
+                                            <!-- <i class='uil-minus text-muted'></i><span hidden>DownTime:None</span> -->
                                             {% endif %}
                                           </td>
                                       </tr>
@@ -155,18 +187,22 @@
         <script src="{% static "assets/js/vendor/fixedHeader.bootstrap5.min.js" %}"></script>
 
         <script type="text/javascript">
-          $('#request_table').DataTable( {
+          var table = $('#request_table').DataTable( {
               "order": [[ 0, "asc" ]],
-              'iDisplayLength': 100,
+              'iDisplayLength': 25,
               "scrollX": true,
-              dom: 'Bfrtip',
-              buttons: [
-                // 'excelHtml5',
-                // 'csvHtml5',
-              ]
           });
 
+          function set_search(value){
+            $('input[type="search"]').val(value);
+            table.search(value).draw();
+          }
+
           $('#fsg').change(function() {
+            filter();
+          });
+
+          $('#fstatus').change(function() {
             filter();
           });
 
@@ -180,9 +216,10 @@
 
           function filter(){
             var fsg = $("#fsg").val();
+            var fstatus = $("#fstatus").val();
             var fstartdate = ($("#fstartdate").val() != "")?$("#fstartdate").val():"LASTWEEK";
             var fstopdate = ($("#fstopdate").val() != "")?$("#fstopdate").val():"TODAY";
-            window.location.href = "/request_history/" + fsg + "&" + fstartdate + "&" + fstopdate;
+            window.location.href = "/request_history/" + fsg + "&" + fstatus + "&" + fstartdate + "&" + fstopdate;
           }
         </script>
 
