@@ -49,7 +49,7 @@
                                 <div class="page-title-box">
                                     <div class="page-title-right d-flex">
                                       <div style="width:100%">
-                                        <select class="form-control" name="ftask" id="ftask">
+                                        <select class="form-control form-control-sm" name="ftask" id="ftask">
                                           {% for itask in tasks %}
                                           {% if task_group|index:forloop.counter0 != None %}
                                           <optgroup label="{{task_group|index:forloop.counter0}}">
@@ -61,7 +61,7 @@
                                           {% endfor %}
                                         </select>
                                       </div>
-                                      <button type="button" class="btn btn-success ms-2" id="save_button" onclick="save()"><i class="mdi mdi-content-save"></i></button>
+                                      <button type="button" class="btn btn-success btn-sm ms-2" id="save_button" onclick="save()"><i class="mdi mdi-content-save"></i></button>
                                     </div>
                                     <h4 class="page-title"><i class="mdi mdi-database-edit-outline"></i> Edit Task</h4>
                                 </div>

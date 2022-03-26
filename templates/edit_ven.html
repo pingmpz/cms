@@ -46,12 +46,12 @@
                             <div class="col-12">
                                 <div class="page-title-box">
                                     <div class="page-title-right d-flex">
-                                      <select class="form-control" name="fven" id="fven">
+                                      <select class="form-control form-control-sm" name="fven" id="fven">
                                         {% for iven in vens %}
                                         <option value="{{iven.code}}" {% if fven == iven.code %}selected{% endif %}>{{iven.code}} | {{iven.name}}</option>
                                         {% endfor %}
                                       </select>
-                                      <button type="button" class="btn btn-success ms-2" id="save_button" onclick="save()" title="Save"><i class="mdi mdi-content-save"></i></button>
+                                      <button type="button" class="btn btn-success btn-sm ms-2" id="save_button" onclick="save()" title="Save"><i class="mdi mdi-content-save"></i></button>
                                     </div>
                                     <h4 class="page-title"><i class="mdi mdi-database-edit-outline"></i> Edit Vendor</h4>
                                 </div>

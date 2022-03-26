@@ -48,7 +48,7 @@
                                 <div class="page-title-box">
                                     <div class="page-title-right d-flex">
                                       <div style="width:100%">
-                                        <select class="form-control select2" name="fmc" id="fmc">
+                                        <select class="form-control form-control-sm select2" name="fmc" id="fmc">
                                           {% for imc in mcs %}
                                           {% if mc_group|index:forloop.counter0 != None %}
                                           <optgroup label="{{mc_group|index:forloop.counter0}}">
@@ -60,7 +60,7 @@
                                           {% endfor %}
                                         </select>
                                       </div>
-                                      <button type="button" class="btn btn-success ms-2" id="save_button" onclick="save()" title="Save"><i class="mdi mdi-content-save"></i></button>
+                                      <button type="button" class="btn btn-success btn-sm ms-2" id="save_button" onclick="save()" title="Save"><i class="mdi mdi-content-save"></i></button>
                                     </div>
                                     <h4 class="page-title"><i class="mdi mdi-database-edit-outline"></i> Edit Machine / Device</h4>
                                 </div>
