@@ -425,7 +425,7 @@
                                                   <!-- ========== Operator Tab ========== -->
                                                   <div class="tab-pane active" id="operator">
                                                     <!-- ========== Add Operate Time ========== -->
-                                                    {% if req.status == 'On Progress' or req.status == 'On Hold' %}
+                                                    {% if req.status == 'On Progress' or req.status == 'On Hold' or req.status == 'Complete' %}
                                                     {% if is_member %}
                                                     <p class="text-muted font-12">Use 'CTRL' to select multiple item</p>
                                                     <div class="row">
@@ -504,7 +504,7 @@
                                                   <!-- ========== Vendors Tab ========== -->
                                                   <div class="tab-pane show" id="vendor">
                                                     <!-- ========== Add Operate Time ========== -->
-                                                    {% if req.status == 'On Progress' or req.status == 'On Hold' %}
+                                                    {% if req.status == 'On Progress' or req.status == 'On Hold' or req.status == 'Complete' %}
                                                     {% if is_member %}
                                                     <p class="text-muted font-12">Use 'CTRL' to select multiple item</p>
                                                     <div class="row">
@@ -583,7 +583,7 @@
                                             <!-- ========== Machine Downtime Tab ========== -->
                                             <div class="tab-pane p-0" id="mc_downtime">
                                               <!-- ========== Add Machine Downtime ========== -->
-                                              {% if req.status == 'On Progress' or req.status == 'On Hold' %}
+                                              {% if req.status == 'On Progress' or req.status == 'On Hold' or req.status == 'Complete' %}
                                               {% if is_member %}
                                               <div class="row">
                                                 <div class="col-10">

@@ -140,11 +140,13 @@ def new_pv_request(request):
 def edit_request(request,  request_no):
     req = Request.objects.get(req_no=request_no)
     mcs = Machine.objects.filter(is_active=True).order_by('section')
+    mc_group = get_mc_group(mcs)
     token = secrets.token_urlsafe(16)
     context = {
         'request_no': request_no,
         'req': req,
         'mcs': mcs,
+        'mc_group': mc_group,
         'token': token,
     }
     context['all_page_data'] = (all_page_data(request))
