@@ -105,31 +105,35 @@
                                           <td>{{req.emp_id}} | {{req.name|title}} ({{req.section}})</td>
                                           <td class="text-center">
                                             {% if is_members|index:forloop.counter0 %}
-                                            <button type="button" class="btn btn-sm p-0" onclick="set_search('IsMember:True')"><i class='mdi mdi-check text-success'></i></button>
+                                            <button type="button" class="btn btn-sm p-0" onclick="set_search('IsMember:True')"><small class="text-success">✔</small></button>
                                             <span hidden>IsMember:True</span>
-                                            {% else %}
-                                            <button type="button" class="btn btn-sm p-0" onclick="set_search('IsMember:False')"><i class='uil-times text-danger'></i></button>
+                                            {% elif is_members|index:forloop.counter0 == False %}
+                                            <button type="button" class="btn btn-sm p-0" onclick="set_search('IsMember:False')"><small class="text-danger">✘</small></button>
                                             <span hidden>IsMember:False</span>
+                                            {% else %}
+                                            <span hidden>IsMember:None</span>
                                             {% endif %}
                                           </td>
                                           <td class="text-center">
                                             {% if has_wts|index:forloop.counter0 %}
-                                            <button type="button" class="btn btn-sm p-0" onclick="set_search('Worktime:True')"><i class='mdi mdi-check text-success'></i></button>
+                                            <button type="button" class="btn btn-sm p-0" onclick="set_search('Worktime:True')"><small class="text-success">✔</small></button>
                                             <span hidden>Worktime:True</span>
-                                            {% else %}
-                                            <button type="button" class="btn btn-sm p-0" onclick="set_search('Worktime:False')"><i class='uil-times text-danger'></i></button>
+                                            {% elif has_wts|index:forloop.counter0 == False %}
+                                            <button type="button" class="btn btn-sm p-0" onclick="set_search('Worktime:False')"><small class="text-danger">✘</small></button>
                                             <span hidden>Worktime:False</span>
+                                            {% else %}
+                                            <span hidden>Worktime:None</span>
                                             {% endif %}
                                           </td>
                                           <td class="text-center">
                                             {% if has_mcdts|index:forloop.counter0 %}
-                                            <button type="button" class="btn btn-sm p-0" onclick="set_search('Downtime:True')"><i class='mdi mdi-check text-success'></i></button>
+                                            <button type="button" class="btn btn-sm p-0" onclick="set_search('Downtime:True')"><small class="text-success">✔</small></button>
                                             <span hidden>Downtime:True</span>
                                             {% elif has_mcdts|index:forloop.counter0 == False %}
-                                            <button type="button" class="btn btn-sm p-0" onclick="set_search('Downtime:False')"><i class='uil-times text-danger'></i></button>
+                                            <button type="button" class="btn btn-sm p-0" onclick="set_search('Downtime:False')"><small class="text-danger">✘</small></button>
                                             <span hidden>Downtime:False</span>
                                             {% else %}
-                                            <!-- <i class='uil-minus text-muted'></i><span hidden>DownTime:None</span> -->
+                                            <span hidden>Downtime:None</span>
                                             {% endif %}
                                           </td>
                                       </tr>

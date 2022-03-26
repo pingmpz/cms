@@ -176,7 +176,7 @@
                                                   {% if user_group|index:forloop.counter0 != None %}
                                                   <optgroup label="{{user_group|index:forloop.counter0}}">
                                                   {% endif %}
-                                                  <option value="{{user.username}}">▪️ {{user.username}} | {{user.employee.name|title}}</option>
+                                                  <option value="{{user.username}}">▪️ {{user.username}} | {{user.employee.name|title}} {% if user.is_active %}✔{% else %}✘{% endif %}</option>
                                                   {% if user_group|index:forloop.counter1 != None %}
                                                   </optgroup>
                                                   {% endif %}

@@ -1545,35 +1545,41 @@ def get_req_sub_cat_group(req_sub_cats):
 def get_is_members(reqs, request):
     is_members = []
     for req in reqs:
-        is_member = Member.objects.filter(req=req,user=request.user).exists()
-        if is_member:
-            is_members.append(True)
+        if req.status == 'Rejected':
+            is_members.append(None)
         else:
-            is_members.append(False)
+            is_member = Member.objects.filter(req=req,user=request.user).exists()
+            if is_member:
+                is_members.append(True)
+            else:
+                is_members.append(False)
     return is_members
 
 def get_has_wts(reqs):
     has_wts = []
     for req in reqs:
-        has_owt = OperatorWorkingTime.objects.filter(req=req).exists()
-        has_vwt = VendorWorkingTime.objects.filter(req=req).exists()
-        if has_owt or has_vwt:
-            has_wts.append(True)
+        if req.status == 'Rejected':
+            has_wts.append(None)
         else:
-            has_wts.append(False)
+            has_owt = OperatorWorkingTime.objects.filter(req=req).exists()
+            has_vwt = VendorWorkingTime.objects.filter(req=req).exists()
+            if has_owt or has_vwt:
+                has_wts.append(True)
+            else:
+                has_wts.append(False)
     return has_wts
 
 def get_has_mcdts(reqs):
     has_mcdts = []
     for req in reqs:
-        if req.mc != None:
+        if req.mc == None or req.status == 'Rejected':
+            has_mcdts.append(None)
+        else:
             has_mcdt = MachineDowntime.objects.filter(req=req).exists()
             if has_mcdt:
                 has_mcdts.append(True)
             else:
                 has_mcdts.append(False)
-        else:
-            has_mcdts.append(None)
     return has_mcdts
 
 def get_select_members(req, users):
