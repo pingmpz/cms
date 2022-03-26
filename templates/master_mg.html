@@ -46,7 +46,7 @@
                             <div class="col-12">
                                 <div class="page-title-box">
                                     <div class="page-title-right d-flex">
-                                        <!-- Filter Here -->
+                                        <button type="button" class="btn btn-sm btn-link py-0" style="height:30px" onclick="window.scrollTo(0,document.body.scrollHeight);"><i class='mdi mdi-chevron-double-down'></i></a>
                                     </div>
                                     <h4 class="page-title"><i class="uil-database"></i> Mail Group ({{mgs|length}})</h4>
                                 </div>
@@ -130,7 +130,7 @@
           var table = $('#master_table').DataTable( {
             "columnDefs": [{ "visible": true, "targets": 0 }],
             "order": [[ 0, "asc" ],[ 6, "asc" ]],
-            "displayLength": 100,
+            'iDisplayLength': 25,
             "scrollX": true,
             "drawCallback": function ( settings ) {
                   var api = this.api();
