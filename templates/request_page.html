@@ -221,7 +221,7 @@
                                               <div class="row align-items-center">
                                                   <div class="col-auto">
                                                       <div class="avatar-sm">
-                                                          <span class="avatar-title rounded"><img src="/media/request/{{request_no}}/{{file.file_name}}" onerror="this.onerror=null; this.src='/media/questionmark.jpg'" width="50" height="50"></span>
+                                                          <span class="avatar-title rounded"><img src="/media/request/{{request_no}}/{{file.file_name}}" onerror="this.onerror=null; this.src='/media/file.png'" width="50" height="50"></span>
                                                       </div>
                                                   </div>
                                                   <div class="col ps-0">
@@ -756,11 +756,11 @@
                                             <div class="inbox-item">
                                               <p class="inbox-item-author">{{req_ven.ven.name}} {% if request.user.is_superuser %}[{{req_ven.id}}]{% endif %}</p>
                                               <p class="inbox-item-text font-12">Vendor Code : {{req_ven.ven.code}}</p>
-                                              <p class="inbox-item-text font-12">Address : {{req_ven.ven.address}}</p>
-                                              <p class="inbox-item-text font-12">Email : {{req_ven.ven.email}}</p>
-                                              <p class="inbox-item-text font-12">Phone No : {{req_ven.ven.phone_no}}</p>
+                                              <p class="inbox-item-text font-12">Address : {{req_ven.ven.address|default_if_none:"-"}}</p>
+                                              <p class="inbox-item-text font-12">Email : {{req_ven.ven.email|default_if_none:"-"}}</p>
+                                              <p class="inbox-item-text font-12">Phone No : {{req_ven.ven.phone_no|default_if_none:"-"}}</p>
                                               <small class="inbox-item-text font-12">
-                                                Note : {{req_ven.ven.note|linebreaks}}
+                                                Note : {{req_ven.ven.note|linebreaks|default_if_none:"-"}}
                                               </small>
                                             </div>
                                             {% endfor %}
