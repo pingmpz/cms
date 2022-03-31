@@ -91,6 +91,7 @@ urlpatterns = [
     path('manage_vendor/', views.manage_vendor, name='manage_vendor'),
     path('manage_category/', views.manage_category, name='manage_category'),
     path('post_comment/', views.post_comment, name='post_comment'),
+    path('delete_file/', views.delete_file, name='delete_file'),
     path('delete_comment/', views.delete_comment, name='delete_comment'),
     path('owt_save/', views.owt_save, name='owt_save'),
     path('delete_owt/', views.delete_owt, name='delete_owt'),

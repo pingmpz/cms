@@ -1333,6 +1333,19 @@ def post_comment(request):
     }
     return JsonResponse(data)
 
+def delete_file(request):
+    file_id = request.GET['file_id']
+    file = File.objects.get(id=file_id)
+    folder_path = 'media/request/' + file.req.req_no
+    file_path = folder_path + '/' + file.file_name
+    os.remove(file_path)
+    if len(os.listdir(folder_path)) == 0:
+        shutil.rmtree(folder_path, ignore_errors=False, onerror=None)
+    file.delete()
+    data = {
+    }
+    return JsonResponse(data)
+
 def delete_comment(request):
     comment_id = request.GET['comment_id']
     comment = Comment.objects.get(id=comment_id)
