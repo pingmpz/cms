@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 {% load static %}
+{% load extra %}
 
 <html lang="en">
     <head>
@@ -62,13 +63,52 @@
                         <!-- ========== Main Content ========== -->
                           <div class="col-12">
                             <div class="row">
+                              <div class="col-6">
+                                  <div class="card cta-box widget-flat bg-info text-white">
+                                      <div class="card-body">
+                                          <div class="float-end">
+                                              <i class="uil-comments widget-icon bg-light-lighten rounded-circle text-white"></i>
+                                          </div>
+                                          <h5 class="text-uppercase mt-0">All Request</h5>
+                                          <h3 class="mt-3 mb-2">{{all_req_count}}</h3>
+                                          <p class="mb-0 text-nowrap font-12">User Request : {{all_us_req_count}}</p>
+                                          <p class="mb-0 text-nowrap font-12">Preventive Request : {{all_pv_req_count}}</p>
+                                      </div>
+                                  </div>
+                              </div>
+                              <div class="col-3">
+                                  <div class="card cta-box widget-flat text-white" style="background-color:#9dd04d;">
+                                      <div class="card-body">
+                                          <div class="float-end">
+                                              <i class="uil-comment-dots widget-icon bg-light-lighten rounded-circle text-white"></i>
+                                          </div>
+                                          <h5 class="text-uppercase mt-0">Active Request</h5>
+                                          <h3 class="mt-3 mb-2">{{active_req_count}}</h3>
+                                          <p class="mb-0 text-nowrap font-12">User Request : {{active_us_req_count}}</p>
+                                          <p class="mb-0 text-nowrap font-12">Preventive Request : {{active_pv_req_count}}</p>
+                                      </div>
+                                  </div>
+                              </div>
+                              <div class="col-3">
+                                  <div class="card cta-box widget-flat text-white" style="background-color:#acb3bd;">
+                                      <div class="card-body">
+                                          <div class="float-end">
+                                              <i class="uil-comment-verify widget-icon bg-light-lighten rounded-circle text-white"></i>
+                                          </div>
+                                          <h5 class="text-uppercase mt-0">In-Active Request</h5>
+                                          <h3 class="mt-3 mb-2">{{inactive_req_count}}</h3>
+                                          <p class="mb-0 text-nowrap font-12">User Request : {{inactive_us_req_count}}</p>
+                                          <p class="mb-0 text-nowrap font-12">Preventive Request : {{inactive_pv_req_count}}</p>
+                                      </div>
+                                  </div>
+                              </div>
                               <div class="col-2">
-                                  <div class="card widget-flat bg-warning text-white">
+                                  <div class="card cta-box widget-flat bg-warning text-white">
                                       <div class="card-body">
                                           <div class="float-end">
                                               <i class="mdi mdi-clock-time-eight-outline widget-icon bg-light-lighten rounded-circle text-white"></i>
                                           </div>
-                                          <h6 class="text-uppercase mt-0" title="Customers">Pending</h6>
+                                          <h5 class="text-uppercase mt-0">Pending</h5>
                                           <h3 class="mt-3 mb-2">{{pending_req_count}}</h3>
                                           <p class="mb-0 text-nowrap font-12">User Request : {{pending_us_req_count}}</p>
                                           <p class="mb-0 text-nowrap font-12">Preventive Request : {{pending_pv_req_count}}</p>
@@ -76,12 +116,12 @@
                                   </div>
                               </div>
                               <div class="col-2">
-                                  <div class="card widget-flat bg-danger text-white">
+                                  <div class="card cta-box widget-flat bg-danger text-white">
                                       <div class="card-body">
                                           <div class="float-end">
                                               <i class="uil-times widget-icon bg-light-lighten rounded-circle text-white"></i>
                                           </div>
-                                          <h6 class="text-uppercase mt-0" title="Customers">Rejected</h6>
+                                          <h5 class="text-uppercase mt-0">Rejected</h5>
                                           <h3 class="mt-3 mb-2">{{rejected_req_count}}</h3>
                                           <p class="mb-0 text-nowrap font-12">User Request : {{rejected_us_req_count}}</p>
                                           <p class="mb-0 text-nowrap font-12">Preventive Request : {{rejected_pv_req_count}}</p>
@@ -89,12 +129,12 @@
                                   </div>
                               </div>
                               <div class="col-2">
-                                  <div class="card widget-flat bg-primary text-white">
+                                  <div class="card cta-box widget-flat bg-primary text-white">
                                       <div class="card-body">
                                           <div class="float-end">
                                               <i class="mdi mdi-play widget-icon bg-light-lighten rounded-circle text-white"></i>
                                           </div>
-                                          <h6 class="text-uppercase mt-0" title="Customers">On Progress</h6>
+                                          <h5 class="text-uppercase mt-0">On Progress</h5>
                                           <h3 class="mt-3 mb-2">{{on_process_req_count}}</h3>
                                           <p class="mb-0 text-nowrap font-12">User Request : {{on_process_us_req_count}}</p>
                                           <p class="mb-0 text-nowrap font-12">Preventive Request : {{on_process_pv_req_count}}</p>
@@ -102,12 +142,12 @@
                                   </div>
                               </div>
                               <div class="col-2">
-                                  <div class="card widget-flat bg-dark text-white">
+                                  <div class="card cta-box widget-flat bg-dark text-white">
                                       <div class="card-body">
                                           <div class="float-end">
                                               <i class="mdi mdi-pause widget-icon bg-light-lighten rounded-circle text-white"></i>
                                           </div>
-                                          <h6 class="text-uppercase mt-0" title="Customers">On Hold</h6>
+                                          <h5 class="text-uppercase mt-0">On Hold</h5>
                                           <h3 class="mt-3 mb-2">{{on_hold_req_count}}</h3>
                                           <p class="mb-0 text-nowrap font-12">User Request : {{on_hold_us_req_count}}</p>
                                           <p class="mb-0 text-nowrap font-12">Preventive Request : {{on_hold_pv_req_count}}</p>
@@ -115,12 +155,12 @@
                                   </div>
                               </div>
                               <div class="col-2">
-                                  <div class="card widget-flat bg-success text-white">
+                                  <div class="card cta-box widget-flat bg-success text-white">
                                       <div class="card-body">
                                           <div class="float-end">
                                               <i class="mdi mdi-check-all widget-icon bg-light-lighten rounded-circle text-white"></i>
                                           </div>
-                                          <h6 class="text-uppercase mt-0" title="Customers">Complete</h6>
+                                          <h5 class="text-uppercase mt-0">Complete</h5>
                                           <h3 class="mt-3 mb-2">{{complete_req_count}}</h3>
                                           <p class="mb-0 text-nowrap font-12">User Request : {{complete_us_req_count}}</p>
                                           <p class="mb-0 text-nowrap font-12">Preventive Request : {{complete_pv_req_count}}</p>
@@ -128,12 +168,12 @@
                                   </div>
                               </div>
                               <div class="col-2">
-                                  <div class="card widget-flat bg-danger text-white">
+                                  <div class="card cta-box widget-flat bg-danger text-white">
                                       <div class="card-body">
                                           <div class="float-end">
                                               <i class="uil-ban widget-icon bg-light-lighten rounded-circle text-white"></i>
                                           </div>
-                                          <h6 class="text-uppercase mt-0" title="Customers">Canceled</h6>
+                                          <h5 class="text-uppercase mt-0">Canceled</h5>
                                           <h3 class="mt-3 mb-2">{{canceled_req_count}}</h3>
                                           <p class="mb-0 text-nowrap font-12">User Request : {{canceled_us_req_count}}</p>
                                           <p class="mb-0 text-nowrap font-12">Preventive Request : {{canceled_pv_req_count}}</p>
@@ -141,7 +181,6 @@
                                   </div>
                               </div>
                             </div>
-
                         </div>
                     </div>
 

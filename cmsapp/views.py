@@ -413,91 +413,123 @@ def request_history(request, fsg, fstatus, fstartdate, fstopdate):
 @login_required(login_url='/')
 def summary(request, fsg):
     sgs = SectionGroup.objects.all()
+    all_req_count = 0
     pending_req_count = 0
     rejected_req_count = 0
     on_process_req_count = 0
     on_hold_req_count = 0
     complete_req_count = 0
     canceled_req_count = 0
+    active_req_count = 0
+    inactive_req_count = 0
 
+    all_us_req_count = 0
     pending_us_req_count = 0
     rejected_us_req_count = 0
     on_process_us_req_count = 0
     on_hold_us_req_count = 0
     complete_us_req_count = 0
     canceled_us_req_count = 0
+    active_us_req_count = 0
+    inactive_us_req_count = 0
 
+    all_pv_req_count = 0
     pending_pv_req_count = 0
     rejected_pv_req_count = 0
     on_process_pv_req_count = 0
     on_hold_pv_req_count = 0
     complete_pv_req_count = 0
     canceled_pv_req_count = 0
+    active_pv_req_count = 0
+    inactive_pv_req_count = 0
     if fsg == 'MY' and is_in_section_group(request):
         fsg = request.user.employee.section
     elif fsg == 'MY':
         fsg = 'ALL'
     if fsg == 'ALL':
-        pending_us_req_count = len(Request.objects.filter(status='Pending',type='User Request'))
-        pending_pv_req_count = len(Request.objects.filter(status='Pending',type='Preventive'))
+        all_us_req_count = Request.objects.filter(type='User Request').count()
+        all_pv_req_count = Request.objects.filter(type='Preventive').count()
+        all_req_count = all_us_req_count + all_pv_req_count
+        pending_us_req_count = Request.objects.filter(status='Pending',type='User Request').count()
+        pending_pv_req_count = Request.objects.filter(status='Pending',type='Preventive').count()
         pending_req_count = pending_us_req_count + pending_pv_req_count
-        rejected_us_req_count = len(Request.objects.filter(status='Rejected',type='User Request'))
-        rejected_pv_req_count = len(Request.objects.filter(status='Rejected',type='Preventive'))
+        rejected_us_req_count = Request.objects.filter(status='Rejected',type='User Request').count()
+        rejected_pv_req_count = Request.objects.filter(status='Rejected',type='Preventive').count()
         rejected_req_count = rejected_us_req_count + rejected_pv_req_count
-        on_process_us_req_count = len(Request.objects.filter(status='On Progress',type='User Request'))
-        on_process_pv_req_count = len(Request.objects.filter(status='On Progress',type='Preventive'))
+        on_process_us_req_count = Request.objects.filter(status='On Progress',type='User Request').count()
+        on_process_pv_req_count = Request.objects.filter(status='On Progress',type='Preventive').count()
         on_process_req_count = on_process_us_req_count + on_process_pv_req_count
-        on_hold_us_req_count = len(Request.objects.filter(status='On Hold',type='User Request'))
-        on_hold_pv_req_count = len(Request.objects.filter(status='On Hold',type='Preventive'))
+        on_hold_us_req_count = Request.objects.filter(status='On Hold',type='User Request').count()
+        on_hold_pv_req_count = Request.objects.filter(status='On Hold',type='Preventive').count()
         on_hold_req_count = on_hold_us_req_count + on_hold_pv_req_count
-        complete_us_req_count = len(Request.objects.filter(status='Complete',type='User Request'))
-        complete_pv_req_count = len(Request.objects.filter(status='Complete',type='Preventive'))
+        complete_us_req_count = Request.objects.filter(status='Complete',type='User Request').count()
+        complete_pv_req_count = Request.objects.filter(status='Complete',type='Preventive').count()
         complete_req_count = complete_us_req_count + complete_pv_req_count
-        canceled_us_req_count = len(Request.objects.filter(status='Canceled',type='User Request'))
-        canceled_pv_req_count = len(Request.objects.filter(status='Canceled',type='Preventive'))
+        canceled_us_req_count = Request.objects.filter(status='Canceled',type='User Request').count()
+        canceled_pv_req_count = Request.objects.filter(status='Canceled',type='Preventive').count()
         canceled_req_count = canceled_us_req_count + canceled_pv_req_count
     else:
-        pending_us_req_count = len(Request.objects.filter(status='Pending',type='User Request',sg=fsg))
-        pending_pv_req_count = len(Request.objects.filter(status='Pending',type='Preventive',sg=fsg))
+        all_us_req_count = Request.objects.filter(type='User Request',sg=fsg).count()
+        all_pv_req_count = Request.objects.filter(type='Preventive',sg=fsg).count()
+        all_req_count = all_us_req_count + all_pv_req_count
+        pending_us_req_count = Request.objects.filter(status='Pending',type='User Request',sg=fsg).count()
+        pending_pv_req_count = Request.objects.filter(status='Pending',type='Preventive',sg=fsg).count()
         pending_req_count = pending_us_req_count + pending_pv_req_count
-        rejected_us_req_count = len(Request.objects.filter(status='Rejected',type='User Request',sg=fsg))
-        rejected_pv_req_count = len(Request.objects.filter(status='Rejected',type='Preventive',sg=fsg))
+        rejected_us_req_count = Request.objects.filter(status='Rejected',type='User Request',sg=fsg).count()
+        rejected_pv_req_count = Request.objects.filter(status='Rejected',type='Preventive',sg=fsg).count()
         rejected_req_count = rejected_us_req_count + rejected_pv_req_count
-        on_process_us_req_count = len(Request.objects.filter(status='On Progress',type='User Request',sg=fsg))
-        on_process_pv_req_count = len(Request.objects.filter(status='On Progress',type='Preventive',sg=fsg))
+        on_process_us_req_count = Request.objects.filter(status='On Progress',type='User Request',sg=fsg).count()
+        on_process_pv_req_count = Request.objects.filter(status='On Progress',type='Preventive',sg=fsg).count()
         on_process_req_count = on_process_us_req_count + on_process_pv_req_count
-        on_hold_us_req_count = len(Request.objects.filter(status='On Hold',type='User Request',sg=fsg))
-        on_hold_pv_req_count = len(Request.objects.filter(status='On Hold',type='Preventive',sg=fsg))
+        on_hold_us_req_count = Request.objects.filter(status='On Hold',type='User Request',sg=fsg).count()
+        on_hold_pv_req_count = Request.objects.filter(status='On Hold',type='Preventive',sg=fsg).count()
         on_hold_req_count = on_hold_us_req_count + on_hold_pv_req_count
-        complete_us_req_count = len(Request.objects.filter(status='Complete',type='User Request',sg=fsg))
-        complete_pv_req_count = len(Request.objects.filter(status='Complete',type='Preventive',sg=fsg))
+        complete_us_req_count = Request.objects.filter(status='Complete',type='User Request',sg=fsg).count()
+        complete_pv_req_count = Request.objects.filter(status='Complete',type='Preventive',sg=fsg).count()
         complete_req_count = complete_us_req_count + complete_pv_req_count
-        canceled_us_req_count = len(Request.objects.filter(status='Canceled',type='User Request',sg=fsg))
-        canceled_pv_req_count = len(Request.objects.filter(status='Canceled',type='Preventive',sg=fsg))
+        canceled_us_req_count = Request.objects.filter(status='Canceled',type='User Request',sg=fsg).count()
+        canceled_pv_req_count = Request.objects.filter(status='Canceled',type='Preventive',sg=fsg).count()
         canceled_req_count = canceled_us_req_count + canceled_pv_req_count
+    active_us_req_count = pending_us_req_count + on_process_us_req_count + on_hold_us_req_count
+    active_pv_req_count = pending_pv_req_count + on_process_pv_req_count + on_hold_pv_req_count
+    active_req_count = active_us_req_count + active_pv_req_count
+    inactive_us_req_count = rejected_us_req_count + complete_us_req_count + canceled_us_req_count
+    inactive_pv_req_count = rejected_pv_req_count + complete_pv_req_count + canceled_pv_req_count
+    inactive_req_count = inactive_us_req_count + inactive_pv_req_count
+
     context = {
         'sgs': sgs,
         'fsg': fsg,
+        'all_req_count': all_req_count,
         'pending_req_count': pending_req_count,
         'rejected_req_count': rejected_req_count,
         'on_process_req_count': on_process_req_count,
         'on_hold_req_count': on_hold_req_count,
         'complete_req_count': complete_req_count,
         'canceled_req_count': canceled_req_count,
+        'active_req_count': active_req_count,
+        'inactive_req_count': inactive_req_count,
 
+        'all_us_req_count': all_us_req_count,
         'pending_us_req_count': pending_us_req_count,
         'rejected_us_req_count': rejected_us_req_count,
         'on_process_us_req_count': on_process_us_req_count,
         'on_hold_us_req_count': on_hold_us_req_count,
         'complete_us_req_count': complete_us_req_count,
         'canceled_us_req_count': canceled_us_req_count,
+        'active_us_req_count': active_us_req_count,
+        'inactive_us_req_count': inactive_us_req_count,
 
+        'all_pv_req_count': all_pv_req_count,
         'pending_pv_req_count': pending_pv_req_count,
         'rejected_pv_req_count': rejected_pv_req_count,
         'on_process_pv_req_count': on_process_pv_req_count,
         'on_hold_pv_req_count': on_hold_pv_req_count,
         'complete_pv_req_count': complete_pv_req_count,
         'canceled_pv_req_count': canceled_pv_req_count,
+        'active_pv_req_count': active_pv_req_count,
+        'inactive_pv_req_count': inactive_pv_req_count,
+
     }
     context['all_page_data'] = (all_page_data(request))
     return render(request, 'summary.html', context)
