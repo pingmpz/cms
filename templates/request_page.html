@@ -148,7 +148,7 @@
                                     <div class="card-body">
                                         <div class="dropdown float-end">
                                         </div>
-                                        <h4 class="header-title mb-3">Category ({{req_sub_cats|length}})</h4>
+                                        <h4 class="header-title mb-3">Category {% if req_sub_cats %}({{req_sub_cats|length}}){% endif %}</h4>
                                         {% for req_sub_cat in req_sub_cats %}
                                         {% if req_sub_cat_group|index:forloop.counter0 != None %}
                                         <div class="d-flex mt-2"><i class="mdi mdi-label text-info"></i>&nbsp;&nbsp;&nbsp;{{req_sub_cat_group|index:forloop.counter0}}</div>
@@ -214,7 +214,7 @@
                                   <div class="card-body">
                                       <div class="dropdown float-end">
                                       </div>
-                                      <h4 class="header-title mb-3">Files ({{files|length}})</h4>
+                                      <h4 class="header-title mb-3">Files {% if files %}({{files|length}}){% endif %}</h4>
                                       {% for file in files %}
                                       <div class="card mb-1 shadow-none border">
                                           <div class="p-2">
@@ -325,20 +325,20 @@
                                             <li class="nav-item">
                                                 <a href="#comment" data-bs-toggle="tab" aria-expanded="false" class="nav-link active px-3 py-2">
                                                     <i class="mdi mdi-pencil-box-multiple font-18 d-md-none d-block"></i>
-                                                    <span class="d-none d-md-block small">Comments ({{comments|length}})</span>
+                                                    <span class="d-none d-md-block small">Comments {% if comments %}({{comments|length}}){% endif %}</span>
                                                 </a>
                                             </li>
                                             <li class="nav-item">
                                                 <a href="#operate_time" data-bs-toggle="tab" aria-expanded="true" class="nav-link px-3 py-2">
                                                     <i class="mdi mdi-book-open-variant font-18 d-md-none d-block"></i>
-                                                    <span class="d-none d-md-block small">Working Time ({{wt_len}})</span>
+                                                    <span class="d-none d-md-block small">Working Time {% if wt_len %}({{wt_len}}){% endif %}</span>
                                                 </a>
                                             </li>
                                             {% if req.mc %}
                                             <li class="nav-item">
                                                 <a href="#mc_downtime" data-bs-toggle="tab" aria-expanded="true" class="nav-link px-3 py-2">
                                                     <i class="mdi mdi-book-open-variant font-18 d-md-none d-block"></i>
-                                                    <span class="d-none d-md-block small">Machine Downtime ({{mcdts|length}})</span>
+                                                    <span class="d-none d-md-block small">Machine Downtime {% if mcdts %}({{mcdts|length}}){% endif %}</span>
                                                 </a>
                                             </li>
                                             {% endif %}
@@ -409,13 +409,13 @@
                                                   <li class="nav-item small">
                                                       <a href="#operator" data-bs-toggle="tab" aria-expanded="false" class="nav-link active">
                                                           <i class="mdi mdi-home-variant d-md-none d-block"></i>
-                                                          <span class="d-none d-md-block">Operator ({{owts|length}})</span>
+                                                          <span class="d-none d-md-block">Operator {% if owts %}({{owts|length}}){% endif %}</span>
                                                       </a>
                                                   </li>
                                                   <li class="nav-item small">
                                                       <a href="#vendor" data-bs-toggle="tab" aria-expanded="true" class="nav-link">
                                                           <i class="mdi mdi-account-circle d-md-none d-block"></i>
-                                                          <span class="d-none d-md-block">Vendor ({{vwts|length}})</span>
+                                                          <span class="d-none d-md-block">Vendor {% if vwts %}({{vwts|length}}){% endif %}</span>
                                                       </a>
                                                   </li>
                                               </ul>
@@ -749,7 +749,7 @@
                                         <div class="dropdown float-end">
                                         </div>
 
-                                        <h4 class="header-title mb-3">Vendors ({{req_vens|length}})</h4>
+                                        <h4 class="header-title mb-3">Vendors {% if req_vens %}({{req_vens|length}}){% endif %}</h4>
 
                                         <div class="inbox-widget">
                                             {% for req_ven in req_vens %}

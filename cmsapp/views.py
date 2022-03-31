@@ -197,7 +197,8 @@ def request_page(request, request_no):
         mcdts = MachineDowntime.objects.filter(req=req).order_by('-start_datetime')
         wt_len = len(owts) + len(vwts)
         sgs = SectionGroup.objects.all()
-        mcs = Machine.objects.filter(is_active=True).order_by('section')
+        if req.status == 'Pending': # Reduce Load
+            mcs = Machine.objects.filter(is_active=True).order_by('section')
         users = sort_user_by_section(User.objects.filter(is_active=True))
         vens = Vendor.objects.filter(is_active=True)
         sub_cats = SubCategory.objects.all().order_by('cat')
