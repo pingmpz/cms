@@ -51,7 +51,12 @@
                                       <input type="date" class="form-control form-control-sm" id="fstartdate" value="{{fstartdate}}" onkeydown="return false" style="height:20.993px">
                                       &nbsp;&nbsp;&nbsp;<p class="pt-1 pb-1 mb-0 small">-</p>&nbsp;&nbsp;&nbsp;
                                       <input type="date" class="form-control form-control-sm" id="fstopdate" value="{{fstopdate}}" onkeydown="return false" style="height:20.993px">
-                                      <p class="pt-2 pb-1 mb-0">&nbsp;</p>
+                                      &nbsp;&nbsp;&nbsp;<p class="pt-1 pb-1 mb-0 small">Type</p>&nbsp;&nbsp;&nbsp;
+                                      <select class="form-control form-control-sm" id="ftype" style="width:50%">
+                                          <option value="UR" {% if ftype == 'UR' %}selected{% endif %}>User Request</option>
+                                          <option value="PV" {% if ftype == 'PV' %}selected{% endif %}>Preventive</option>
+                                          <option value="ALL" {% if ftype == 'ALL' %}selected{% endif %}>All</option>
+                                      </select>
                                       &nbsp;&nbsp;&nbsp;<p class="pt-1 pb-1 mb-0 small">Status</p>&nbsp;&nbsp;&nbsp;
                                       <select class="form-control form-control-sm" id="fstatus" style="width:50%">
                                           <option value="COMPLETE" {% if fstatus == 'COMPLETE' %}selected{% endif %}>Complete</option>
@@ -210,6 +215,10 @@
             filter();
           });
 
+          $('#ftype').change(function() {
+            filter();
+          });
+
           $('#fstartdate').change(function() {
             filter();
           });
@@ -221,9 +230,10 @@
           function filter(){
             var fsg = $("#fsg").val();
             var fstatus = $("#fstatus").val();
+            var ftype = $("#ftype").val();
             var fstartdate = ($("#fstartdate").val() != "")?$("#fstartdate").val():"LASTWEEK";
             var fstopdate = ($("#fstopdate").val() != "")?$("#fstopdate").val():"TODAY";
-            window.location.href = "/request_history/" + fsg + "&" + fstatus + "&" + fstartdate + "&" + fstopdate;
+            window.location.href = "/request_history/" + fsg + "&" + fstatus + "&" + ftype + "&" + fstartdate + "&" + fstopdate;
           }
         </script>
 

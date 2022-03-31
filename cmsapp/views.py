@@ -369,14 +369,20 @@ def request_all(request, fsg):
     return render(request, 'request_all.html', context)
 
 @login_required(login_url='/')
-def request_history(request, fsg, fstatus, fstartdate, fstopdate):
+def request_history(request, fsg, fstatus, ftype, fstartdate, fstopdate):
     sgs = SectionGroup.objects.all()
     reqs = []
-    status = fstatus.capitalize()
+
     if fsg == 'MY' and is_in_section_group(request):
         fsg = request.user.employee.section
     elif fsg == 'MY':
         fsg = 'ALL'
+    status = fstatus.capitalize()
+    type = 'ALL'
+    if ftype == 'PV':
+        type = 'Preventive'
+    elif ftype == 'UR':
+        type = 'User Request'
     if fstartdate == "LASTWEEK":
         fstartdate = (datetime.today() - timedelta(days=7)).strftime('%Y-%m-%d')
     if fstopdate == "TODAY":
@@ -384,14 +390,26 @@ def request_history(request, fsg, fstatus, fstartdate, fstopdate):
 
     if fsg == 'ALL':
         if fstatus == 'ALL':
-            reqs = Request.objects.filter(status='Rejected',finish_datetime__date__range=[fstartdate, fstopdate])  | Request.objects.filter(status='Complete',finish_datetime__date__range=[fstartdate, fstopdate]) | Request.objects.filter(status='Canceled',finish_datetime__date__range=[fstartdate, fstopdate])
+            if ftype == 'ALL':
+                reqs = Request.objects.filter(status='Rejected',finish_datetime__date__range=[fstartdate, fstopdate])  | Request.objects.filter(status='Complete',finish_datetime__date__range=[fstartdate, fstopdate]) | Request.objects.filter(status='Canceled',finish_datetime__date__range=[fstartdate, fstopdate])
+            else:
+                reqs = Request.objects.filter(status='Rejected',type=type,finish_datetime__date__range=[fstartdate, fstopdate])  | Request.objects.filter(status='Complete',type=type,finish_datetime__date__range=[fstartdate, fstopdate]) | Request.objects.filter(status='Canceled',type=type,finish_datetime__date__range=[fstartdate, fstopdate])
         else:
-            reqs = Request.objects.filter(status=status,finish_datetime__date__range=[fstartdate, fstopdate])
+            if ftype == 'ALL':
+                reqs = Request.objects.filter(status=status,finish_datetime__date__range=[fstartdate, fstopdate])
+            else:
+                reqs = Request.objects.filter(status=status,type=type,finish_datetime__date__range=[fstartdate, fstopdate])
     else:
         if fstatus == 'ALL':
-            reqs = Request.objects.filter(status='Rejected',sg=fsg,finish_datetime__date__range=[fstartdate, fstopdate])  | Request.objects.filter(status='Complete',sg=fsg,finish_datetime__date__range=[fstartdate, fstopdate]) | Request.objects.filter(status='Canceled',sg=fsg,finish_datetime__date__range=[fstartdate, fstopdate])
+            if ftype == 'ALL':
+                reqs = Request.objects.filter(status='Rejected',sg=fsg,finish_datetime__date__range=[fstartdate, fstopdate])  | Request.objects.filter(status='Complete',sg=fsg,finish_datetime__date__range=[fstartdate, fstopdate]) | Request.objects.filter(status='Canceled',sg=fsg,finish_datetime__date__range=[fstartdate, fstopdate])
+            else:
+                reqs = Request.objects.filter(status='Rejected',type=type,sg=fsg,finish_datetime__date__range=[fstartdate, fstopdate])  | Request.objects.filter(status='Complete',type=type,sg=fsg,finish_datetime__date__range=[fstartdate, fstopdate]) | Request.objects.filter(status='Canceled',type=type,sg=fsg,finish_datetime__date__range=[fstartdate, fstopdate])
         else:
-            reqs = Request.objects.filter(status=status,sg=fsg,finish_datetime__date__range=[fstartdate, fstopdate])
+            if ftype == 'ALL':
+                reqs = Request.objects.filter(status=status,sg=fsg,finish_datetime__date__range=[fstartdate, fstopdate])
+            else:
+                reqs = Request.objects.filter(status=status,type=type,sg=fsg,finish_datetime__date__range=[fstartdate, fstopdate])
     is_members = get_is_members(reqs, request)
     has_wts = get_has_wts(reqs)
     has_mcdts = get_has_mcdts(reqs)
@@ -399,6 +417,7 @@ def request_history(request, fsg, fstatus, fstartdate, fstopdate):
         'sgs': sgs,
         'fsg': fsg,
         'fstatus': fstatus,
+        'ftype': ftype,
         'fstartdate': fstartdate,
         'fstopdate': fstopdate,
         'reqs': reqs,
