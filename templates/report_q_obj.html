@@ -71,7 +71,25 @@
                           <div class="col-12">
                             <div class="card">
                               <div class="card-body">
-
+                                <table id="report_table" class="table table-sm nowrap table-responsive row-border order-column w-100 small text-center">
+                                  <thead>
+                                      <tr>
+                                          <th colspan="99">Quality Objective {{fyear}} ({{mcg.name}})</th>
+                                      </tr>
+                                      <tr>
+                                          <th>Month</th>
+                                          <th>No of Request</th>
+                                      </tr>
+                                  </thead>
+                                  <tbody>
+                                      {% for month in months %}
+                                      <tr>
+                                        <td>{{month}}</td>
+                                        <td>{{req_count|index:forloop.counter0}}</td>
+                                      </tr>
+                                      {% endfor %}
+                                  </tbody>
+                                </table>
                               </div>
                             </div>
                           </div>

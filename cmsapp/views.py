@@ -546,15 +546,30 @@ def summary(request, fsg):
 def report_q_obj(request, fmcg, fyear):
     mcgs = MachineGroup.objects.all()
     if fmcg == 'FIRST':
-        fmcg = mcgs[0]
+        fmcg = mcgs[0].id
+    mcg = MachineGroup.objects.get(id=fmcg)
     years = get_years()
     if fyear == 'THISYEAR':
         fyear = datetime.today().strftime('%Y')
+
+    sg = SectionGroup.objects.get(name='MA')
+    mcs = Machine.objects.filter(mcg=mcg)
+    months = ['January', 'February', 'March', 'April', 'May', 'June', 'July','August', 'September', 'October', 'November', 'December']
+    req_count = []
+    for month in months:
+        month_no = months.index(month) + 1
+        reqs = Request.objects.filter(mc__in=mcs,type='User Request',status='Complete',sg=sg,request_date__year=fyear,request_date__month=month_no)
+        for req in reqs:
+            print(req.req_no)
+        req_count.append(reqs.count())
     context = {
         'mcgs': mcgs,
         'fmcg': fmcg,
+        'mcg': mcg,
         'years': years,
         'fyear': fyear,
+        'months': months,
+        'req_count': req_count,
     }
     context['all_page_data'] = (all_page_data(request))
     return render(request, 'report_q_obj.html', context)
