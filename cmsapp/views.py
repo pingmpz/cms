@@ -87,10 +87,7 @@ def logout_action(request):
 
 @login_required(login_url='/')
 def setting(request):
-    # upload_machine()
-    # upload_task()
-    # upload_vendor()
-    # upload_ma_pm()
+    # update_machine()
     users = []
     set_user = []
     if request.user.is_superuser or request.user.is_staff:
@@ -1499,100 +1496,19 @@ def delete_mcdt(request):
 
 ################################# File Reader ##################################
 
-def upload_machine():
-    entries = Machine.objects.all()
-    entries.delete()
-    wb = load_workbook(filename = 'media/CMS Machine Master.xlsx')
+def update_machine():
+    wb = load_workbook(filename = 'media/MC.xlsx')
     ws = wb.active
     skip_count = 2
     for i in range(ws.max_row + 1):
         if i < skip_count:
             continue
         mc_no = ws['A' + str(i)].value
-        section = ws['B' + str(i)].value
-        register_no = ws['C' + str(i)].value
-        asset_no = ws['D' + str(i)].value
-        serial_no = ws['E' + str(i)].value
-        manufacture = ws['F' + str(i)].value
-        model = ws['G' + str(i)].value
-        plant = ws['H' + str(i)].value
-        power  = ws['I' + str(i)].value
-        install_date = ws['J' + str(i)].value
-        capacity = ws['K' + str(i)].value
-        note = ws['L' + str(i)].value
-        if mc_no != None and mc_no != "":
-            print(mc_no)
-            mc_new = Machine(mc_no=mc_no,section=section,register_no=register_no,asset_no=asset_no,serial_no=serial_no,manufacture=manufacture,model=model,plant=plant,power=power,install_date=install_date,capacity=capacity,note=note)
-            mc_new.save()
-    return
-
-def upload_task():
-    entries = Task.objects.all()
-    entries.delete()
-    wb = load_workbook(filename = 'media/CMS Task Master.xlsx')
-    ws = wb.active
-    skip_count = 2
-    for i in range(ws.max_row + 1):
-        if i < skip_count:
-            continue
-        name = (ws['A' + str(i)].value).strip()
-        type = (ws['B' + str(i)].value).strip()
-        note = ws['C' + str(i)].value
-        if name != None and name != "":
-            print(type, name)
-            task_new = Task(name=name,type=type,note=note)
-            task_new.save()
-    return
-
-def upload_vendor():
-    entries = Vendor.objects.all()
-    entries.delete()
-    wb = load_workbook(filename = 'media/CMS Vendor Master.xlsx')
-    ws = wb.active
-    skip_count = 2
-    for i in range(ws.max_row + 1):
-        if i < skip_count:
-            continue
-        code = ws['A' + str(i)].value
-        name = (ws['B' + str(i)].value).strip()
-        email = ws['C' + str(i)].value
-        phone_no = ws['D' + str(i)].value
-        note = ws['F' + str(i)].value
-        if code != None and code != "":
-            print(code, name)
-            ven_new = Vendor(code=code,name=name,email=email,phone_no=phone_no,note=note)
-            ven_new.save()
-    return
-
-def upload_ma_pm():
-    entries = Request.objects.all()
-    entries.delete()
-    type = 'Preventive'
-    sg = SectionGroup.objects.get(name='MA')
-    wb = load_workbook(filename = 'media/CMS MA PM Schedule 2022.xlsx')
-    ws = wb.active
-    skip_count = 2
-    for i in range(ws.max_row + 1):
-        if i < skip_count:
-            continue
-        mc_no = ws['A' + str(i)].value.strip()
-        request_date = (ws['B' + str(i)].value)
-        finish_datetime = ws['C' + str(i)].value
-        description = ws['D' + str(i)].value
-        is_mc_exist = Machine.objects.filter(mc_no=mc_no).exists()
-        status = 'Pending'
-        if finish_datetime != None:
-            status = 'Complete'
-        if description == None:
-            description = ''
-        if is_mc_exist:
-            mc = Machine.objects.get(mc_no=mc_no)
-            request_new = Request(emp_id='0000',name='SYSTEM',section='CMS',email='cmsadmin@ccsadvancetech.co.th',phone_no='-',sg=sg,type=type,status=status,request_date=request_date,finish_datetime=finish_datetime,description=description,mc=mc,task=None)
-            request_new.save()
-            request_new.req_no = create_req_no(request_new.id)
-            request_new.save()
-        else:
-            print(mc_no, 'MC NOT FOUND')
+        mc_group_name = ws['B' + str(i)].value
+        mc = Machine.objects.get(mc_no=mc_no)
+        mcg = MachineGroup.objects.get(name=mc_group_name)
+        mc.mcg = mcg
+        mc.save()
     return
 
 ################################ Other Function ################################
