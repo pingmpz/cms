@@ -21,10 +21,16 @@ class Employee(models.Model):
     date_modified = models.DateTimeField(auto_now=True)
     date_published = models.DateTimeField(auto_now_add=True)
 
+class MachineGroup(models.Model):
+    id = models.AutoField(primary_key=True)
+    name = models.CharField(max_length=50, null=True)
+    date_modified = models.DateTimeField(auto_now=True)
+    date_published = models.DateTimeField(auto_now_add=True)
+
 class Machine(models.Model):
     mc_no = models.CharField(max_length=50, primary_key=True)
     section = models.CharField(max_length=50, null=True)
-    group = models.CharField(max_length=50, null=True)
+    mcg = models.ForeignKey(MachineGroup, null=True, on_delete=models.SET_NULL)
     register_no = models.CharField(max_length=50, null=True)
     asset_no = models.CharField(max_length=50, null=True)
     serial_no = models.CharField(max_length=50, null=True)

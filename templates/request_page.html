@@ -1023,7 +1023,7 @@ set_user<!DOCTYPE html>
                                 {% if set_user|index:forloop.counter0 != None %}
                                 <optgroup label="{{set_user|index:forloop.counter0}}">
                                 {% endif %}
-                                <option value="{{user.username}}" {% if select_members|index:forloop.counter0 %}selected{% endif %}>{{user.username}} | {{user.employee.name|title}}</option>
+                                <option value="{{user.username}}" {% if selected_members|index:forloop.counter0 %}selected{% endif %}>{{user.username}} | {{user.employee.name|title}}</option>
                                 {% if set_user|index:forloop.counter1 != None %}
                                 </optgroup>
                                 {% endif %}
@@ -1055,7 +1055,7 @@ set_user<!DOCTYPE html>
                             <p class="text-muted font-12">Use 'CTRL' to select multiple item</p>
                             <select class="select2 form-control select2-multiple" data-toggle="select2" multiple="multiple" data-placeholder="Choose ..." id="mv_ven_code_list">
                                 {% for ven in vens %}
-                                <option value="{{ven.code}}" {% if select_vendors|index:forloop.counter0 %}selected{% endif %}>{{ven.code}} | {{ven.name}}</option>
+                                <option value="{{ven.code}}" {% if selected_vendors|index:forloop.counter0 %}selected{% endif %}>{{ven.code}} | {{ven.name}}</option>
                                 {% endfor %}
                             </select>
                           </div>
@@ -1087,7 +1087,7 @@ set_user<!DOCTYPE html>
                                 {% if set_sc|index:forloop.counter0 != None %}
                                 <optgroup label="{{set_sc|index:forloop.counter0}}">
                                 {% endif %}
-                                <option value="{{sub_cat.id}}" {% if select_sub_cats|index:forloop.counter0 %}selected{% endif %}>▪️ {{sub_cat.name|title}}</option>
+                                <option value="{{sub_cat.id}}" {% if selected_sc|index:forloop.counter0 %}selected{% endif %}>▪️ {{sub_cat.name|title}}</option>
                                 {% if set_sc|index:forloop.counter1 != None %}
                                 </optgroup>
                                 {% endif %}

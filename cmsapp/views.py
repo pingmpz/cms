@@ -26,7 +26,7 @@ import secrets
 # Line Noti
 from django_line_notification.line_notify import Line
 
-from .models import SectionGroup, Employee, Machine, Task, Vendor, Category, SubCategory, MailGroup, Request, File, Member, RequestVendor, Comment, RequestSubCategory, OperatorWorkingTime, VendorWorkingTime, MachineDowntime
+from .models import SectionGroup, Employee, MachineGroup, Machine, Task, Vendor, Category, SubCategory, MailGroup, Request, File, Member, RequestVendor, Comment, RequestSubCategory, OperatorWorkingTime, VendorWorkingTime, MachineDowntime
 
 HOST_URL = 'http://129.1.100.185:8200/'
 TEMPLATE_REQUEST = 'email_templates/request.html'
@@ -158,31 +158,31 @@ def request_page(request, request_no):
     req_is_exist = Request.objects.filter(req_no=request_no).exists()
     req = None
     is_member = False
-    members = [] # Member (User)
+    members = []
     files = []
-    req_vens = [] # RequestVendor
-    comments = [] # Comment
-    req_sub_cats = [] # RequestSubCategory
-    set_rsc = [] # RequestSubCategory Group (Category)
-    files = [] # Files
-    owts = [] # OperatorWorkTime
-    vwts = [] # VendorWorkingTime
-    mcdts = [] # MachineDowntime
+    req_vens = []
+    comments = []
+    req_sub_cats = []
+    set_rsc = []
+    files = []
+    owts = []
+    vwts = []
+    mcdts = []
     wt_len = 0
 
-    sgs = [] # All Available SectionGroup
-    mcs = [] # All Available Machine
-    users = [] # All Available User
-    vens = [] # All Available Vendor
-    sub_cats = [] # All Available SubCategory
+    sgs = []
+    mcs = []
+    users = []
+    vens = []
+    sub_cats = []
 
-    set_mc = [] # Machine Group (Section)
-    set_user = [] # User Group (Section)
-    set_sc = [] # SubCategory Group (Category)
+    set_mc = []
+    set_user = []
+    set_sc = []
 
-    select_members = [] # For Manage Member
-    select_vendors = [] # For Manage Vendor
-    select_sub_cats = [] # For Manage Category
+    selected_members = []
+    selected_vendors = []
+    selected_sc = []
     if req_is_exist:
         req = Request.objects.get(req_no=request_no)
         is_member = Member.objects.filter(req=req,user=request.user).exists()
@@ -206,9 +206,9 @@ def request_page(request, request_no):
         set_mc = get_set_mc(mcs)
         set_user = get_set_user(users)
         set_sc = get_set_sc(sub_cats)
-        select_members = get_select_members(req, users)
-        select_vendors = get_select_vendors(req, vens)
-        select_sub_cats = get_select_sub_cats(req, sub_cats)
+        selected_members = get_selected_members(req, users)
+        selected_vendors = get_selected_vendors(req, vens)
+        selected_sc = get_selected_sc(req, sub_cats)
     context = {
         'request_no': request_no,
         'req_is_exist': req_is_exist,
@@ -233,9 +233,9 @@ def request_page(request, request_no):
         'set_mc': set_mc,
         'set_user': set_user,
         'set_sc': set_sc,
-        'select_members': select_members,
-        'select_vendors': select_vendors,
-        'select_sub_cats': select_sub_cats,
+        'selected_members': selected_members,
+        'selected_vendors': selected_vendors,
+        'selected_sc': selected_sc,
     }
     context['all_page_data'] = (all_page_data(request))
     return render(request, 'request_page.html', context)
@@ -567,6 +567,15 @@ def master_emp(request):
     }
     context['all_page_data'] = (all_page_data(request))
     return render(request, 'master_emp.html', context)
+
+@login_required(login_url='/')
+def master_mcg(request):
+    mcgs = MachineGroup.objects.all()
+    context = {
+        'mcgs': mcgs,
+    }
+    context['all_page_data'] = (all_page_data(request))
+    return render(request, 'master_mcg.html', context)
 
 @login_required(login_url='/')
 def master_mc(request):
@@ -1660,35 +1669,35 @@ def get_has_mcdts(reqs):
                 has_mcdts.append(False)
     return has_mcdts
 
-def get_select_members(req, users):
-    select_members = []
+def get_selected_members(req, users):
+    selected_members = []
     for user in users:
         is_member_exist = Member.objects.filter(req=req,user=user).exists()
         if is_member_exist:
-            select_members.append(True)
+            selected_members.append(True)
         else:
-            select_members.append(False)
-    return select_members
+            selected_members.append(False)
+    return selected_members
 
-def get_select_vendors(req, vens):
-    select_vendors = []
+def get_selected_vendors(req, vens):
+    selected_vendors = []
     for ven in vens:
         is_ven_exist = RequestVendor.objects.filter(req=req,ven=ven).exists()
         if is_ven_exist:
-            select_vendors.append(True)
+            selected_vendors.append(True)
         else:
-            select_vendors.append(False)
-    return select_vendors
+            selected_vendors.append(False)
+    return selected_vendors
 
-def get_select_sub_cats(req, sub_cats):
-    select_sub_cats = []
+def get_selected_sc(req, sub_cats):
+    selected_sc = []
     for sub_cat in sub_cats:
         is_sub_cat_exist = RequestSubCategory.objects.filter(req=req,sub_cat=sub_cat).exists()
         if is_sub_cat_exist:
-            select_sub_cats.append(True)
+            selected_sc.append(True)
         else:
-            select_sub_cats.append(False)
-    return select_sub_cats
+            selected_sc.append(False)
+    return selected_sc
 
 def is_in_section_group(request):
     sgs = SectionGroup.objects.all()
@@ -1707,9 +1716,6 @@ def get_years():
         temp_year = temp_year + 1
         years.append(str(temp_year))
     return years
-
-def get_mc_groups():
-    return []
 
 ##################################### Email ####################################
 

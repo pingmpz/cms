@@ -32,6 +32,7 @@ urlpatterns = [
     path('q_obj/<str:fgroup>&<str:fyear>', views.q_obj, name='q_obj'),
     #-- Master
     path('master_emp/', views.master_emp, name='master_emp'),
+    path('master_mcg/', views.master_mcg, name='master_mcg'),
     path('master_mc/', views.master_mc, name='master_mc'),
     path('master_task/', views.master_task, name='master_task'),
     path('master_ven/', views.master_ven, name='master_ven'),
