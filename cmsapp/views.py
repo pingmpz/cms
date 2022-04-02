@@ -556,12 +556,26 @@ def report_q_obj(request, fmcg, fyear):
     mcs = Machine.objects.filter(mcg=mcg)
     months = ['January', 'February', 'March', 'April', 'May', 'June', 'July','August', 'September', 'October', 'November', 'December']
     req_count = []
+    down_times = []
+    mtbfs = []
+    mttrs = []
     for month in months:
         month_no = months.index(month) + 1
         reqs = Request.objects.filter(mc__in=mcs,type='User Request',status='Complete',sg=sg,request_date__year=fyear,request_date__month=month_no)
+        down_time = 0
         for req in reqs:
-            print(req.req_no)
+            mcdts = MachineDowntime.objects.filter(req=req)
+            for mcdt in mcdts:
+                minutes_diff = (mcdt.stop_datetime - mcdt.start_datetime).total_seconds() / 60.0
+                print(req.req_no, minutes_diff)
+                down_time = down_time + minutes_diff
         req_count.append(reqs.count())
+        down_times.append(down_time)
+        mtbfs.append(0)
+        if reqs.count() != 0:
+            mttrs.append(down_time/reqs.count())
+        else:
+            mttrs.append(0)
     context = {
         'mcgs': mcgs,
         'fmcg': fmcg,
@@ -570,6 +584,9 @@ def report_q_obj(request, fmcg, fyear):
         'fyear': fyear,
         'months': months,
         'req_count': req_count,
+        'down_times': down_times,
+        'mtbfs': mtbfs,
+        'mttrs': mttrs,
     }
     context['all_page_data'] = (all_page_data(request))
     return render(request, 'report_q_obj.html', context)

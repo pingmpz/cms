@@ -79,6 +79,9 @@
                                       <tr>
                                           <th>Month</th>
                                           <th>No of Request</th>
+                                          <th>Downtime (Minutes)</th>
+                                          <th>MTBF</th>
+                                          <th>MTTR</th>
                                       </tr>
                                   </thead>
                                   <tbody>
@@ -86,6 +89,9 @@
                                       <tr>
                                         <td>{{month}}</td>
                                         <td>{{req_count|index:forloop.counter0}}</td>
+                                        <td>{{down_times|index:forloop.counter0}}</td>
+                                        <td>{{mtbfs|index:forloop.counter0}}</td>
+                                        <td>{{mttrs|index:forloop.counter0}}</td>
                                       </tr>
                                       {% endfor %}
                                   </tbody>
