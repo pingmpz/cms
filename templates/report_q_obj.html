@@ -47,6 +47,7 @@
                             <div class="col-12">
                                 <div class="page-title-box">
                                     <div class="page-title-right d-flex">
+                                      <button type="button" class="btn btn-sm btn-warning ms-2" data-bs-toggle="modal" data-bs-target="#edit_tot_modal" title="Edit Total Operation Time"><i class="mdi mdi-calendar-edit"></i></button>
                                       &nbsp;&nbsp;&nbsp;<p class="pt-1 pb-1 mb-0 small">Year</p>&nbsp;&nbsp;&nbsp;
                                       <select class="form-control form-control-sm" id="fyear">
                                         {% for year in years %}
@@ -71,17 +72,24 @@
                           <div class="col-12">
                             <div class="card">
                               <div class="card-body">
-                                <table id="report_table" class="table table-sm nowrap table-responsive row-border order-column w-100 small text-center">
-                                  <thead>
+                                <table id="report_table" class="table table-sm table-bordered w-100 small text-center" style="table-layout:fixed;">
+                                  <thead class="table-dark">
                                       <tr>
-                                          <th colspan="99">Quality Objective {{fyear}} ({{mcg.name}})</th>
+                                          <th colspan="8"><h3>Quality Objective {{fyear}} ({{mcg.name}})</h3></th>
                                       </tr>
                                       <tr>
-                                          <th>Month</th>
-                                          <th>No of Request</th>
-                                          <th>Downtime (Minutes)</th>
-                                          <th>MTBF</th>
-                                          <th>MTTR</th>
+                                          <th rowspan="2">Month</th>
+                                          <th rowspan="2">No of Request</th>
+                                          <th colspan="2">Total Operation Time</th>
+                                          <th colspan="2">Downtime</th>
+                                          <th rowspan="2">MTBF</th>
+                                          <th rowspan="2">MTTR</th>
+                                      </tr>
+                                      <tr>
+                                          <th>Minutes</th>
+                                          <th>Hours</th>
+                                          <th>Minutes</th>
+                                          <th>Hours</th>
                                       </tr>
                                   </thead>
                                   <tbody>
@@ -89,13 +97,19 @@
                                       <tr>
                                         <td>{{month}}</td>
                                         <td>{{req_count|index:forloop.counter0}}</td>
-                                        <td>{{down_times|index:forloop.counter0}}</td>
+                                        <td>0</td>
+                                        <td>0</td>
+                                        <td>{{dt_mins|index:forloop.counter0}}</td>
+                                        <td>{{dt_hrs|index:forloop.counter0}}</td>
                                         <td>{{mtbfs|index:forloop.counter0}}</td>
                                         <td>{{mttrs|index:forloop.counter0}}</td>
                                       </tr>
                                       {% endfor %}
                                   </tbody>
                                 </table>
+                                <p class="m-0 font-12"><u><b>Formula</b></u></p>
+                                <p class="m-0 font-12">MTBF = Total Operation Time (Hour) / No of Request</p>
+                                <p class="m-0 font-12">MTTR = Downtime (Hour) / No of Request</p>
                               </div>
                             </div>
                           </div>
@@ -105,6 +119,53 @@
                     <!-- ========== Footer ========== -->
                     {% include 'footer.html' %}
 
+                </div>
+            </div>
+        </div>
+
+        <!-- Hold -->
+        <div id="edit_tot_modal" class="modal fade" tabindex="-1" role="dialog">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header modal-colored-header bg-warning">
+                        <h4 class="modal-title"><i class="mdi mdi-calendar-edit"></i> Edit Total Operation Time</h4>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                      <input class="form-control" type="text" name="mcg_id" id="mcg_id" value='{{mcg.id}}' hidden>
+                      <div class="mb-3">
+                          <label class="form-label">Year</label>
+                          <input class="form-control" type="text" name="year" id="year" value='{{fyear}}' readonly>
+                      </div>
+
+                      <div class="mb-3">
+                          <label class="form-label">Month</label>
+                          <select class="form-control select2" data-toggle="select2" name="month" id="month">
+                            <option value="1">January</option>
+                            <option value="2">February</option>
+                            <option value="3">March</option>
+                            <option value="4">April</option>
+                            <option value="5">May</option>
+                            <option value="6">June</option>
+                            <option value="7">July</option>
+                            <option value="8">August</option>
+                            <option value="9">September</option>
+                            <option value="10">October</option>
+                            <option value="11">November</option>
+                            <option value="12">December</option>
+                          </select>
+                      </div>
+
+                      <div class="mb-3">
+                          <label class="form-label">Total Operation Time (Minutes)</label>
+                          <input class="form-control" type="text" name="time" id="time">
+                      </div>
+
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-warning" onclick="edit_tot()">Confirm</button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -133,6 +194,37 @@
         <script src="{% static "assets/js/vendor/fixedHeader.bootstrap5.min.js" %}"></script>
 
         <script type="text/javascript">
+          $('#month').select2({
+              dropdownParent: $('#edit_tot_modal')
+          });
+
+          function edit_tot(){
+            var mcg_id = $("#mcg_id").val();
+            var year = $("#year").val();
+            var month = $("#month").val();
+            var time = $("#time").val();
+            if(time.length > 0){
+              $.ajax({
+                url: '/edit_tot/',
+                data: {
+                  'mcg_id': mcg_id,
+                  'year': year,
+                  'month': month,
+                  'time': time,
+                },
+                dataType: 'json',
+                success: function (data) {
+                  location.reload();
+                }
+              });
+            }
+          }
+
+          $("#time").on("keypress keyup blur",function (event) {
+             $(this).val($(this).val().replace(/[^\d].+/, ""));
+             if((event.which < 48 || event.which > 57)) event.preventDefault();
+          });
+
           $('#fmcg').change(function() {
             filter();
           });

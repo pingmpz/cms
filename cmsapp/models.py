@@ -162,3 +162,11 @@ class MachineDowntime(models.Model):
     start_datetime = models.DateTimeField(null=True)
     stop_datetime = models.DateTimeField(null=True)
     date_published = models.DateTimeField(auto_now_add=True)
+
+class TotalOperationTime(models.Model):
+    id = models.AutoField(primary_key=True)
+    mcg = models.ForeignKey(MachineGroup, on_delete=models.CASCADE)
+    year = models.CharField(max_length=4)
+    month = models.CharField(max_length=2)
+    time = models.CharField(max_length=20)
+    date_published = models.DateTimeField(auto_now_add=True)

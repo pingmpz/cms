@@ -26,7 +26,7 @@ import secrets
 # Line Noti
 from django_line_notification.line_notify import Line
 
-from .models import SectionGroup, Employee, MachineGroup, Machine, Task, Vendor, Category, SubCategory, MailGroup, Request, File, Member, RequestVendor, Comment, RequestSubCategory, OperatorWorkingTime, VendorWorkingTime, MachineDowntime
+from .models import SectionGroup, Employee, MachineGroup, Machine, Task, Vendor, Category, SubCategory, MailGroup, Request, File, Member, RequestVendor, Comment, RequestSubCategory, OperatorWorkingTime, VendorWorkingTime, MachineDowntime, TotalOperationTime
 
 HOST_URL = 'http://129.1.100.185:8200/'
 TEMPLATE_REQUEST = 'email_templates/request.html'
@@ -553,24 +553,31 @@ def report_q_obj(request, fmcg, fyear):
     mcs = Machine.objects.filter(mcg=mcg)
     months = ['January', 'February', 'March', 'April', 'May', 'June', 'July','August', 'September', 'October', 'November', 'December']
     req_count = []
-    down_times = []
+    dt_mins = []
+    dt_hrs = []
     mtbfs = []
     mttrs = []
     for month in months:
         month_no = months.index(month) + 1
         reqs = Request.objects.filter(mc__in=mcs,type='User Request',status='Complete',sg=sg,request_date__year=fyear,request_date__month=month_no)
-        down_time = 0
+        req_count.append(reqs.count())
+        # Downtime
+        dt_min = 0
+        dt_hr = 0
         for req in reqs:
             mcdts = MachineDowntime.objects.filter(req=req)
             for mcdt in mcdts:
-                minutes_diff = (mcdt.stop_datetime - mcdt.start_datetime).total_seconds() / 60.0
-                print(req.req_no, minutes_diff)
-                down_time = down_time + minutes_diff
-        req_count.append(reqs.count())
-        down_times.append(down_time)
-        mtbfs.append(0)
+                minutes_diff = (mcdt.stop_datetime - mcdt.start_datetime).total_seconds() / 60
+                hours_diff = (mcdt.stop_datetime - mcdt.start_datetime).total_seconds() / 3600
+                dt_min = dt_min + minutes_diff
+                dt_hr = dt_hr + hours_diff
+        dt_mins.append(int(dt_min))
+        dt_hrs.append(int(dt_hr))
+        # MTBF
+        mtbfs.append('?')
+        # MTTR
         if reqs.count() != 0:
-            mttrs.append(down_time/reqs.count())
+            mttrs.append(int(dt_hr/reqs.count()))
         else:
             mttrs.append(0)
     context = {
@@ -581,7 +588,8 @@ def report_q_obj(request, fmcg, fyear):
         'fyear': fyear,
         'months': months,
         'req_count': req_count,
-        'down_times': down_times,
+        'dt_mins': dt_mins,
+        'dt_hrs': dt_hrs,
         'mtbfs': mtbfs,
         'mttrs': mttrs,
     }
@@ -1490,6 +1498,22 @@ def delete_mcdt(request):
     mcdt_id = request.GET['mcdt_id']
     mcdt = MachineDowntime.objects.get(id=mcdt_id)
     mcdt.delete()
+    data = {
+    }
+    return JsonResponse(data)
+
+def edit_tot(request):
+    mcg_id = request.GET['mcg_id']
+    year = request.GET['year']
+    month = request.GET['month']
+    time = request.GET['time']
+    mcg = MachineGroup.objects.get(id=mcg_id)
+    tot_is_exist = TotalOperationTime.objects.filter(mcg=mcg,year=year,month=month).exists()
+    if tot_is_exist:
+        tot = TotalOperationTime.objects.get(mcg=mcg,year=year,month=month)
+        tot.delete()
+    tot_new = TotalOperationTime(mcg=mcg,year=year,month=month,time=time)
+    tot_new.save()
     data = {
     }
     return JsonResponse(data)

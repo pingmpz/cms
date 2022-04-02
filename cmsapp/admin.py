@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import SectionGroup, Employee, MachineGroup, Machine, Task, Vendor, Category, SubCategory, MailGroup, Request, File, Member, RequestVendor, Comment, RequestSubCategory, OperatorWorkingTime, VendorWorkingTime, MachineDowntime
+from .models import SectionGroup, Employee, MachineGroup, Machine, Task, Vendor, Category, SubCategory, MailGroup, Request, File, Member, RequestVendor, Comment, RequestSubCategory, OperatorWorkingTime, VendorWorkingTime, MachineDowntime, TotalOperationTime
 
 admin.site.register(SectionGroup)
 admin.site.register(Employee)
@@ -19,3 +19,4 @@ admin.site.register(RequestSubCategory)
 admin.site.register(OperatorWorkingTime)
 admin.site.register(VendorWorkingTime)
 admin.site.register(MachineDowntime)
+admin.site.register(TotalOperationTime)
