@@ -562,8 +562,14 @@ def report_q_obj(request, fmcg, fyear):
     for month in months:
         month_no = months.index(month) + 1
         # No of Request
-        reqs = Request.objects.filter(mc__in=mcs,type='User Request',status='Complete',sg=sg,request_date__year=fyear,request_date__month=month_no)
-        req_count.append(reqs.count())
+        reqs = []
+        temp_reqs = Request.objects.filter(mc__in=mcs,type='User Request',status='Complete',sg=sg,request_date__year=fyear,request_date__month=month_no)
+        # Only Request with Downtime
+        for req in temp_reqs:
+            mcdt_is_exist = MachineDowntime.objects.filter(req=req).exists()
+            if mcdt_is_exist:
+                reqs.append(req)
+        req_count.append(len(reqs))
         # TotalOperationTime
         tot_min = 0
         tot_hr = 0
@@ -586,16 +592,16 @@ def report_q_obj(request, fmcg, fyear):
                 dt_hr = dt_hr + hours_diff
         dt_mins.append(int(dt_min))
         dt_hrs.append(int(dt_hr))
-        # MTBF
-        if reqs.count() != 0:
-            mtbfs.append(int(tot_hr/reqs.count()))
-        else:
-            mtbfs.append(0)
         # MTTR
-        if reqs.count() != 0:
-            mttrs.append(int(dt_hr/reqs.count()))
+        if len(reqs):
+            mttrs.append(int(dt_hr/len(reqs)))
         else:
             mttrs.append(0)
+        # MTBF
+        if len(reqs):
+            mtbfs.append(int(tot_hr/len(reqs)))
+        else:
+            mtbfs.append(0)
     context = {
         'mcgs': mcgs,
         'fmcg': fmcg,
@@ -608,8 +614,8 @@ def report_q_obj(request, fmcg, fyear):
         'tot_hrs': tot_hrs,
         'dt_mins': dt_mins,
         'dt_hrs': dt_hrs,
-        'mtbfs': mtbfs,
         'mttrs': mttrs,
+        'mtbfs': mtbfs,
     }
     context['all_page_data'] = (all_page_data(request))
     return render(request, 'report_q_obj.html', context)
