@@ -74,6 +74,11 @@
                                         </div>
 
                                         <div class="mb-3">
+                                            <label class="form-label">Group</label>
+                                            <input class="form-control" type="text" name="group" id="group">
+                                        </div>
+
+                                        <div class="mb-3">
                                             <label class="form-label">Register No</label>
                                             <input class="form-control" type="text" name="register_no" id="register_no">
                                         </div>
@@ -160,7 +165,7 @@
 
           function save(){
             // Clear Validate
-            remove_valids(['mc_no','section','register_no','asset_no','serial_no','manufacture','model','plant','power','install_date','capacity','note']);
+            remove_valids(['mc_no','section','group','register_no','asset_no','serial_no','manufacture','model','plant','power','install_date','capacity','note']);
             set_text_emptys(['invalid_text']);
             // Function
             validate_mc_no(function(result) {

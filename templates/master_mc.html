@@ -61,6 +61,7 @@
                                 <table id="master_table" class="table table-sm nowrap table-responsive row-border order-column w-100 small">
                                   <thead>
                                       <tr>
+                                          <th>Group</th>
                                           <th>Section</th>
                                           <th>Machine & Device No</th>
                                           <th>IsActive</th>
@@ -79,6 +80,7 @@
                                   <tbody>
                                       {% for mc in mcs %}
                                       <tr>
+                                          <td>{{mc.group|default_if_none:""}}</td>
                                           <td>{{mc.section|default_if_none:""}}</td>
                                           <td>{{mc.mc_no|default_if_none:""}}</td>
                                           <td>

@@ -24,6 +24,7 @@ class Employee(models.Model):
 class Machine(models.Model):
     mc_no = models.CharField(max_length=50, primary_key=True)
     section = models.CharField(max_length=50, null=True)
+    group = models.CharField(max_length=50, null=True)
     register_no = models.CharField(max_length=50, null=True)
     asset_no = models.CharField(max_length=50, null=True)
     serial_no = models.CharField(max_length=50, null=True)

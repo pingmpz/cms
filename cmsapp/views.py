@@ -916,6 +916,7 @@ def new_emp_save(request):
 def new_mc_save(request):
     mc_no = request.POST['mc_no'].strip()
     section = request.POST['section'].strip()
+    group = request.POST['group'].strip()
     register_no = request.POST['register_no'].strip()
     asset_no = request.POST['asset_no'].strip()
     serial_no = request.POST['serial_no'].strip()
@@ -926,7 +927,7 @@ def new_mc_save(request):
     install_date = request.POST['install_date'] if request.POST['install_date'] != "" else None
     capacity = request.POST['capacity']
     note = request.POST['note']
-    mc_new = Machine(mc_no=mc_no,section=section,register_no=register_no,asset_no=asset_no,serial_no=serial_no,manufacture=manufacture,model=model,plant=plant,power=power,install_date=install_date,capacity=capacity,note=note)
+    mc_new = Machine(mc_no=mc_no,section=section,group=group,register_no=register_no,asset_no=asset_no,serial_no=serial_no,manufacture=manufacture,model=model,plant=plant,power=power,install_date=install_date,capacity=capacity,note=note)
     mc_new.save()
     return redirect('/new_mc/')
 
