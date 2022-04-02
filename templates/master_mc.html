@@ -144,6 +144,10 @@
             "order": [[ 0, "asc" ]],
             'iDisplayLength': 25,
             "scrollX": true,
+            dom: 'Bfrtip',
+            buttons: [
+                'copy', 'csv', 'excel', 'pdf', 'print'
+            ],
             "drawCallback": function ( settings ) {
                   var api = this.api();
                   var rows = api.rows( {page:'current'} ).nodes();

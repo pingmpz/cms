@@ -9,6 +9,7 @@ from django.contrib.auth.models import User
 from openpyxl import load_workbook, Workbook
 # Date Time
 from datetime import datetime, timedelta
+import time
 # EMAIL
 from django.core.mail import EmailMessage
 from cms.settings import EMAIL_HOST_USER
@@ -310,10 +311,11 @@ def request_pending(request, fsg):
         fsg = request.user.employee.section
     elif fsg == 'MY':
         fsg = 'ALL'
-    if fsg == 'ALL':
-        reqs = Request.objects.filter(status='Pending',type='User Request')
-    else:
-        reqs = Request.objects.filter(status='Pending',type='User Request',sg=fsg)
+
+    reqs = Request.objects.filter(status='Pending',type='User Request')
+    if fsg != 'ALL':
+        reqs = reqs.filter(sg=fsg)
+
     context = {
         'sgs': sgs,
         'fsg': fsg,
@@ -330,10 +332,11 @@ def request_pv_pending(request, fsg):
         fsg = request.user.employee.section
     elif fsg == 'MY':
         fsg = 'ALL'
-    if fsg == 'ALL':
-        reqs = Request.objects.filter(status='Pending',type='Preventive')
-    else:
-        reqs = Request.objects.filter(status='Pending',type='Preventive',sg=fsg)
+
+    reqs = Request.objects.filter(status='Pending',type='Preventive')
+    if fsg != 'ALL':
+        reqs = reqs.filter(sg=fsg)
+
     context = {
         'sgs': sgs,
         'fsg': fsg,
@@ -350,10 +353,11 @@ def request_all(request, fsg):
         fsg = request.user.employee.section
     elif fsg == 'MY':
         fsg = 'ALL'
-    if fsg == 'ALL':
-        reqs = Request.objects.filter(status='On Progress')  | Request.objects.filter(status='On Hold')
-    else:
-        reqs = Request.objects.filter(status='On Progress',sg=fsg)  | Request.objects.filter(status='On Hold',sg=fsg)
+
+    reqs = Request.objects.filter(status='On Progress')  | Request.objects.filter(status='On Hold')
+    if fsg != 'ALL':
+        reqs = reqs.filter(sg=fsg)
+
     is_members = get_is_members(reqs, request)
     has_wts = get_has_wts(reqs)
     has_mcdts = get_has_mcdts(reqs)
@@ -371,7 +375,6 @@ def request_all(request, fsg):
 @login_required(login_url='/')
 def request_history(request, fsg, fstatus, ftype, fstartdate, fstopdate):
     sgs = SectionGroup.objects.all()
-    reqs = []
 
     if fsg == 'MY' and is_in_section_group(request):
         fsg = request.user.employee.section
@@ -388,28 +391,14 @@ def request_history(request, fsg, fstatus, ftype, fstartdate, fstopdate):
     if fstopdate == "TODAY":
         fstopdate = datetime.today().strftime('%Y-%m-%d')
 
-    if fsg == 'ALL':
-        if fstatus == 'ALL':
-            if ftype == 'ALL':
-                reqs = Request.objects.filter(status='Rejected',finish_datetime__date__range=[fstartdate, fstopdate])  | Request.objects.filter(status='Complete',finish_datetime__date__range=[fstartdate, fstopdate]) | Request.objects.filter(status='Canceled',finish_datetime__date__range=[fstartdate, fstopdate])
-            else:
-                reqs = Request.objects.filter(status='Rejected',type=type,finish_datetime__date__range=[fstartdate, fstopdate])  | Request.objects.filter(status='Complete',type=type,finish_datetime__date__range=[fstartdate, fstopdate]) | Request.objects.filter(status='Canceled',type=type,finish_datetime__date__range=[fstartdate, fstopdate])
-        else:
-            if ftype == 'ALL':
-                reqs = Request.objects.filter(status=status,finish_datetime__date__range=[fstartdate, fstopdate])
-            else:
-                reqs = Request.objects.filter(status=status,type=type,finish_datetime__date__range=[fstartdate, fstopdate])
-    else:
-        if fstatus == 'ALL':
-            if ftype == 'ALL':
-                reqs = Request.objects.filter(status='Rejected',sg=fsg,finish_datetime__date__range=[fstartdate, fstopdate])  | Request.objects.filter(status='Complete',sg=fsg,finish_datetime__date__range=[fstartdate, fstopdate]) | Request.objects.filter(status='Canceled',sg=fsg,finish_datetime__date__range=[fstartdate, fstopdate])
-            else:
-                reqs = Request.objects.filter(status='Rejected',type=type,sg=fsg,finish_datetime__date__range=[fstartdate, fstopdate])  | Request.objects.filter(status='Complete',type=type,sg=fsg,finish_datetime__date__range=[fstartdate, fstopdate]) | Request.objects.filter(status='Canceled',type=type,sg=fsg,finish_datetime__date__range=[fstartdate, fstopdate])
-        else:
-            if ftype == 'ALL':
-                reqs = Request.objects.filter(status=status,sg=fsg,finish_datetime__date__range=[fstartdate, fstopdate])
-            else:
-                reqs = Request.objects.filter(status=status,type=type,sg=fsg,finish_datetime__date__range=[fstartdate, fstopdate])
+    reqs = Request.objects.filter(status='Rejected',finish_datetime__date__range=[fstartdate, fstopdate]) | Request.objects.filter(status='Complete',finish_datetime__date__range=[fstartdate, fstopdate]) | Request.objects.filter(status='Canceled',finish_datetime__date__range=[fstartdate, fstopdate])
+    if fsg != 'ALL':
+        reqs = reqs.filter(sg=fsg)
+    if fstatus != 'ALL':
+        reqs = reqs.filter(status=status)
+    if ftype != 'ALL':
+        reqs = reqs.filter(type=type)
+
     is_members = get_is_members(reqs, request)
     has_wts = get_has_wts(reqs)
     has_mcdts = get_has_mcdts(reqs)
