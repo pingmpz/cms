@@ -651,7 +651,9 @@ def new_emp(request):
 
 @login_required(login_url='/')
 def new_mc(request):
+    mcgs = MachineGroup.objects.all()
     context = {
+        'mcgs': mcgs,
     }
     context['all_page_data'] = (all_page_data(request))
     return render(request, 'new_mc.html', context)
@@ -708,11 +710,13 @@ def edit_mc(request, fmc):
     if fmc == 'FIRST':
         fmc = mcs[0].mc_no
     mc = Machine.objects.get(mc_no=fmc)
+    mcgs = MachineGroup.objects.all()
     context = {
         'fmc': fmc,
         'mcs': mcs,
         'set_mc': set_mc,
         'mc': mc,
+        'mcgs': mcgs,
     }
     context['all_page_data'] = (all_page_data(request))
     return render(request, 'edit_mc.html', context)
@@ -939,7 +943,7 @@ def new_emp_save(request):
 def new_mc_save(request):
     mc_no = request.POST['mc_no'].strip()
     section = request.POST['section'].strip()
-    group = request.POST['group'].strip()
+    mcg_id = request.POST['mcg_id']
     register_no = request.POST['register_no'].strip()
     asset_no = request.POST['asset_no'].strip()
     serial_no = request.POST['serial_no'].strip()
@@ -947,10 +951,13 @@ def new_mc_save(request):
     model = request.POST['model'].strip()
     plant = request.POST['plant'].strip()
     power = request.POST['power'].strip()
+    mcg = None
+    if mcg_id != '-1':
+        mcg = MachineGroup.objects.get(id=mcg_id)
     install_date = request.POST['install_date'] if request.POST['install_date'] != "" else None
     capacity = request.POST['capacity']
     note = request.POST['note']
-    mc_new = Machine(mc_no=mc_no,section=section,group=group,register_no=register_no,asset_no=asset_no,serial_no=serial_no,manufacture=manufacture,model=model,plant=plant,power=power,install_date=install_date,capacity=capacity,note=note)
+    mc_new = Machine(mc_no=mc_no,section=section,mcg=mcg,register_no=register_no,asset_no=asset_no,serial_no=serial_no,manufacture=manufacture,model=model,plant=plant,power=power,install_date=install_date,capacity=capacity,note=note)
     mc_new.save()
     return redirect('/new_mc/')
 
@@ -1001,7 +1008,7 @@ def new_mg_save(request):
 def edit_mc_save(request):
     is_active = True if request.POST.get('is_active', False) == 'on' else False
     mc_no = request.POST['mc_no']
-    group = request.POST['group'].strip()
+    mcg_id = request.POST['mcg_id']
     register_no = request.POST['register_no'].strip()
     asset_no = request.POST['asset_no'].strip()
     serial_no = request.POST['serial_no'].strip()
@@ -1012,9 +1019,12 @@ def edit_mc_save(request):
     install_date = request.POST['install_date'] if request.POST['install_date'] != "" else None
     capacity = request.POST['capacity']
     note = request.POST['note']
+    mcg = None
+    if mcg_id != '-1':
+        mcg = MachineGroup.objects.get(id=mcg_id)
     mc = Machine.objects.get(mc_no=mc_no)
     mc.is_active = is_active
-    mc.group = group
+    mc.mcg = mcg
     mc.register_no = register_no
     mc.asset_no = asset_no
     mc.serial_no = serial_no

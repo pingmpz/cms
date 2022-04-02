@@ -97,8 +97,13 @@
                                         </div>
 
                                         <div class="mb-3">
-                                            <label class="form-label">Group</label>
-                                            <input class="form-control" type="text" name="group" id="group" value='{{mc.group|default_if_none:""}}'>
+                                            <label class="form-label">Machine Group</label>
+                                            <select class="form-control select2" data-toggle="select2" name="mcg_id" id="mcg_id">
+                                              <option value="-1">No Select</option>
+                                              {% for mcg in mcgs %}
+                                              <option value="{{mcg.id}}" {% if mc.mcg == mcg %}selected{% endif %}>{{mcg.name}}</option>
+                                              {% endfor %}
+                                            </select>
                                         </div>
 
                                         <div class="mb-3">

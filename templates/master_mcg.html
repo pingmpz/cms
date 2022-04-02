@@ -4,7 +4,7 @@
 <html lang="en">
     <head>
         <meta charset="utf-8" />
-        <title>Category Master | C.C.S. Maintenance Service</title>
+        <title>Machine Group Master | C.C.S. Maintenance Service</title>
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <meta content="A fully featured admin theme which can be used to build CRM, CMS, etc." name="description" />
         <meta content="Coderthemes" name="author" />
@@ -48,7 +48,7 @@
                                     <div class="page-title-right d-flex">
                                         <button type="button" class="btn btn-sm btn-link py-0" style="height:30px" onclick="window.scrollTo(0,document.body.scrollHeight);"><i class='mdi mdi-chevron-double-down'></i></a>
                                     </div>
-                                    <h4 class="page-title"><i class="uil-database"></i> Category Master ({{cats|length}})</h4>
+                                    <h4 class="page-title"><i class="uil-database"></i> Machine Group Master ({{mcgs|length}})</h4>
                                 </div>
                             </div>
                         </div>
@@ -66,10 +66,10 @@
                                       </tr>
                                   </thead>
                                   <tbody>
-                                      {% for cat in cats %}
+                                      {% for mcg in mcgs %}
                                       <tr>
-                                          <td {% if not request.user.is_superuser %}hidden{% endif %}>{{cat.id}}</td>
-                                          <td>{{cat.name}}</td>
+                                          <td {% if not request.user.is_superuser %}hidden{% endif %}>{{mcg.id}}</td>
+                                          <td>{{mcg.name}}</td>
                                       </tr>
                                       {% endfor %}
                                   </tbody>

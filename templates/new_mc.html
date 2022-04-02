@@ -74,8 +74,13 @@
                                         </div>
 
                                         <div class="mb-3">
-                                            <label class="form-label">Group</label>
-                                            <input class="form-control" type="text" name="group" id="group">
+                                            <label class="form-label">Machine Group</label>
+                                            <select class="form-control select2" data-toggle="select2" name="mcg_id" id="mcg_id">
+                                              <option value="-1">No Select</option>
+                                              {% for mcg in mcgs %}
+                                              <option value="{{mcg.id}}">{{mcg.name}}</option>
+                                              {% endfor %}
+                                            </select>
                                         </div>
 
                                         <div class="mb-3">
@@ -165,7 +170,7 @@
 
           function save(){
             // Clear Validate
-            remove_valids(['mc_no','section','group','register_no','asset_no','serial_no','manufacture','model','plant','power','install_date','capacity','note']);
+            remove_valids(['mc_no','section','register_no','asset_no','serial_no','manufacture','model','plant','power','install_date','capacity','note']);
             set_text_emptys(['invalid_text']);
             // Function
             validate_mc_no(function(result) {
