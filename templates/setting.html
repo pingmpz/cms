@@ -173,11 +173,11 @@
                                               <select class="select2 form-control" name="reset_password_username" id="reset_password_username">
                                                   <option>Select</option>
                                                   {% for user in users %}
-                                                  {% if user_group|index:forloop.counter0 != None %}
-                                                  <optgroup label="{{user_group|index:forloop.counter0}}">
+                                                  {% if set_user|index:forloop.counter0 != None %}
+                                                  <optgroup label="{{set_user|index:forloop.counter0}}">
                                                   {% endif %}
                                                   <option value="{{user.username}}">▪️ {{user.username}} | {{user.employee.name|title}} {% if user.is_active %}✔{% else %}✘{% endif %}</option>
-                                                  {% if user_group|index:forloop.counter1 != None %}
+                                                  {% if set_user|index:forloop.counter1 != None %}
                                                   </optgroup>
                                                   {% endif %}
                                                   {% endfor %}

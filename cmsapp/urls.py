@@ -76,7 +76,7 @@ urlpatterns = [
     path('validate_vendor_code/', views.validate_vendor_code, name='validate_vendor_code'),
     path('validate_category_name/', views.validate_category_name, name='validate_category_name'),
     path('validate_sub_category_name/', views.validate_sub_category_name, name='validate_sub_category_name'),
-    path('validate_user_in_mailgroup/', views.validate_user_in_mailgroup, name='validate_user_in_mailgroup'),
+    path('validate_user_in_mail_group/', views.validate_user_in_mail_group, name='validate_user_in_mail_group'),
     path('find_emp_info/', views.find_emp_info, name='find_emp_info'),
     #-- Request Page
     path('accept_request/', views.accept_request, name='accept_request'),

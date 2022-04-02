@@ -92,13 +92,13 @@ def setting(request):
     # upload_vendor()
     # upload_ma_pm()
     users = []
-    user_group = []
+    set_user = []
     if request.user.is_superuser or request.user.is_staff:
         users = sort_user_by_section(User.objects.all())
-        user_group = get_set_user(users)
+        set_user = get_set_user(users)
     context = {
         'users': users,
-        'user_group': user_group,
+        'set_user': set_user,
     }
     context['all_page_data'] = (all_page_data(request))
     return render(request, 'setting.html', context)
@@ -125,14 +125,14 @@ def new_pv_request(request):
     mcs = Machine.objects.filter(is_active=True).order_by('section')
     tasks = Task.objects.filter(is_active=True).order_by('type')
     set_mc = get_set_mc(mcs)
-    task_group = get_set_task(tasks)
+    set_task = get_set_task(tasks)
     token = secrets.token_urlsafe(16)
     context = {
         'sgs': sgs,
         'mcs': mcs,
         'tasks': tasks,
         'set_mc': set_mc,
-        'task_group': task_group,
+        'set_task': set_task,
         'token': token,
     }
     context['all_page_data'] = (all_page_data(request))
@@ -163,7 +163,7 @@ def request_page(request, request_no):
     req_vens = [] # RequestVendor
     comments = [] # Comment
     req_sub_cats = [] # RequestSubCategory
-    req_sub_cat_group = [] # RequestSubCategory Group (Category)
+    set_rsc = [] # RequestSubCategory Group (Category)
     files = [] # Files
     owts = [] # OperatorWorkTime
     vwts = [] # VendorWorkingTime
@@ -177,8 +177,8 @@ def request_page(request, request_no):
     sub_cats = [] # All Available SubCategory
 
     set_mc = [] # Machine Group (Section)
-    user_group = [] # User Group (Section)
-    sub_cat_group = [] # SubCategory Group (Category)
+    set_user = [] # User Group (Section)
+    set_sc = [] # SubCategory Group (Category)
 
     select_members = [] # For Manage Member
     select_vendors = [] # For Manage Vendor
@@ -191,7 +191,7 @@ def request_page(request, request_no):
         req_vens = RequestVendor.objects.filter(req=req)
         comments = Comment.objects.filter(req=req).order_by('-date_published')
         req_sub_cats = RequestSubCategory.objects.filter(req=req)
-        req_sub_cat_group = get_set_req_sub_cat(req_sub_cats)
+        set_rsc = get_set_rsc(req_sub_cats)
         files = File.objects.filter(req=req)
         owts = OperatorWorkingTime.objects.filter(req=req).order_by('-start_datetime')
         vwts = VendorWorkingTime.objects.filter(req=req).order_by('-start_datetime')
@@ -204,8 +204,8 @@ def request_page(request, request_no):
         vens = Vendor.objects.filter(is_active=True)
         sub_cats = SubCategory.objects.all().order_by('cat')
         set_mc = get_set_mc(mcs)
-        user_group = get_set_user(users)
-        sub_cat_group = get_set_sub_cat(sub_cats)
+        set_user = get_set_user(users)
+        set_sc = get_set_sc(sub_cats)
         select_members = get_select_members(req, users)
         select_vendors = get_select_vendors(req, vens)
         select_sub_cats = get_select_sub_cats(req, sub_cats)
@@ -219,7 +219,7 @@ def request_page(request, request_no):
         'req_vens': req_vens,
         'comments': comments,
         'req_sub_cats': req_sub_cats,
-        'req_sub_cat_group': req_sub_cat_group,
+        'set_rsc': set_rsc,
         'files': files,
         'owts': owts,
         'vwts': vwts,
@@ -231,8 +231,8 @@ def request_page(request, request_no):
         'vens': vens,
         'sub_cats': sub_cats,
         'set_mc': set_mc,
-        'user_group': user_group,
-        'sub_cat_group': sub_cat_group,
+        'set_user': set_user,
+        'set_sc': set_sc,
         'select_members': select_members,
         'select_vendors': select_vendors,
         'select_sub_cats': select_sub_cats,
@@ -681,11 +681,11 @@ def new_sub_cat(request):
 def new_mg(request):
     sgs = SectionGroup.objects.all()
     users = sort_user_by_section(User.objects.all())
-    user_group = get_set_user(users)
+    set_user = get_set_user(users)
     context = {
         'sgs': sgs,
         'users': users,
-        'user_group': user_group,
+        'set_user': set_user,
     }
     context['all_page_data'] = (all_page_data(request))
     return render(request, 'new_mg.html', context)
@@ -711,14 +711,14 @@ def edit_mc(request, fmc):
 @login_required(login_url='/')
 def edit_task(request, ftask):
     tasks = Task.objects.all().order_by('type')
-    task_group = get_set_task(tasks)
+    set_task = get_set_task(tasks)
     if ftask == 'FIRST':
         ftask = tasks[0].id
     task = Task.objects.get(id=ftask)
     context = {
         'ftask': ftask,
         'tasks': tasks,
-        'task_group': task_group,
+        'set_task': set_task,
         'task': task,
     }
     context['all_page_data'] = (all_page_data(request))
@@ -810,8 +810,8 @@ def new_request_save(request):
         print('Path Not Found')
     #-- Email
     subject = '[CMS] New Request #' + request_new.req_no
-    send_to = get_set_mail_group(sg, False)
-    cc_to = get_set_mail_group(sg, True)
+    send_to = get_mail_group(sg, False)
+    cc_to = get_mail_group(sg, True)
     if cc_to_me:
         cc_to.append(request_new.email)
     email_template = get_template(TEMPLATE_REQUEST)
@@ -1138,7 +1138,7 @@ def validate_sub_category_name(request):
     }
     return JsonResponse(data)
 
-def validate_user_in_mailgroup(request):
+def validate_user_in_mail_group(request):
     sg_name = request.GET['sg_name']
     username = request.GET['username']
     canUse = True
@@ -1214,8 +1214,8 @@ def reject_request(request):
         req.sg = sg
         #-- Email
         subject = '[CMS] New Request #' + req.req_no
-        send_to = get_set_mail_group(sg, False)
-        cc_to = get_set_mail_group(sg, True)
+        send_to = get_mail_group(sg, False)
+        cc_to = get_mail_group(sg, True)
         email_template = get_template(TEMPLATE_REQUEST)
         email_content = email_template.render({
             'type' : 'New Request',
@@ -1570,50 +1570,50 @@ def get_set_mc(mcs):
     return set_mc
 
 def get_set_task(tasks):
-    task_group = []
+    set_task = []
     temp = ""
     for task in tasks:
         if temp != task.type:
             temp = task.type
-            task_group.append(task.type)
+            set_task.append(task.type)
         else:
-            task_group.append(None)
-    return task_group
+            set_task.append(None)
+    return set_task
 
 def get_set_user(users):
-    user_group = []
+    set_user = []
     temp = ""
     for user in users:
         if temp != user.employee.section:
             temp = user.employee.section
-            user_group.append(user.employee.section)
+            set_user.append(user.employee.section)
         else:
-            user_group.append(None)
-    return user_group
+            set_user.append(None)
+    return set_user
 
-def get_set_sub_cat(sub_cats):
-    sub_cat_group = []
+def get_set_sc(sub_cats):
+    set_sc = []
     temp = ""
     for sub_cat in sub_cats:
         if temp != sub_cat.cat.name:
             temp = sub_cat.cat.name
-            sub_cat_group.append(sub_cat.cat.name)
+            set_sc.append(sub_cat.cat.name)
         else:
-            sub_cat_group.append(None)
-    return sub_cat_group
+            set_sc.append(None)
+    return set_sc
 
-def get_set_req_sub_cat(req_sub_cats):
-    req_sub_cat_group = []
+def get_set_rsc(req_sub_cats):
+    set_rsc = []
     temp = ""
     for req_sub_cat in req_sub_cats:
         if temp != req_sub_cat.sub_cat.cat.name:
             temp = req_sub_cat.sub_cat.cat.name
-            req_sub_cat_group.append(req_sub_cat.sub_cat.cat.name)
+            set_rsc.append(req_sub_cat.sub_cat.cat.name)
         else:
-            req_sub_cat_group.append(None)
-    return req_sub_cat_group
+            set_rsc.append(None)
+    return set_rsc
 
-def get_set_mail_group(sg, is_cc):
+def get_mail_group(sg, is_cc):
     list = []
     mgs = MailGroup.objects.filter(sg=sg,is_cc=is_cc)
     for mg in mgs:
@@ -1708,7 +1708,7 @@ def get_years():
         years.append(str(temp_year))
     return years
 
-def get_groups():
+def get_mc_groups():
     return []
 
 ##################################### Email ####################################

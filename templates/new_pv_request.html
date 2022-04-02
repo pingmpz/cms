@@ -99,11 +99,11 @@
                                                   <label class="form-label">Task <i class="mdi mdi-asterisk text-danger small"></i></label>
                                                   <select class="form-control select2" data-toggle="select2" name="task_id" id="task_id">
                                                     {% for task in tasks %}
-                                                    {% if task_group|index:forloop.counter0 != None %}
-                                                    <optgroup label="{{task_group|index:forloop.counter0}}">
+                                                    {% if set_task|index:forloop.counter0 != None %}
+                                                    <optgroup label="{{set_task|index:forloop.counter0}}">
                                                     {% endif %}
                                                     <option value="{{task.id}}">▪️ {{task.name}}</option>
-                                                    {% if task_group|index:forloop.counter1 != None %}
+                                                    {% if set_task|index:forloop.counter1 != None %}
                                                     </optgroup>
                                                     {% endif %}
                                                     {% endfor %}

@@ -77,11 +77,11 @@
                                         <label class="form-label">User <i class="mdi mdi-asterisk text-danger small"></i></label>
                                         <select class="select2 form-control" data-toggle="select2" name="username" id="username">
                                             {% for user in users %}
-                                            {% if user_group|index:forloop.counter0 != None %}
-                                            <optgroup label="{{user_group|index:forloop.counter0}}">
+                                            {% if set_user|index:forloop.counter0 != None %}
+                                            <optgroup label="{{set_user|index:forloop.counter0}}">
                                             {% endif %}
                                             <option value="{{user.username}}">▪️ {{user.username}} | {{user.employee.name|title}} [{{user.email}}] </option>
-                                            {% if user_group|index:forloop.counter1 != None %}
+                                            {% if set_user|index:forloop.counter1 != None %}
                                             </optgroup>
                                             {% endif %}
                                             {% endfor %}
@@ -127,7 +127,7 @@
             remove_valids(['sg_name','username']);
             set_text_emptys(['invalid_text']);
             // Function
-            validate_user_in_mailgroup(function(result) {
+            validate_user_in_mail_group(function(result) {
               if(result){
                 document.getElementById('form').submit();
                 $('#save_button').prop('disabled', true);
@@ -135,11 +135,11 @@
             });
           }
 
-          function validate_user_in_mailgroup(_callback){
+          function validate_user_in_mail_group(_callback){
             var sg_name = $('#sg_name').val();
             var username = $('#username').val();
             $.ajax({
-              url: '/validate_user_in_mailgroup/',
+              url: '/validate_user_in_mail_group/',
               data: {
                 'sg_name': sg_name,
                 'username': username,

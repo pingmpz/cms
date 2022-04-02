@@ -51,11 +51,11 @@
                                       <div style="width:100%">
                                         <select class="form-control form-control-sm" name="ftask" id="ftask">
                                           {% for itask in tasks %}
-                                          {% if task_group|index:forloop.counter0 != None %}
-                                          <optgroup label="{{task_group|index:forloop.counter0}}">
+                                          {% if set_task|index:forloop.counter0 != None %}
+                                          <optgroup label="{{set_task|index:forloop.counter0}}">
                                           {% endif %}
                                           <option value="{{itask.id}}" {% if ftask == itask.id|intcomma %}selected{% endif %}>▪️ {{itask.name}}</option>
-                                          {% if task_group|index:forloop.counter1 != None %}
+                                          {% if set_task|index:forloop.counter1 != None %}
                                           </optgroup>
                                           {% endif %}
                                           {% endfor %}

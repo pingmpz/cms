@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+set_user<!DOCTYPE html>
 {% load static %}
 {% load extra %}
 
@@ -150,8 +150,8 @@
                                         </div>
                                         <h4 class="header-title mb-3">Category {% if req_sub_cats %}({{req_sub_cats|length}}){% endif %}</h4>
                                         {% for req_sub_cat in req_sub_cats %}
-                                        {% if req_sub_cat_group|index:forloop.counter0 != None %}
-                                        <div class="d-flex mt-2"><i class="mdi mdi-label text-info"></i>&nbsp;&nbsp;&nbsp;{{req_sub_cat_group|index:forloop.counter0}}</div>
+                                        {% if set_rsc|index:forloop.counter0 != None %}
+                                        <div class="d-flex mt-2"><i class="mdi mdi-label text-info"></i>&nbsp;&nbsp;&nbsp;{{set_rsc|index:forloop.counter0}}</div>
                                         {% endif %}
                                         <div class="d-flex mt-1 font-12">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;▪️&nbsp;&nbsp;&nbsp;{{req_sub_cat.sub_cat.name|title}} {% if request.user.is_superuser %}[{{req_sub_cat.id}}]{% endif %}</div>
                                         {% endfor %}
@@ -832,11 +832,11 @@
                             <p class="text-muted font-12">Use 'CTRL' to select multiple item, Please select at least 1 person.</p>
                             <select class="select2 form-control select2-multiple" data-toggle="select2" multiple="multiple" data-placeholder="Choose ..." id="accept_username_list">
                                 {% for user in users %}
-                                {% if user_group|index:forloop.counter0 != None %}
-                                <optgroup label="{{user_group|index:forloop.counter0}}">
+                                {% if set_user|index:forloop.counter0 != None %}
+                                <optgroup label="{{set_user|index:forloop.counter0}}">
                                 {% endif %}
                                 <option value="{{user.username}}" {% if request.user == user and request.user.employee.auto_add %}selected{% endif %}>▪️ {{user.username}} | {{user.employee.name|title}}</option>
-                                {% if user_group|index:forloop.counter1 != None %}
+                                {% if set_user|index:forloop.counter1 != None %}
                                 </optgroup>
                                 {% endif %}
                                 {% endfor %}
@@ -856,11 +856,11 @@
                             <p class="text-muted font-12">Use 'CTRL' to select multiple item</p>
                             <select class="select2 form-control select2-multiple" data-toggle="select2" multiple="multiple" data-placeholder="Choose ..." id="accept_sub_cat_id_list">
                                 {% for sub_cat in sub_cats %}
-                                {% if sub_cat_group|index:forloop.counter0 != None %}
-                                <optgroup label="{{sub_cat_group|index:forloop.counter0}}">
+                                {% if set_sc|index:forloop.counter0 != None %}
+                                <optgroup label="{{set_sc|index:forloop.counter0}}">
                                 {% endif %}
                                 <option value="{{sub_cat.id}}">▪️ {{sub_cat.name|title}}</option>
-                                {% if sub_cat_group|index:forloop.counter1 != None %}
+                                {% if set_sc|index:forloop.counter1 != None %}
                                 </optgroup>
                                 {% endif %}
                                 {% endfor %}
@@ -1020,11 +1020,11 @@
                             <p class="text-muted font-12">Use 'CTRL' to select multiple item, Please select at least 1 person.</p>
                             <select class="select2 form-control select2-multiple" data-toggle="select2" multiple="multiple" data-placeholder="Choose ..." id="mm_username_list">
                                 {% for user in users %}
-                                {% if user_group|index:forloop.counter0 != None %}
-                                <optgroup label="{{user_group|index:forloop.counter0}}">
+                                {% if set_user|index:forloop.counter0 != None %}
+                                <optgroup label="{{set_user|index:forloop.counter0}}">
                                 {% endif %}
                                 <option value="{{user.username}}" {% if select_members|index:forloop.counter0 %}selected{% endif %}>{{user.username}} | {{user.employee.name|title}}</option>
-                                {% if user_group|index:forloop.counter1 != None %}
+                                {% if set_user|index:forloop.counter1 != None %}
                                 </optgroup>
                                 {% endif %}
                                 {% endfor %}
@@ -1084,11 +1084,11 @@
                             <p class="text-muted font-12">Use 'CTRL' to select multiple item</p>
                             <select class="select2 form-control select2-multiple" data-toggle="select2" multiple="multiple" data-placeholder="Choose ..." id="mc_sub_cat_id_list">
                                 {% for sub_cat in sub_cats %}
-                                {% if sub_cat_group|index:forloop.counter0 != None %}
-                                <optgroup label="{{sub_cat_group|index:forloop.counter0}}">
+                                {% if set_sc|index:forloop.counter0 != None %}
+                                <optgroup label="{{set_sc|index:forloop.counter0}}">
                                 {% endif %}
                                 <option value="{{sub_cat.id}}" {% if select_sub_cats|index:forloop.counter0 %}selected{% endif %}>▪️ {{sub_cat.name|title}}</option>
-                                {% if sub_cat_group|index:forloop.counter1 != None %}
+                                {% if set_sc|index:forloop.counter1 != None %}
                                 </optgroup>
                                 {% endif %}
                                 {% endfor %}
