@@ -29,7 +29,7 @@ urlpatterns = [
     path('request_history/<str:fsg>&<str:fstatus>&<str:ftype>&<str:fstartdate>&<str:fstopdate>', views.request_history, name='request_history'),
     #-- Report
     path('summary/<str:fsg>', views.summary, name='summary'),
-    path('q_obj/<str:fgroup>&<str:fyear>', views.q_obj, name='q_obj'),
+    path('report_q_obj/<str:fmcg>&<str:fyear>', views.report_q_obj, name='report_q_obj'),
     #-- Master
     path('master_emp/', views.master_emp, name='master_emp'),
     path('master_mcg/', views.master_mcg, name='master_mcg'),

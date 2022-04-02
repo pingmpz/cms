@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+{% load static %}
+{% load extra %}
+
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <title>Quality Objective (MA) | C.C.S. Maintenance Service</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta content="A fully featured admin theme which can be used to build CRM, CMS, etc." name="description" />
+        <meta content="Coderthemes" name="author" />
+        <!-- App favicon -->
+        <link rel="shortcut icon" href="assets/images/favicon.ico">
+
+        <!-- App css -->
+        <link href="{% static "assets/css/icons.min.css" %}" rel="stylesheet" type="text/css" />
+        <link href="{% static "assets/css/app-modern.min.css" %}" rel="stylesheet" type="text/css" id="light-style" />
+        <link href="{% static "assets/css/app-modern-dark.min.css" %}" rel="stylesheet" type="text/css" id="dark-style" />
+
+        <!-- DataTable css -->
+        <link href="{% static "assets/css/vendor/dataTables.bootstrap5.css" %}" rel="stylesheet" type="text/css" />
+        <link href="{% static "assets/css/vendor/responsive.bootstrap5.css" %}" rel="stylesheet" type="text/css" />
+        <link href="{% static "assets/css/vendor/buttons.bootstrap5.css" %}" rel="stylesheet" type="text/css" />
+        <link href="{% static "assets/css/vendor/select.bootstrap5.css" %}" rel="stylesheet" type="text/css" />
+        <link href="{% static "assets/css/vendor/fixedHeader.bootstrap5.css" %}" rel="stylesheet" type="text/css" />
+        <!-- <link href="{% static "assets/css/vendor/fixedColumns.bootstrap5.css" %}" rel="stylesheet" type="text/css" /> -->
+
+    </head>
+
+    <body class="loading" data-layout="detached" data-layout-config='{"leftSidebarCondensed":{% if request.user.employee.sidebar == 'Condensed' %}true{% else %}false{% endif %},"darkMode":{% if request.user.employee.scheme == 'Dark Mode' %}true{% else %}false{% endif %}, "showRightSidebarOnStart":false}'>
+
+        <!-- ========== Header Bar ========== -->
+        {% include 'header.html' %}
+
+        <div class="container-fluid">
+            <div class="wrapper">
+
+                <!-- ========== Left Sidebar ========== -->
+                {% include 'sidebar.html' %}
+
+                <!-- ========== Page Content ========== -->
+                <div class="content-page">
+                    <div class="content">
+
+                        <!-- ========== Inner Top Bar ========== -->
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="page-title-box">
+                                    <div class="page-title-right d-flex">
+                                      &nbsp;&nbsp;&nbsp;<p class="pt-1 pb-1 mb-0 small">Year</p>&nbsp;&nbsp;&nbsp;
+                                      <select class="form-control form-control-sm" id="fyear">
+                                        {% for year in years %}
+                                        <option value="{{year}}" {% if fyear == year %}selected{% endif %}>{{year}}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</option>
+                                        {% endfor %}
+                                      </select>
+                                      &nbsp;&nbsp;&nbsp;<p class="pt-1 pb-1 mb-0 small">Machine&nbsp;Group</p>&nbsp;&nbsp;&nbsp;
+                                      <select class="form-control form-control-sm" id="fmcg">
+                                          {% for mcg in mcgs %}
+                                          <option value="{{mcg.id}}" {% if fmcg|add:"0" == mcg.id %}selected{% endif %}>{{mcg.name}}</option>
+                                          {% endfor %}
+                                      </select>
+                                      <button type="button" class="btn btn-sm btn-link py-0" style="height:30px" onclick="window.scrollTo(0,document.body.scrollHeight);"><i class='mdi mdi-chevron-double-down'></i></a>
+                                    </div>
+                                    <h4 class="page-title"><i class="mdi mdi-podium-gold"></i> Quality Objective (MA)</h4>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- ========== Main Content ========== -->
+                        <div class="row">
+                          <div class="col-12">
+                            <div class="card">
+                              <div class="card-body">
+
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                    </div>
+
+                    <!-- ========== Footer ========== -->
+                    {% include 'footer.html' %}
+
+                </div>
+            </div>
+        </div>
+
+        <!-- ========== Right Side Bar ========== -->
+
+
+        <!-- bundle -->
+        <script src="{% static "assets/js/vendor.min.js" %}"></script>
+        <script src="{% static "assets/js/app.min.js" %}"></script>
+        <script src="{% static "custom/custom.js" %}"></script>
+        <script src="{% static "custom/topsearch.js" %}"></script>
+        <!-- DataTable -->
+        <script src="{% static "assets/js/vendor/jquery.dataTables.min.js" %}"></script>
+        <script src="{% static "assets/js/vendor/dataTables.bootstrap5.js" %}"></script>
+        <script src="{% static "assets/js/vendor/dataTables.responsive.min.js" %}"></script>
+        <script src="{% static "assets/js/vendor/responsive.bootstrap5.min.js" %}"></script>
+        <script src="{% static "assets/js/vendor/dataTables.buttons.min.js" %}"></script>
+        <script src="{% static "assets/js/vendor/buttons.bootstrap5.min.js" %}"></script>
+        <script src="{% static "assets/js/vendor/buttons.html5.min.js" %}"></script>
+        <script src="{% static "assets/js/vendor/buttons.flash.min.js" %}"></script>
+        <script src="{% static "assets/js/vendor/buttons.print.min.js" %}"></script>
+        <script src="{% static "assets/js/vendor/dataTables.keyTable.min.js" %}"></script>
+        <script src="{% static "assets/js/vendor/dataTables.select.min.js" %}"></script>
+        <script src="{% static "assets/js/vendor/fixedColumns.bootstrap5.min.js" %}"></script>
+        <script src="{% static "assets/js/vendor/fixedHeader.bootstrap5.min.js" %}"></script>
+
+        <script type="text/javascript">
+          $('#fmcg').change(function() {
+            filter();
+          });
+
+          $('#fyear').change(function() {
+            filter();
+          });
+
+          function filter(){
+            var fmcg = $("#fmcg").val();
+            var fyear = $("#fyear").val();
+            window.location.href = "/report_q_obj/" + fmcg + "&" + fyear;
+          }
+        </script>
+
+    </body>
+</html>

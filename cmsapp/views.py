@@ -375,7 +375,6 @@ def request_all(request, fsg):
 @login_required(login_url='/')
 def request_history(request, fsg, fstatus, ftype, fstartdate, fstopdate):
     sgs = SectionGroup.objects.all()
-
     if fsg == 'MY' and is_in_section_group(request):
         fsg = request.user.employee.section
     elif fsg == 'MY':
@@ -544,18 +543,21 @@ def summary(request, fsg):
     return render(request, 'summary.html', context)
 
 @login_required(login_url='/')
-def q_obj(request, fgroup, fyear):
+def report_q_obj(request, fmcg, fyear):
+    mcgs = MachineGroup.objects.all()
+    if fmcg == 'FIRST':
+        fmcg = mcgs[0]
     years = get_years()
     if fyear == 'THISYEAR':
         fyear = datetime.today().strftime('%Y')
-
     context = {
+        'mcgs': mcgs,
+        'fmcg': fmcg,
         'years': years,
-        'fgroup': fgroup,
         'fyear': fyear,
     }
     context['all_page_data'] = (all_page_data(request))
-    return render(request, 'q_obj.html', context)
+    return render(request, 'report_q_obj.html', context)
 
 #----------------------------------- Master -----------------------------------#
 
