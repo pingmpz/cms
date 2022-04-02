@@ -553,14 +553,27 @@ def report_q_obj(request, fmcg, fyear):
     mcs = Machine.objects.filter(mcg=mcg)
     months = ['January', 'February', 'March', 'April', 'May', 'June', 'July','August', 'September', 'October', 'November', 'December']
     req_count = []
+    tot_mins = []
+    tot_hrs = []
     dt_mins = []
     dt_hrs = []
     mtbfs = []
     mttrs = []
     for month in months:
         month_no = months.index(month) + 1
+        # No of Request
         reqs = Request.objects.filter(mc__in=mcs,type='User Request',status='Complete',sg=sg,request_date__year=fyear,request_date__month=month_no)
         req_count.append(reqs.count())
+        # TotalOperationTime
+        tot_min = 0
+        tot_hr = 0
+        tot_is_exist = TotalOperationTime.objects.filter(mcg=mcg,year=fyear,month=month_no).exists()
+        if tot_is_exist:
+            tot = TotalOperationTime.objects.get(mcg=mcg,year=fyear,month=month_no)
+            tot_min = float(tot.time)
+            tot_hr = float(tot.time) / 60
+        tot_mins.append(int(tot_min))
+        tot_hrs.append(int(tot_hr))
         # Downtime
         dt_min = 0
         dt_hr = 0
@@ -574,7 +587,10 @@ def report_q_obj(request, fmcg, fyear):
         dt_mins.append(int(dt_min))
         dt_hrs.append(int(dt_hr))
         # MTBF
-        mtbfs.append('?')
+        if reqs.count() != 0:
+            mtbfs.append(int(tot_hr/reqs.count()))
+        else:
+            mtbfs.append(0)
         # MTTR
         if reqs.count() != 0:
             mttrs.append(int(dt_hr/reqs.count()))
@@ -588,6 +604,8 @@ def report_q_obj(request, fmcg, fyear):
         'fyear': fyear,
         'months': months,
         'req_count': req_count,
+        'tot_mins': tot_mins,
+        'tot_hrs': tot_hrs,
         'dt_mins': dt_mins,
         'dt_hrs': dt_hrs,
         'mtbfs': mtbfs,
