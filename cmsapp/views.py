@@ -978,6 +978,7 @@ def new_mg_save(request):
 def edit_mc_save(request):
     is_active = True if request.POST.get('is_active', False) == 'on' else False
     mc_no = request.POST['mc_no']
+    group = request.POST['group'].strip()
     register_no = request.POST['register_no'].strip()
     asset_no = request.POST['asset_no'].strip()
     serial_no = request.POST['serial_no'].strip()
@@ -990,6 +991,7 @@ def edit_mc_save(request):
     note = request.POST['note']
     mc = Machine.objects.get(mc_no=mc_no)
     mc.is_active = is_active
+    mc.group = group
     mc.register_no = register_no
     mc.asset_no = asset_no
     mc.serial_no = serial_no
