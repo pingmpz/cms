@@ -84,11 +84,11 @@
                                                   <label class="form-label">Machine & Device <i class="mdi mdi-asterisk text-danger small"></i></label>
                                                   <select class="form-control select2" data-toggle="select2" name="mc_no" id="mc_no">
                                                     {% for mc in mcs %}
-                                                    {% if mc_group|index:forloop.counter0 != None %}
-                                                    <optgroup label="{{mc_group|index:forloop.counter0}}">
+                                                    {% if set_mc|index:forloop.counter0 != None %}
+                                                    <optgroup label="{{set_mc|index:forloop.counter0}}">
                                                     {% endif %}
                                                     <option value="{{mc.mc_no}}">▪️ {{mc.mc_no}}</option>
-                                                    {% if mc_group|index:forloop.counter1 != None %}
+                                                    {% if set_mc|index:forloop.counter1 != None %}
                                                     </optgroup>
                                                     {% endif %}
                                                     {% endfor %}

@@ -50,11 +50,11 @@
                                       <div style="width:100%">
                                         <select class="form-control form-control-sm select2" name="fmc" id="fmc">
                                           {% for imc in mcs %}
-                                          {% if mc_group|index:forloop.counter0 != None %}
-                                          <optgroup label="{{mc_group|index:forloop.counter0}}">
+                                          {% if set_mc|index:forloop.counter0 != None %}
+                                          <optgroup label="{{set_mc|index:forloop.counter0}}">
                                           {% endif %}
                                           <option value="{{imc.mc_no}}" {% if fmc == imc.mc_no %}selected{% endif %}>▪️ {{imc.mc_no}}</option>
-                                          {% if mc_group|index:forloop.counter1 != None %}
+                                          {% if set_mc|index:forloop.counter1 != None %}
                                           </optgroup>
                                           {% endif %}
                                           {% endfor %}
