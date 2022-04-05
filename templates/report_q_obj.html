@@ -60,7 +60,7 @@
                                           {% endfor %}
                                       </select>
                                       <button type="button" class="btn btn-sm btn-warning ms-2" data-bs-toggle="modal" data-bs-target="#edit_tot_modal" title="Edit Total Operation Time"><i class="mdi mdi-calendar-edit"></i></button>
-                                      <!-- <button type="button" class="btn btn-sm btn-danger ms-1" data-bs-toggle="modal" data-bs-target="#set_target_modal" title="Set Target"><i class="mdi mdi-target"></i></button> -->
+                                      <button type="button" class="btn btn-sm btn-danger ms-1" data-bs-toggle="modal" data-bs-target="#set_target_modal" title="Set Target"><i class="mdi mdi-target"></i></button>
                                     </div>
                                     <h4 class="page-title"><i class="mdi mdi-podium-gold"></i> Quality Objective (MA)</h4>
                                 </div>
@@ -72,6 +72,9 @@
                           <div class="col-12">
                             <div class="card">
                               <div class="card-body">
+                                <input class="form-control" type="text" name="mcg_id" id="mcg_id" value='{{mcg.id}}' hidden>
+                                <input class="form-control" type="text" name="mcg_name" id="mcg_name" value='{{mcg.name}}' hidden>
+                                <input class="form-control" type="text" name="year" id="year" value='{{fyear}}' hidden>
                                 <table id="report_table" class="table table-striped table-sm table-bordered w-100 small text-center" style="table-layout:fixed;">
                                   <thead class="table-dark">
                                       <tr>
@@ -123,7 +126,7 @@
             </div>
         </div>
 
-        <!-- Hold -->
+        <!-- Edit Total Operation Time Modal -->
         <div id="edit_tot_modal" class="modal fade" tabindex="-1" role="dialog">
             <div class="modal-dialog">
                 <div class="modal-content">
@@ -132,16 +135,15 @@
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
-                      <input class="form-control" type="text" name="mcg_id" id="mcg_id" value='{{mcg.id}}' hidden>
 
                       <div class="mb-3">
                           <label class="form-label">Machine Group</label>
-                          <input class="form-control" type="text" name="mcg_name" id="mcg_name" value='{{mcg.name}}' readonly>
+                          <input class="form-control" type="text" value='{{mcg.name}}' readonly>
                       </div>
 
                       <div class="mb-3">
                           <label class="form-label">Year</label>
-                          <input class="form-control" type="text" name="year" id="year" value='{{fyear}}' readonly>
+                          <input class="form-control" type="text" value='{{fyear}}' readonly>
                       </div>
 
                       <div class="mb-3">
@@ -171,6 +173,44 @@
                     <div class="modal-footer">
                         <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
                         <button type="button" class="btn btn-warning" onclick="edit_tot()">Confirm</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Set Target Modal -->
+        <div id="set_target_modal" class="modal fade" tabindex="-1" role="dialog">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header modal-colored-header bg-danger">
+                        <h4 class="modal-title"><i class="mdi mdi-target"></i> Set Target</h4>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+
+                      <div class="mb-3">
+                          <label class="form-label">Machine Group</label>
+                          <input class="form-control" type="text" value='{{mcg.name}}' readonly>
+                      </div>
+
+                      <div class="mb-3">
+                          <label class="form-label">Year</label>
+                          <input class="form-control" type="text" value='{{fyear}}' readonly>
+                      </div>
+
+                      <div class="mb-3">
+                          <label class="form-label"><b>MTTR</b>: Target Time (Hours)</label>
+                          <input class="form-control" type="text" name="mttr_time" id="mttr_time">
+                      </div>
+
+                      <div class="mb-3">
+                          <label class="form-label"><b>MTBF</b>: Target Time (Hours)</label>
+                          <input class="form-control" type="text" name="mtbf_time" id="mtbf_time">
+                      </div>
+
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-warning" onclick="set_target()">Confirm</button>
                     </div>
                 </div>
             </div>
