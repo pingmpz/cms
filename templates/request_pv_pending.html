@@ -49,7 +49,7 @@
                                 <div class="page-title-box">
                                     <div class="page-title-right d-flex">
                                       &nbsp;&nbsp;&nbsp;<p class="pt-1 pb-1 mb-0 small">Section</p>&nbsp;&nbsp;&nbsp;
-                                      <select class="form-control form-control-sm" id="fsg">
+                                      <select class="form-control form-control-sm" id="fsg" style="width:80px !important;">
                                           {% for sg in sgs %}
                                           <option value="{{sg.name}}" {% if fsg == sg.name %}selected{% endif %}>{{sg.name}}</option>
                                           {% endfor %}

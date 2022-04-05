@@ -49,7 +49,7 @@
                                 <div class="page-title-box">
                                     <div class="page-title-right d-flex">
                                       &nbsp;&nbsp;&nbsp;<p class="pt-1 pb-1 mb-0 small">Section</p>&nbsp;&nbsp;&nbsp;
-                                      <select class="form-control form-control-sm" id="fsg">
+                                      <select class="form-control form-control-sm" id="fsg" style="width:80px !important;">
                                           {% for sg in sgs %}
                                           <option value="{{sg.name}}" {% if fsg == sg.name %}selected{% endif %}>{{sg.name}}</option>
                                           {% endfor %}
@@ -74,7 +74,7 @@
                                           <th>Request No</th>
                                           <!-- <th>Type</th> -->
                                           <!-- <th>Status</th> -->
-                                          <th>Machine/Device/Task</th>
+                                          <!-- <th>Machine/Device/Task</th> -->
                                           <th>Description</th>
                                           <th>Request to</th>
                                           <th>Request By</th>
@@ -95,7 +95,7 @@
                                             {% elif req.status == 'Canceled' %}<strong class="text-danger"><i class='uil-ban'></i> Canceled</strong>
                                             {% else %}{{req.status}}{% endif %}
                                           </td> -->
-                                          <td>{{req.mc.mc_no|default_if_none:""}}{{req.task.name|default_if_none:""}}</td>
+                                          <!-- <td>{{req.mc.mc_no|default_if_none:""}}{{req.task.name|default_if_none:""}}</td> -->
                                           <td>{{req.description}}</td>
                                           <td>{{req.sg.name}}</td>
                                           <td>{{req.emp_id}} | {{req.name|title}} ({{req.section}})</td>

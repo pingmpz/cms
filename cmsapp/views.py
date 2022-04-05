@@ -343,17 +343,29 @@ def request_pv_pending(request, fsg):
     return render(request, 'request_pv_pending.html', context)
 
 @login_required(login_url='/')
-def request_all(request, fsg):
+def request_all(request, fsg, fstatus, ftype):
     sgs = SectionGroup.objects.all()
     reqs = []
     if fsg == 'MY' and is_in_section_group(request):
         fsg = request.user.employee.section
     elif fsg == 'MY':
         fsg = 'ALL'
+    status = None
+    if fstatus != 'ALL':
+        status = 'On ' + fstatus.capitalize()
+    type = 'ALL'
+    if ftype == 'PV':
+        type = 'Preventive'
+    elif ftype == 'UR':
+        type = 'User Request'
 
     reqs = Request.objects.filter(status='On Progress')  | Request.objects.filter(status='On Hold')
     if fsg != 'ALL':
         reqs = reqs.filter(sg=fsg)
+    if fstatus != 'ALL':
+        reqs = reqs.filter(status=status)
+    if ftype != 'ALL':
+        reqs = reqs.filter(type=type)
 
     is_members = get_is_members(reqs, request)
     has_wts = get_has_wts(reqs)
@@ -361,6 +373,8 @@ def request_all(request, fsg):
     context = {
         'sgs': sgs,
         'fsg': fsg,
+        'fstatus': fstatus,
+        'ftype': ftype,
         'reqs': reqs,
         'is_members': is_members,
         'has_wts': has_wts,

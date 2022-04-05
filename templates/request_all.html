@@ -47,8 +47,20 @@
                             <div class="col-12">
                                 <div class="page-title-box">
                                     <div class="page-title-right d-flex">
+                                      &nbsp;&nbsp;&nbsp;<p class="pt-1 pb-1 mb-0 small">Type</p>&nbsp;&nbsp;&nbsp;
+                                      <select class="form-control form-control-sm" id="ftype" style="width:115px !important;">
+                                          <option value="UR" {% if ftype == 'UR' %}selected{% endif %}>User Request</option>
+                                          <option value="PV" {% if ftype == 'PV' %}selected{% endif %}>Preventive</option>
+                                          <option value="ALL" {% if ftype == 'ALL' %}selected{% endif %}>All</option>
+                                      </select>
+                                      &nbsp;&nbsp;&nbsp;<p class="pt-1 pb-1 mb-0 small">Status</p>&nbsp;&nbsp;&nbsp;
+                                      <select class="form-control form-control-sm" id="fstatus" style="width:110px !important;">
+                                          <option value="PROGRESS" {% if fstatus == 'PROGRESS' %}selected{% endif %}>On Progress</option>
+                                          <option value="HOLD" {% if fstatus == 'HOLD' %}selected{% endif %}>On Hold</option>
+                                          <option value="ALL" {% if fstatus == 'ALL' %}selected{% endif %}>All</option>
+                                      </select>
                                       &nbsp;&nbsp;&nbsp;<p class="pt-1 pb-1 mb-0 small">Section</p>&nbsp;&nbsp;&nbsp;
-                                      <select class="form-control form-control-sm" id="fsg">
+                                      <select class="form-control form-control-sm" id="fsg" style="width:80px !important;">
                                           {% for sg in sgs %}
                                           <option value="{{sg.name}}" {% if fsg == sg.name %}selected{% endif %}>{{sg.name}}</option>
                                           {% endfor %}
@@ -192,9 +204,19 @@
             filter();
           });
 
+          $('#fstatus').change(function() {
+            filter();
+          });
+
+          $('#ftype').change(function() {
+            filter();
+          });
+
           function filter(){
             var fsg = $("#fsg").val();
-            window.location.href = "/request_all/" + fsg;
+            var fstatus = $("#fstatus").val();
+            var ftype = $("#ftype").val();
+            window.location.href = "/request_all/" + fsg + '&'  + fstatus + '&' + ftype;
           }
         </script>
 
