@@ -60,7 +60,7 @@
                                           {% endfor %}
                                       </select>
                                       <button type="button" class="btn btn-sm btn-warning ms-2" data-bs-toggle="modal" data-bs-target="#edit_tot_modal" title="Edit Total Operation Time"><i class="mdi mdi-calendar-edit"></i></button>
-                                      <!-- <button type="button" class="btn btn-sm btn-danger ms-1" data-bs-toggle="modal" data-bs-target="#set_target_modal" title="Set Target"><i class="mdi mdi-target"></i></button> -->
+                                      <button type="button" class="btn btn-sm btn-danger ms-1" data-bs-toggle="modal" data-bs-target="#set_target_modal" title="Set Target"><i class="mdi mdi-target"></i></button>
                                     </div>
                                     <h4 class="page-title"><i class="mdi mdi-podium-gold"></i> Quality Objective (MA)</h4>
                                 </div>
@@ -78,21 +78,25 @@
                                 <table id="report_table" class="table table-striped table-sm table-bordered w-100 small text-center" style="table-layout:fixed;">
                                   <thead class="table-dark">
                                       <tr>
-                                          <th colspan="8"><h3>Quality Objective {{fyear}} ({{mcg.name}})</h3></th>
+                                          <th colspan="10"><h3>Quality Objective {{fyear}} ({{mcg.name}})</h3></th>
                                       </tr>
                                       <tr>
                                           <th class="align-middle"rowspan="2">Month</th>
                                           <th class="align-middle" rowspan="2">No of Request</th>
                                           <th colspan="2">Total Operation Time</th>
                                           <th colspan="2">Downtime</th>
-                                          <th class="align-middle" rowspan="2">MTTR</th>
-                                          <th class="align-middle" rowspan="2">MTBF</th>
+                                          <th colspan="2">MTTR</th>
+                                          <th colspan="2">MTBF</th>
                                       </tr>
                                       <tr>
                                           <th>Minutes</th>
                                           <th>Hours</th>
                                           <th>Minutes</th>
                                           <th>Hours</th>
+                                          <th>Actual</th>
+                                          <th>Target <=</th>
+                                          <th>Actual</th>
+                                          <th>Target >=</th>
                                       </tr>
                                   </thead>
                                   <tbody>
@@ -104,8 +108,10 @@
                                         <td>{{tot_hrs|index:forloop.counter0}}</td>
                                         <td>{{dt_mins|index:forloop.counter0}}</td>
                                         <td>{{dt_hrs|index:forloop.counter0}}</td>
-                                        <td>{{mttrs|index:forloop.counter0}}</td>
-                                        <td>{{mtbfs|index:forloop.counter0}}</td>
+                                        <td {% if mttrs|index:forloop.counter0 > target_mttrs|index:forloop.counter0 %}class="text-danger"{% endif %}>{{mttrs|index:forloop.counter0}}</td>
+                                        <td>{{target_mttrs|index:forloop.counter0}}</td>
+                                        <td {% if mtbfs|index:forloop.counter0 < target_mtbfs|index:forloop.counter0 %}class="text-danger"{% endif %}>{{mtbfs|index:forloop.counter0}}</td>
+                                        <td>{{target_mtbfs|index:forloop.counter0}}</td>
                                       </tr>
                                       {% endfor %}
                                   </tbody>
@@ -113,6 +119,8 @@
                                 <p class="m-0 font-12"><u><b>Formula</b></u></p>
                                 <p class="m-0 font-12"><i class="mdi mdi-arrow-up-bold text-danger" style="margin-right:-4px"></i><i class="mdi mdi-arrow-down-bold text-success"></i> Mean time to repair (MTTR) = Downtime (Hour) / No of Request</p>
                                 <p class="m-0 font-12"><i class="mdi mdi-arrow-up-bold text-success" style="margin-right:-4px"></i><i class="mdi mdi-arrow-down-bold text-danger"></i> Mean time between failures (MTBF) = Total Operation Time (Hour) / No of Request</p>
+                                <p class="m-0 font-12"><u><b>Conditions</b></u></p>
+                                <p class="m-0 font-12">- Request To MA<br>- Complete Request<br>- User Request Type<br>- Request of Machine<br>- Machine in Group<br>- Request with Donwtime</p>
                               </div>
                             </div>
                           </div>
@@ -148,7 +156,7 @@
 
                       <div class="mb-3">
                           <label class="form-label">Month</label>
-                          <select class="form-control select2" data-toggle="select2" name="month" id="month">
+                          <select class="form-control select2" data-toggle="select2" name="tot_month" id="tot_month">
                             <option value="1">January</option>
                             <option value="2">February</option>
                             <option value="3">March</option>
@@ -166,7 +174,7 @@
 
                       <div class="mb-3">
                           <label class="form-label">Total Operation Time (Minutes)</label>
-                          <input class="form-control" type="text" name="time" id="time">
+                          <input class="form-control" type="text" name="tot_time" id="tot_time">
                       </div>
 
                     </div>
@@ -198,19 +206,40 @@
                       </div>
 
                       <div class="mb-3">
-                          <label class="form-label"><b>MTTR</b>: Target Time (Hours)</label>
-                          <input class="form-control" type="text" name="mttr_time" id="mttr_time">
+                          <label class="form-label">Since Month..</label>
+                          <select class="form-control" name="target_month" id="target_month">
+                            <option value="1">January</option>
+                            <option value="2">February</option>
+                            <option value="3">March</option>
+                            <option value="4">April</option>
+                            <option value="5">May</option>
+                            <option value="6">June</option>
+                            <option value="7">July</option>
+                            <option value="8">August</option>
+                            <option value="9">September</option>
+                            <option value="10">October</option>
+                            <option value="11">November</option>
+                            <option value="12">December</option>
+                          </select>
                       </div>
 
                       <div class="mb-3">
-                          <label class="form-label"><b>MTBF</b>: Target Time (Hours)</label>
-                          <input class="form-control" type="text" name="mtbf_time" id="mtbf_time">
+                          <label class="form-label">Type of Target</label>
+                          <select class="form-control" name="type" id="type">
+                            <option value="MTTR">MTTR (<=)</option>
+                            <option value="MTBF">MTBF (>=)</option>
+                          </select>
+                      </div>
+
+                      <div class="mb-3">
+                          <label class="form-label">Target Time (Hours)</label>
+                          <input class="form-control" type="text" name="target_time" id="target_time">
                       </div>
 
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
-                        <button type="button" class="btn btn-warning" onclick="set_target()">Confirm</button>
+                        <button type="button" class="btn btn-danger" onclick="set_target()">Confirm</button>
                     </div>
                 </div>
             </div>
@@ -240,15 +269,11 @@
         <script src="{% static "assets/js/vendor/fixedHeader.bootstrap5.min.js" %}"></script>
 
         <script type="text/javascript">
-          $('#month').select2({
-              dropdownParent: $('#edit_tot_modal')
-          });
-
           function edit_tot(){
             var mcg_id = $("#mcg_id").val();
             var year = $("#year").val();
-            var month = $("#month").val();
-            var time = $("#time").val();
+            var month = $("#tot_month").val();
+            var time = $("#tot_time").val();
             if(time.length > 0){
               $.ajax({
                 url: '/edit_tot/',
@@ -266,7 +291,36 @@
             }
           }
 
-          $("#time").on("keypress keyup blur",function (event) {
+          function set_target(){
+            var mcg_id = $("#mcg_id").val();
+            var year = $("#year").val();
+            var month = $("#target_month").val();
+            var type = $("#type").val();
+            var time = $("#target_time").val();
+            if(time.length > 0){
+              $.ajax({
+                url: '/set_target/',
+                data: {
+                  'mcg_id': mcg_id,
+                  'year': year,
+                  'month': month,
+                  'type': type,
+                  'time': time,
+                },
+                dataType: 'json',
+                success: function (data) {
+                  location.reload();
+                }
+              });
+            }
+          }
+
+          $("#tot_time").on("keypress keyup blur",function (event) {
+             $(this).val($(this).val().replace(/[^\d].+/, ""));
+             if((event.which < 48 || event.which > 57)) event.preventDefault();
+          });
+
+          $("#target_time").on("keypress keyup blur",function (event) {
              $(this).val($(this).val().replace(/[^\d].+/, ""));
              if((event.which < 48 || event.which > 57)) event.preventDefault();
           });

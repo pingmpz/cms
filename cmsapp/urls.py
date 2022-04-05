@@ -102,6 +102,7 @@ urlpatterns = [
     path('mcdt_save/', views.mcdt_save, name='mcdt_save'),
     path('delete_mcdt/', views.delete_mcdt, name='delete_mcdt'),
     path('edit_tot/', views.edit_tot, name='edit_tot'),
+    path('set_target/', views.set_target, name='set_target'),
     #-- File
     path('file_save/', views.file_save, name='file_save'),
 

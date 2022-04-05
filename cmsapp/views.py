@@ -26,7 +26,7 @@ import secrets
 # Line Noti
 from django_line_notification.line_notify import Line
 
-from .models import SectionGroup, Employee, MachineGroup, Machine, Task, Vendor, Category, SubCategory, MailGroup, Request, File, Member, RequestVendor, Comment, RequestSubCategory, OperatorWorkingTime, VendorWorkingTime, MachineDowntime, TotalOperationTime
+from .models import SectionGroup, Employee, MachineGroup, Machine, Task, Vendor, Category, SubCategory, MailGroup, Request, File, Member, RequestVendor, Comment, RequestSubCategory, OperatorWorkingTime, VendorWorkingTime, MachineDowntime, TotalOperationTime, QualityObjectiveTarget
 
 HOST_URL = 'http://129.1.100.185:8200/'
 TEMPLATE_REQUEST = 'email_templates/request.html'
@@ -571,8 +571,10 @@ def report_q_obj(request, fmcg, fyear):
     tot_hrs = []
     dt_mins = []
     dt_hrs = []
-    mtbfs = []
     mttrs = []
+    target_mttrs = []
+    mtbfs = []
+    target_mtbfs = []
     for month in months:
         month_no = months.index(month) + 1
         # No of Request
@@ -590,10 +592,10 @@ def report_q_obj(request, fmcg, fyear):
         tot_is_exist = TotalOperationTime.objects.filter(mcg=mcg,year=fyear,month=month_no).exists()
         if tot_is_exist:
             tot = TotalOperationTime.objects.get(mcg=mcg,year=fyear,month=month_no)
-            tot_min = float(tot.time)
-            tot_hr = float(tot.time) / 60
-        tot_mins.append(int(tot_min))
-        tot_hrs.append(int(tot_hr))
+            tot_min = int(tot.time)
+            tot_hr = int(tot.time / 60)
+        tot_mins.append(tot_min)
+        tot_hrs.append(tot_hr)
         # Downtime
         dt_min = 0
         dt_hr = 0
@@ -602,20 +604,22 @@ def report_q_obj(request, fmcg, fyear):
             for mcdt in mcdts:
                 minutes_diff = (mcdt.stop_datetime - mcdt.start_datetime).total_seconds() / 60
                 hours_diff = (mcdt.stop_datetime - mcdt.start_datetime).total_seconds() / 3600
-                dt_min = dt_min + minutes_diff
-                dt_hr = dt_hr + hours_diff
-        dt_mins.append(int(dt_min))
-        dt_hrs.append(int(dt_hr))
+                dt_min = int(dt_min + minutes_diff)
+                dt_hr = int(dt_hr + hours_diff)
+        dt_mins.append(dt_min)
+        dt_hrs.append(dt_hr)
         # MTTR
         if len(reqs):
             mttrs.append(int(dt_hr/len(reqs)))
         else:
             mttrs.append(0)
+        target_mttrs.append(get_qot(mcg, 'MTTR', fyear, month_no))
         # MTBF
         if len(reqs):
             mtbfs.append(int(tot_hr/len(reqs)))
         else:
             mtbfs.append(0)
+        target_mtbfs.append(get_qot(mcg, 'MTBF', fyear, month_no))
     context = {
         'mcgs': mcgs,
         'fmcg': fmcg,
@@ -629,7 +633,9 @@ def report_q_obj(request, fmcg, fyear):
         'dt_mins': dt_mins,
         'dt_hrs': dt_hrs,
         'mttrs': mttrs,
+        'target_mttrs': target_mttrs,
         'mtbfs': mtbfs,
+        'target_mtbfs': target_mtbfs,
     }
     context['all_page_data'] = (all_page_data(request))
     return render(request, 'report_q_obj.html', context)
@@ -1556,6 +1562,21 @@ def edit_tot(request):
     }
     return JsonResponse(data)
 
+def set_target(request):
+    mcg_id = request.GET['mcg_id']
+    year = request.GET['year']
+    month = request.GET['month']
+    type = request.GET['type']
+    time = request.GET['time']
+    mcg = MachineGroup.objects.get(id=mcg_id)
+    qots = QualityObjectiveTarget.objects.filter(mcg=mcg,year__gt=year,type=type) | QualityObjectiveTarget.objects.filter(mcg=mcg,year=year,month__gte=month,type=type)
+    qots.delete()
+    qot_new = QualityObjectiveTarget(mcg=mcg,year=year,month=month,type=type,time=time)
+    qot_new.save()
+    data = {
+    }
+    return JsonResponse(data)
+
 ################################# File Reader ##################################
 
 def update_machine():
@@ -1738,6 +1759,19 @@ def get_years():
         temp_year = temp_year + 1
         years.append(str(temp_year))
     return years
+
+def get_qot(mcg, type, year, month):
+    time = 0
+    qots = QualityObjectiveTarget.objects.filter(mcg=mcg,type=type)
+    if not qots or (not qots.filter(year=year,month__lte=month) and not qots.filter(year__lt=year)):
+        time = 0
+    elif not qots.filter(year=year) or not qots.filter(year=year,month__lte=month):
+        qots = qots.filter(year__lt=year).order_by('-year','-month')
+        time = qots[0].time
+    else:
+        qots = qots.filter(year=year,month__lte=month).order_by('-month')
+        time = qots[0].time
+    return time
 
 ##################################### Email ####################################
 

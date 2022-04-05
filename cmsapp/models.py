@@ -170,3 +170,12 @@ class TotalOperationTime(models.Model):
     month = models.IntegerField()
     time = models.IntegerField()
     date_published = models.DateTimeField(auto_now_add=True)
+
+class QualityObjectiveTarget(models.Model):
+    id = models.AutoField(primary_key=True)
+    mcg = models.ForeignKey(MachineGroup, on_delete=models.CASCADE)
+    year = models.IntegerField()
+    month = models.IntegerField()
+    type = models.CharField(max_length=4)
+    time = models.IntegerField()
+    date_published = models.DateTimeField(auto_now_add=True)
