@@ -226,6 +226,7 @@
         <script src="{% static "assets/js/vendor/apexcharts.min.js" %}"></script>
 
         <script type="text/javascript">
+
           $('#fsg').change(function() {
             filter();
           });
@@ -234,6 +235,11 @@
             var fsg = $("#fsg").val();
             window.location.href = "/summary/" + fsg;
           }
+
+          var cat_data = [];
+          {% for cat in cat_data %}
+              cat_data.push("{{cat}}");
+          {% endfor %}
 
           var options = {
             chart: {
@@ -248,10 +254,10 @@
               {
                 name: 'Complete',
                 data: {{complete_data}}
-              }
+              },
             ],
             xaxis: {
-              categories: {{cat_data}},
+              categories: cat_data,
             }
           }
 

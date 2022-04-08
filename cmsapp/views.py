@@ -519,12 +519,11 @@ def summary(request, fsg):
     days = 30
     cat_data = [0] * days
     new_data = [0] * days
-    complete_data = [0] * days
+    complete_data = [""] * days
     i = 0
     while i < days:
         date = (datetime.today() - timedelta(days=(days - i))).strftime('%Y-%m-%d')
-        day = (datetime.today() - timedelta(days=(days - i))).strftime('%d')
-        cat_data[i] = int(day)
+        cat_data[i] = (datetime.today() - timedelta(days=(days - i))).strftime('%d %b')
         if fsg == 'ALL':
             new_data[i] = int(Request.objects.filter(type='User Request',date_published__date=date).count())
             complete_data[i] = int(Request.objects.filter(type='User Request',finish_datetime__date=date).count())
