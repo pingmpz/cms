@@ -47,20 +47,18 @@
                         <div class="row">
                             <div class="col-12">
                                 <div class="page-title-box">
-                                    <div class="page-title-right d-flex">
-                                      <div style="width:100%">
-                                        <select class="form-control form-control-sm" name="ftask" id="ftask">
-                                          {% for itask in tasks %}
-                                          {% if set_task|index:forloop.counter0 != None %}
-                                          <optgroup label="{{set_task|index:forloop.counter0}}">
-                                          {% endif %}
-                                          <option value="{{itask.id}}" {% if ftask == itask.id|intcomma %}selected{% endif %}>▪️ {{itask.name}}</option>
-                                          {% if set_task|index:forloop.counter1 != None %}
-                                          </optgroup>
-                                          {% endif %}
-                                          {% endfor %}
-                                        </select>
-                                      </div>
+                                    <div class="page-title-right d-flex" style="width:30%">
+                                      <select class="form-control form-control-sm select2" data-toggle="select2" name="ftask" id="ftask">
+                                        {% for itask in tasks %}
+                                        {% if set_task|index:forloop.counter0 != None %}
+                                        <optgroup label="{{set_task|index:forloop.counter0}}">
+                                        {% endif %}
+                                        <option value="{{itask.id}}" {% if ftask == itask.id|intcomma %}selected{% endif %}>▪️ {{itask.name}}</option>
+                                        {% if set_task|index:forloop.counter1 != None %}
+                                        </optgroup>
+                                        {% endif %}
+                                        {% endfor %}
+                                      </select>
                                       <button type="button" class="btn btn-success btn-sm ms-2" id="save_button" onclick="save()"><i class="mdi mdi-content-save"></i></button>
                                     </div>
                                     <h4 class="page-title"><i class="mdi mdi-database-edit-outline"></i> Edit Task</h4>

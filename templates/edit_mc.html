@@ -46,20 +46,18 @@
                         <div class="row">
                             <div class="col-12">
                                 <div class="page-title-box">
-                                    <div class="page-title-right d-flex">
-                                      <div style="width:100%">
-                                        <select class="form-control form-control-sm select2" name="fmc" id="fmc">
-                                          {% for imc in mcs %}
-                                          {% if set_mc|index:forloop.counter0 != None %}
-                                          <optgroup label="{{set_mc|index:forloop.counter0}}">
-                                          {% endif %}
-                                          <option value="{{imc.mc_no}}" {% if fmc == imc.mc_no %}selected{% endif %}>▪️ {{imc.mc_no}}</option>
-                                          {% if set_mc|index:forloop.counter1 != None %}
-                                          </optgroup>
-                                          {% endif %}
-                                          {% endfor %}
-                                        </select>
-                                      </div>
+                                    <div class="page-title-right d-flex" style="width:20%">
+                                      <select class="form-control form-control-sm select2" data-toggle="select2" name="fmc" id="fmc">
+                                        {% for imc in mcs %}
+                                        {% if set_mc|index:forloop.counter0 != None %}
+                                        <optgroup label="{{set_mc|index:forloop.counter0}}">
+                                        {% endif %}
+                                        <option value="{{imc.mc_no}}" {% if fmc == imc.mc_no %}selected{% endif %}>▪️ {{imc.mc_no}}</option>
+                                        {% if set_mc|index:forloop.counter1 != None %}
+                                        </optgroup>
+                                        {% endif %}
+                                        {% endfor %}
+                                      </select>
                                       <button type="button" class="btn btn-success btn-sm ms-2" id="save_button" onclick="save()" title="Save"><i class="mdi mdi-content-save"></i></button>
                                     </div>
                                     <h4 class="page-title"><i class="mdi mdi-database-edit-outline"></i> Edit Machine / Device</h4>

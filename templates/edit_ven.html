@@ -45,8 +45,8 @@
                         <div class="row">
                             <div class="col-12">
                                 <div class="page-title-box">
-                                    <div class="page-title-right d-flex">
-                                      <select class="form-control form-control-sm" name="fven" id="fven">
+                                    <div class="page-title-right d-flex" style="width:40%">
+                                      <select class="form-control form-control-sm select2" data-toggle="select2" name="fven" id="fven">
                                         {% for iven in vens %}
                                         <option value="{{iven.code}}" {% if fven == iven.code %}selected{% endif %}>{{iven.code}} | {{iven.name}}</option>
                                         {% endfor %}
