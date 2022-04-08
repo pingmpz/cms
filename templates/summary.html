@@ -180,6 +180,16 @@
                                       </div>
                                   </div>
                               </div>
+                              <div class="col-12">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <h4 class="header-title mb-4">User Request in Last 30 Days</h4>
+                                        <div dir="ltr">
+                                            <div id="chart" class="apex-charts" data-colors="#10c469"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                              </div>
                             </div>
                         </div>
                     </div>
@@ -212,6 +222,8 @@
         <script src="{% static "assets/js/vendor/dataTables.select.min.js" %}"></script>
         <script src="{% static "assets/js/vendor/fixedColumns.bootstrap5.min.js" %}"></script>
         <script src="{% static "assets/js/vendor/fixedHeader.bootstrap5.min.js" %}"></script>
+        <!-- Charts -->
+        <script src="{% static "assets/js/vendor/apexcharts.min.js" %}"></script>
 
         <script type="text/javascript">
           $('#fsg').change(function() {
@@ -222,6 +234,30 @@
             var fsg = $("#fsg").val();
             window.location.href = "/summary/" + fsg;
           }
+
+          var options = {
+            chart: {
+              type: 'line',
+              height: '200%',
+            },
+            series: [
+              {
+                name: 'New',
+                data: {{new_data}}
+              },
+              {
+                name: 'Complete',
+                data: {{complete_data}}
+              }
+            ],
+            xaxis: {
+              categories: {{cat_data}},
+            }
+          }
+
+          var chart = new ApexCharts(document.querySelector("#chart"), options);
+
+          chart.render();
         </script>
     </body>
 </html>

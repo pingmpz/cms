@@ -516,6 +516,23 @@ def summary(request, fsg):
     inactive_pv_req_count = rejected_pv_req_count + complete_pv_req_count + canceled_pv_req_count
     inactive_req_count = inactive_us_req_count + inactive_pv_req_count
 
+    days = 30
+    cat_data = [0] * days
+    new_data = [0] * days
+    complete_data = [0] * days
+    i = 0
+    while i < days:
+        date = (datetime.today() - timedelta(days=(days - i))).strftime('%Y-%m-%d')
+        day = (datetime.today() - timedelta(days=(days - i))).strftime('%d')
+        cat_data[i] = int(day)
+        if fsg == 'ALL':
+            new_data[i] = int(Request.objects.filter(type='User Request',date_published__date=date).count())
+            complete_data[i] = int(Request.objects.filter(type='User Request',finish_datetime__date=date).count())
+        else:
+            new_data[i] = int(Request.objects.filter(status='Complete',type='User Request',date_published__date=date,sg=fsg).count())
+            complete_data[i] = int(Request.objects.filter(status='Complete',type='User Request',finish_datetime__date=date,sg=fsg).count())
+        i = i + 1
+
     context = {
         'sgs': sgs,
         'fsg': fsg,
@@ -549,6 +566,9 @@ def summary(request, fsg):
         'active_pv_req_count': active_pv_req_count,
         'inactive_pv_req_count': inactive_pv_req_count,
 
+        'cat_data': cat_data,
+        'new_data': new_data,
+        'complete_data': complete_data,
     }
     context['all_page_data'] = (all_page_data(request))
     return render(request, 'summary.html', context)
