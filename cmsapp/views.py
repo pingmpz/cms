@@ -517,19 +517,22 @@ def summary(request, fsg):
     inactive_req_count = inactive_us_req_count + inactive_pv_req_count
 
     days = 30
-    cat_data = [0] * days
+    cat_data = [""] * days
     new_data = [0] * days
-    complete_data = [""] * days
+    complete_ur_data = [0] * days
+    complete_pv_data = [0] * days
     i = 0
     while i < days:
         date = (datetime.today() - timedelta(days=(days - i))).strftime('%Y-%m-%d')
         cat_data[i] = (datetime.today() - timedelta(days=(days - i))).strftime('%d %b')
         if fsg == 'ALL':
             new_data[i] = int(Request.objects.filter(type='User Request',date_published__date=date).count())
-            complete_data[i] = int(Request.objects.filter(type='User Request',finish_datetime__date=date).count())
+            complete_ur_data[i] = int(Request.objects.filter(type='User Request',finish_datetime__date=date).count())
+            complete_pv_data[i] = int(Request.objects.filter(type='Preventive',finish_datetime__date=date).count())
         else:
             new_data[i] = int(Request.objects.filter(status='Complete',type='User Request',date_published__date=date,sg=fsg).count())
-            complete_data[i] = int(Request.objects.filter(status='Complete',type='User Request',finish_datetime__date=date,sg=fsg).count())
+            complete_ur_data[i] = int(Request.objects.filter(status='Complete',type='User Request',finish_datetime__date=date,sg=fsg).count())
+            complete_pv_data[i] = int(Request.objects.filter(status='Complete',type='Preventive',finish_datetime__date=date,sg=fsg).count())
         i = i + 1
 
     context = {
@@ -567,7 +570,8 @@ def summary(request, fsg):
 
         'cat_data': cat_data,
         'new_data': new_data,
-        'complete_data': complete_data,
+        'complete_ur_data': complete_ur_data,
+        'complete_pv_data': complete_pv_data,
     }
     context['all_page_data'] = (all_page_data(request))
     return render(request, 'summary.html', context)

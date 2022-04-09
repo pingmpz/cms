@@ -183,7 +183,7 @@
                               <div class="col-12">
                                 <div class="card">
                                     <div class="card-body">
-                                        <h4 class="header-title mb-4">User Request in Last 30 Days</h4>
+                                        <h4 class="header-title mb-4">Request in Last 30 Days</h4>
                                         <div dir="ltr">
                                             <div id="chart" class="apex-charts" data-colors="#10c469"></div>
                                         </div>
@@ -248,12 +248,16 @@
             },
             series: [
               {
-                name: 'New',
+                name: 'New User Request',
                 data: {{new_data}}
               },
               {
-                name: 'Complete',
-                data: {{complete_data}}
+                name: 'Complete User Request',
+                data: {{complete_ur_data}}
+              },
+              {
+                name: 'Complete Preventive Request',
+                data: {{complete_pv_data}}
               },
             ],
             xaxis: {
