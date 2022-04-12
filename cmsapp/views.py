@@ -26,6 +26,8 @@ import secrets
 # Line Noti
 from django_line_notification.line_notify import Line
 
+import random
+
 from .models import SectionGroup, Employee, MachineGroup, Machine, Task, Vendor, Category, SubCategory, MailGroup, Request, File, Member, RequestVendor, Comment, RequestSubCategory, OperatorWorkingTime, VendorWorkingTime, MachineDowntime, TotalOperationTime, QualityObjectiveTarget
 
 HOST_URL = 'http://129.1.100.185:8200/'
@@ -432,6 +434,8 @@ def request_history(request, fsg, fstatus, ftype, fstartdate, fstopdate):
 @login_required(login_url='/')
 def summary(request, fsg):
     sgs = SectionGroup.objects.all()
+
+    # REQUEST COUNTER
     all_req_count = 0
     pending_req_count = 0
     rejected_req_count = 0
@@ -516,12 +520,13 @@ def summary(request, fsg):
     inactive_pv_req_count = rejected_pv_req_count + complete_pv_req_count + canceled_pv_req_count
     inactive_req_count = inactive_us_req_count + inactive_pv_req_count
 
+    # REQUEST IN 30 DAYS
     days = 30
+    i = 0
     cat_data = [""] * days
     new_data = [0] * days
     complete_ur_data = [0] * days
     complete_pv_data = [0] * days
-    i = 0
     while i < days:
         date = (datetime.today() - timedelta(days=(days - i))).strftime('%Y-%m-%d')
         cat_data[i] = (datetime.today() - timedelta(days=(days - i))).strftime('%d %b')
@@ -534,7 +539,29 @@ def summary(request, fsg):
             complete_ur_data[i] = int(Request.objects.filter(status='Complete',type='User Request',finish_datetime__date=date,sg=fsg).count())
             complete_pv_data[i] = int(Request.objects.filter(status='Complete',type='Preventive',finish_datetime__date=date,sg=fsg).count())
         i = i + 1
-
+    # EMPLOYEE
+    temp_users = User.objects.filter(is_active=True)
+    users = []
+    wt_data_set = []
+    if fsg != 'ALL':
+        sg = SectionGroup.objects.get(name=fsg)
+        for user in temp_users:
+            if user.employee.section == sg.name:
+                users.append(user)
+    for user in users:
+        wt_data = [0] * days
+        i = 0
+        while i < days:
+            date = (datetime.today() - timedelta(days=(days - i))).strftime('%Y-%m-%d')
+            wts = OperatorWorkingTime.objects.filter(user=user,start_datetime__date=date)
+            time = 0
+            for wt in wts:
+                # if user.username == '30219':
+                #     print(wt.start_datetime, wt.stop_datetime)
+                time = time + (wt.stop_datetime - wt.start_datetime).total_seconds() / 60
+            wt_data[i] = time
+            i = i + 1
+        wt_data_set.append(wt_data)
     context = {
         'sgs': sgs,
         'fsg': fsg,
@@ -572,6 +599,9 @@ def summary(request, fsg):
         'new_data': new_data,
         'complete_ur_data': complete_ur_data,
         'complete_pv_data': complete_pv_data,
+
+        'users': users,
+        'wt_data_set': wt_data_set,
     }
     context['all_page_data'] = (all_page_data(request))
     return render(request, 'summary.html', context)
