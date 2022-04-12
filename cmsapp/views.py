@@ -442,7 +442,7 @@ def my_working_time(request, fstartdate, fstopdate):
     cat_data = [0] * (days + 1)
     i = 0
     user = request.user
-    user = User.objects.get(username='2645') # For test only
+    # user = User.objects.get(username='2645') # For test only
     while i <= days:
         date = (datetime.today() - timedelta(days=(days - i))).strftime('%Y-%m-%d')
         cat_data[i] = (datetime.today() - timedelta(days=(days - i))).strftime('%d %b')
