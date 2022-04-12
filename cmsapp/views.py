@@ -430,7 +430,11 @@ def request_history(request, fsg, fstatus, ftype, fstartdate, fstopdate):
     return render(request, 'request_history.html', context)
 
 @login_required(login_url='/')
-def my_working_time(request, fstartdate, fstopdate):
+def my_working_time(request, fuser, fstartdate, fstopdate):
+    if fuser == "ME":
+        user = request.user
+    else:
+        user = User.objects.get(username=fuser)
     if fstartdate == "LASTWEEK":
         fstartdate = (datetime.today() - timedelta(days=7)).strftime('%Y-%m-%d')
     if fstopdate == "TODAY":
@@ -441,8 +445,6 @@ def my_working_time(request, fstartdate, fstopdate):
     wt_data = [0] * (days + 1)
     cat_data = [0] * (days + 1)
     i = 0
-    user = request.user
-    # user = User.objects.get(username='2645') # For test only
     while i <= days:
         date = (datetime.today() - timedelta(days=(days - i))).strftime('%Y-%m-%d')
         cat_data[i] = (datetime.today() - timedelta(days=(days - i))).strftime('%d %b')
@@ -454,6 +456,7 @@ def my_working_time(request, fstartdate, fstopdate):
         i = i + 1
     wts = OperatorWorkingTime.objects.filter(user=user,start_datetime__date__range=[fstartdate, fstopdate])
     context = {
+        'fuser': fuser,
         'fstartdate': fstartdate,
         'fstopdate': fstopdate,
         'cat_data': cat_data,

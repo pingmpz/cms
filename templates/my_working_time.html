@@ -48,6 +48,7 @@
                             <div class="col-12">
                                 <div class="page-title-box">
                                     <div class="page-title-right d-flex">
+                                      <input type="text" class="form-control form-control-sm" id="fuser" value="{{fuser}}" onkeydown="return false" hidden>
                                       &nbsp;&nbsp;&nbsp;<p class="pt-1 pb-1 mb-0 small">Start&nbsp;Date</p>&nbsp;&nbsp;&nbsp;
                                       <input type="date" class="form-control form-control-sm" id="fstartdate" value="{{fstartdate}}" onkeydown="return false" style="height:20.993px; width:150px !important;">
                                       &nbsp;&nbsp;&nbsp;<p class="pt-1 pb-1 mb-0 small">-</p>&nbsp;&nbsp;&nbsp;
@@ -145,9 +146,10 @@
           });
 
           function filter(){
+            var fuser = ($("#fuser").val() != "")?$("#fuser").val():"ME";
             var fstartdate = ($("#fstartdate").val() != "")?$("#fstartdate").val():"LASTWEEK";
             var fstopdate = ($("#fstopdate").val() != "")?$("#fstopdate").val():"TODAY";
-            window.location.href = "/my_working_time/" + fstartdate + "&" + fstopdate;
+            window.location.href = "/my_working_time/" + fuser + "&" + fstartdate + "&" + fstopdate;
           }
 
           var cat_data = [];

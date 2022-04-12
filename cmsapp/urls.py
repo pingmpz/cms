@@ -27,7 +27,7 @@ urlpatterns = [
     path('request_pv_pending/<str:fsg>', views.request_pv_pending, name='request_pv_pending'),
     path('request_all/<str:fsg>&<str:fstatus>&<str:ftype>', views.request_all, name='request_all'),
     path('request_history/<str:fsg>&<str:fstatus>&<str:ftype>&<str:fstartdate>&<str:fstopdate>', views.request_history, name='request_history'),
-    path('my_working_time/<str:fstartdate>&<str:fstopdate>', views.my_working_time, name='my_working_time'),
+    path('my_working_time/<str:fuser>&<str:fstartdate>&<str:fstopdate>', views.my_working_time, name='my_working_time'),
     #-- Report
     path('summary/<str:fsg>', views.summary, name='summary'),
     path('report_q_obj/<str:fmcg>&<str:fyear>', views.report_q_obj, name='report_q_obj'),
