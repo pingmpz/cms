@@ -183,19 +183,9 @@
                               <div class="col-12">
                                 <div class="card">
                                     <div class="card-body">
-                                        <h4 class="header-title mb-4">Request in Last 30 Days</h4>
+                                        <h4 class="header-title mb-4">Request in Last 7 Days</h4>
                                         <div dir="ltr">
                                             <div id="chart" class="apex-charts" data-colors="#10c469"></div>
-                                        </div>
-                                    </div>
-                                </div>
-                              </div>
-                              <div class="col-12">
-                                <div class="card">
-                                    <div class="card-body">
-                                        <h4 class="header-title mb-4">Working Time in Last 30 Days</h4>
-                                        <div dir="ltr">
-                                            <div id="chart_emp" class="apex-charts" data-colors="#10c469"></div>
                                         </div>
                                     </div>
                                 </div>
@@ -253,12 +243,22 @@
 
           var options = {
             chart: {
-              type: 'line',
+              type: 'bar',
               height: '200%',
             },
-            stroke: {
-              curve: 'smooth',
-              width: 3,
+            plotOptions: {
+              bar: {
+                dataLabels: {
+                  position: 'top'
+                },
+              }
+            },
+            dataLabels: {
+              enabled: true,
+              formatter: function (val, opt) {
+                return (val == 0)?"":val
+              },
+              offsetY: -20,
             },
             series: [
               {
@@ -281,47 +281,6 @@
 
           var chart = new ApexCharts(document.querySelector("#chart"), options);
           chart.render();
-
-          var options = {
-            chart: {
-              type: 'line',
-              height: '200%',
-            },
-            stroke: {
-              curve: 'smooth',
-              width: 3,
-            },
-            annotations: {
-              yaxis: [
-                {
-                  y: 1440,
-                  borderColor: '#000',
-                  label: {
-                    borderColor: '#000',
-                    style: {
-                      color: '#fff',
-                      background: '#000'
-                    },
-                    text: '1 Day Limit'
-                  }
-                }
-              ]
-            },
-            series: [
-              {% for user in users %}
-              {
-                name: '{{user.username}} | {{user.employee.name}}',
-                data: {{wt_data_set|index:forloop.counter0}}
-              },
-              {% endfor %}
-            ],
-            xaxis: {
-              categories: cat_data,
-            }
-          }
-
-          var chart_emp = new ApexCharts(document.querySelector("#chart_emp"), options);
-          chart_emp.render();
 
         </script>
     </body>

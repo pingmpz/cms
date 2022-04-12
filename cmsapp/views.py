@@ -429,6 +429,40 @@ def request_history(request, fsg, fstatus, ftype, fstartdate, fstopdate):
     context['all_page_data'] = (all_page_data(request))
     return render(request, 'request_history.html', context)
 
+@login_required(login_url='/')
+def my_working_time(request, fstartdate, fstopdate):
+    if fstartdate == "LASTWEEK":
+        fstartdate = (datetime.today() - timedelta(days=7)).strftime('%Y-%m-%d')
+    if fstopdate == "TODAY":
+        fstopdate = datetime.today().strftime('%Y-%m-%d')
+    d0 = datetime.strptime(fstartdate, '%Y-%m-%d')
+    d1 = datetime.strptime(fstopdate, '%Y-%m-%d')
+    days = (d1 - d0).days
+    wt_data = [0] * (days + 1)
+    cat_data = [0] * (days + 1)
+    i = 0
+    user = request.user
+    user = User.objects.get(username='2645') # For test only
+    while i <= days:
+        date = (datetime.today() - timedelta(days=(days - i))).strftime('%Y-%m-%d')
+        cat_data[i] = (datetime.today() - timedelta(days=(days - i))).strftime('%d %b')
+        time = 0
+        wts = OperatorWorkingTime.objects.filter(user=user,start_datetime__date=date)
+        for wt in wts:
+            time = time + (wt.stop_datetime - wt.start_datetime).total_seconds() / 60
+        wt_data[i] = time
+        i = i + 1
+    wts = OperatorWorkingTime.objects.filter(user=user,start_datetime__date__range=[fstartdate, fstopdate])
+    context = {
+        'fstartdate': fstartdate,
+        'fstopdate': fstopdate,
+        'cat_data': cat_data,
+        'wt_data': wt_data,
+        'wts': wts,
+    }
+    context['all_page_data'] = (all_page_data(request))
+    return render(request, 'my_working_time.html', context)
+
 #----------------------------------- Report -----------------------------------#
 
 @login_required(login_url='/')
@@ -520,8 +554,7 @@ def summary(request, fsg):
     inactive_pv_req_count = rejected_pv_req_count + complete_pv_req_count + canceled_pv_req_count
     inactive_req_count = inactive_us_req_count + inactive_pv_req_count
 
-    # REQUEST IN 30 DAYS
-    days = 30
+    days = 7
     i = 0
     cat_data = [""] * days
     new_data = [0] * days
@@ -539,29 +572,7 @@ def summary(request, fsg):
             complete_ur_data[i] = int(Request.objects.filter(status='Complete',type='User Request',finish_datetime__date=date,sg=fsg).count())
             complete_pv_data[i] = int(Request.objects.filter(status='Complete',type='Preventive',finish_datetime__date=date,sg=fsg).count())
         i = i + 1
-    # EMPLOYEE
-    temp_users = User.objects.filter(is_active=True)
-    users = []
-    wt_data_set = []
-    if fsg != 'ALL':
-        sg = SectionGroup.objects.get(name=fsg)
-        for user in temp_users:
-            if user.employee.section == sg.name:
-                users.append(user)
-    for user in users:
-        wt_data = [0] * days
-        i = 0
-        while i < days:
-            date = (datetime.today() - timedelta(days=(days - i))).strftime('%Y-%m-%d')
-            wts = OperatorWorkingTime.objects.filter(user=user,start_datetime__date=date)
-            time = 0
-            for wt in wts:
-                # if user.username == '30219':
-                #     print(wt.start_datetime, wt.stop_datetime)
-                time = time + (wt.stop_datetime - wt.start_datetime).total_seconds() / 60
-            wt_data[i] = time
-            i = i + 1
-        wt_data_set.append(wt_data)
+
     context = {
         'sgs': sgs,
         'fsg': fsg,
@@ -599,9 +610,6 @@ def summary(request, fsg):
         'new_data': new_data,
         'complete_ur_data': complete_ur_data,
         'complete_pv_data': complete_pv_data,
-
-        'users': users,
-        'wt_data_set': wt_data_set,
     }
     context['all_page_data'] = (all_page_data(request))
     return render(request, 'summary.html', context)
