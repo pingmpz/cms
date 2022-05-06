@@ -1441,9 +1441,15 @@ def start_work_request(request):
 
 def complete_request(request):
     req_id = request.GET['req_id']
+    corrective_action = request.GET['corrective_action']
+    cause = request.GET['cause']
+    spare_parts = request.GET['spare_parts']
     req = Request.objects.get(id=req_id)
     req.status = 'Complete'
     req.reason = None
+    req.corrective_action = corrective_action
+    req.cause = cause
+    req.spare_parts = spare_parts
     req.finish_datetime = datetime.now()
     req.save()
     data = {

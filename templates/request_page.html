@@ -322,6 +322,20 @@
                                 </div>
                                 {% endif %}
 
+                                <!-- ========== Complete Conclusion Box ========== -->
+                                {% if req.status == 'Complete' %}
+                                <div class="card cta-box widget-flat bg-success text-white">
+                                    <div class="card-body">
+                                        <div class="float-end">
+                                            <i class="mdi mdi-check-all widget-icon bg-light-lighten rounded-circle text-white"></i>
+                                        </div>
+                                        <p class="text-uppercase mb-0"><b><u>Corrective Action</u></b>{{req.corrective_action|default_if_none:"-"|linebreaks}}</p>
+                                        <p class="text-uppercase mb-0"><b><u>Cause</u></b>{{req.cause|default_if_none:"-"|linebreaks}}</p>
+                                        <p class="text-uppercase mb-0"><b><u>Spare Parts Changed</u></b>{{req.spare_parts|default_if_none:"-"|linebreaks}}</p>
+                                    </div>
+                                </div>
+                                {% endif %}
+
                                 <!-- ========== Main Tab ========== -->
                                 {% if req.status != 'Pending' and req.status != 'Rejected' %}
                                 <div class="card">
@@ -960,6 +974,18 @@
                       </div>
                       <div class="modal-body">
                           <h5 class="mt-3 mb-3 text-center">Are you sure that you want to complete this request ?</h5>
+                          <div class="mb-1">
+                              <label class="form-label">Corrective Action</label>
+                              <textarea class="form-control" name="complete_corrective_action" id="complete_corrective_action" rows="5">{{req.corrective_action|default_if_none:""}}</textarea>
+                          </div>
+                          <div class="mb-1">
+                              <label class="form-label">Cause</label>
+                              <textarea class="form-control" name="complete_cause" id="complete_cause" rows="5">{{req.cause|default_if_none:""}}</textarea>
+                          </div>
+                          <div class="mb-0">
+                              <label class="form-label">Spare Parts Changed</label>
+                              <textarea class="form-control" name="complete_spare_parts" id="complete_spare_parts" rows="5">{{req.spare_parts|default_if_none:""}}</textarea>
+                          </div>
                       </div>
                       <div class="modal-footer">
                           <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
@@ -1373,10 +1399,16 @@
 
           function complete_request(){
             var req_id = $("#req_id").val();
+            var corrective_action = $("#complete_corrective_action").val();
+            var cause = $("#complete_cause").val();
+            var spare_parts = $("#complete_spare_parts").val();
             $.ajax({
               url: '/complete_request/',
               data: {
                 'req_id': req_id,
+                'corrective_action': corrective_action,
+                'cause': cause,
+                'spare_parts': spare_parts,
               },
               dataType: 'json',
               success: function (data) {
