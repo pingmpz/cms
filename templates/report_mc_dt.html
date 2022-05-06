@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+{% load static %}
+{% load extra %}
+
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <title>Machine Downtime | C.C.S. Maintenance Service</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta content="A fully featured admin theme which can be used to build CRM, CMS, etc." name="description" />
+        <meta content="Coderthemes" name="author" />
+        <!-- App favicon -->
+        <link rel="shortcut icon" href="assets/images/favicon.ico">
+
+        <!-- App css -->
+        <link href="{% static "assets/css/icons.min.css" %}" rel="stylesheet" type="text/css" />
+        <link href="{% static "assets/css/app-modern.min.css" %}" rel="stylesheet" type="text/css" id="light-style" />
+        <link href="{% static "assets/css/app-modern-dark.min.css" %}" rel="stylesheet" type="text/css" id="dark-style" />
+
+        <!-- DataTable css -->
+        <link href="{% static "assets/css/vendor/dataTables.bootstrap5.css" %}" rel="stylesheet" type="text/css" />
+        <link href="{% static "assets/css/vendor/responsive.bootstrap5.css" %}" rel="stylesheet" type="text/css" />
+        <link href="{% static "assets/css/vendor/buttons.bootstrap5.css" %}" rel="stylesheet" type="text/css" />
+        <link href="{% static "assets/css/vendor/select.bootstrap5.css" %}" rel="stylesheet" type="text/css" />
+        <link href="{% static "assets/css/vendor/fixedHeader.bootstrap5.css" %}" rel="stylesheet" type="text/css" />
+        <!-- <link href="{% static "assets/css/vendor/fixedColumns.bootstrap5.css" %}" rel="stylesheet" type="text/css" /> -->
+
+    </head>
+
+    <body class="loading" data-layout="detached" data-layout-config='{"leftSidebarCondensed":{% if request.user.employee.sidebar == 'Condensed' %}true{% else %}false{% endif %},"darkMode":{% if request.user.employee.scheme == 'Dark Mode' %}true{% else %}false{% endif %}, "showRightSidebarOnStart":false}'>
+
+        <!-- ========== Header Bar ========== -->
+        {% include 'header.html' %}
+
+        <div class="container-fluid">
+            <div class="wrapper">
+
+                <!-- ========== Left Sidebar ========== -->
+                {% include 'sidebar.html' %}
+
+                <!-- ========== Page Content ========== -->
+                <div class="content-page">
+                    <div class="content">
+
+                        <!-- ========== Inner Top Bar ========== -->
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="page-title-box">
+                                    <div class="page-title-right d-flex">
+                                      &nbsp;&nbsp;&nbsp;<p class="pt-1 pb-1 mb-0 small">Section</p>&nbsp;&nbsp;&nbsp;
+                                      <select class="form-control form-control-sm" id="fsection" style="width:150px !important;">
+                                        {% for section in sections %}
+                                        {% if section %}
+                                        <option value="{{section}}" {% if fsection == section %}selected{% endif %}>{{section}}</option>
+                                        {% endif %}
+                                        {% endfor %}
+                                      </select>
+                                      &nbsp;&nbsp;&nbsp;<p class="pt-1 pb-1 mb-0 small">Month</p>&nbsp;&nbsp;&nbsp;
+                                      <input type="month" class="form-control form-control-sm" id="fmonth" value="{{fmonth}}" onkeydown="return false" style="width:150px !important;">
+                                    </div>
+                                    <h4 class="page-title"><i class="mdi mdi-fan-alert"></i> Machine Downtime</h4>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- ========== Main Content ========== -->
+                        <div class="row">
+                          <div class="col-12">
+                            <div class="card">
+                              <div class="card-body">
+                                <div dir="ltr">
+                                    <div id="chart" class="apex-charts" data-colors="#10c469"></div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                          <div class="col-12">
+                            <div class="card">
+                              <div class="card-body">
+                                <table id="mcdt_table" class="table table-sm nowrap table-responsive row-border order-column w-100 small">
+                                  <thead>
+                                      <tr>
+                                          <th>Start Datetime</th>
+                                          <th>Stop Datetime</th>
+                                          <th>Machine No</th>
+                                          <th>On Request No</th>
+                                      </tr>
+                                  </thead>
+                                  <tbody>
+                                      {% for mcdt in mcdts %}
+                                      <tr>
+                                          <td data-order="{{mcdt.start_datetime|date:"U"}}">{{mcdt.start_datetime}}</td>
+                                          <td data-order="{{mcdt.stop_datetime|date:"U"}}">{{mcdt.stop_datetime}}</td>
+                                          <td>{{mcdt.mc.mc_no}}</td>
+                                          <td><a href="/request_page/{{mcdt.req.req_no}}">{{mcdt.req.req_no}}</a></td>
+                                      </tr>
+                                      {% endfor %}
+                                  </tbody>
+                                </table>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                    </div>
+
+                    <!-- ========== Footer ========== -->
+                    {% include 'footer.html' %}
+
+                </div>
+            </div>
+        </div>
+
+        <!-- ========== Right Side Bar ========== -->
+
+
+        <!-- bundle -->
+        <script src="{% static "assets/js/vendor.min.js" %}"></script>
+        <script src="{% static "assets/js/app.min.js" %}"></script>
+        <script src="{% static "custom/custom.js" %}"></script>
+        <script src="{% static "custom/topsearch.js" %}"></script>
+        <!-- DataTable -->
+        <script src="{% static "assets/js/vendor/jquery.dataTables.min.js" %}"></script>
+        <script src="{% static "assets/js/vendor/dataTables.bootstrap5.js" %}"></script>
+        <script src="{% static "assets/js/vendor/dataTables.responsive.min.js" %}"></script>
+        <script src="{% static "assets/js/vendor/responsive.bootstrap5.min.js" %}"></script>
+        <script src="{% static "assets/js/vendor/dataTables.buttons.min.js" %}"></script>
+        <script src="{% static "assets/js/vendor/buttons.bootstrap5.min.js" %}"></script>
+        <script src="{% static "assets/js/vendor/buttons.html5.min.js" %}"></script>
+        <script src="{% static "assets/js/vendor/buttons.flash.min.js" %}"></script>
+        <script src="{% static "assets/js/vendor/buttons.print.min.js" %}"></script>
+        <script src="{% static "assets/js/vendor/dataTables.keyTable.min.js" %}"></script>
+        <script src="{% static "assets/js/vendor/dataTables.select.min.js" %}"></script>
+        <script src="{% static "assets/js/vendor/fixedColumns.bootstrap5.min.js" %}"></script>
+        <script src="{% static "assets/js/vendor/fixedHeader.bootstrap5.min.js" %}"></script>
+        <!-- Charts -->
+        <script src="{% static "assets/js/vendor/apexcharts.min.js" %}"></script>
+
+        <script type="text/javascript">
+          $('#mcdt_table').DataTable( {
+              "order": [[ 0, "asc" ]],
+              'iDisplayLength': 25,
+              "scrollX": true,
+          });
+
+          $('#fsection').change(function() {
+            filter();
+          });
+
+          $('#fmonth').change(function() {
+            filter();
+          });
+
+          function filter(){
+            var fsection = $("#fsection").val();
+            var fmonth = $("#fmonth").val();
+            window.location.href = "/report_mc_dt/" + fsection + "&" + fmonth;
+          }
+
+          var cat_data = [];
+          {% for cat in cat_data %}
+              cat_data.push("{{cat}}");
+          {% endfor %}
+
+          var options = {
+            colors : ['#f66'],
+            chart: {
+              type: 'bar',
+              height: '200%',
+            },
+            plotOptions: {
+              bar: {
+                dataLabels: {
+                  position: 'top'
+                },
+              }
+            },
+            dataLabels: {
+              enabled: true,
+              formatter: function (val, opt) {
+                var result = "";
+                if(val != 0){
+                  var hr = parseInt(val/60);
+                  var min = (val%60);
+                  min = (min < 10)?"0"+min:min;
+                  result = hr + ":" + min;
+                }
+                return result;
+              },
+              offsetY: -20,
+            },
+            series: [
+              {
+                name: 'Machine Downtime',
+                data: {{dt_data}}
+              },
+            ],
+            xaxis: {
+              categories: cat_data,
+            }
+          }
+
+          var chart = new ApexCharts(document.querySelector("#chart"), options);
+          chart.render();
+        </script>
+
+    </body>
+</html>

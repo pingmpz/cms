@@ -10,6 +10,7 @@ from openpyxl import load_workbook, Workbook
 # Date Time
 from datetime import datetime, timedelta
 import time
+from calendar import monthrange
 # EMAIL
 from django.core.mail import EmailMessage
 from cms.settings import EMAIL_HOST_USER
@@ -703,6 +704,39 @@ def report_q_obj(request, fmcg, fyear):
     }
     context['all_page_data'] = (all_page_data(request))
     return render(request, 'report_q_obj.html', context)
+
+@login_required(login_url='/')
+def report_mc_dt(request, fsection, fmonth):
+    if fmonth == 'THISMONTH':
+        fmonth = datetime.today().strftime('%Y-%m')
+    mcs = Machine.objects.filter(is_active=True).order_by('section')
+    sections = get_set_mc(mcs)
+
+    mcs = Machine.objects.filter(section=fsection)
+    days = monthrange(int(fmonth[:4]), int(fmonth[5:7]))[1]
+    dt_data = [0] * (days)
+    cat_data = [0] * (days)
+    i = 0
+    while i < days:
+        date = fmonth + '-' + add_front_zero(str(i + 1))
+        cat_data[i] = i + 1
+        time = 0
+        mcdts = MachineDowntime.objects.filter(start_datetime__date=date,mc__in=mcs)
+        for mcdt in mcdts:
+            time = time + (mcdt.stop_datetime - mcdt.start_datetime).total_seconds() / 60
+        dt_data[i] = time
+        i = i + 1
+    mcdts = MachineDowntime.objects.filter(start_datetime__month=fmonth[5:7],start_datetime__year=fmonth[:4],mc__in=mcs)
+    context = {
+        'fsection' : fsection,
+        'fmonth' : fmonth,
+        'sections': sections,
+        'cat_data': cat_data,
+        'dt_data': dt_data,
+        'mcdts': mcdts,
+    }
+    context['all_page_data'] = (all_page_data(request))
+    return render(request, 'report_mc_dt.html', context)
 
 #----------------------------------- Master -----------------------------------#
 
@@ -1665,6 +1699,11 @@ def update_machine():
     return
 
 ################################ Other Function ################################
+
+def add_front_zero(str):
+    if len(str) == 1:
+        return "0" + str
+    return str
 
 def create_req_no(id):
     req_no = str(id)
