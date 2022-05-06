@@ -1390,7 +1390,7 @@ def reject_request(request):
         })
         send_email(subject, email_content, send_to, cc_to)
         #-- Line
-        send_line(sg.line_token, request_new)
+        send_line(sg.line_token, req)
     else:
         req.status = 'Rejected'
         req.reason = reject_reason
