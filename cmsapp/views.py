@@ -29,7 +29,7 @@ from django_line_notification.line_notify import Line
 
 import random
 
-from .models import SectionGroup, Employee, MachineGroup, Machine, Task, Vendor, Category, SubCategory, MailGroup, Request, File, Member, RequestVendor, Comment, RequestSubCategory, OperatorWorkingTime, VendorWorkingTime, MachineDowntime, TotalOperationTime, QualityObjectiveTarget
+from .models import SectionGroup, Employee, MachineGroup, Machine, Task, Vendor, Category, SubCategory, MailGroup, Request, File, Member, RequestVendor, Comment, RequestSubCategory, OperatorWorkingTime, VendorWorkingTime, MachineDowntime, Costing, TotalOperationTime, QualityObjectiveTarget
 
 HOST_URL = 'http://129.1.100.185:8200/'
 TEMPLATE_REQUEST = 'email_templates/request.html'
@@ -168,6 +168,8 @@ def request_page(request, request_no):
     owts = []
     vwts = []
     mcdts = []
+    costs = []
+    total_cost = 0
     wt_len = 0
 
     sgs = []
@@ -196,6 +198,8 @@ def request_page(request, request_no):
         owts = OperatorWorkingTime.objects.filter(req=req).order_by('-start_datetime')
         vwts = VendorWorkingTime.objects.filter(req=req).order_by('-start_datetime')
         mcdts = MachineDowntime.objects.filter(req=req).order_by('-start_datetime')
+        costs = Costing.objects.filter(req=req).order_by('-date_published')
+        total_cost = get_total_cost(costs)
         wt_len = len(owts) + len(vwts)
         sgs = SectionGroup.objects.all()
         if req.status == 'Pending': # Reduce Load
@@ -224,6 +228,8 @@ def request_page(request, request_no):
         'owts': owts,
         'vwts': vwts,
         'mcdts': mcdts,
+        'costs': costs,
+        'total_cost': total_cost,
         'wt_len': wt_len,
         'sgs': sgs,
         'mcs': mcs,
@@ -717,6 +723,7 @@ def report_mc_dt(request, fsection, fmonth):
     dt_data = [0] * (days)
     cat_data = [0] * (days)
     i = 0
+    #-- Only Start Date
     while i < days:
         date = fmonth + '-' + add_front_zero(str(i + 1))
         cat_data[i] = i + 1
@@ -727,6 +734,38 @@ def report_mc_dt(request, fsection, fmonth):
         dt_data[i] = time
         i = i + 1
     mcdts = MachineDowntime.objects.filter(start_datetime__month=fmonth[5:7],start_datetime__year=fmonth[:4],mc__in=mcs)
+    #-- 2 Average
+    # while i < days:
+    #     cat_data[i] = i + 1
+    #     i = i + 1
+    # mcdts = MachineDowntime.objects.filter(start_datetime__month=fmonth[5:7],start_datetime__year=fmonth[:4],mc__in=mcs)
+    # for mcdt in mcdts:
+    #     j = int(mcdt.start_datetime.day - 1)
+    #     if mcdt.start_datetime.date() == mcdt.stop_datetime.date():
+    #         time = (mcdt.stop_datetime - mcdt.start_datetime).total_seconds() / 60
+    #         dt_data[j] = dt_data[j] + time
+    #     else:
+    #         day_diff = (mcdt.stop_datetime.date() - mcdt.start_datetime.date()).days
+    #         time = ((mcdt.stop_datetime - mcdt.start_datetime).total_seconds() / 60)
+    #         time = int(time / (day_diff + 1))
+    #         k = j + day_diff
+    #         while j <= k and j < days:
+    #             dt_data[j] = dt_data[j] + time
+    #             j = j + 1
+    #-- 3 Full
+    # while i < days:
+    #     date = fmonth + '-' + add_front_zero(str(i + 1))
+    #     cat_data[i] = i + 1
+    #     time = 0
+    #     mcdts = MachineDowntime.objects.filter(start_datetime__date=date,stop_datetime__date=date,mc__in=mcs)
+    #     for mcdt in mcdts:
+    #         time = time + (mcdt.stop_datetime - mcdt.start_datetime).total_seconds() / 60
+    #     mcdts = MachineDowntime.objects.filter(start_datetime__date=date,mc__in=mcs).exclude(stop_datetime__date=date)
+    #     for mcdt in mcdts:
+    #         time = time + ( - mcdt.start_datetime).total_seconds() / 60
+    #     dt_data[i] = time
+    #     i = i + 1
+    # mcdts = MachineDowntime.objects.filter(start_datetime__month=fmonth[5:7],start_datetime__year=fmonth[:4],mc__in=mcs)
     context = {
         'fsection' : fsection,
         'fmonth' : fmonth,
@@ -1650,6 +1689,25 @@ def delete_mcdt(request):
     }
     return JsonResponse(data)
 
+def cost_save(request):
+    req_id = request.GET['req_id']
+    name = request.GET['name'].strip()
+    price = request.GET['price']
+    req = Request.objects.get(id=req_id)
+    cost_new = Costing(req=req,name=name,price=price)
+    cost_new.save()
+    data = {
+    }
+    return JsonResponse(data)
+
+def delete_cost(request):
+    cost_id = request.GET['cost_id']
+    cost = Costing.objects.get(id=cost_id)
+    cost.delete()
+    data = {
+    }
+    return JsonResponse(data)
+
 def edit_tot(request):
     mcg_id = request.GET['mcg_id']
     year = request.GET['year']
@@ -1881,6 +1939,12 @@ def get_qot(mcg, type, year, month):
         qots = qots.filter(year=year,month__lte=month).order_by('-month')
         time = qots[0].time
     return time
+
+def get_total_cost(costs):
+    result = 0
+    for cost in costs:
+        result = result + cost.price
+    return result
 
 ##################################### Email ####################################
 

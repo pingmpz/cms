@@ -103,6 +103,8 @@ urlpatterns = [
     path('delete_vwt/', views.delete_vwt, name='delete_vwt'),
     path('mcdt_save/', views.mcdt_save, name='mcdt_save'),
     path('delete_mcdt/', views.delete_mcdt, name='delete_mcdt'),
+    path('cost_save/', views.cost_save, name='cost_save'),
+    path('delete_cost/', views.delete_cost, name='delete_cost'),
     path('edit_tot/', views.edit_tot, name='edit_tot'),
     path('set_target/', views.set_target, name='set_target'),
     #-- File

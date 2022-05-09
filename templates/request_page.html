@@ -364,7 +364,7 @@
                                             <li class="nav-item">
                                                 <a href="#costing" data-bs-toggle="tab" aria-expanded="true" class="nav-link px-3 py-2">
                                                     <i class="mdi mdi-book-open-variant font-18 d-md-none d-block"></i>
-                                                    <span class="d-none d-md-block small"><del>Costing</del></span>
+                                                    <span class="d-none d-md-block small">Costing {% if costs %}({{costs|length}}){% endif %}</span>
                                                 </a>
                                             </li>
                                         </ul>
@@ -674,9 +674,67 @@
 
                                             <!-- ========== Costing Tab ========== -->
                                             <div class="tab-pane p-0" id="costing">
-                                              <div class="timeline-item">
-                                                  <h4 class="text-center pt-3 pb-3">This function is on development.</h4>
+                                              {% if req.status == 'On Progress' or req.status == 'On Hold' or req.status == 'Complete' %}
+                                              {% if is_member %}
+                                              <div class="row">
+                                                <div class="col-5">
+                                                  <div class="mb-3">
+                                                    <label class="form-label">Name</label>
+                                                    <input type="text" class="form-control" id="cost_name">
+                                                  </div>
+                                                </div>
+                                                <div class="col-5">
+                                                  <div class="mb-3">
+                                                    <label class="form-label">Price (Bath)</label>
+                                                    <input type="number" class="form-control" id="cost_price">
+                                                  </div>
+                                                </div>
+                                                <div class="col-2">
+                                                  <div class="mb-3">
+                                                    <label class="form-label">ㅤ</label>
+                                                    <button type="submit" class="btn btn-sm btn-success" onclick="cost_save()"><i class='mdi mdi-content-save me-1'></i>Save</button>
+                                                  </div>
+                                                </div>
                                               </div>
+                                              <hr>
+                                              {% endif %}
+                                              {% endif %}
+                                              <!-- ========== Costing Table ========== -->
+                                              {% if costs|length > 0 %}
+                                              <h4>Total Cost : {{total_cost|floatformat:0}} Bath</h4>
+                                              <p class="mt-1"></p>
+                                              <table id="mcdt_table" class="table table-sm nowrap dt-responsive row-border order-column w-100 small">
+                                                <thead class="table-light">
+                                                    <tr>
+                                                        <th {% if not request.user.is_superuser %}hidden{% endif %}>ID</th>
+                                                        <th>Name</th>
+                                                        <th>Price (Bath)</th>
+                                                        <th></th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    {% for cost in costs %}
+                                                    <tr>
+                                                        <td {% if not request.user.is_superuser %}hidden{% endif %}>{{cost.id}}</td>
+                                                        <td>{{cost.name}}</td>
+                                                        <td>{{cost.price|floatformat:0}}</td>
+                                                        <td>
+                                                          {% if req.status == 'On Progress' or req.status == 'On Hold' %}
+                                                          {% if is_member %}
+                                                          <button type="button" class="btn btn-sm btn-link text-muted pt-0 pb-0"  data-bs-toggle="modal" data-bs-target="#delete_cost_modal"
+                                                          onclick="prepare_delete_cost({{cost.id}})"><i class="uil-trash"></i></button>
+                                                          {% endif %}
+                                                          {% endif %}
+                                                        </td>
+                                                    </tr>
+                                                    {% endfor %}
+                                                </tbody>
+                                              </table>
+                                              {% else %}
+                                              <div class="timeline-item">
+                                                  <h4 class="text-center pt-3 pb-3">There is no costing in this request.</h4>
+                                              </div>
+                                              {% endif %}
                                             </div>
 
                                         </div>
@@ -1225,6 +1283,25 @@
                   </div>
               </div>
           </div>
+          <!-- Delete Costing -->
+          <div id="delete_cost_modal" class="modal fade" tabindex="-1" role="dialog">
+              <div class="modal-dialog">
+                  <div class="modal-content">
+                      <div class="modal-header modal-colored-header bg-danger">
+                          <h4 class="modal-title"><i class='uil-trash me-1'></i>Delete Costing</h4>
+                          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                      </div>
+                      <div class="modal-body">
+                          <h5 class="mt-3 mb-3 text-center">Are you sure that you want to delete this costing ?</h5>
+                          <input type="text" id="delete_cost_id" hidden>
+                      </div>
+                      <div class="modal-footer">
+                          <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
+                          <button type="button" class="btn btn-danger" onclick="delete_cost()">Confirm</button>
+                      </div>
+                  </div>
+              </div>
+          </div>
         </div>
 
         <!-- bundle -->
@@ -1663,6 +1740,44 @@
               url: '/delete_mcdt/',
               data: {
                 'mcdt_id': mcdt_id,
+              },
+              dataType: 'json',
+              success: function (data) {
+                location.reload();
+              }
+            });
+          }
+
+          function cost_save(){
+            var req_id = $("#req_id").val();
+            var name = $("#cost_name").val();
+            var price = $("#cost_price").val();
+            if(name != "" && price != ""){
+              $.ajax({
+                url: '/cost_save/',
+                data: {
+                  'req_id': req_id,
+                  'name': name,
+                  'price': price,
+                },
+                dataType: 'json',
+                success: function (data) {
+                  location.reload();
+                }
+              });
+            }
+          }
+
+          function prepare_delete_cost(cost_id){
+            $("#delete_cost_id").val(cost_id);
+          }
+
+          function delete_cost(){
+            var cost_id = $("#delete_cost_id").val();
+            $.ajax({
+              url: '/delete_cost/',
+              data: {
+                'cost_id': cost_id,
               },
               dataType: 'json',
               success: function (data) {

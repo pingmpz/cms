@@ -166,6 +166,13 @@ class MachineDowntime(models.Model):
     stop_datetime = models.DateTimeField(null=True)
     date_published = models.DateTimeField(auto_now_add=True)
 
+class Costing(models.Model):
+    id = models.AutoField(primary_key=True)
+    req = models.ForeignKey(Request, on_delete=models.CASCADE)
+    name = models.CharField(max_length=100)
+    price = models.FloatField()
+    date_published = models.DateTimeField(auto_now_add=True)
+
 class TotalOperationTime(models.Model):
     id = models.AutoField(primary_key=True)
     mcg = models.ForeignKey(MachineGroup, on_delete=models.CASCADE)
