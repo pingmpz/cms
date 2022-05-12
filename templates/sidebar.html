@@ -27,7 +27,7 @@
                 <i class="uil-comment-dots m-0"></i>
                 <span>My Request</span>
                 {% if all_page_data.my_request_count != 0 %}
-                <span class="badge bg-danger rounded-pill float-end">{{all_page_data.my_request_count}}</span>
+                <span class="badge bg-info rounded-pill float-end">{{all_page_data.my_request_count}}</span>
                 {% endif %}
             </a>
         </li>
@@ -98,6 +98,16 @@
             </a>
         </li>
 
+        <li class="side-nav-item">
+            <a href="/cri_part_list/" class="side-nav-link">
+                <i class="mdi mdi-nut m-0"></i>
+                <span>Critical Part List</span>
+                {% if all_page_data.is_critical %}
+                <span class="badge bg-danger rounded-pill float-end">&nbsp;!&nbsp;</span>
+                {% endif %}
+            </a>
+        </li>
+
         <li class="side-nav-title side-nav-item">Master</li>
 
         <li class="side-nav-item">
@@ -131,6 +141,7 @@
                 <ul class="side-nav-second-level">
                     <li><a href="/new_emp/">Employee</a></li>
                     <li><a href="/new_mc/">Machine / Device</a></li>
+                    <li><a href="/new_cp/">Critical Part</a></li>
                     <li><a href="/new_task/">Task</a></li>
                     <li><a href="/new_ven/">Vendor</a></li>
                     <li><a href="/new_cat/">Category</a></li>
@@ -149,6 +160,7 @@
             <div class="collapse" id="edit_data">
                 <ul class="side-nav-second-level">
                     <li><a href="/edit_mc/FIRST">Machine / Device</a></li>
+                    <li><a href="/edit_cp/FIRST">Critical Part</a></li>
                     <li><a href="/edit_task/FIRST">Task</a></li>
                     <li><a href="/edit_ven/FIRST">Vendor</a></li>
                 </ul>

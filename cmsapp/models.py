@@ -88,6 +88,18 @@ class MailGroup(models.Model):
     date_modified = models.DateTimeField(auto_now=True)
     date_published = models.DateTimeField(auto_now_add=True)
 
+class CriticalPart(models.Model):
+    id = models.AutoField(primary_key=True)
+    type = models.CharField(max_length=100, null=True)
+    name = models.CharField(max_length=100)
+    mat_code = models.CharField(max_length=100, null=True)
+    amount = models.IntegerField(default=0)
+    unit = models.CharField(max_length=50, null=True)
+    minimum = models.IntegerField(default=0) # 0 = Not Defined
+    note = models.TextField(max_length=1000, null=True)
+    date_modified = models.DateTimeField(auto_now=True)
+    date_published = models.DateTimeField(auto_now_add=True)
+
 class Request(models.Model):
     id = models.AutoField(primary_key=True)
     req_no = models.CharField(max_length=10)

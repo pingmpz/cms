@@ -28,6 +28,7 @@ urlpatterns = [
     path('request_all/<str:fsg>&<str:fstatus>&<str:ftype>', views.request_all, name='request_all'),
     path('request_history/<str:fsg>&<str:fstatus>&<str:ftype>&<str:fstartdate>&<str:fstopdate>', views.request_history, name='request_history'),
     path('my_working_time/<str:fuser>&<str:fstartdate>&<str:fstopdate>', views.my_working_time, name='my_working_time'),
+    path('cri_part_list/', views.cri_part_list, name='cri_part_list'),
     #-- Report
     path('summary/<str:fsg>', views.summary, name='summary'),
     path('report_q_obj/<str:fmcg>&<str:fyear>', views.report_q_obj, name='report_q_obj'),
@@ -45,6 +46,7 @@ urlpatterns = [
     #-- New Data
     path('new_emp/', views.new_emp, name='new_emp'),
     path('new_mc/', views.new_mc, name='new_mc'),
+    path('new_cp/', views.new_cp, name='new_cp'),
     path('new_task/', views.new_task, name='new_task'),
     path('new_ven/', views.new_ven, name='new_ven'),
     path('new_cat/', views.new_cat, name='new_cat'),
@@ -52,6 +54,7 @@ urlpatterns = [
     path('new_mg/', views.new_mg, name='new_mg'),
     #-- Edit Data
     path('edit_mc/<str:fmc>', views.edit_mc, name='edit_mc'),
+    path('edit_cp/<str:fcp>', views.edit_cp, name='edit_cp'),
     path('edit_task/<str:ftask>', views.edit_task, name='edit_task'),
     path('edit_ven/<str:fven>', views.edit_ven, name='edit_ven'),
     ### POST
@@ -62,6 +65,7 @@ urlpatterns = [
     #-- New Data
     path('new_emp_save/', views.new_emp_save, name='new_emp_save'),
     path('new_mc_save/', views.new_mc_save, name='new_mc_save'),
+    path('new_cp_save/', views.new_cp_save, name='new_cp_save'),
     path('new_task_save/', views.new_task_save, name='new_task_save'),
     path('new_ven_save/', views.new_ven_save, name='new_ven_save'),
     path('new_cat_save/', views.new_cat_save, name='new_cat_save'),
@@ -69,12 +73,14 @@ urlpatterns = [
     path('new_mg_save/', views.new_mg_save, name='new_mg_save'),
     #-- Edit Data
     path('edit_mc_save/', views.edit_mc_save, name='edit_mc_save'),
+    path('edit_cp_save/', views.edit_cp_save, name='edit_cp_save'),
     path('edit_task_save/', views.edit_task_save, name='edit_task_save'),
     path('edit_ven_save/', views.edit_ven_save, name='edit_ven_save'),
     ### GET
     path('validate_old_password/', views.validate_old_password, name='validate_old_password'),
     path('validate_username/', views.validate_username, name='validate_username'),
     path('validate_mc_no/', views.validate_mc_no, name='validate_mc_no'),
+    path('validate_cp/', views.validate_cp, name='validate_cp'),
     path('validate_task/', views.validate_task, name='validate_task'),
     path('validate_vendor_code/', views.validate_vendor_code, name='validate_vendor_code'),
     path('validate_category_name/', views.validate_category_name, name='validate_category_name'),
