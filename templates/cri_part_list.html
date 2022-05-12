@@ -68,6 +68,7 @@
                                           <th>Amount/Minimum</th>
                                           <th>Unit</th>
                                           <th>Note</th>
+                                          <th></th>
                                       </tr>
                                   </thead>
                                   <tbody>
@@ -78,11 +79,11 @@
                                           <td>{{cp.name|default_if_none:""}}</td>
                                           <td>{{cp.mat_code|default_if_none:""}}</td>
                                           <td>
-                                            {% if cp.minimum != 0 and cp.amount < cp.minimum %}<span class="badge bg-danger rounded-pill">&nbsp;!&nbsp;</span>{% endif %}
                                             <b>{{cp.amount|default_if_none:""}}{% if cp.minimum != 0 %} / {{cp.minimum|default_if_none:""}}{% endif %}</b>
                                           </td>
                                           <td>{{cp.unit|default_if_none:""}}</td>
                                           <td>{{cp.note|default_if_none:""}}</td>
+                                          <td><a class="btn btn-warning px-1 py-0" href="/edit_cp/{{cp.id}}"><i class="mdi mdi-pencil"></i></a></td>
                                       </tr>
                                       {% endfor %}
                                   </tbody>
@@ -101,7 +102,6 @@
         </div>
 
         <!-- ========== Right Side Bar ========== -->
-
 
         <!-- bundle -->
         <script src="{% static "assets/js/vendor.min.js" %}"></script>
@@ -148,6 +148,8 @@
                 });
               }
           });
+
+
         </script>
 
     </body>
