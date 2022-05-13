@@ -63,6 +63,7 @@
                                       <tr>
                                           <th {% if not request.user.is_superuser %}hidden{% endif %}>ID</th>
                                           <th>Name</th>
+                                          <th>Downtime Estimate Hour</th>
                                       </tr>
                                   </thead>
                                   <tbody>
@@ -70,6 +71,7 @@
                                       <tr>
                                           <td {% if not request.user.is_superuser %}hidden{% endif %}>{{mcg.id}}</td>
                                           <td>{{mcg.name}}</td>
+                                          <td>{{mcg.downtime_est_hour}}</td>
                                       </tr>
                                       {% endfor %}
                                   </tbody>

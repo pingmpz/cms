@@ -24,6 +24,7 @@ class Employee(models.Model):
 class MachineGroup(models.Model):
     id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=50, null=True)
+    downtime_est_hour = models.IntegerField(default=0)
     date_modified = models.DateTimeField(auto_now=True)
     date_published = models.DateTimeField(auto_now_add=True)
 

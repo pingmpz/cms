@@ -667,6 +667,7 @@ def report_q_obj(request, fmcg, fyear):
     tot_hrs = []
     dt_mins = []
     dt_hrs = []
+    dt_pers = []
     mttrs = []
     target_mttrs = []
     mtbfs = []
@@ -695,6 +696,7 @@ def report_q_obj(request, fmcg, fyear):
         # Downtime
         dt_min = 0
         dt_hr = 0
+        dt_per = 0
         for req in reqs:
             mcdts = MachineDowntime.objects.filter(req=req)
             for mcdt in mcdts:
@@ -702,8 +704,11 @@ def report_q_obj(request, fmcg, fyear):
                 hours_diff = (mcdt.stop_datetime - mcdt.start_datetime).total_seconds() / 3600
                 dt_min = int(dt_min + minutes_diff)
                 dt_hr = int(dt_hr + hours_diff)
+            if mcg.downtime_est_hour != 0:
+                dt_per = round(((dt_hr * 100) / (len(mcs) * mcg.downtime_est_hour * 26)), 2)
         dt_mins.append(dt_min)
         dt_hrs.append(dt_hr)
+        dt_pers.append(dt_per)
         # MTTR
         if len(reqs):
             mttrs.append(int(dt_hr/len(reqs)))
@@ -723,11 +728,13 @@ def report_q_obj(request, fmcg, fyear):
         'years': years,
         'fyear': fyear,
         'months': months,
+        'mcs': mcs,
         'req_count': req_count,
         'tot_mins': tot_mins,
         'tot_hrs': tot_hrs,
         'dt_mins': dt_mins,
         'dt_hrs': dt_hrs,
+        'dt_pers': dt_pers,
         'mttrs': mttrs,
         'target_mttrs': target_mttrs,
         'mtbfs': mtbfs,
