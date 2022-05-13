@@ -911,6 +911,13 @@ def new_cp(request):
     return render(request, 'new_cp.html', context)
 
 @login_required(login_url='/')
+def new_sp(request):
+    context = {
+    }
+    context['all_page_data'] = (all_page_data(request))
+    return render(request, 'new_sp.html', context)
+
+@login_required(login_url='/')
 def new_task(request):
     context = {
     }
@@ -986,6 +993,20 @@ def edit_cp(request, fcp):
     }
     context['all_page_data'] = (all_page_data(request))
     return render(request, 'edit_cp.html', context)
+
+@login_required(login_url='/')
+def edit_sp(request, fsp):
+    sps = SplindlePart.objects.all()
+    if fsp == 'FIRST':
+        fsp = sps[0].id
+    sp = SplindlePart.objects.get(id=fsp)
+    context = {
+        'fsp': fsp,
+        'sps': sps,
+        'sp': sp,
+    }
+    context['all_page_data'] = (all_page_data(request))
+    return render(request, 'edit_sp.html', context)
 
 @login_required(login_url='/')
 def edit_task(request, ftask):
@@ -1237,6 +1258,22 @@ def new_cp_save(request):
     cp_new.save()
     return redirect('/new_cp/')
 
+def new_sp_save(request):
+    machine = request.POST['machine'].strip()
+    model = request.POST['model'].strip()
+    amount = int(request.POST['amount'].strip())
+    register_date = request.POST['register_date'] if request.POST['register_date'] != "" else None
+    marker = request.POST['marker'].strip()
+    serial_no = request.POST['serial_no'].strip()
+    nose = request.POST['nose'].strip()
+    max_speed = request.POST['max_speed'].strip()
+    drive_type = request.POST['drive_type'].strip()
+    lubrication = request.POST['lubrication'].strip()
+    condition = request.POST['condition'].strip()
+    sp_new = SplindlePart(machine=machine,model=model,amount=amount,register_date=register_date,marker=marker,serial_no=serial_no,nose=nose,max_speed=max_speed,drive_type=drive_type,lubrication=lubrication,condition=condition)
+    sp_new.save()
+    return redirect('/new_sp/')
+
 def new_task_save(request):
     type = request.POST['type'].strip()
     name = request.POST['name'].strip()
@@ -1327,6 +1364,34 @@ def edit_cp_save(request):
     cp.note = note
     cp.save()
     return redirect('/edit_cp/' + str(cp.id))
+
+def edit_sp_save(request):
+    id = request.POST['id']
+    machine = request.POST['machine'].strip()
+    model = request.POST['model'].strip()
+    amount = int(request.POST['amount'].strip())
+    register_date = request.POST['register_date'] if request.POST['register_date'] != "" else None
+    marker = request.POST['marker'].strip()
+    serial_no = request.POST['serial_no'].strip()
+    nose = request.POST['nose'].strip()
+    max_speed = request.POST['max_speed'].strip()
+    drive_type = request.POST['drive_type'].strip()
+    lubrication = request.POST['lubrication'].strip()
+    condition = request.POST['condition'].strip()
+    sp = SplindlePart.objects.get(id=id)
+    sp.machine = machine
+    sp.model = model
+    sp.amount = amount
+    sp.register_date = register_date
+    sp.marker = marker
+    sp.serial_no = serial_no
+    sp.nose = nose
+    sp.max_speed = max_speed
+    sp.drive_type = drive_type
+    sp.lubrication = lubrication
+    sp.condition = condition
+    sp.save()
+    return redirect('/edit_sp/' + str(sp.id))
 
 def edit_task_save(request):
     is_active = True if request.POST.get('is_active', False) == 'on' else False

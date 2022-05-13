@@ -48,6 +48,7 @@ urlpatterns = [
     path('new_emp/', views.new_emp, name='new_emp'),
     path('new_mc/', views.new_mc, name='new_mc'),
     path('new_cp/', views.new_cp, name='new_cp'),
+    path('new_sp/', views.new_sp, name='new_sp'),
     path('new_task/', views.new_task, name='new_task'),
     path('new_ven/', views.new_ven, name='new_ven'),
     path('new_cat/', views.new_cat, name='new_cat'),
@@ -56,6 +57,7 @@ urlpatterns = [
     #-- Edit Data
     path('edit_mc/<str:fmc>', views.edit_mc, name='edit_mc'),
     path('edit_cp/<str:fcp>', views.edit_cp, name='edit_cp'),
+    path('edit_sp/<str:fsp>', views.edit_sp, name='edit_sp'),
     path('edit_task/<str:ftask>', views.edit_task, name='edit_task'),
     path('edit_ven/<str:fven>', views.edit_ven, name='edit_ven'),
     ### POST
@@ -67,6 +69,7 @@ urlpatterns = [
     path('new_emp_save/', views.new_emp_save, name='new_emp_save'),
     path('new_mc_save/', views.new_mc_save, name='new_mc_save'),
     path('new_cp_save/', views.new_cp_save, name='new_cp_save'),
+    path('new_sp_save/', views.new_sp_save, name='new_sp_save'),
     path('new_task_save/', views.new_task_save, name='new_task_save'),
     path('new_ven_save/', views.new_ven_save, name='new_ven_save'),
     path('new_cat_save/', views.new_cat_save, name='new_cat_save'),
@@ -75,6 +78,7 @@ urlpatterns = [
     #-- Edit Data
     path('edit_mc_save/', views.edit_mc_save, name='edit_mc_save'),
     path('edit_cp_save/', views.edit_cp_save, name='edit_cp_save'),
+    path('edit_sp_save/', views.edit_sp_save, name='edit_sp_save'),
     path('edit_task_save/', views.edit_task_save, name='edit_task_save'),
     path('edit_ven_save/', views.edit_ven_save, name='edit_ven_save'),
     ### GET
