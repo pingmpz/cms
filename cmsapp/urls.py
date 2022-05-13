@@ -29,6 +29,7 @@ urlpatterns = [
     path('request_history/<str:fsg>&<str:fstatus>&<str:ftype>&<str:fstartdate>&<str:fstopdate>', views.request_history, name='request_history'),
     path('my_working_time/<str:fuser>&<str:fstartdate>&<str:fstopdate>', views.my_working_time, name='my_working_time'),
     path('cri_part_list/', views.cri_part_list, name='cri_part_list'),
+    path('spl_part_list/', views.spl_part_list, name='spl_part_list'),
     #-- Report
     path('summary/<str:fsg>', views.summary, name='summary'),
     path('report_q_obj/<str:fmcg>&<str:fyear>', views.report_q_obj, name='report_q_obj'),

@@ -50,13 +50,7 @@
                                     <div class="page-title-right d-flex" style="width:40%">
                                       <select class="form-control form-control-sm select2" data-toggle="select2" name="fcp" id="fcp">
                                         {% for icp in cps %}
-                                        {% if set_cp|index:forloop.counter0 != None %}
-                                        <optgroup label="{{set_cp|index:forloop.counter0}}">
-                                        {% endif %}
                                         <option value="{{icp.id}}" {% if fcp == icp.id|intcomma %}selected{% endif %}>▪️ {{icp.name}}</option>
-                                        {% if set_cp|index:forloop.counter1 != None %}
-                                        </optgroup>
-                                        {% endif %}
                                         {% endfor %}
                                       </select>
                                       <button type="button" class="btn btn-success btn-sm ms-2" id="save_button" onclick="save()"><i class="mdi mdi-content-save"></i></button>
@@ -94,30 +88,21 @@
                                     </div>
 
                                     <div class="mb-3">
-                                        <label class="form-label">Type</label>
-                                        <input class="form-control" type="text" name="type" id="type" value="{{cp.type}}">
-                                    </div>
-
-                                    <div class="mb-3">
                                         <div class="row">
 
                                           <div class="col-6">
                                             <label class="form-label">Amount</label>
+                                            <p class="text-muted font-12">&nbsp;</p>
                                             <input class="form-control" type="text" name="amount" id="amount" value="{{cp.amount}}">
                                           </div>
 
                                           <div class="col-6">
-                                            <label class="form-label">Unit</label>
-                                            <input class="form-control" type="text" name="unit" id="unit" value="{{cp.unit}}">
+                                            <label class="form-label">Minimum</label>
+                                            <p class="text-muted font-12">If there is no minimum please set this value at 0</p>
+                                            <input class="form-control" type="text" name="minimum" id="minimum" value="{{cp.minimum}}">
                                           </div>
 
                                         </div>
-                                    </div>
-
-                                    <div class="mb-3">
-                                        <label class="form-label">Minimum</label>
-                                        <p class="text-muted font-12">If there is no minimum please set this value at 0</p>
-                                        <input class="form-control" type="text" name="minimum" id="minimum" value="{{cp.minimum}}">
                                     </div>
 
                                     <div class="mb-3">
@@ -156,7 +141,7 @@
 
           function save(){
             // Clear Validate
-            remove_valids(['type','name','mat_code','amount','unit','minimum','note']);
+            remove_valids(['name','mat_code','amount','minimum','note']);
             set_text_emptys(['invalid_text']);
             // Function
             document.getElementById('form').submit();

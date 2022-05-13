@@ -74,30 +74,21 @@
                                     </div>
 
                                     <div class="mb-3">
-                                        <label class="form-label">Type</label>
-                                        <input class="form-control" type="text" name="type" id="type">
-                                    </div>
-
-                                    <div class="mb-3">
                                         <div class="row">
 
                                           <div class="col-6">
                                             <label class="form-label">Amount</label>
+                                            <p class="text-muted font-12">&nbsp;</p>
                                             <input class="form-control" type="text" name="amount" id="amount" value="0">
                                           </div>
 
                                           <div class="col-6">
-                                            <label class="form-label">Unit</label>
-                                            <input class="form-control" type="text" name="unit" id="unit">
+                                            <label class="form-label">Minimum</label>
+                                            <p class="text-muted font-12">If there is no minimum please set this value at 0</p>
+                                            <input class="form-control" type="text" name="minimum" id="minimum" value="0">
                                           </div>
 
                                         </div>
-                                    </div>
-
-                                    <div class="mb-3">
-                                        <label class="form-label">Minimum</label>
-                                        <p class="text-muted font-12">If there is no minimum please set this value at 0</p>
-                                        <input class="form-control" type="text" name="minimum" id="minimum" value="0">
                                     </div>
 
                                     <div class="mb-3">
@@ -136,7 +127,7 @@
 
           function save(){
             // Clear Validate
-            remove_valids(['type','name','mat_code','amount','unit','minimum','note']);
+            remove_valids(['name','mat_code','amount','minimum','note']);
             set_text_emptys(['invalid_text']);
             // Function
             validate_cp(function(result) {

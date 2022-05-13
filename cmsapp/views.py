@@ -29,7 +29,7 @@ from django_line_notification.line_notify import Line
 
 import random
 
-from .models import SectionGroup, Employee, MachineGroup, Machine, Task, Vendor, Category, SubCategory, MailGroup, CriticalPart, Request, File, Member, RequestVendor, Comment, RequestSubCategory, OperatorWorkingTime, VendorWorkingTime, MachineDowntime, Costing, TotalOperationTime, QualityObjectiveTarget
+from .models import SectionGroup, Employee, MachineGroup, Machine, Task, Vendor, Category, SubCategory, MailGroup, CriticalPart, SplindlePart, Request, File, Member, RequestVendor, Comment, RequestSubCategory, OperatorWorkingTime, VendorWorkingTime, MachineDowntime, Costing, TotalOperationTime, QualityObjectiveTarget
 
 HOST_URL = 'http://129.1.100.185:8200/'
 TEMPLATE_REQUEST = 'email_templates/request.html'
@@ -284,14 +284,17 @@ def all_page_data(request):
     all_request_count = len(all_reqs)
 
     cps = CriticalPart.objects.all()
-    is_critical = get_is_critical(cps)
+    is_not_enough_cp = get_is_not_enough_cp(cps)
+    sps = SplindlePart.objects.all()
+    is_not_enough_sp = get_is_not_enough_sp(sps)
     context = {
         'is_in': is_in,
         'my_request_count': my_request_count,
         'pending_request_count': pending_request_count,
         'pv_pending_request_count': pv_pending_request_count,
         'all_request_count': all_request_count,
-        'is_critical': is_critical,
+        'is_not_enough_cp': is_not_enough_cp,
+        'is_not_enough_sp': is_not_enough_sp,
     }
     return context
 
@@ -485,6 +488,15 @@ def cri_part_list(request):
     }
     context['all_page_data'] = (all_page_data(request))
     return render(request, 'cri_part_list.html', context)
+
+@login_required(login_url='/')
+def spl_part_list(request):
+    sps = SplindlePart.objects.all()
+    context = {
+        'sps': sps,
+    }
+    context['all_page_data'] = (all_page_data(request))
+    return render(request, 'spl_part_list.html', context)
 
 #----------------------------------- Report -----------------------------------#
 
@@ -963,15 +975,13 @@ def edit_mc(request, fmc):
 
 @login_required(login_url='/')
 def edit_cp(request, fcp):
-    cps = CriticalPart.objects.all().order_by('type')
-    set_cp = get_set_cp(cps)
+    cps = CriticalPart.objects.all().order_by('name')
     if fcp == 'FIRST':
         fcp = cps[0].id
     cp = CriticalPart.objects.get(id=fcp)
     context = {
         'fcp': fcp,
         'cps': cps,
-        'set_cp': set_cp,
         'cp': cp,
     }
     context['all_page_data'] = (all_page_data(request))
@@ -1220,12 +1230,10 @@ def new_mc_save(request):
 def new_cp_save(request):
     name = request.POST['name'].strip()
     mat_code = request.POST['mat_code'].strip()
-    type = request.POST['type'].strip()
     amount = int(request.POST['amount'].strip())
-    unit = request.POST['unit'].strip()
     minimum = int(request.POST['minimum'].strip())
     note = request.POST['note']
-    cp_new = CriticalPart(name=name,mat_code=mat_code,type=type,amount=amount,unit=unit,minimum=minimum,note=note)
+    cp_new = CriticalPart(name=name,mat_code=mat_code,amount=amount,minimum=minimum,note=note)
     cp_new.save()
     return redirect('/new_cp/')
 
@@ -1309,16 +1317,12 @@ def edit_mc_save(request):
 def edit_cp_save(request):
     id = request.POST['id']
     mat_code = request.POST['mat_code'].strip()
-    type = request.POST['type'].strip()
     amount = int(request.POST['amount'].strip())
-    unit = request.POST['unit'].strip()
     minimum = int(request.POST['minimum'].strip())
     note = request.POST['note']
     cp = CriticalPart.objects.get(id=id)
     cp.mat_code = mat_code
-    cp.type = type
     cp.amount = amount
-    cp.unit = unit
     cp.minimum = minimum
     cp.note = note
     cp.save()
@@ -1865,17 +1869,6 @@ def get_set_mc(mcs):
             set_mc.append(None)
     return set_mc
 
-def get_set_cp(cps):
-    set_cp = []
-    temp = ""
-    for cp in cps:
-        if temp != cp.type:
-            temp = cp.type
-            set_cp.append(cp.type)
-        else:
-            set_cp.append(None)
-    return set_cp
-
 def get_set_task(tasks):
     set_task = []
     temp = ""
@@ -2034,9 +2027,15 @@ def get_total_cost(costs):
         result = result + cost.price
     return result
 
-def get_is_critical(cps):
+def get_is_not_enough_cp(cps):
     for cp in cps:
-        if cp.minimum != 0 and cp.amount < cp.minimum:
+        if (cp.minimum != 0 and cp.amount < cp.minimum) or (cp.minimum == 0 and cp.amount == 0):
+            return True
+    return False
+
+def get_is_not_enough_sp(sps):
+    for sp in sps:
+        if sp.amount == 0:
             return True
     return False
 

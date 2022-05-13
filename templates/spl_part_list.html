@@ -4,7 +4,7 @@
 <html lang="en">
     <head>
         <meta charset="utf-8" />
-        <title>Critical Part List | C.C.S. Maintenance Service</title>
+        <title>Splindle Part List | C.C.S. Maintenance Service</title>
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <meta content="A fully featured admin theme which can be used to build CRM, CMS, etc." name="description" />
         <meta content="Coderthemes" name="author" />
@@ -48,7 +48,7 @@
                                     <div class="page-title-right d-flex">
                                         <button type="button" class="btn btn-sm btn-link py-0" style="height:30px" onclick="window.scrollTo(0,document.body.scrollHeight);"><i class='mdi mdi-chevron-double-down'></i></a>
                                     </div>
-                                    <h4 class="page-title"><i class="mdi mdi-nut"></i> Critical Part List ({{cps|length}})</h4>
+                                    <h4 class="page-title"><i class="mdi mdi-nut"></i> Splindle Part List ({{sps|length}})</h4>
                                 </div>
                             </div>
                         </div>
@@ -62,22 +62,36 @@
                                   <thead>
                                       <tr>
                                           <th {% if not request.user.is_superuser %}hidden{% endif %}>ID</th>
-                                          <th>Name</th>
-                                          <th>Mat Code</th>
-                                          <th>Amount/Minimum</th>
-                                          <th>Note</th>
+                                          <th>Machine</th>
+                                          <th>Model</th>
+                                          <th>Amount</th>
+                                          <th>Date</th>
+                                          <th>Marker</th>
+                                          <th>S/N</th>
+                                          <th>Nose</th>
+                                          <th>Max Speed</th>
+                                          <th>Drive Type</th>
+                                          <th>Lubrication</th>
+                                          <th>Condition</th>
                                           <th></th>
                                       </tr>
                                   </thead>
                                   <tbody>
-                                      {% for cp in cps %}
-                                      <tr {% if cp.minimum != 0 and cp.amount < cp.minimum %}class="text-danger"{% endif %} {% if cp.minimum == 0 and cp.amount == 0 %}class="text-danger"{% endif %}>
-                                          <td {% if not request.user.is_superuser %}hidden{% endif %}>{{cp.id}}</td>
-                                          <td>{{cp.name|default_if_none:""}}</td>
-                                          <td>{{cp.mat_code|default_if_none:""}}</td>
-                                          <td><b>{{cp.amount|default_if_none:""}}{% if cp.minimum != 0 %} / {{cp.minimum|default_if_none:""}}{% endif %}</b></td>
-                                          <td>{{cp.note|default_if_none:""}}</td>
-                                          <td><a class="btn btn-warning px-1 py-0" href="/edit_cp/{{cp.id}}"><i class="mdi mdi-pencil"></i></a></td>
+                                      {% for sp in sps %}
+                                      <tr {% if sp.amount == 0 %}class="text-danger"{% endif %}>
+                                          <td {% if not request.user.is_superuser %}hidden{% endif %}>{{sp.id}}</td>
+                                          <td>{{sp.machine|default_if_none:""}}</td>
+                                          <td>{{sp.model|default_if_none:""}}</td>
+                                          <td><b>{{sp.amount|default_if_none:""}}</b></td>
+                                          <td>{{sp.register_date|default_if_none:""}}</td>
+                                          <td>{{sp.marker|default_if_none:""}}</td>
+                                          <td>{{sp.serial_no|default_if_none:""}}</td>
+                                          <td>{{sp.nose|default_if_none:""}}</td>
+                                          <td>{{sp.max_speed|default_if_none:""}}</td>
+                                          <td>{{sp.drive_type|default_if_none:""}}</td>
+                                          <td>{{sp.lubrication|default_if_none:""}}</td>
+                                          <td>{{sp.condition|default_if_none:""}}</td>
+                                          <td><a class="btn btn-warning px-1 py-0" href="/edit_sp/{{sp.id}}"><i class="mdi mdi-pencil"></i></a></td>
                                       </tr>
                                       {% endfor %}
                                   </tbody>

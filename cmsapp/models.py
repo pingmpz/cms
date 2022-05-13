@@ -90,13 +90,27 @@ class MailGroup(models.Model):
 
 class CriticalPart(models.Model):
     id = models.AutoField(primary_key=True)
-    type = models.CharField(max_length=100, null=True)
     name = models.CharField(max_length=100)
     mat_code = models.CharField(max_length=100, null=True)
     amount = models.IntegerField(default=0)
-    unit = models.CharField(max_length=50, null=True)
     minimum = models.IntegerField(default=0) # 0 = Not Defined
     note = models.TextField(max_length=1000, null=True)
+    date_modified = models.DateTimeField(auto_now=True)
+    date_published = models.DateTimeField(auto_now_add=True)
+
+class SplindlePart(models.Model):
+    id = models.AutoField(primary_key=True)
+    machine = models.CharField(max_length=100, null=True)
+    model = models.CharField(max_length=100, null=True)
+    amount = models.IntegerField(default=0)
+    register_date = models.DateField(null=True)
+    marker = models.CharField(max_length=100, null=True)
+    serial_no = models.CharField(max_length=100, null=True)
+    nose = models.CharField(max_length=100, null=True)
+    max_speed = models.CharField(max_length=100, null=True)
+    drive_type = models.CharField(max_length=100, null=True)
+    lubrication = models.CharField(max_length=100, null=True)
+    condition = models.CharField(max_length=100, null=True)
     date_modified = models.DateTimeField(auto_now=True)
     date_published = models.DateTimeField(auto_now_add=True)
 
