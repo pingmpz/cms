@@ -61,7 +61,7 @@
                                 <table id="master_table" class="table table-sm nowrap table-responsive row-border order-column w-100 small">
                                   <thead>
                                       <tr>
-                                          <th {% if not request.user.is_superuser %}hidden{% endif %}>ID</th>
+                                          <th>ID</th>
                                           <th>Machine</th>
                                           <th>Model</th>
                                           <th>Amount</th>
@@ -79,7 +79,7 @@
                                   <tbody>
                                       {% for sp in sps %}
                                       <tr {% if sp.amount == 0 %}class="text-danger"{% endif %}>
-                                          <td {% if not request.user.is_superuser %}hidden{% endif %}>{{sp.id}}</td>
+                                          <td>{{sp.id}}</td>
                                           <td>{{sp.machine|default_if_none:""}}</td>
                                           <td>{{sp.model|default_if_none:""}}</td>
                                           <td><b>{{sp.amount|default_if_none:""}}</b></td>
