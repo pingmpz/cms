@@ -665,7 +665,7 @@ def report_q_obj(request, fmcg, fyear):
     req_count = []
     tot_mins = []
     tot_hrs = []
-    ewt_mins = []
+    ewt_hrs = []
     dt_mins = []
     dt_hrs = []
     dt_pers = []
@@ -695,8 +695,8 @@ def report_q_obj(request, fmcg, fyear):
         tot_mins.append(tot_min)
         tot_hrs.append(tot_hr)
         # EstimateWorkingTime
-        ewt_min = get_ewt(mcg, fyear, month_no)
-        ewt_mins.append(ewt_min)
+        ewt_hr = get_ewt(mcg, fyear, month_no)
+        ewt_hrs.append(ewt_hr)
         # Downtime
         dt_min = 0
         dt_hr = 0
@@ -708,8 +708,8 @@ def report_q_obj(request, fmcg, fyear):
                 hours_diff = (mcdt.stop_datetime - mcdt.start_datetime).total_seconds() / 3600
                 dt_min = int(dt_min + minutes_diff)
                 dt_hr = int(dt_hr + hours_diff)
-        if ewt_min != 0:
-            dt_per = round(((dt_min * 100) / ewt_min), 2)
+        if ewt_hr != 0:
+            dt_per = round(((dt_hr * 100) / ewt_hr), 2)
         dt_mins.append(dt_min)
         dt_hrs.append(dt_hr)
         dt_pers.append((dt_per))
@@ -735,7 +735,7 @@ def report_q_obj(request, fmcg, fyear):
         'req_count': req_count,
         'tot_mins': tot_mins,
         'tot_hrs': tot_hrs,
-        'ewt_mins': ewt_mins,
+        'ewt_hrs': ewt_hrs,
         'dt_mins': dt_mins,
         'dt_hrs': dt_hrs,
         'dt_pers': dt_pers,

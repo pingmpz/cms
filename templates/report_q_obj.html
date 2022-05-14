@@ -93,7 +93,7 @@
                                       <tr>
                                           <th>Minute</th>
                                           <th>Hour</th>
-                                          <th>Minute</th>
+                                          <th>Hour</th>
                                           <th>Minute</th>
                                           <th>Hour</th>
                                           <th>%</th>
@@ -110,7 +110,7 @@
                                         <td>{{req_count|index:forloop.counter0}}</td>
                                         <td>{{tot_mins|index:forloop.counter0}}</td>
                                         <td>{{tot_hrs|index:forloop.counter0}}</td>
-                                        <td>{{ewt_mins|index:forloop.counter0}}</td>
+                                        <td>{{ewt_hrs|index:forloop.counter0}}</td>
                                         <td>{{dt_mins|index:forloop.counter0}}</td>
                                         <td>{{dt_hrs|index:forloop.counter0}}</td>
                                         <td>{{dt_pers|index:forloop.counter0}}%</td>
@@ -123,7 +123,7 @@
                                   </tbody>
                                 </table>
                                 <p class="m-0 font-12"><u><b>Formula</b></u></p>
-                                <p class="m-0 font-12"><i class="mdi mdi-arrow-up-bold text-danger" style="margin-right:-4px"></i><i class="mdi mdi-arrow-down-bold text-success"></i> Downtime (%) = Downtime (Minute) * 100 / Estimate Working Time</p>
+                                <p class="m-0 font-12"><i class="mdi mdi-arrow-up-bold text-danger" style="margin-right:-4px"></i><i class="mdi mdi-arrow-down-bold text-success"></i> Downtime (%) = Downtime (Hour) * 100 / Estimate Working Time</p>
                                 <p class="m-0 font-12"><i class="mdi mdi-arrow-up-bold text-danger" style="margin-right:-4px"></i><i class="mdi mdi-arrow-down-bold text-success"></i> Mean time to repair (MTTR) = Downtime (Hour) / No of Request</p>
                                 <p class="m-0 font-12"><i class="mdi mdi-arrow-up-bold text-success" style="margin-right:-4px"></i><i class="mdi mdi-arrow-down-bold text-danger"></i> Mean time between failures (MTBF) = Total Operation Time (Hour) / No of Request</p>
                                 <p class="m-0 font-12"><u><b>Conditions</b></u></p>
@@ -213,7 +213,7 @@
                       </div>
 
                       <div class="mb-3">
-                          <label class="form-label">Estimate Time (Minute)</label>
+                          <label class="form-label">Estimate Time (Hour)</label>
                           <input class="form-control" type="text" name="ewt_time" id="ewt_time">
                       </div>
 
