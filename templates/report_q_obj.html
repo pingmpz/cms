@@ -59,7 +59,8 @@
                                           <option value="{{mcg.id}}" {% if fmcg|add:"0" == mcg.id %}selected{% endif %}>{{mcg.name}}</option>
                                           {% endfor %}
                                       </select>
-                                      <button type="button" class="btn btn-sm btn-warning ms-2" data-bs-toggle="modal" data-bs-target="#edit_tot_modal" title="Edit Total Operation Time"><i class="mdi mdi-calendar-edit"></i></button>
+                                      <button type="button" class="btn btn-sm btn-warning ms-2" data-bs-toggle="modal" data-bs-target="#set_tot_modal" title="Set Total Operation Time"><i class="mdi mdi-calendar-edit"></i></button>
+                                      <button type="button" class="btn btn-sm btn-info ms-1" data-bs-toggle="modal" data-bs-target="#set_ewt_modal" title="Set Estimate Working Time"><i class="mdi mdi-human-edit"></i></button>
                                       <button type="button" class="btn btn-sm btn-danger ms-1" data-bs-toggle="modal" data-bs-target="#set_target_modal" title="Set Target"><i class="mdi mdi-target"></i></button>
                                     </div>
                                     <h4 class="page-title"><i class="mdi mdi-podium-gold"></i> Quality Objective (MA)</h4>
@@ -78,24 +79,23 @@
                                 <table id="report_table" class="table table-striped table-sm table-bordered w-100 small text-center" style="table-layout:fixed;">
                                   <thead class="table-dark">
                                       <tr>
-                                          <th colspan="11"><h3>Quality Objective {{fyear}} ({{mcg.name}})</h3></th>
-                                      </tr>
-                                      <tr class="text-warning">
-                                          <th colspan="11">Downtime Estimate Hour : {{mcg.downtime_est_hour}} , Machine Count : {{mcs|length}}</th>
+                                          <th colspan="12"><h3>Quality Objective {{fyear}} ({{mcg.name}})</h3></th>
                                       </tr>
                                       <tr>
                                           <th class="align-middle"rowspan="2">Month</th>
                                           <th class="align-middle" rowspan="2">No of Request</th>
                                           <th colspan="2">Total Operation Time</th>
+                                          <th>Estimate Working Time</th>
                                           <th colspan="3">Downtime</th>
                                           <th colspan="2">MTTR</th>
                                           <th colspan="2">MTBF</th>
                                       </tr>
                                       <tr>
-                                          <th>Minutes</th>
-                                          <th>Hours</th>
-                                          <th>Minutes</th>
-                                          <th>Hours</th>
+                                          <th>Minute</th>
+                                          <th>Hour</th>
+                                          <th>Minute</th>
+                                          <th>Minute</th>
+                                          <th>Hour</th>
                                           <th>%</th>
                                           <th>Actual</th>
                                           <th>Target <=</th>
@@ -110,9 +110,10 @@
                                         <td>{{req_count|index:forloop.counter0}}</td>
                                         <td>{{tot_mins|index:forloop.counter0}}</td>
                                         <td>{{tot_hrs|index:forloop.counter0}}</td>
+                                        <td>{{ewt_mins|index:forloop.counter0}}</td>
                                         <td>{{dt_mins|index:forloop.counter0}}</td>
                                         <td>{{dt_hrs|index:forloop.counter0}}</td>
-                                        <td>{{dt_pers|index:forloop.counter0}}</td>
+                                        <td>{{dt_pers|index:forloop.counter0}}{% if dt_pers|index:forloop.counter0 == 0 %}0{% endif %}%</td>
                                         <td {% if mttrs|index:forloop.counter0 > target_mttrs|index:forloop.counter0 %}class="text-danger"{% endif %}>{{mttrs|index:forloop.counter0}}</td>
                                         <td>{{target_mttrs|index:forloop.counter0}}</td>
                                         <td {% if mtbfs|index:forloop.counter0 < target_mtbfs|index:forloop.counter0 %}class="text-danger"{% endif %}>{{mtbfs|index:forloop.counter0}}</td>
@@ -122,7 +123,7 @@
                                   </tbody>
                                 </table>
                                 <p class="m-0 font-12"><u><b>Formula</b></u></p>
-                                <p class="m-0 font-12"><i class="mdi mdi-arrow-up-bold text-danger" style="margin-right:-4px"></i><i class="mdi mdi-arrow-down-bold text-success"></i> Downtime (%) = Downtime (Hour) * 100 / (Machine Count * Downtime Estimate Hour * 26)</p>
+                                <p class="m-0 font-12"><i class="mdi mdi-arrow-up-bold text-danger" style="margin-right:-4px"></i><i class="mdi mdi-arrow-down-bold text-success"></i> Downtime (%) = Downtime (Minute) * 100 / Estimate Working Time</p>
                                 <p class="m-0 font-12"><i class="mdi mdi-arrow-up-bold text-danger" style="margin-right:-4px"></i><i class="mdi mdi-arrow-down-bold text-success"></i> Mean time to repair (MTTR) = Downtime (Hour) / No of Request</p>
                                 <p class="m-0 font-12"><i class="mdi mdi-arrow-up-bold text-success" style="margin-right:-4px"></i><i class="mdi mdi-arrow-down-bold text-danger"></i> Mean time between failures (MTBF) = Total Operation Time (Hour) / No of Request</p>
                                 <p class="m-0 font-12"><u><b>Conditions</b></u></p>
@@ -140,12 +141,12 @@
             </div>
         </div>
 
-        <!-- Edit Total Operation Time Modal -->
-        <div id="edit_tot_modal" class="modal fade" tabindex="-1" role="dialog">
+        <!-- Set Total Operation Time Modal -->
+        <div id="set_tot_modal" class="modal fade" tabindex="-1" role="dialog">
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header modal-colored-header bg-warning">
-                        <h4 class="modal-title"><i class="mdi mdi-calendar-edit"></i> Edit Total Operation Time</h4>
+                        <h4 class="modal-title"><i class="mdi mdi-calendar-edit"></i> Set Total Operation Time</h4>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
@@ -170,14 +171,56 @@
                       </div>
 
                       <div class="mb-3">
-                          <label class="form-label">Total Operation Time (Minutes)</label>
+                          <label class="form-label">Total Operation Time (Minute)</label>
                           <input class="form-control" type="text" name="tot_time" id="tot_time">
                       </div>
 
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
-                        <button type="button" class="btn btn-warning" onclick="edit_tot()">Confirm</button>
+                        <button type="button" class="btn btn-warning" onclick="set_tot()">Confirm</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Set Estimate Working Time Modal -->
+        <div id="set_ewt_modal" class="modal fade" tabindex="-1" role="dialog">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header modal-colored-header bg-info">
+                        <h4 class="modal-title"><i class="mdi mdi-calendar-edit"></i> Set Total Operation Time</h4>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+
+                      <div class="mb-3">
+                          <label class="form-label">Machine Group</label>
+                          <input class="form-control" type="text" value='{{mcg.name}}' readonly>
+                      </div>
+
+                      <div class="mb-3">
+                          <label class="form-label">Year</label>
+                          <input class="form-control" type="text" value='{{fyear}}' readonly>
+                      </div>
+
+                      <div class="mb-3">
+                          <label class="form-label">Month</label>
+                          <select class="form-control" name="ewt_month" id="ewt_month">
+                            {% for month in months %}
+                            <option value="{{forloop.counter}}">{{month}}</option>
+                            {% endfor %}
+                          </select>
+                      </div>
+
+                      <div class="mb-3">
+                          <label class="form-label">Estimate Time (Minute)</label>
+                          <input class="form-control" type="text" name="ewt_time" id="ewt_time">
+                      </div>
+
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-info" onclick="set_ewt()">Confirm</button>
                     </div>
                 </div>
             </div>
@@ -220,7 +263,7 @@
                       </div>
 
                       <div class="mb-3">
-                          <label class="form-label">Target Time (Hours)</label>
+                          <label class="form-label">Target Time (Hour)</label>
                           <input class="form-control" type="text" name="target_time" id="target_time">
                       </div>
 
@@ -257,14 +300,36 @@
         <script src="{% static "assets/js/vendor/fixedHeader.bootstrap5.min.js" %}"></script>
 
         <script type="text/javascript">
-          function edit_tot(){
+          function set_tot(){
             var mcg_id = $("#mcg_id").val();
             var year = $("#year").val();
             var month = $("#tot_month").val();
             var time = $("#tot_time").val();
             if(time.length > 0){
               $.ajax({
-                url: '/edit_tot/',
+                url: '/set_tot/',
+                data: {
+                  'mcg_id': mcg_id,
+                  'year': year,
+                  'month': month,
+                  'time': time,
+                },
+                dataType: 'json',
+                success: function (data) {
+                  location.reload();
+                }
+              });
+            }
+          }
+
+          function set_ewt(){
+            var mcg_id = $("#mcg_id").val();
+            var year = $("#year").val();
+            var month = $("#ewt_month").val();
+            var time = $("#ewt_time").val();
+            if(time.length > 0){
+              $.ajax({
+                url: '/set_ewt/',
                 data: {
                   'mcg_id': mcg_id,
                   'year': year,
@@ -304,6 +369,11 @@
           }
 
           $("#tot_time").on("keypress keyup blur",function (event) {
+             $(this).val($(this).val().replace(/[^\d].+/, ""));
+             if((event.which < 48 || event.which > 57)) event.preventDefault();
+          });
+
+          $("#ewt_time").on("keypress keyup blur",function (event) {
              $(this).val($(this).val().replace(/[^\d].+/, ""));
              if((event.which < 48 || event.which > 57)) event.preventDefault();
           });

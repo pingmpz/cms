@@ -29,7 +29,7 @@ from django_line_notification.line_notify import Line
 
 import random
 
-from .models import SectionGroup, Employee, MachineGroup, Machine, Task, Vendor, Category, SubCategory, MailGroup, CriticalPart, SplindlePart, Request, File, Member, RequestVendor, Comment, RequestSubCategory, OperatorWorkingTime, VendorWorkingTime, MachineDowntime, Costing, TotalOperationTime, QualityObjectiveTarget
+from .models import SectionGroup, Employee, MachineGroup, Machine, Task, Vendor, Category, SubCategory, MailGroup, CriticalPart, SplindlePart, Request, File, Member, RequestVendor, Comment, RequestSubCategory, OperatorWorkingTime, VendorWorkingTime, MachineDowntime, Costing, TotalOperationTime, QualityObjectiveTarget, EstimateWorkingTime
 
 HOST_URL = 'http://129.1.100.185:8200/'
 TEMPLATE_REQUEST = 'email_templates/request.html'
@@ -90,7 +90,7 @@ def logout_action(request):
 
 @login_required(login_url='/')
 def setting(request):
-    # update_machine()
+    # update_critical_part_list()
     users = []
     set_user = []
     if request.user.is_superuser or request.user.is_staff:
@@ -665,6 +665,7 @@ def report_q_obj(request, fmcg, fyear):
     req_count = []
     tot_mins = []
     tot_hrs = []
+    ewt_mins = []
     dt_mins = []
     dt_hrs = []
     dt_pers = []
@@ -693,6 +694,9 @@ def report_q_obj(request, fmcg, fyear):
             tot_hr = int(tot.time / 60)
         tot_mins.append(tot_min)
         tot_hrs.append(tot_hr)
+        # EstimateWorkingTime
+        ewt_min = get_ewt(mcg, fyear, month_no)
+        ewt_mins.append(ewt_min)
         # Downtime
         dt_min = 0
         dt_hr = 0
@@ -704,11 +708,11 @@ def report_q_obj(request, fmcg, fyear):
                 hours_diff = (mcdt.stop_datetime - mcdt.start_datetime).total_seconds() / 3600
                 dt_min = int(dt_min + minutes_diff)
                 dt_hr = int(dt_hr + hours_diff)
-            if mcg.downtime_est_hour != 0:
-                dt_per = round(((dt_hr * 100) / (len(mcs) * mcg.downtime_est_hour * 26)), 2)
+        if ewt_min != 0:
+            dt_per = round(((dt_min * 100) / ewt_min), 2)
         dt_mins.append(dt_min)
         dt_hrs.append(dt_hr)
-        dt_pers.append(dt_per)
+        dt_pers.append((dt_per))
         # MTTR
         if len(reqs):
             mttrs.append(int(dt_hr/len(reqs)))
@@ -728,10 +732,10 @@ def report_q_obj(request, fmcg, fyear):
         'years': years,
         'fyear': fyear,
         'months': months,
-        'mcs': mcs,
         'req_count': req_count,
         'tot_mins': tot_mins,
         'tot_hrs': tot_hrs,
+        'ewt_mins': ewt_mins,
         'dt_mins': dt_mins,
         'dt_hrs': dt_hrs,
         'dt_pers': dt_pers,
@@ -1861,7 +1865,7 @@ def delete_cost(request):
     }
     return JsonResponse(data)
 
-def edit_tot(request):
+def set_tot(request):
     mcg_id = request.GET['mcg_id']
     year = request.GET['year']
     month = request.GET['month']
@@ -1873,6 +1877,20 @@ def edit_tot(request):
         tot.delete()
     tot_new = TotalOperationTime(mcg=mcg,year=year,month=month,time=time)
     tot_new.save()
+    data = {
+    }
+    return JsonResponse(data)
+
+def set_ewt(request):
+    mcg_id = request.GET['mcg_id']
+    year = request.GET['year']
+    month = request.GET['month']
+    time = request.GET['time']
+    mcg = MachineGroup.objects.get(id=mcg_id)
+    ewts = EstimateWorkingTime.objects.filter(mcg=mcg,year__gt=year) | EstimateWorkingTime.objects.filter(mcg=mcg,year=year,month__gte=month)
+    ewts.delete()
+    ewt_new = EstimateWorkingTime(mcg=mcg,year=year,month=month,time=time)
+    ewt_new.save()
     data = {
     }
     return JsonResponse(data)
@@ -1894,19 +1912,21 @@ def set_target(request):
 
 ################################# File Reader ##################################
 
-def update_machine():
-    wb = load_workbook(filename = 'media/MC.xlsx')
+def update_critical_part_list():
+    wb = load_workbook(filename = 'media/CP.xlsx')
     ws = wb.active
     skip_count = 2
     for i in range(ws.max_row + 1):
         if i < skip_count:
             continue
-        mc_no = ws['A' + str(i)].value
-        mc_group_name = ws['B' + str(i)].value
-        mc = Machine.objects.get(mc_no=mc_no)
-        mcg = MachineGroup.objects.get(name=mc_group_name)
-        mc.mcg = mcg
-        mc.save()
+        name = ws['A' + str(i)].value
+        mat_code = ws['B' + str(i)].value
+        amount = ws['C' + str(i)].value
+        note = ws['D' + str(i)].value
+        minimum = ws['E' + str(i)].value
+        print(name,mat_code,amount,note,minimum)
+        cp_new = CriticalPart(name=name,mat_code=mat_code,amount=amount,note=note,minimum=minimum)
+        cp_new.save()
     return
 
 ################################ Other Function ################################
@@ -2091,6 +2111,19 @@ def get_qot(mcg, type, year, month):
     else:
         qots = qots.filter(year=year,month__lte=month).order_by('-month')
         time = qots[0].time
+    return time
+
+def get_ewt(mcg, year, month):
+    time = 0
+    ewts = EstimateWorkingTime.objects.filter(mcg=mcg)
+    if not ewts or (not ewts.filter(year=year,month__lte=month) and not ewts.filter(year__lt=year)):
+        time = 0
+    elif not ewts.filter(year=year) or not ewts.filter(year=year,month__lte=month):
+        ewts = ewts.filter(year__lt=year).order_by('-year','-month')
+        time = ewts[0].time
+    else:
+        ewts = ewts.filter(year=year,month__lte=month).order_by('-month')
+        time = ewts[0].time
     return time
 
 def get_total_cost(costs):

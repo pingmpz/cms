@@ -116,7 +116,8 @@ urlpatterns = [
     path('delete_mcdt/', views.delete_mcdt, name='delete_mcdt'),
     path('cost_save/', views.cost_save, name='cost_save'),
     path('delete_cost/', views.delete_cost, name='delete_cost'),
-    path('edit_tot/', views.edit_tot, name='edit_tot'),
+    path('set_tot/', views.set_tot, name='set_tot'),
+    path('set_ewt/', views.set_ewt, name='set_ewt'),
     path('set_target/', views.set_target, name='set_target'),
     #-- File
     path('file_save/', views.file_save, name='file_save'),
