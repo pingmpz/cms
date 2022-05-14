@@ -113,7 +113,7 @@
                                         <td>{{ewt_mins|index:forloop.counter0}}</td>
                                         <td>{{dt_mins|index:forloop.counter0}}</td>
                                         <td>{{dt_hrs|index:forloop.counter0}}</td>
-                                        <td>{{dt_pers|index:forloop.counter0}}{% if dt_pers|index:forloop.counter0 == 0 %}0{% endif %}%</td>
+                                        <td>{{dt_pers|index:forloop.counter0}}%</td>
                                         <td {% if mttrs|index:forloop.counter0 > target_mttrs|index:forloop.counter0 %}class="text-danger"{% endif %}>{{mttrs|index:forloop.counter0}}</td>
                                         <td>{{target_mttrs|index:forloop.counter0}}</td>
                                         <td {% if mtbfs|index:forloop.counter0 < target_mtbfs|index:forloop.counter0 %}class="text-danger"{% endif %}>{{mtbfs|index:forloop.counter0}}</td>
