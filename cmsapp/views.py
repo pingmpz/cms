@@ -669,6 +669,7 @@ def report_q_obj(request, fmcg, fyear):
     dt_mins = []
     dt_hrs = []
     dt_pers = []
+    target_dts = []
     mttrs = []
     target_mttrs = []
     mtbfs = []
@@ -713,6 +714,8 @@ def report_q_obj(request, fmcg, fyear):
         dt_mins.append(dt_min)
         dt_hrs.append(dt_hr)
         dt_pers.append((dt_per))
+        # Downtime Target
+        target_dts.append(get_qot(mcg, 'DT', fyear, month_no))
         # MTTR
         if len(reqs):
             mttrs.append(int(dt_hr/len(reqs)))
@@ -739,6 +742,7 @@ def report_q_obj(request, fmcg, fyear):
         'dt_mins': dt_mins,
         'dt_hrs': dt_hrs,
         'dt_pers': dt_pers,
+        'target_dts': target_dts,
         'mttrs': mttrs,
         'target_mttrs': target_mttrs,
         'mtbfs': mtbfs,

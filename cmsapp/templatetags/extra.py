@@ -60,3 +60,8 @@ def convert_char(old):
         return new - 96
     # Unrecognized character
     return 0
+
+@register.filter
+def days_until(date):
+    delta = datetime.date(date) - datetime.now().date()
+    return delta.days

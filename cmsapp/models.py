@@ -212,8 +212,8 @@ class QualityObjectiveTarget(models.Model):
     mcg = models.ForeignKey(MachineGroup, on_delete=models.CASCADE)
     year = models.IntegerField()
     month = models.IntegerField()
-    type = models.CharField(max_length=4)
-    time = models.IntegerField()
+    type = models.CharField(max_length=4)  # MTTR / MTBF / DT (Downtime)
+    time = models.FloatField()
     date_published = models.DateTimeField(auto_now_add=True)
 
 class EstimateWorkingTime(models.Model):
