@@ -469,6 +469,9 @@ def my_working_time(request, fuser, fstartdate, fstopdate):
         wt_data[i] = time
         i = i + 1
     wts = OperatorWorkingTime.objects.filter(user=user,start_datetime__date__range=[fstartdate, fstopdate])
+    durations = [] # Minute
+    for wt in wts:
+        durations.append(int((wt.stop_datetime - wt.start_datetime).total_seconds() / 60))
     context = {
         'fuser': fuser,
         'fstartdate': fstartdate,
@@ -476,6 +479,7 @@ def my_working_time(request, fuser, fstartdate, fstopdate):
         'cat_data': cat_data,
         'wt_data': wt_data,
         'wts': wts,
+        'durations': durations,
     }
     context['all_page_data'] = (all_page_data(request))
     return render(request, 'my_working_time.html', context)
@@ -707,8 +711,11 @@ def report_q_obj(request, fmcg, fyear):
             for mcdt in mcdts:
                 minutes_diff = (mcdt.stop_datetime - mcdt.start_datetime).total_seconds() / 60
                 hours_diff = (mcdt.stop_datetime - mcdt.start_datetime).total_seconds() / 3600
-                dt_min = int(dt_min + minutes_diff)
-                dt_hr = int(dt_hr + hours_diff)
+                dt_min = dt_min + minutes_diff
+                dt_hr = dt_hr + hours_diff
+                # print(mcdt.req.mc.mcg.name, '|', month, '|', mcdt.req.req_no, '|', mcdt.req.type, '|', mcdt.req.status, '|', mcdt.req.mc.mc_no, '|', mcdt.start_datetime, '|', mcdt.stop_datetime, '|',hours_diff, '|', dt_hr)
+        dt_min = int(dt_min)
+        dt_hr = int(dt_hr)
         if ewt_hr != 0:
             dt_per = round(((dt_hr * 100) / ewt_hr), 2)
         dt_mins.append(dt_min)

@@ -79,6 +79,7 @@
                                       <tr>
                                           <th>Start Datetime</th>
                                           <th>Stop Datetime</th>
+                                          <th>Duration (Minutes)</th>
                                           <th>On Request No</th>
                                       </tr>
                                   </thead>
@@ -87,6 +88,7 @@
                                       <tr>
                                           <td data-order="{{wt.start_datetime|date:"U"}}">{{wt.start_datetime}}</td>
                                           <td data-order="{{wt.stop_datetime|date:"U"}}">{{wt.stop_datetime}}</td>
+                                          <td>{{durations|index:forloop.counter0}}</td>
                                           <td><a href="/request_page/{{wt.req.req_no}}">{{wt.req.req_no}}</a></td>
                                       </tr>
                                       {% endfor %}
