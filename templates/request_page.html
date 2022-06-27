@@ -445,7 +445,7 @@
                                                   <div class="tab-pane active" id="operator">
                                                     <!-- ========== Add Operate Time ========== -->
                                                     {% if req.status == 'On Progress' or req.status == 'On Hold' or req.status == 'Complete' %}
-                                                    {% if is_member %}
+                                                    {% if is_member or request.user.is_superuser or request.user.is_staff %}
                                                     <p class="text-muted font-12">Use 'CTRL' to select multiple item</p>
                                                     <div class="row">
                                                       <div class="col-10">
@@ -503,8 +503,11 @@
                                                               <td>{{owt.start_datetime}}</td>
                                                               <td>{{owt.stop_datetime}}</td>
                                                               <td>
-                                                                {% if req.status == 'On Progress' or req.status == 'On Hold' %}
-                                                                {% if is_member %}
+                                                                {% if req.status == 'On Progress' or req.status == 'On Hold' or req.status == 'Complete' %}
+                                                                {% if is_member and req.status != 'Complete' %}
+                                                                <button type="button" class="btn btn-sm btn-link text-muted pt-0 pb-0"  data-bs-toggle="modal" data-bs-target="#delete_owt_modal"
+                                                                onclick="prepare_delete_owt({{owt.id}})"><i class="uil-trash"></i></button>
+                                                                {% elif request.user.is_superuser or request.user.is_staff %}
                                                                 <button type="button" class="btn btn-sm btn-link text-muted pt-0 pb-0"  data-bs-toggle="modal" data-bs-target="#delete_owt_modal"
                                                                 onclick="prepare_delete_owt({{owt.id}})"><i class="uil-trash"></i></button>
                                                                 {% endif %}
@@ -525,7 +528,7 @@
                                                   <div class="tab-pane show" id="vendor">
                                                     <!-- ========== Add Operate Time ========== -->
                                                     {% if req.status == 'On Progress' or req.status == 'On Hold' or req.status == 'Complete' %}
-                                                    {% if is_member %}
+                                                    {% if is_member or request.user.is_superuser or request.user.is_staff %}
                                                     <p class="text-muted font-12">Use 'CTRL' to select multiple item</p>
                                                     <div class="row">
                                                       <div class="col-10">
@@ -581,8 +584,11 @@
                                                               <td>{{vwt.start_datetime}}</td>
                                                               <td>{{vwt.stop_datetime}}</td>
                                                               <td>
-                                                                {% if req.status == 'On Progress' or req.status == 'On Hold' %}
-                                                                {% if is_member %}
+                                                                {% if req.status == 'On Progress' or req.status == 'On Hold' or req.status == 'Complete' %}
+                                                                {% if is_member and req.status != 'Complete' %}
+                                                                <button type="button" class="btn btn-sm btn-link text-muted pt-0 pb-0"  data-bs-toggle="modal" data-bs-target="#delete_vwt_modal"
+                                                                onclick="prepare_delete_vwt({{vwt.id}})"><i class="uil-trash"></i></button>
+                                                                {% elif request.user.is_superuser or request.user.is_staff %}
                                                                 <button type="button" class="btn btn-sm btn-link text-muted pt-0 pb-0"  data-bs-toggle="modal" data-bs-target="#delete_vwt_modal"
                                                                 onclick="prepare_delete_vwt({{vwt.id}})"><i class="uil-trash"></i></button>
                                                                 {% endif %}
@@ -605,7 +611,7 @@
                                             <div class="tab-pane p-0" id="mc_downtime">
                                               <!-- ========== Add Machine Downtime ========== -->
                                               {% if req.status == 'On Progress' or req.status == 'On Hold' or req.status == 'Complete' %}
-                                              {% if is_member %}
+                                              {% if is_member or request.user.is_superuser or request.user.is_staff %}
                                               <div class="row">
                                                 <div class="col-10">
                                                   <div class="mb-3">
@@ -654,8 +660,11 @@
                                                         <td>{{mcdt.start_datetime}}</td>
                                                         <td>{{mcdt.stop_datetime}}</td>
                                                         <td>
-                                                          {% if req.status == 'On Progress' or req.status == 'On Hold' %}
-                                                          {% if is_member %}
+                                                          {% if req.status == 'On Progress' or req.status == 'On Hold' or req.status == 'Complete' %}
+                                                          {% if is_member and req.status != 'Complete' %}
+                                                          <button type="button" class="btn btn-sm btn-link text-muted pt-0 pb-0"  data-bs-toggle="modal" data-bs-target="#delete_mcdt_modal"
+                                                          onclick="prepare_delete_mcdt({{mcdt.id}})"><i class="uil-trash"></i></button>
+                                                          {% elif request.user.is_superuser or request.user.is_staff %}
                                                           <button type="button" class="btn btn-sm btn-link text-muted pt-0 pb-0"  data-bs-toggle="modal" data-bs-target="#delete_mcdt_modal"
                                                           onclick="prepare_delete_mcdt({{mcdt.id}})"><i class="uil-trash"></i></button>
                                                           {% endif %}
