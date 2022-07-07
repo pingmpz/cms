@@ -781,6 +781,10 @@ def report_mc_dt(request, fsection, fmonth):
         dt_data[i] = time
         i = i + 1
     mcdts = MachineDowntime.objects.filter(start_datetime__month=fmonth[5:7],start_datetime__year=fmonth[:4],mc__in=mcs)
+    durations = [] # Minute
+    for mcdt in mcdts:
+        durations.append(int((mcdt.stop_datetime - mcdt.start_datetime).total_seconds() / 60))
+
     #-- 2 Average
     # while i < days:
     #     cat_data[i] = i + 1
@@ -820,6 +824,7 @@ def report_mc_dt(request, fsection, fmonth):
         'cat_data': cat_data,
         'dt_data': dt_data,
         'mcdts': mcdts,
+        'durations': durations,
     }
     context['all_page_data'] = (all_page_data(request))
     return render(request, 'report_mc_dt.html', context)

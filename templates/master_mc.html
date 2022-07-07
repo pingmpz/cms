@@ -98,7 +98,7 @@
                                           <td>{{mc.serial_no|default_if_none:""}}</td>
                                           <td>{{mc.capacity|default_if_none:""}}</td>
                                           <td>{{mc.power|default_if_none:""}}</td>
-                                          <td>{{mc.install_date|default_if_none:""}}</td>
+                                          <td>{{mc.install_date|default_if_none:""|date:"Y-m-d"}}</td>
                                           <td>{{mc.note|default_if_none:""}}</td>
                                       </tr>
                                       {% endfor %}
@@ -146,10 +146,10 @@
             "order": [[ 0, "asc" ]],
             'iDisplayLength': 25,
             "scrollX": true,
-            // dom: 'Bfrtip',
-            // buttons: [
-            //     'copy', 'csv', 'excel', 'pdf', 'print'
-            // ],
+            dom: 'Bfrtip',
+            buttons: [
+                'copy', 'csv', 'excel', 'pdf', 'print'
+            ],
             "drawCallback": function ( settings ) {
                   var api = this.api();
                   var rows = api.rows( {page:'current'} ).nodes();

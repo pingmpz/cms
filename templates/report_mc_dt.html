@@ -82,6 +82,7 @@
                                       <tr>
                                           <th>Start Datetime</th>
                                           <th>Stop Datetime</th>
+                                          <th>Duration (Minutes)</th>
                                           <th>Machine No</th>
                                           <th>On Request No</th>
                                       </tr>
@@ -91,6 +92,7 @@
                                       <tr>
                                           <td data-order="{{mcdt.start_datetime|date:"U"}}">{{mcdt.start_datetime}}</td>
                                           <td data-order="{{mcdt.stop_datetime|date:"U"}}">{{mcdt.stop_datetime}}</td>
+                                          <td>{{durations|index:forloop.counter0}}</td>
                                           <td>{{mcdt.mc.mc_no}}</td>
                                           <td><a href="/request_page/{{mcdt.req.req_no}}">{{mcdt.req.req_no}}</a></td>
                                       </tr>
