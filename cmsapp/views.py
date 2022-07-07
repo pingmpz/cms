@@ -678,6 +678,9 @@ def report_q_obj(request, fmcg, fyear):
     target_mttrs = []
     mtbfs = []
     target_mtbfs = []
+    mcdt_cals = [] * len(months)
+    min_cals = [] * len(months)
+    hr_cals = [] * len(months)
     for month in months:
         month_no = months.index(month) + 1
         # No of Request
@@ -706,6 +709,9 @@ def report_q_obj(request, fmcg, fyear):
         dt_min = 0
         dt_hr = 0
         dt_per = 0
+        temp_mcdt_cals = []
+        temp_min_cals = []
+        temp_hr_cals = []
         for req in reqs:
             mcdts = MachineDowntime.objects.filter(req=req)
             for mcdt in mcdts:
@@ -713,7 +719,12 @@ def report_q_obj(request, fmcg, fyear):
                 hours_diff = (mcdt.stop_datetime - mcdt.start_datetime).total_seconds() / 3600
                 dt_min = dt_min + minutes_diff
                 dt_hr = dt_hr + hours_diff
-                # print(mcdt.req.mc.mcg.name, '|', month, '|', mcdt.req.req_no, '|', mcdt.req.type, '|', mcdt.req.status, '|', mcdt.req.mc.mc_no, '|', mcdt.start_datetime, '|', mcdt.stop_datetime, '|',hours_diff, '|', dt_hr)
+                temp_mcdt_cals.append(mcdt)
+                temp_min_cals.append(minutes_diff)
+                temp_hr_cals.append(hours_diff)
+        mcdt_cals.append(temp_mcdt_cals)
+        min_cals.append(temp_min_cals)
+        hr_cals.append(temp_hr_cals)
         dt_min = int(dt_min)
         dt_hr = int(dt_hr)
         if ewt_hr != 0:
@@ -754,6 +765,9 @@ def report_q_obj(request, fmcg, fyear):
         'target_mttrs': target_mttrs,
         'mtbfs': mtbfs,
         'target_mtbfs': target_mtbfs,
+        'mcdt_cals': mcdt_cals,
+        'min_cals': min_cals,
+        'hr_cals': hr_cals,
     }
     context['all_page_data'] = (all_page_data(request))
     return render(request, 'report_q_obj.html', context)
