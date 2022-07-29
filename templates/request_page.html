@@ -405,7 +405,7 @@
                                                         <div class="timeline-item-info">
                                                             <h5 class="mt-0 mb-1">{{comment.user.username}} | {{comment.user.employee.name|title}} {% if request.user.is_superuser %}[{{comment.id}}]{% endif %}</h5>
                                                             <p class="font-12"><i class="mdi mdi-clock-time-eight-outline"></i> {{comment.date_published}}</span></p>
-                                                            <p class="text-muted mt-2 mb-0 pb-3 text-center">{{comment.text}}</p>
+                                                            <p class="text-muted mt-2 mb-0 pb-3 text-center">{{comment.text|linebreaks}}</p>
                                                             <hr>
                                                         </div>
                                                     </div>
@@ -1642,7 +1642,7 @@
             var username_list = $("#owt_username_list").val();
             var start_datetime = $("#owt_start_datetime").val();
             var stop_datetime = $("#owt_stop_datetime").val();
-            if(username_list.length > 0 && start_datetime != "" && stop_datetime != "" && stop_datetime > start_datetime){
+            if(username_list.length > 0 && start_datetime != "" && stop_datetime != "" && stop_datetime > start_datetime && new Date(stop_datetime) < new Date()){
               $.ajax({
                 url: '/owt_save/',
                 data: {
@@ -1682,7 +1682,7 @@
             var ven_code_list = $("#vwt_ven_code_list").val();
             var start_datetime = $("#vwt_start_datetime").val();
             var stop_datetime = $("#vwt_stop_datetime").val();
-            if(ven_code_list.length > 0 && start_datetime != "" && stop_datetime != "" && stop_datetime > start_datetime){
+            if(ven_code_list.length > 0 && start_datetime != "" && stop_datetime != "" && stop_datetime > start_datetime && new Date(stop_datetime) < new Date()){
               $.ajax({
                 url: '/vwt_save/',
                 data: {
@@ -1722,7 +1722,7 @@
             var mc_no = $("#mcdt_mc_no").val();
             var start_datetime = $("#mcdt_start_datetime").val();
             var stop_datetime = $("#mcdt_stop_datetime").val();
-            if(start_datetime != "" && stop_datetime != "" && stop_datetime > start_datetime){
+            if(start_datetime != "" && stop_datetime != "" && stop_datetime > start_datetime && new Date(stop_datetime) < new Date()){
               $.ajax({
                 url: '/mcdt_save/',
                 data: {
