@@ -460,8 +460,8 @@ def my_working_time(request, fuser, fstartdate, fstopdate):
     cat_data = [0] * (days + 1)
     i = 0
     while i <= days:
-        date = (datetime.today() - timedelta(days=(days - i))).strftime('%Y-%m-%d')
-        cat_data[i] = (datetime.today() - timedelta(days=(days - i))).strftime('%d %b')
+        date = (datetime.strptime(fstopdate, '%Y-%m-%d') - timedelta(days=(days - i))).strftime('%Y-%m-%d')
+        cat_data[i] = (datetime.strptime(fstopdate, '%Y-%m-%d') - timedelta(days=(days - i))).strftime('%d %b')
         time = 0
         wts = OperatorWorkingTime.objects.filter(user=user,start_datetime__date=date)
         for wt in wts:
