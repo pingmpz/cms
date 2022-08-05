@@ -90,7 +90,7 @@ def logout_action(request):
 
 @login_required(login_url='/')
 def setting(request):
-    # update_critical_part_list()
+    update_machine()
     users = []
     set_user = []
     if request.user.is_superuser or request.user.is_staff:
@@ -1942,21 +1942,21 @@ def set_target(request):
 
 ################################# File Reader ##################################
 
-def update_critical_part_list():
-    wb = load_workbook(filename = 'media/CP.xlsx')
+def update_machine():
+    wb = load_workbook(filename = 'media/Printer.xlsx')
     ws = wb.active
     skip_count = 2
     for i in range(ws.max_row + 1):
         if i < skip_count:
             continue
-        name = ws['A' + str(i)].value
-        mat_code = ws['B' + str(i)].value
-        amount = ws['C' + str(i)].value
+        section = 'Printer'
+        mc_no = ws['C' + str(i)].value
+        manufacture = 'Ricoh'
+        model = ws['B' + str(i)].value
         note = ws['D' + str(i)].value
-        minimum = ws['E' + str(i)].value
-        print(name,mat_code,amount,note,minimum)
-        cp_new = CriticalPart(name=name,mat_code=mat_code,amount=amount,note=note,minimum=minimum)
-        cp_new.save()
+        print(mc_no,section,manufacture,model)
+        mc_new = Machine(mc_no=mc_no,section=section,manufacture=manufacture,model=model,note=note)
+        mc_new.save()
     return
 
 ################################ Other Function ################################
