@@ -918,7 +918,7 @@ def new_emp(request):
     context = {
     }
     context['all_page_data'] = (all_page_data(request))
-    return render(request, 'new_emp.html', context)
+    return render(request, 'new/emp.html', context)
 
 @login_required(login_url='/')
 def new_mc(request):
@@ -927,42 +927,42 @@ def new_mc(request):
         'mcgs': mcgs,
     }
     context['all_page_data'] = (all_page_data(request))
-    return render(request, 'new_mc.html', context)
+    return render(request, 'new/mc.html', context)
 
 @login_required(login_url='/')
 def new_cp(request):
     context = {
     }
     context['all_page_data'] = (all_page_data(request))
-    return render(request, 'new_cp.html', context)
+    return render(request, 'new/cp.html', context)
 
 @login_required(login_url='/')
 def new_sp(request):
     context = {
     }
     context['all_page_data'] = (all_page_data(request))
-    return render(request, 'new_sp.html', context)
+    return render(request, 'new/sp.html', context)
 
 @login_required(login_url='/')
 def new_task(request):
     context = {
     }
     context['all_page_data'] = (all_page_data(request))
-    return render(request, 'new_task.html', context)
+    return render(request, 'new/task.html', context)
 
 @login_required(login_url='/')
 def new_ven(request):
     context = {
     }
     context['all_page_data'] = (all_page_data(request))
-    return render(request, 'new_ven.html', context)
+    return render(request, 'new/ven.html', context)
 
 @login_required(login_url='/')
 def new_cat(request):
     context = {
     }
     context['all_page_data'] = (all_page_data(request))
-    return render(request, 'new_cat.html', context)
+    return render(request, 'new/cat.html', context)
 
 @login_required(login_url='/')
 def new_sub_cat(request):
@@ -971,7 +971,7 @@ def new_sub_cat(request):
         'cats': cats,
     }
     context['all_page_data'] = (all_page_data(request))
-    return render(request, 'new_sub_cat.html', context)
+    return render(request, 'new/sub_cat.html', context)
 
 @login_required(login_url='/')
 def new_mg(request):
@@ -984,7 +984,7 @@ def new_mg(request):
         'set_user': set_user,
     }
     context['all_page_data'] = (all_page_data(request))
-    return render(request, 'new_mg.html', context)
+    return render(request, 'new/mg.html', context)
 
 #--------------------------------- Edit Data ----------------------------------#
 
@@ -1001,7 +1001,7 @@ def edit_request(request,  request_no):
         'token': token,
     }
     context['all_page_data'] = (all_page_data(request))
-    return render(request, 'edit/request.html', context)
+    return render(request, 'edit_request.html', context)
 
 @login_required(login_url='/')
 def edit_mc(request, fmc):
