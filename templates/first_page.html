@@ -34,11 +34,11 @@
 
                               <div class="list-group">
                                   {% for sg in sgs %}
-                                  <a href="/new_request/{{sg.name}}" class="list-group-item list-group-item-action">&nbsp;▪️ {{sg.name}} ({{sg.full_name}})</a>
+                                  <a href="/new_request/{{sg.name}}" class="list-group-item list-group-item-action">&nbsp;▪️ <b class="text-danger">{{sg.name}}</b> ({{sg.full_name}})</a>
                                   {% endfor %}
                               </div>
                             </p>
-                            <p class="text-danger">* พนักงานที่ไม่ใช่พนักงานในแผนกด้านบนนี้ ไม่ต้อง Login นะครับ</p>
+                            <p class="text-warning">* พนักงานที่ไม่ใช่พนักงานในแผนกด้านบนนี้ ไม่ต้อง Login นะครับ</p>
                             <p class="mt-2 font-16 text-white-50">
                               Track your request <a href="/track_request/0" class="text-white"><u>Here</u></a>
                               &nbsp;&nbsp;&nbsp;
