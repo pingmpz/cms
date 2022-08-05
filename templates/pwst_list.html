@@ -47,7 +47,6 @@
                             <div class="col-12">
                                 <div class="page-title-box">
                                     <div class="page-title-right d-flex">
-                                        <a href="/new/pwst/" class="btn btn-sm btn-success"><i class="mdi mdi-plus"></i></a>
                                         <button type="button" class="btn btn-sm btn-link py-0" style="height:30px" onclick="window.scrollTo(0,document.body.scrollHeight);"><i class='mdi mdi-chevron-double-down'></i></a>
                                     </div>
                                     <h4 class="page-title"><i class="mdi mdi-shield-key-outline"></i> Password Storage ({{pwsts|length}})</h4>
@@ -86,7 +85,7 @@
                                             </div>
                                           </td>
                                           <td>{{pw_dates|index:forloop.counter0}}</td>
-                                          <td><a class="btn btn-warning px-1 py-0" href="/edit_pwst/{{pwst.id}}"><i class="mdi mdi-pencil"></i></a></td>
+                                          <td><a class="btn btn-link px-1 py-0" href="/edit_pwst/{{pwst.id}}"><i class="mdi mdi-pencil"></i></a></td>
                                       </tr>
                                       {% endfor %}
                                   </tbody>

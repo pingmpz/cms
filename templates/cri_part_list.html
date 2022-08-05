@@ -77,7 +77,7 @@
                                           <td>{{cp.mat_code|default_if_none:""}}</td>
                                           <td><b>{{cp.amount|default_if_none:""}}{% if cp.minimum != 0 %} / {{cp.minimum|default_if_none:""}}{% endif %}</b></td>
                                           <td>{{cp.note|default_if_none:""}}</td>
-                                          <td><a class="btn btn-warning px-1 py-0" href="/edit_cp/{{cp.id}}"><i class="mdi mdi-pencil"></i></a></td>
+                                          <td><a class="btn btn-link px-1 py-0" href="/edit_cp/{{cp.id}}"><i class="mdi mdi-pencil"></i></a></td>
                                       </tr>
                                       {% endfor %}
                                   </tbody>
