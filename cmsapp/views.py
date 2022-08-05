@@ -90,11 +90,6 @@ def logout_action(request):
 
 @login_required(login_url='/')
 def setting(request):
-    # update_machine()
-    reqs = Request.objects.filter(status='On Progress')
-    for req in reqs:
-        req.status = 'In Progress'
-        req.save()
     users = []
     set_user = []
     if request.user.is_superuser or request.user.is_staff:
@@ -142,21 +137,6 @@ def new_pv_request(request):
     }
     context['all_page_data'] = (all_page_data(request))
     return render(request, 'new_pv_request.html', context)
-
-def edit_request(request,  request_no):
-    req = Request.objects.get(req_no=request_no)
-    mcs = Machine.objects.filter(is_active=True).order_by('section')
-    set_mc = get_set_mc(mcs)
-    token = secrets.token_urlsafe(16)
-    context = {
-        'request_no': request_no,
-        'req': req,
-        'mcs': mcs,
-        'set_mc': set_mc,
-        'token': token,
-    }
-    context['all_page_data'] = (all_page_data(request))
-    return render(request, 'edit_request.html', context)
 
 @login_required(login_url='/')
 def request_page(request, request_no):
@@ -857,7 +837,7 @@ def master_emp(request):
         'users': users,
     }
     context['all_page_data'] = (all_page_data(request))
-    return render(request, 'master_emp.html', context)
+    return render(request, 'master/emp.html', context)
 
 @login_required(login_url='/')
 def master_mcg(request):
@@ -866,7 +846,7 @@ def master_mcg(request):
         'mcgs': mcgs,
     }
     context['all_page_data'] = (all_page_data(request))
-    return render(request, 'master_mcg.html', context)
+    return render(request, 'master/mcg.html', context)
 
 @login_required(login_url='/')
 def master_mc(request):
@@ -875,7 +855,7 @@ def master_mc(request):
         'mcs': mcs,
     }
     context['all_page_data'] = (all_page_data(request))
-    return render(request, 'master_mc.html', context)
+    return render(request, 'master/mc.html', context)
 
 @login_required(login_url='/')
 def master_task(request):
@@ -884,7 +864,7 @@ def master_task(request):
         'tasks': tasks,
     }
     context['all_page_data'] = (all_page_data(request))
-    return render(request, 'master_task.html', context)
+    return render(request, 'master/task.html', context)
 
 @login_required(login_url='/')
 def master_ven(request):
@@ -893,7 +873,7 @@ def master_ven(request):
         'vens': vens,
     }
     context['all_page_data'] = (all_page_data(request))
-    return render(request, 'master_ven.html', context)
+    return render(request, 'master/ven.html', context)
 
 @login_required(login_url='/')
 def master_cat(request):
@@ -902,7 +882,7 @@ def master_cat(request):
         'cats': cats,
     }
     context['all_page_data'] = (all_page_data(request))
-    return render(request, 'master_cat.html', context)
+    return render(request, 'master/cat.html', context)
 
 @login_required(login_url='/')
 def master_sub_cat(request):
@@ -911,7 +891,7 @@ def master_sub_cat(request):
         'sub_cats': sub_cats,
     }
     context['all_page_data'] = (all_page_data(request))
-    return render(request, 'master_sub_cat.html', context)
+    return render(request, 'master/sub_cat.html', context)
 
 @login_required(login_url='/')
 def master_sg(request):
@@ -920,7 +900,7 @@ def master_sg(request):
         'sgs': sgs,
     }
     context['all_page_data'] = (all_page_data(request))
-    return render(request, 'master_sg.html', context)
+    return render(request, 'master/sg.html', context)
 
 @login_required(login_url='/')
 def master_mg(request):
@@ -929,7 +909,7 @@ def master_mg(request):
         'mgs': mgs,
     }
     context['all_page_data'] = (all_page_data(request))
-    return render(request, 'master_mg.html', context)
+    return render(request, 'master/mg.html', context)
 
 #---------------------------------- New Data ----------------------------------#
 
@@ -1008,6 +988,21 @@ def new_mg(request):
 
 #--------------------------------- Edit Data ----------------------------------#
 
+def edit_request(request,  request_no):
+    req = Request.objects.get(req_no=request_no)
+    mcs = Machine.objects.filter(is_active=True).order_by('section')
+    set_mc = get_set_mc(mcs)
+    token = secrets.token_urlsafe(16)
+    context = {
+        'request_no': request_no,
+        'req': req,
+        'mcs': mcs,
+        'set_mc': set_mc,
+        'token': token,
+    }
+    context['all_page_data'] = (all_page_data(request))
+    return render(request, 'edit/request.html', context)
+
 @login_required(login_url='/')
 def edit_mc(request, fmc):
     mcs = Machine.objects.all().order_by('section')
@@ -1024,7 +1019,7 @@ def edit_mc(request, fmc):
         'mcgs': mcgs,
     }
     context['all_page_data'] = (all_page_data(request))
-    return render(request, 'edit_mc.html', context)
+    return render(request, 'edit/mc.html', context)
 
 @login_required(login_url='/')
 def edit_cp(request, fcp):
@@ -1038,7 +1033,7 @@ def edit_cp(request, fcp):
         'cp': cp,
     }
     context['all_page_data'] = (all_page_data(request))
-    return render(request, 'edit_cp.html', context)
+    return render(request, 'edit/cp.html', context)
 
 @login_required(login_url='/')
 def edit_sp(request, fsp):
@@ -1052,7 +1047,7 @@ def edit_sp(request, fsp):
         'sp': sp,
     }
     context['all_page_data'] = (all_page_data(request))
-    return render(request, 'edit_sp.html', context)
+    return render(request, 'edit/sp.html', context)
 
 @login_required(login_url='/')
 def edit_task(request, ftask):
@@ -1068,7 +1063,7 @@ def edit_task(request, ftask):
         'task': task,
     }
     context['all_page_data'] = (all_page_data(request))
-    return render(request, 'edit_task.html', context)
+    return render(request, 'edit/task.html', context)
 
 @login_required(login_url='/')
 def edit_ven(request, fven):
@@ -1082,7 +1077,7 @@ def edit_ven(request, fven):
         'ven': ven,
     }
     context['all_page_data'] = (all_page_data(request))
-    return render(request, 'edit_ven.html', context)
+    return render(request, 'edit/ven.html', context)
 
 #################################### POST ######################################
 def setting_save(request):
