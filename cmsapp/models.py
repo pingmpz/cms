@@ -128,7 +128,7 @@ class Request(models.Model):
     request_date = models.DateField(null=True)
     finish_datetime = models.DateTimeField(null=True)
     type = models.CharField(max_length=10) # Preventive, User Request
-    status = models.CharField(max_length=20) # Pending, Rejected, On Progress, On Hold, Complete, Canceled
+    status = models.CharField(max_length=20) # Pending, Rejected, In Progress, On Hold, Complete, Canceled
     reason = models.TextField(max_length=1000, null=True)
     description = models.TextField(max_length=1000)
     corrective_action = models.TextField(max_length=1000, null=True)

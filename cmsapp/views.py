@@ -256,7 +256,7 @@ def req(request, request_id):
 def all_page_data(request):
     is_in = is_in_section_group(request)
     my_reqs = []
-    temp_reqs = Request.objects.filter(status='On Progress') | Request.objects.filter(status='On Hold')
+    temp_reqs = Request.objects.filter(status='In Progress') | Request.objects.filter(status='On Hold')
     for req in temp_reqs:
         is_member = Member.objects.filter(req=req,user=request.user).exists()
         if is_member:
@@ -279,9 +279,9 @@ def all_page_data(request):
 
     all_reqs = []
     if is_in_section_group(request):
-        all_reqs = Request.objects.filter(status='On Progress',sg=request.user.employee.section) | Request.objects.filter(status='On Hold',sg=request.user.employee.section)
+        all_reqs = Request.objects.filter(status='In Progress',sg=request.user.employee.section) | Request.objects.filter(status='On Hold',sg=request.user.employee.section)
     else :
-        all_reqs = Request.objects.filter(status='On Progress') | Request.objects.filter(status='On Hold')
+        all_reqs = Request.objects.filter(status='In Progress') | Request.objects.filter(status='On Hold')
     all_request_count = len(all_reqs)
 
     cps = CriticalPart.objects.all()
@@ -302,7 +302,7 @@ def all_page_data(request):
 @login_required(login_url='/')
 def index(request):
     reqs = []
-    temp_reqs = Request.objects.filter(status='On Progress') | Request.objects.filter(status='On Hold')
+    temp_reqs = Request.objects.filter(status='In Progress') | Request.objects.filter(status='On Hold')
     for req in temp_reqs:
         is_member = Member.objects.filter(req=req,user=request.user).exists()
         if is_member:
@@ -376,7 +376,7 @@ def request_all(request, fsg, fstatus, ftype):
     elif ftype == 'UR':
         type = 'User Request'
 
-    reqs = Request.objects.filter(status='On Progress')  | Request.objects.filter(status='On Hold')
+    reqs = Request.objects.filter(status='In Progress')  | Request.objects.filter(status='On Hold')
     if fsg != 'ALL':
         reqs = reqs.filter(sg=fsg)
     if fstatus != 'ALL':
@@ -553,8 +553,8 @@ def summary(request, fsg):
         rejected_us_req_count = Request.objects.filter(status='Rejected',type='User Request').count()
         rejected_pv_req_count = Request.objects.filter(status='Rejected',type='Preventive').count()
         rejected_req_count = rejected_us_req_count + rejected_pv_req_count
-        on_process_us_req_count = Request.objects.filter(status='On Progress',type='User Request').count()
-        on_process_pv_req_count = Request.objects.filter(status='On Progress',type='Preventive').count()
+        on_process_us_req_count = Request.objects.filter(status='In Progress',type='User Request').count()
+        on_process_pv_req_count = Request.objects.filter(status='In Progress',type='Preventive').count()
         on_process_req_count = on_process_us_req_count + on_process_pv_req_count
         on_hold_us_req_count = Request.objects.filter(status='On Hold',type='User Request').count()
         on_hold_pv_req_count = Request.objects.filter(status='On Hold',type='Preventive').count()
@@ -575,8 +575,8 @@ def summary(request, fsg):
         rejected_us_req_count = Request.objects.filter(status='Rejected',type='User Request',sg=fsg).count()
         rejected_pv_req_count = Request.objects.filter(status='Rejected',type='Preventive',sg=fsg).count()
         rejected_req_count = rejected_us_req_count + rejected_pv_req_count
-        on_process_us_req_count = Request.objects.filter(status='On Progress',type='User Request',sg=fsg).count()
-        on_process_pv_req_count = Request.objects.filter(status='On Progress',type='Preventive',sg=fsg).count()
+        on_process_us_req_count = Request.objects.filter(status='In Progress',type='User Request',sg=fsg).count()
+        on_process_pv_req_count = Request.objects.filter(status='In Progress',type='Preventive',sg=fsg).count()
         on_process_req_count = on_process_us_req_count + on_process_pv_req_count
         on_hold_us_req_count = Request.objects.filter(status='On Hold',type='User Request',sg=fsg).count()
         on_hold_pv_req_count = Request.objects.filter(status='On Hold',type='Preventive',sg=fsg).count()
@@ -1624,7 +1624,7 @@ def accept_request(request):
         sub_cat = SubCategory.objects.get(id=sub_cat_id)
         req_sub_cat_new = RequestSubCategory(req=req,sub_cat=sub_cat)
         req_sub_cat_new.save()
-    req.status = 'On Progress'
+    req.status = 'In Progress'
     req.save()
     data = {
     }
@@ -1693,7 +1693,7 @@ def hold_request(request):
 def start_work_request(request):
     req_id = request.GET['req_id']
     req = Request.objects.get(id=req_id)
-    req.status = 'On Progress'
+    req.status = 'In Progress'
     req.reason = None
     req.save()
     data = {
@@ -1732,7 +1732,7 @@ def cancel_request(request):
 def rework_request(request):
     req_id = request.GET['req_id']
     req = Request.objects.get(id=req_id)
-    req.status = 'On Progress'
+    req.status = 'In Progress'
     req.reason = None
     req.save()
     data = {
