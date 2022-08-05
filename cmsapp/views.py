@@ -91,6 +91,10 @@ def logout_action(request):
 @login_required(login_url='/')
 def setting(request):
     # update_machine()
+    reqs = Request.objects.filter(status='On Progress')
+    for req in reqs:
+        req.status = 'In Progress'
+        req.save()
     users = []
     set_user = []
     if request.user.is_superuser or request.user.is_staff:
