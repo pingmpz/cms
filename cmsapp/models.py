@@ -114,6 +114,19 @@ class SplindlePart(models.Model):
     date_modified = models.DateTimeField(auto_now=True)
     date_published = models.DateTimeField(auto_now_add=True)
 
+class PasswordStorage(models.Model):
+    id = models.AutoField(primary_key=True)
+    name = models.CharField(max_length=100)
+    note = models.TextField(max_length=1000, null=True)
+    date_modified = models.DateTimeField(auto_now=True)
+    date_published = models.DateTimeField(auto_now_add=True)
+
+class PasswordItem(models.Model):
+    id = models.AutoField(primary_key=True)
+    pwst = models.ForeignKey(PasswordStorage, on_delete=models.CASCADE)
+    password = models.CharField(max_length=100)
+    date_published = models.DateTimeField(auto_now_add=True)
+
 class Request(models.Model):
     id = models.AutoField(primary_key=True)
     req_no = models.CharField(max_length=10)

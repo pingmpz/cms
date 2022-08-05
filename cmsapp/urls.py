@@ -20,7 +20,7 @@ urlpatterns = [
     path('new_pv_request/', views.new_pv_request, name='new_pv_request'),
     path('request_page/<str:request_no>', views.request_page, name='request_page'),
     path('req/<str:request_id>', views.req, name='req'),
-    path('edit/request/<str:request_no>', views.edit_request, name='edit_request'),
+    path('edit_request/<str:request_no>', views.edit_request, name='edit_request'),
     #--
     path('index/', views.index, name='index'),
     path('request_pending/<str:fsg>', views.request_pending, name='request_pending'),
@@ -30,6 +30,7 @@ urlpatterns = [
     path('my_working_time/<str:fuser>&<str:fstartdate>&<str:fstopdate>', views.my_working_time, name='my_working_time'),
     path('cri_part_list/', views.cri_part_list, name='cri_part_list'),
     path('spl_part_list/', views.spl_part_list, name='spl_part_list'),
+    path('pwst_list/', views.pwst_list, name='pwst_list'),
     #-- Report
     path('report/summary/<str:fsg>', views.summary, name='summary'),
     path('report/q_obj/<str:fmcg>&<str:fyear>', views.report_q_obj, name='report_q_obj'),
@@ -54,6 +55,7 @@ urlpatterns = [
     path('new/cat/', views.new_cat, name='new_cat'),
     path('new/sub_cat/', views.new_sub_cat, name='new_sub_cat'),
     path('new/mg/', views.new_mg, name='new_mg'),
+    path('new/pwst/', views.new_pwst, name='new_pwst'),
     #-- Edit Data
     path('edit/mc/<str:fmc>', views.edit_mc, name='edit_mc'),
     path('edit/cp/<str:fcp>', views.edit_cp, name='edit_cp'),
@@ -75,6 +77,7 @@ urlpatterns = [
     path('new_cat_save/', views.new_cat_save, name='new_cat_save'),
     path('new_sub_cat_save/', views.new_sub_cat_save, name='new_sub_cat_save'),
     path('new_mg_save/', views.new_mg_save, name='new_mg_save'),
+    path('new_pwst_save/', views.new_pwst_save, name='new_pwst_save'),
     #-- Edit Data
     path('edit_mc_save/', views.edit_mc_save, name='edit_mc_save'),
     path('edit_cp_save/', views.edit_cp_save, name='edit_cp_save'),
@@ -91,6 +94,7 @@ urlpatterns = [
     path('validate_category_name/', views.validate_category_name, name='validate_category_name'),
     path('validate_sub_category_name/', views.validate_sub_category_name, name='validate_sub_category_name'),
     path('validate_user_in_mail_group/', views.validate_user_in_mail_group, name='validate_user_in_mail_group'),
+    path('validate_pwst/', views.validate_pwst, name='validate_pwst'),
     path('find_emp_info/', views.find_emp_info, name='find_emp_info'),
     #-- Request Page
     path('accept_request/', views.accept_request, name='accept_request'),

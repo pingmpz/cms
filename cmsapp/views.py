@@ -29,7 +29,7 @@ from django_line_notification.line_notify import Line
 
 import random
 
-from .models import SectionGroup, Employee, MachineGroup, Machine, Task, Vendor, Category, SubCategory, MailGroup, CriticalPart, SplindlePart, Request, File, Member, RequestVendor, Comment, RequestSubCategory, OperatorWorkingTime, VendorWorkingTime, MachineDowntime, Costing, TotalOperationTime, QualityObjectiveTarget, EstimateWorkingTime
+from .models import SectionGroup, Employee, MachineGroup, Machine, Task, Vendor, Category, SubCategory, MailGroup, CriticalPart, SplindlePart, PasswordStorage, PasswordItem, Request, File, Member, RequestVendor, Comment, RequestSubCategory, OperatorWorkingTime, VendorWorkingTime, MachineDowntime, Costing, TotalOperationTime, QualityObjectiveTarget, EstimateWorkingTime
 
 HOST_URL = 'http://129.1.100.185:8200/'
 TEMPLATE_REQUEST = 'email_templates/request.html'
@@ -486,6 +486,26 @@ def spl_part_list(request):
     }
     context['all_page_data'] = (all_page_data(request))
     return render(request, 'spl_part_list.html', context)
+
+@login_required(login_url='/')
+def pwst_list(request):
+    pwsts = PasswordStorage.objects.all()
+    pw_passwords, pw_dates = [], []
+    for pwst in pwsts:
+        pwis = PasswordItem.objects.filter(pwst=pwst).order_by('-id')
+        if pwis:
+            pw_passwords.append(pwis[0].password)
+            pw_dates.append(pwis[0].date_published)
+        else:
+            pw_passwords.append(None)
+            pw_dates.append(None)
+    context = {
+        'pwsts': pwsts,
+        'pw_passwords': pw_passwords,
+        'pw_dates': pw_dates,
+    }
+    context['all_page_data'] = (all_page_data(request))
+    return render(request, 'pwst_list.html', context)
 
 #----------------------------------- Report -----------------------------------#
 
@@ -986,6 +1006,13 @@ def new_mg(request):
     context['all_page_data'] = (all_page_data(request))
     return render(request, 'new/mg.html', context)
 
+@login_required(login_url='/')
+def new_pwst(request):
+    context = {
+    }
+    context['all_page_data'] = (all_page_data(request))
+    return render(request, 'new/pwst.html', context)
+
 #--------------------------------- Edit Data ----------------------------------#
 
 def edit_request(request,  request_no):
@@ -1266,7 +1293,7 @@ def new_emp_save(request):
     user_new.save()
     employee_new = Employee(user=user_new,name=name,section=section,phone_no=phone_no)
     employee_new.save()
-    return redirect('/new_emp/')
+    return redirect('/new/emp/')
 
 def new_mc_save(request):
     mc_no = request.POST['mc_no'].strip()
@@ -1287,7 +1314,7 @@ def new_mc_save(request):
     note = request.POST['note']
     mc_new = Machine(mc_no=mc_no,section=section,mcg=mcg,register_no=register_no,asset_no=asset_no,serial_no=serial_no,manufacture=manufacture,model=model,plant=plant,power=power,install_date=install_date,capacity=capacity,note=note)
     mc_new.save()
-    return redirect('/new_mc/')
+    return redirect('/new/mc/')
 
 def new_cp_save(request):
     name = request.POST['name'].strip()
@@ -1297,7 +1324,7 @@ def new_cp_save(request):
     note = request.POST['note']
     cp_new = CriticalPart(name=name,mat_code=mat_code,amount=amount,minimum=minimum,note=note)
     cp_new.save()
-    return redirect('/new_cp/')
+    return redirect('/new/cp/')
 
 def new_sp_save(request):
     machine = request.POST['machine'].strip()
@@ -1313,7 +1340,7 @@ def new_sp_save(request):
     condition = request.POST['condition'].strip()
     sp_new = SplindlePart(machine=machine,model=model,amount=amount,register_date=register_date,marker=marker,serial_no=serial_no,nose=nose,max_speed=max_speed,drive_type=drive_type,lubrication=lubrication,condition=condition)
     sp_new.save()
-    return redirect('/new_sp/')
+    return redirect('/new/sp/')
 
 def new_task_save(request):
     type = request.POST['type'].strip()
@@ -1321,7 +1348,7 @@ def new_task_save(request):
     note = request.POST['note']
     task_new = Task(type=type,name=name,note=note)
     task_new.save()
-    return redirect('/new_task/')
+    return redirect('/new/task/')
 
 def new_ven_save(request):
     code = request.POST['code'].strip()
@@ -1332,13 +1359,13 @@ def new_ven_save(request):
     note = request.POST['note']
     ven_new = Vendor(code=code,name=name,address=address,email=email,phone_no=phone_no,note=note)
     ven_new.save()
-    return redirect('/new_ven/')
+    return redirect('/new/ven/')
 
 def new_cat_save(request):
     name = request.POST['name'].strip()
     cat_new = Category(name=name)
     cat_new.save()
-    return redirect('/new_cat/')
+    return redirect('/new/cat/')
 
 def new_sub_cat_save(request):
     name = request.POST['name'].strip()
@@ -1347,7 +1374,7 @@ def new_sub_cat_save(request):
     cat = Category.objects.get(id=cat_id)
     sub_cat_new = SubCategory(name=name,cat=cat,description=description)
     sub_cat_new.save()
-    return redirect('/new_sub_cat/')
+    return redirect('/new/sub_cat/')
 
 def new_mg_save(request):
     sg_name = request.POST['sg_name']
@@ -1357,7 +1384,17 @@ def new_mg_save(request):
     user = User.objects.get(username=username)
     mg_new = MailGroup(sg=sg,user=user,is_cc=is_cc)
     mg_new.save()
-    return redirect('/new_mg/')
+    return redirect('/new/mg/')
+
+def new_pwst_save(request):
+    name = request.POST['name'].strip()
+    password = request.POST['password'].strip()
+    note = request.POST['note']
+    pwst_new = PasswordStorage(name=name,note=note)
+    pwst_new.save()
+    pwi_new = PasswordItem(pwst=pwst_new,password=password)
+    pwi_new.save()
+    return redirect('/new/pwst/')
 
 def edit_mc_save(request):
     is_active = True if request.POST.get('is_active', False) == 'on' else False
@@ -1390,7 +1427,7 @@ def edit_mc_save(request):
     mc.capacity = capacity
     mc.note = note
     mc.save()
-    return redirect('/edit_mc/' + mc.mc_no)
+    return redirect('/edit/mc/' + mc.mc_no)
 
 def edit_cp_save(request):
     id = request.POST['id']
@@ -1404,7 +1441,7 @@ def edit_cp_save(request):
     cp.minimum = minimum
     cp.note = note
     cp.save()
-    return redirect('/edit_cp/' + str(cp.id))
+    return redirect('/edit/cp/' + str(cp.id))
 
 def edit_sp_save(request):
     id = request.POST['id']
@@ -1432,7 +1469,7 @@ def edit_sp_save(request):
     sp.lubrication = lubrication
     sp.condition = condition
     sp.save()
-    return redirect('/edit_sp/' + str(sp.id))
+    return redirect('/edit/sp/' + str(sp.id))
 
 def edit_task_save(request):
     is_active = True if request.POST.get('is_active', False) == 'on' else False
@@ -1442,7 +1479,7 @@ def edit_task_save(request):
     task.is_active = is_active
     task.note = note
     task.save()
-    return redirect('/edit_task/' + str(task.id))
+    return redirect('/edit/task/' + str(task.id))
 
 def edit_ven_save(request):
     is_active = True if request.POST.get('is_active', False) == 'on' else False
@@ -1458,7 +1495,7 @@ def edit_ven_save(request):
     ven.phone_no = phone_no
     ven.note = note
     ven.save()
-    return redirect('/edit_ven/' + str(ven.code))
+    return redirect('/edit/ven/' + str(ven.code))
 
 def file_save(request):
     file = request.FILES['file']
@@ -1571,6 +1608,17 @@ def validate_user_in_mail_group(request):
     sg = SectionGroup.objects.get(name=sg_name)
     user = User.objects.get(username=username)
     isExist = MailGroup.objects.filter(sg=sg,user=user).exists()
+    if isExist:
+        canUse = False
+    data = {
+        'canUse': canUse,
+    }
+    return JsonResponse(data)
+
+def validate_pwst(request):
+    name = request.GET['name'].strip()
+    canUse = True
+    isExist = PasswordStorage.objects.filter(name__iexact=name).exists()
     if isExist:
         canUse = False
     data = {

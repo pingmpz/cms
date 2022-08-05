@@ -99,6 +99,8 @@
         </li>
 
         {% if request.user.is_superuser or request.user.is_staff or request.user.employee.section == 'MA' %}
+        <li class="side-nav-title side-nav-item">MA Section</li>
+
         <li class="side-nav-item">
             <a href="/cri_part_list/" class="side-nav-link">
                 <i class="mdi mdi-nut m-0"></i>
@@ -116,6 +118,17 @@
                 {% if all_page_data.is_not_enough_sp %}
                 <span class="badge bg-danger rounded-pill float-end">&nbsp;!&nbsp;</span>
                 {% endif %}
+            </a>
+        </li>
+        {% endif %}
+
+        {% if request.user.is_superuser or request.user.employee.section == 'MIS' %}
+        <li class="side-nav-title side-nav-item">MIS Section</li>
+
+        <li class="side-nav-item">
+            <a href="/pwst_list/" class="side-nav-link">
+                <i class="mdi mdi-shield-key-outline m-0"></i>
+                <span>Password Storage</span>
             </a>
         </li>
         {% endif %}
