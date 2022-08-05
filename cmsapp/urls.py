@@ -31,9 +31,9 @@ urlpatterns = [
     path('cri_part_list/', views.cri_part_list, name='cri_part_list'),
     path('spl_part_list/', views.spl_part_list, name='spl_part_list'),
     #-- Report
-    path('summary/<str:fsg>', views.summary, name='summary'),
-    path('report_q_obj/<str:fmcg>&<str:fyear>', views.report_q_obj, name='report_q_obj'),
-    path('report_mc_dt/<str:fsection>&<str:fmonth>', views.report_mc_dt, name='report_mc_dt'),
+    path('report/summary/<str:fsg>', views.summary, name='summary'),
+    path('report/q_obj/<str:fmcg>&<str:fyear>', views.report_q_obj, name='report_q_obj'),
+    path('report/mc_dt/<str:fsection>&<str:fmonth>', views.report_mc_dt, name='report_mc_dt'),
     #-- Master
     path('master/emp/', views.master_emp, name='master_emp'),
     path('master/mcg/', views.master_mcg, name='master_mcg'),

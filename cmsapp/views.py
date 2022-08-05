@@ -636,7 +636,7 @@ def summary(request, fsg):
         'complete_pv_data': complete_pv_data,
     }
     context['all_page_data'] = (all_page_data(request))
-    return render(request, 'summary.html', context)
+    return render(request, 'report/summary.html', context)
 
 @login_required(login_url='/')
 def report_q_obj(request, fmcg, fyear):
@@ -755,7 +755,7 @@ def report_q_obj(request, fmcg, fyear):
         'hr_cals': hr_cals,
     }
     context['all_page_data'] = (all_page_data(request))
-    return render(request, 'report_q_obj.html', context)
+    return render(request, 'report/q_obj.html', context)
 
 @login_required(login_url='/')
 def report_mc_dt(request, fsection, fmonth):
@@ -826,7 +826,7 @@ def report_mc_dt(request, fsection, fmonth):
         'durations': durations,
     }
     context['all_page_data'] = (all_page_data(request))
-    return render(request, 'report_mc_dt.html', context)
+    return render(request, 'report/mc_dt.html', context)
 
 #----------------------------------- Master -----------------------------------#
 
