@@ -98,6 +98,7 @@
             </a>
         </li>
 
+        {% if request.user.is_superuser or request.user.is_staff or request.user.employee.section == 'MA' %}
         <li class="side-nav-item">
             <a href="/cri_part_list/" class="side-nav-link">
                 <i class="mdi mdi-nut m-0"></i>
@@ -117,6 +118,7 @@
                 {% endif %}
             </a>
         </li>
+        {% endif %}
 
         <li class="side-nav-title side-nav-item">Master</li>
 

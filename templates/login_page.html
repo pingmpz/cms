@@ -110,6 +110,14 @@
               }
             });
           }
+
+          document.getElementById("username").addEventListener("keydown", function (e) {
+            if (e.code === "Enter" || e.code == "NumpadEnter") validate_login();
+          });
+
+          document.getElementById("password").addEventListener("keydown", function (e) {
+            if (e.code === "Enter" || e.code == "NumpadEnter") validate_login();
+          });
         </script>
     </body>
 </html>
