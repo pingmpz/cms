@@ -27,27 +27,25 @@
                         <div class="mt-md-4">
                             <br><br><br>
 
-                            <h1 class="text-white mt-3 mb-0 hero-title" style="font-weight: 1000;">CMS</h2>
-                            <h4 class="fw-normal mt-0 mb-4 hero-title" style="color:#b3dcf7">C.C.S. Maintenance Service</h6>
+                            <h1 class="text-white mt-3 mb-0 hero-title" style="font-weight: 1000;">C.C.S. Maintenance Service</h2>
 
                             <p class="mb-4 font-16 text-white-50">
                               Welcome to C.C.S. Maintenance Service.<br>
-                              <u>Support Sections</u><br>
-                              {% for sg in sgs %}
-                              &nbsp;▪️ {{sg.name}} ({{sg.full_name}})<br>
-                              {% endfor %}
+
+                              <div class="list-group">
+                                  {% for sg in sgs %}
+                                  <a href="/new_request/{{sg.name}}" class="list-group-item list-group-item-action">&nbsp;▪️ {{sg.name}} ({{sg.full_name}})</a>
+                                  {% endfor %}
+                              </div>
                             </p>
                             <p class="text-danger">* พนักงานที่ไม่ใช่พนักงานในแผนกด้านบนนี้ ไม่ต้อง Login นะครับ</p>
-
-                            <a class="btn btn-success rounded-pill" href="/new_request/"><i class="uil-comment-plus"></i> New Request</a>
-                            &nbsp;
-                            <a class="btn btn-light rounded-pill" href="/login_page/"><i class="uil-unlock-alt"></i> Log In</a>
-                            <br>
                             <p class="mt-2 font-16 text-white-50">
                               Track your request <a href="/track_request/0" class="text-white"><u>Here</u></a>
                               &nbsp;&nbsp;&nbsp;
                               CMS Manual <a href="/media/CMS MANUAL.pdf" class="text-white"><u>Here</u></a>
                             </p>
+
+                            <a class="btn btn-light rounded-pill" href="/login_page/"><i class="uil-unlock-alt"></i> Log In</a>
                             <br>
                         </div>
                     </div>

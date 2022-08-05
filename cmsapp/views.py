@@ -90,7 +90,7 @@ def logout_action(request):
 
 @login_required(login_url='/')
 def setting(request):
-    update_machine()
+    # update_machine()
     users = []
     set_user = []
     if request.user.is_superuser or request.user.is_staff:
@@ -105,10 +105,11 @@ def setting(request):
 
 ##################################### Page #####################################
 
-def new_request(request):
+def new_request(request, sg_name):
     sgs = SectionGroup.objects.all()
     token = secrets.token_urlsafe(16)
     context = {
+        'sg_name': sg_name,
         'sgs': sgs,
         'token': token,
     }

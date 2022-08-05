@@ -15,7 +15,7 @@ urlpatterns = [
     path('logout_action/', views.logout_action, name='logout_action'),
     path('setting/', views.setting, name='setting'),
     ### Page
-    path('new_request/', views.new_request, name='new_request'),
+    path('new_request/<str:sg_name>', views.new_request, name='new_request'),
     path('new_request_success/<str:request_no>', views.new_request_success, name='new_request_success'),
     path('new_pv_request/', views.new_pv_request, name='new_pv_request'),
     path('edit_request/<str:request_no>', views.edit_request, name='edit_request'),
