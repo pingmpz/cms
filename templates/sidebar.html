@@ -122,14 +122,14 @@
         </li>
         {% endif %}
 
-        {% if request.user.is_superuser or request.user.employee.section == 'MIS' %}
+        {% if request.user.employee.enable_pwst %}
         <li class="side-nav-title side-nav-item">MIS Section</li>
 
         <li class="side-nav-item">
             <a href="/pwst_list/" class="side-nav-link">
                 <i class="mdi mdi-shield-key-outline m-0"></i>
                 <span>Password Storage</span>
-            </a>  
+            </a>
         </li>
 
         <li class="side-nav-item">
