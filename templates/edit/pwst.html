@@ -73,6 +73,7 @@
                                     <form action="/edit_pwst_save/" method="POST" id="form">
                                         {% csrf_token %}
                                         <input type="text" name="id" id="id" value="{{pwst.id}}" hidden>
+                                        <input type="password" hidden>
 
                                         <div class="mb-0 row">
                                           <p class="text-muted font-12 col-6 text-center">Created Date : {{pwst.date_published}}</p>

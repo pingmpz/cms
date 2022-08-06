@@ -489,16 +489,18 @@ def spl_part_list(request):
 
 @login_required(login_url='/')
 def pwst_list(request):
-    pwsts = PasswordStorage.objects.all()
+    pwsts = None
     pw_passwords, pw_dates = [], []
-    for pwst in pwsts:
-        pwis = PasswordItem.objects.filter(pwst=pwst).order_by('-id')
-        if pwis:
-            pw_passwords.append(pwis[0].password)
-            pw_dates.append(pwis[0].date_published)
-        else:
-            pw_passwords.append(None)
-            pw_dates.append(None)
+    if request.user.employee.enable_pwst:
+        pwsts = PasswordStorage.objects.all()
+        for pwst in pwsts:
+            pwis = PasswordItem.objects.filter(pwst=pwst).order_by('-id')
+            if pwis:
+                pw_passwords.append(pwis[0].password)
+                pw_dates.append(pwis[0].date_published)
+            else:
+                pw_passwords.append(None)
+                pw_dates.append(None)
     context = {
         'pwsts': pwsts,
         'pw_passwords': pw_passwords,
@@ -1108,11 +1110,15 @@ def edit_ven(request, fven):
 
 @login_required(login_url='/')
 def edit_pwst(request, fpwst):
-    pwsts = PasswordStorage.objects.all().order_by('name')
-    if fpwst == 'FIRST':
-        fpwst = pwsts[0].id
-    pwst = PasswordStorage.objects.get(id=fpwst)
-    pwis = PasswordItem.objects.filter(pwst=pwst).order_by('-id')
+    pwsts = []
+    pwst = None
+    pwis = []
+    if request.user.employee.enable_pwst:
+        pwsts = PasswordStorage.objects.all().order_by('name')
+        if fpwst == 'FIRST':
+            fpwst = pwsts[0].id
+        pwst = PasswordStorage.objects.get(id=fpwst)
+        pwis = PasswordItem.objects.filter(pwst=pwst).order_by('-id')
     context = {
         'fpwst': fpwst,
         'pwsts': pwsts,
@@ -1406,10 +1412,11 @@ def new_pwst_save(request):
     name = request.POST['name'].strip()
     password = request.POST['password'].strip()
     note = request.POST['note']
-    pwst_new = PasswordStorage(name=name,note=note)
-    pwst_new.save()
-    pwi_new = PasswordItem(pwst=pwst_new,password=password)
-    pwi_new.save()
+    if request.user.employee.enable_pwst:
+        pwst_new = PasswordStorage(name=name,note=note)
+        pwst_new.save()
+        pwi_new = PasswordItem(pwst=pwst_new,password=password)
+        pwi_new.save()
     return redirect('/new/pwst/')
 
 def edit_mc_save(request):
@@ -1518,11 +1525,12 @@ def edit_pwst_save(request):
     note = request.POST['note'].strip()
     password = request.POST['password'].strip()
     pwst = PasswordStorage.objects.get(id=id)
-    pwst.note = note
-    pwst.save()
-    if password != None and password != "":
-        pwi_new = PasswordItem(pwst=pwst,password=password)
-        pwi_new.save()
+    if request.user.employee.enable_pwst:
+        pwst.note = note
+        pwst.save()
+        if password != None and password != "":
+            pwi_new = PasswordItem(pwst=pwst,password=password)
+            pwi_new.save()
     return redirect('/edit/pwst/' + str(pwst.id))
 
 def file_save(request):

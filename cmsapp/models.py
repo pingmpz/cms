@@ -18,6 +18,7 @@ class Employee(models.Model):
     pv_created = models.CharField(max_length=20, default="Request Page") # Request Page, New Preventive Request
     auto_add = models.BooleanField(default=True)
     default_owt = models.CharField(max_length=20, default="None") # None, Only Me, All Member
+    enable_pwst = models.BooleanField(default=False)
     date_modified = models.DateTimeField(auto_now=True)
     date_published = models.DateTimeField(auto_now_add=True)
 
