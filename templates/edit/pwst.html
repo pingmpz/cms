@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+{% load static %}
+{% load extra %}
+{% load humanize %}
+
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <title>Edit Password | C.C.S. Maintenance Service</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta content="A fully featured admin theme which can be used to build CRM, CMS, etc." name="description" />
+        <meta content="Coderthemes" name="author" />
+        <!-- App favicon -->
+        <link rel="shortcut icon" href="assets/images/favicon.ico">
+
+        <!-- App css -->
+        <link href="{% static "assets/css/icons.min.css" %}" rel="stylesheet" type="text/css" />
+        <link href="{% static "assets/css/app-modern.min.css" %}" rel="stylesheet" type="text/css" id="light-style" />
+        <link href="{% static "assets/css/app-modern-dark.min.css" %}" rel="stylesheet" type="text/css" id="dark-style" />
+
+        <!-- DataTable css -->
+        <link href="{% static "assets/css/vendor/dataTables.bootstrap5.css" %}" rel="stylesheet" type="text/css" />
+        <link href="{% static "assets/css/vendor/responsive.bootstrap5.css" %}" rel="stylesheet" type="text/css" />
+        <link href="{% static "assets/css/vendor/buttons.bootstrap5.css" %}" rel="stylesheet" type="text/css" />
+        <link href="{% static "assets/css/vendor/select.bootstrap5.css" %}" rel="stylesheet" type="text/css" />
+        <link href="{% static "assets/css/vendor/fixedHeader.bootstrap5.css" %}" rel="stylesheet" type="text/css" />
+        <link href="{% static "assets/css/vendor/fixedColumns.bootstrap5.css" %}" rel="stylesheet" type="text/css" />
+
+    </head>
+
+    <body class="loading" data-layout="detached" data-layout-config='{"leftSidebarCondensed":{% if request.user.employee.sidebar == 'Condensed' %}true{% else %}false{% endif %},"darkMode":{% if request.user.employee.scheme == 'Dark Mode' %}true{% else %}false{% endif %}, "showRightSidebarOnStart":false}'>
+
+        <!-- ========== Header Bar ========== -->
+        {% include 'header.html' %}
+
+        <div class="container-fluid">
+            <div class="wrapper">
+
+                <!-- ========== Left Sidebar ========== -->
+                {% include 'sidebar.html' %}
+
+                <!-- ========== Page Content ========== -->
+                <div class="content-page">
+                    <div class="content">
+
+                        <!-- ========== Inner Top Bar ========== -->
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="page-title-box">
+                                    <div class="page-title-right d-flex" style="width:40%">
+                                      <select class="form-control form-control-sm select2" data-toggle="select2" name="fpwst" id="fpwst">
+                                        {% for ipwst in pwsts %}
+                                        <option value="{{ipwst.id}}" {% if fpwst == ipwst.id|intcomma %}selected{% endif %}>{{ipwst.name}}</option>
+                                        {% endfor %}
+                                      </select>
+                                      <button type="button" class="btn btn-success btn-sm ms-2" id="save_button" onclick="save()"><i class="mdi mdi-content-save"></i></button>
+                                    </div>
+                                    <h4 class="page-title"><i class="mdi mdi-database-edit-outline"></i> Edit Password</h4>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- ========== Main Content ========== -->
+                        <div class="row">
+                          <div class="col-3">
+
+                          </div>
+                          <div class="col-12">
+                            <div class="card">
+                              <div class="card-body">
+                                <div class="row">
+                                  <div class="col-6">
+                                    <form action="/edit_pwst_save/" method="POST" id="form">
+                                        {% csrf_token %}
+                                        <input type="text" name="id" id="id" value="{{pwst.id}}" hidden>
+
+                                        <div class="mb-0 row">
+                                          <p class="text-muted font-12 col-6 text-center">Created Date : {{pwst.date_published}}</p>
+                                          <p class="text-muted font-12 col-6 text-center">Modified Date : {{pwst.date_modified}}</p>
+                                        </div>
+
+                                        <div class="mb-3">
+                                            <label class="form-label">Name</label>
+                                            <input class="form-control" type="text" name="name" id="name" value="{{pwst.name}}" readonly>
+                                        </div>
+
+                                        <div class="mb-3">
+                                            <label class="form-label">Note</label>
+                                            <textarea class="form-control" name="note" id="note" rows="5">{{pwst.note|default_if_none:""}}</textarea>
+                                        </div>
+
+                                        <div class="mb-3">
+                                            <label class="form-label">Password</label>
+                                            <p class="text-muted font-12">* Leave this empty if you only want to update note.</p>
+                                            <div class="input-group input-group-merge">
+                                                <input type="password" name="password" id="password" class="form-control form-control-sm"  autocomplete="false">
+                                                <div class="input-group-text" data-password="false">
+                                                    <span class="password-eye"></span>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <p class="text-danger text-center small mb-4" id="invalid_text"></p>
+                                    </form>
+                                  </div>
+                                  <div class="col-6">
+                                    <table id="master_table" class="table table-sm nowrap table-responsive row-border order-column w-100 small">
+                                      <thead>
+                                          <tr>
+                                              <th {% if not request.user.is_superuser %}hidden{% endif %}>ID</th>
+                                              <th>Created Date</th>
+                                              <th>Password</th>
+                                          </tr>
+                                      </thead>
+                                      <tbody>
+                                          {% for pwi in pwis %}
+                                          <tr class="bg-primary">
+                                              <td {% if not request.user.is_superuser %}hidden{% endif %}>{{pwi.id}}</td>
+                                              <td>
+                                                {{pwi.date_published}}<br>
+                                                {% if forloop.counter == 1 %}<small class="text-muted">(Current Password)</small>{% endif %}
+                                              </td>
+                                              <td>
+                                                <div class="input-group input-group-merge">
+                                                    <input type="password" id="password" class="form-control form-control-sm" value="{{pwi.password}}" readonly>
+                                                    <div class="input-group-text" data-password="false">
+                                                        <span class="password-eye"></span>
+                                                    </div>
+                                                </div>
+                                              </td>
+                                          </tr>
+                                          {% endfor %}
+                                      </tbody>
+                                    </table>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                    </div>
+
+                    <!-- ========== Footer ========== -->
+                    {% include 'footer.html' %}
+
+                </div>
+            </div>
+        </div>
+
+        <!-- ========== Right Side Bar ========== -->
+
+        <!-- bundle -->
+        <script src="{% static "assets/js/vendor.min.js" %}"></script>
+        <script src="{% static "assets/js/app.min.js" %}"></script>
+        <script src="{% static "custom/custom.js" %}"></script>
+        <script src="{% static "custom/topsearch.js" %}"></script>
+        <!-- DataTable -->
+        <script src="{% static "assets/js/vendor/jquery.dataTables.min.js" %}"></script>
+        <script src="{% static "assets/js/vendor/dataTables.bootstrap5.js" %}"></script>
+        <script src="{% static "assets/js/vendor/dataTables.responsive.min.js" %}"></script>
+        <script src="{% static "assets/js/vendor/responsive.bootstrap5.min.js" %}"></script>
+        <script src="{% static "assets/js/vendor/dataTables.buttons.min.js" %}"></script>
+        <script src="{% static "assets/js/vendor/buttons.bootstrap5.min.js" %}"></script>
+        <script src="{% static "assets/js/vendor/buttons.html5.min.js" %}"></script>
+        <script src="{% static "assets/js/vendor/buttons.flash.min.js" %}"></script>
+        <script src="{% static "assets/js/vendor/buttons.print.min.js" %}"></script>
+        <script src="{% static "assets/js/vendor/dataTables.keyTable.min.js" %}"></script>
+        <script src="{% static "assets/js/vendor/dataTables.select.min.js" %}"></script>
+        <script src="{% static "assets/js/vendor/fixedColumns.bootstrap5.min.js" %}"></script>
+        <script src="{% static "assets/js/vendor/fixedHeader.bootstrap5.min.js" %}"></script>
+
+        <script>
+          //-- Prevent Back
+          window.addEventListener( "pageshow", function (event) {
+            if (event.persisted || (typeof window.performance != "undefined" && window.performance.navigation.type === 2)) window.location.reload();
+          });
+
+          $('#master_table').DataTable( {
+              "order": [[ 0, "desc" ]],
+              'iDisplayLength': 10,
+              "scrollX": true,
+              // "bPaginate": false,
+              "bFilter": false,
+              "bSort": false,
+              "bInfo": false
+          });
+
+          function save(){
+            // Clear Validate
+            remove_valids(['name','note']);
+            set_text_emptys(['invalid_text']);
+            // Function
+            document.getElementById('form').submit();
+            $('#save_button').prop('disabled', true);
+          }
+
+          $('#fpwst').change(function() {
+            filter();
+          });
+
+          function filter(){
+            var fpwst = $("#fpwst").val();
+            window.location.href = "/edit/pwst/" + fpwst;
+          }
+        </script>
+    </body>
+</html>

@@ -1106,6 +1106,22 @@ def edit_ven(request, fven):
     context['all_page_data'] = (all_page_data(request))
     return render(request, 'edit/ven.html', context)
 
+@login_required(login_url='/')
+def edit_pwst(request, fpwst):
+    pwsts = PasswordStorage.objects.all().order_by('name')
+    if fpwst == 'FIRST':
+        fpwst = pwsts[0].id
+    pwst = PasswordStorage.objects.get(id=fpwst)
+    pwis = PasswordItem.objects.filter(pwst=pwst).order_by('-id')
+    context = {
+        'fpwst': fpwst,
+        'pwsts': pwsts,
+        'pwst': pwst,
+        'pwis': pwis,
+    }
+    context['all_page_data'] = (all_page_data(request))
+    return render(request, 'edit/pwst.html', context)
+
 #################################### POST ######################################
 def setting_save(request):
     is_reset = True if request.POST.get('is_reset', False) == 'on' else False
@@ -1496,6 +1512,18 @@ def edit_ven_save(request):
     ven.note = note
     ven.save()
     return redirect('/edit/ven/' + str(ven.code))
+
+def edit_pwst_save(request):
+    id = request.POST['id']
+    note = request.POST['note'].strip()
+    password = request.POST['password'].strip()
+    pwst = PasswordStorage.objects.get(id=id)
+    pwst.note = note
+    pwst.save()
+    if password != None and password != "":
+        pwi_new = PasswordItem(pwst=pwst,password=password)
+        pwi_new.save()
+    return redirect('/edit/pwst/' + str(pwst.id))
 
 def file_save(request):
     file = request.FILES['file']

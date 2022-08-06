@@ -62,6 +62,7 @@ urlpatterns = [
     path('edit/sp/<str:fsp>', views.edit_sp, name='edit_sp'),
     path('edit/task/<str:ftask>', views.edit_task, name='edit_task'),
     path('edit/ven/<str:fven>', views.edit_ven, name='edit_ven'),
+    path('edit/pwst/<str:fpwst>', views.edit_pwst, name='edit_pwst'),
     ### POST
     path('setting_save/', views.setting_save, name='setting_save'),
     path('new_request_save/', views.new_request_save, name='new_request_save'),
@@ -84,6 +85,7 @@ urlpatterns = [
     path('edit_sp_save/', views.edit_sp_save, name='edit_sp_save'),
     path('edit_task_save/', views.edit_task_save, name='edit_task_save'),
     path('edit_ven_save/', views.edit_ven_save, name='edit_ven_save'),
+    path('edit_pwst_save/', views.edit_pwst_save, name='edit_pwst_save'),
     ### GET
     path('validate_old_password/', views.validate_old_password, name='validate_old_password'),
     path('validate_username/', views.validate_username, name='validate_username'),
