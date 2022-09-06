@@ -444,8 +444,8 @@
                                                   <!-- ========== Operator Tab ========== -->
                                                   <div class="tab-pane active" id="operator">
                                                     <!-- ========== Add Operate Time ========== -->
-                                                    {% if req.status == 'In Progress' or req.status == 'On Hold' or req.status == 'Complete' %}
-                                                    {% if is_member or request.user.is_superuser or request.user.is_staff %}
+                                                    {% if req.status == 'In Progress' or req.status == 'On Hold' %}
+                                                    {% if is_member %}
                                                     <p class="text-muted font-12">Use 'CTRL' to select multiple item</p>
                                                     <div class="row">
                                                       <div class="col-10">
@@ -527,8 +527,8 @@
                                                   <!-- ========== Vendors Tab ========== -->
                                                   <div class="tab-pane show" id="vendor">
                                                     <!-- ========== Add Operate Time ========== -->
-                                                    {% if req.status == 'In Progress' or req.status == 'On Hold' or req.status == 'Complete' %}
-                                                    {% if is_member or request.user.is_superuser or request.user.is_staff %}
+                                                    {% if req.status == 'In Progress' or req.status == 'On Hold' %}
+                                                    {% if is_member %}
                                                     <p class="text-muted font-12">Use 'CTRL' to select multiple item</p>
                                                     <div class="row">
                                                       <div class="col-10">
@@ -610,8 +610,8 @@
                                             <!-- ========== Machine Downtime Tab ========== -->
                                             <div class="tab-pane p-0" id="mc_downtime">
                                               <!-- ========== Add Machine Downtime ========== -->
-                                              {% if req.status == 'In Progress' or req.status == 'On Hold' or req.status == 'Complete' %}
-                                              {% if is_member or request.user.is_superuser or request.user.is_staff %}
+                                              {% if req.status == 'In Progress' or req.status == 'On Hold' %}
+                                              {% if is_member %}
                                               <div class="row">
                                                 <div class="col-10">
                                                   <div class="mb-3">
