@@ -797,10 +797,13 @@
                                               <button type="button" class="btn btn-xs mb-1 btn-outline-danger" onclick="leave_request()"><i class='uil-sign-out-alt me-1'></i>Leave</button>
                                               {% endif %}
                                             {% elif req.status == 'Complete' or req.status == 'Canceled' %}
-                                              {% if is_member or user.is_staff %}
-                                              <button type="button" class="btn btn-xs mb-1 btn-info" data-bs-toggle="modal" data-bs-target="#rework_modal"><i class='uil-redo me-1'></i>Rework</button>
+                                              {% if user.is_staff %}
+                                                <button type="button" class="btn btn-xs mb-1 btn-info" data-bs-toggle="modal" data-bs-target="#rework_modal"><i class='uil-redo me-1'></i>Admin Rework</button>
+                                                <button type="button" class="btn btn-xs mb-1 btn-outline-danger" onclick="leave_request()"><i class='uil-sign-out-alt me-1'></i>Admin Leave</button>
+                                              {% elif is_member %}
+                                                <button type="button" class="btn btn-xs mb-1 btn-info" data-bs-toggle="modal" data-bs-target="#rework_modal"><i class='uil-redo me-1'></i>Rework</button>
                                               {% else %}
-                                              <p class="text-center">There is no function for this request.</p>
+                                                <p class="text-center">There is no function for this request.</p>
                                               {% endif %}
                                             {% endif %}
                                             {% if req.status == 'Rejected' %}
@@ -1044,7 +1047,15 @@
                       </div>
                       <div class="modal-body">
                           <h5 class="mt-3 mb-3 text-center">Are you sure that you want to complete this request ?</h5>
-                          <div class="mb-1">
+                          <div class="mb-3">
+                              <label class="form-label">Finish Datetime</label>
+                              {% if req.finish_datetime %}
+                              <input type="datetime-local" class="form-control" name="complete_finish_datetime" id="complete_finish_datetime" value="{{req.finish_datetime|date:'Y-m-d H:i:s'}}">
+                              {% else %}
+                              <input type="datetime-local" class="form-control" name="complete_finish_datetime" id="complete_finish_datetime" value="{% now 'Y-m-d H:i:s' %}">
+                              {% endif %}
+                          </div>
+                          <div class="mb-3">
                               <label class="form-label">Corrective Action</label>
                               <textarea class="form-control" name="complete_corrective_action" id="complete_corrective_action" rows="5">{{req.corrective_action|default_if_none:""}}</textarea>
                           </div>
@@ -1488,13 +1499,16 @@
 
           function complete_request(){
             var req_id = $("#req_id").val();
+            var finish_datetime = $("#complete_finish_datetime").val();
             var corrective_action = $("#complete_corrective_action").val();
             var cause = $("#complete_cause").val();
             var spare_parts = $("#complete_spare_parts").val();
+
             $.ajax({
               url: '/complete_request/',
               data: {
                 'req_id': req_id,
+                'finish_datetime': finish_datetime,
                 'corrective_action': corrective_action,
                 'cause': cause,
                 'spare_parts': spare_parts,

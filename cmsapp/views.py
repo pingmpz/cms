@@ -1756,8 +1756,10 @@ def join_request(request):
 def leave_request(request):
     req_id = request.GET['req_id']
     req = Request.objects.get(id=req_id)
-    member = Member.objects.get(req=req,user=request.user)
-    member.delete()
+    is_member = Member.objects.filter(req=req,user=request.user).exists()
+    if is_member:
+        member = Member.objects.get(req=req,user=request.user)
+        member.delete()
     data = {
     }
     return JsonResponse(data)
@@ -1785,6 +1787,7 @@ def start_work_request(request):
 
 def complete_request(request):
     req_id = request.GET['req_id']
+    finish_datetime = datetime.now() if request.GET['finish_datetime'] == "" else request.GET['finish_datetime']
     corrective_action = request.GET['corrective_action']
     cause = request.GET['cause']
     spare_parts = request.GET['spare_parts']
@@ -1794,7 +1797,7 @@ def complete_request(request):
     req.corrective_action = corrective_action
     req.cause = cause
     req.spare_parts = spare_parts
-    req.finish_datetime = datetime.now()
+    req.finish_datetime = finish_datetime
     req.save()
     data = {
     }
