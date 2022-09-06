@@ -137,3 +137,5 @@ EMAIL_HOST = 'mail.ccsadvancetech.co.th'
 EMAIL_PORT = 587
 EMAIL_HOST_USER = 'cmsadmin@ccsadvancetech.co.th'
 EMAIL_HOST_PASSWORD = 'H@ckyourm0m.0ii2SS88$$'
+
+SESSION_COOKIE_NAME = 'CMS'
