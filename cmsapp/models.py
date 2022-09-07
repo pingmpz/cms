@@ -148,6 +148,7 @@ class Request(models.Model):
     corrective_action = models.TextField(max_length=1000, null=True)
     cause = models.TextField(max_length=1000, null=True)
     spare_parts = models.TextField(max_length=1000, null=True)
+    is_breakdown = models.BooleanField(default=False)
     date_modified = models.DateTimeField(auto_now=True)
     date_published = models.DateTimeField(auto_now_add=True)
 

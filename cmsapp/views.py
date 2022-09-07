@@ -1275,12 +1275,13 @@ def edit_request_save(request):
         mc = Machine.objects.get(mc_no=mc_no)
         if req.mc == mc:
             is_same_mc = True
+    if not is_same_mc:
+        req.is_breakdown = False
+        mcdts = MachineDowntime.objects.filter(req=req)
+        mcdts.delete()
     req.request_date = request_date
     req.mc = mc
     req.description = description
-    if not is_same_mc:
-        mcdts = MachineDowntime.objects.filter(req=req)
-        mcdts.delete()
     req.save()
     #-- File Manage
     source_dir = 'media/temp/' + token
@@ -1797,6 +1798,7 @@ def complete_request(request):
     req.corrective_action = corrective_action
     req.cause = cause
     req.spare_parts = spare_parts
+    req.is_breakdown = False
     req.finish_datetime = finish_datetime
     req.save()
     data = {
@@ -1809,6 +1811,7 @@ def cancel_request(request):
     req = Request.objects.get(id=req_id)
     req.status = 'Canceled'
     req.reason = cancel_reason
+    req.is_breakdown = False
     req.finish_datetime = datetime.now()
     req.save()
     data = {
@@ -1820,6 +1823,24 @@ def rework_request(request):
     req = Request.objects.get(id=req_id)
     req.status = 'In Progress'
     req.reason = None
+    req.save()
+    data = {
+    }
+    return JsonResponse(data)
+
+def set_breakdown(request):
+    req_id = request.GET['req_id']
+    req = Request.objects.get(id=req_id)
+    req.is_breakdown = True
+    req.save()
+    data = {
+    }
+    return JsonResponse(data)
+
+def remove_breakdown(request):
+    req_id = request.GET['req_id']
+    req = Request.objects.get(id=req_id)
+    req.is_breakdown = False
     req.save()
     data = {
     }

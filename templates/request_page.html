@@ -25,6 +25,37 @@
         <link href="{% static "assets/css/vendor/fixedHeader.bootstrap5.css" %}" rel="stylesheet" type="text/css" />
         <!-- <link href="{% static "assets/css/vendor/fixedColumns.bootstrap5.css" %}" rel="stylesheet" type="text/css" /> -->
 
+        <style media="screen">
+          .btn-orange {
+            color: #ff6100;
+            border-color: #ff6100;
+          }
+
+          .btn-orange:hover {
+            color: #ffffff;
+            background-color: #ff6100;
+          }
+
+          .bg-orange {
+            background-color: #ff6100;
+          }
+
+          .text-orange {
+            color: #ff6100;
+          }
+
+          .blink{
+          		animation: blink 1.5s linear infinite;
+          }
+
+          @keyframes blink {
+            0%{opacity: 0;}
+            50%{opacity: 0.5;}
+            100%{opacity: 1;}
+          }
+
+        </style>
+
     </head>
 
     <body class="loading" data-layout="detached" data-layout-config='{"leftSidebarCondensed":{% if request.user.employee.sidebar == 'Condensed' %}true{% else %}false{% endif %},"darkMode":{% if request.user.employee.scheme == 'Dark Mode' %}true{% else %}false{% endif %}, "showRightSidebarOnStart":false}'>
@@ -124,7 +155,7 @@
                                       <p class="mb-2 mt-2 text-center">{{req.reason}}</p>
                                   </div>
                               </div>
-                              {% endif %}
+                              {% endif %}}
 
                               {% if req.status != 'Pending' and req.status != 'Rejected' %}
                               <!-- ========== Request Detail ========== -->
@@ -250,6 +281,12 @@
 
                             <!-- ========== Middle Content ========== -->
                             <div class="col-xxl-6 col-lg-12 order-lg-2 order-xxl-1">
+
+                                {% if req.is_breakdown %}
+                                <div class="alert alert-warning bg-orange text-white text-center border-0" role="alert">
+                                    <span class="blink"><i class='mdi mdi-alert-decagram me-1'></i><strong>{{req.mc.mc_no}}</strong> is breaking down !!!</span>
+                                </div>
+                                {% endif %}
 
                                 {% if req.status == 'Pending' or req.status == 'Rejected' %}
                                 <!-- ========== Request Detail ========== -->
@@ -764,42 +801,43 @@
                                         <h4 class="header-title mb-3">Functions</h4>
                                         <div class="list-group list-group-flush my-2">
                                             {% if req.status == 'Pending' %}
-                                            {% if user.is_staff and req.type == 'Preventive' %}
-                                            <a href="/edit_request/{{request_no}}" class="btn btn-xs mb-1 btn-warning"><i class='mdi mdi-lead-pencil me-1'></i>Edit Request</a>
-                                            {% endif %}
-                                            <button type="button" class="btn btn-xs mb-1 btn-success" data-bs-toggle="modal" data-bs-target="#accept_modal"><i class='uil-check me-1'></i>Accept</button>
-                                            <button type="button" class="btn btn-xs mb-1 btn-danger" data-bs-toggle="modal" data-bs-target="#reject_modal"><i class='uil-times me-1'></i>Reject</button>
-                                            {% elif req.status == 'On Hold' and not is_member %}
-                                            <button type="button" class="btn btn-xs mb-1 btn-outline-success" onclick="join_request()"><i class='uil-sign-in-alt me-1'></i>Join</button>
-                                            {% elif req.status == 'On Hold' %}
-                                            <a href="/edit_request/{{request_no}}" class="btn btn-xs mb-1 btn-warning"><i class='mdi mdi-lead-pencil me-1'></i>Edit Request</a>
-                                            <button type="button" class="btn btn-xs mb-1 btn-info" data-bs-toggle="modal" data-bs-target="#manage_member_modal"><i class='mdi mdi-account-edit me-1'></i>Manage Member</button>
-                                            <button type="button" class="btn btn-xs mb-1 btn-info" data-bs-toggle="modal" data-bs-target="#manage_vendor_modal"><i class='mdi mdi-briefcase-edit me-1'></i>Manage Vendor</button>
-                                            <button type="button" class="btn btn-xs mb-1 btn-info" data-bs-toggle="modal" data-bs-target="#manage_category_modal"><i class='mdi mdi-puzzle-edit me-1'></i>Manage Category</button>
-                                            <button type="button" class="btn btn-xs mb-1 btn-primary" data-bs-toggle="modal" data-bs-target="#start_work_modal"><i class='uil-play me-1'></i>Start Work</button>
-                                            <button type="button" class="btn btn-xs mb-1 btn-danger" data-bs-toggle="modal" data-bs-target="#cancel_modal"><i class='mdi mdi-cancel me-1'></i>Cancel</button>
-                                              {% if members|length > 1 %}
-                                              <hr>
-                                              <button type="button" class="btn btn-xs mb-1 btn-outline-danger" onclick="leave_request()"><i class='uil-sign-out-alt me-1'></i>Leave</button>
+                                              {% if user.is_staff and req.type == 'Preventive' %}
+                                                <a href="/edit_request/{{request_no}}" class="btn btn-xs mb-1 btn-warning"><i class='mdi mdi-lead-pencil me-1'></i>Edit Request</a>
                                               {% endif %}
-                                            {% elif req.status == 'In Progress' and not is_member %}
-                                            <button type="button" class="btn btn-xs mb-1 btn-outline-success" onclick="join_request()"><i class='uil-sign-in-alt me-1'></i>Join</button>
-                                            {% elif req.status == 'In Progress' %}
-                                            <a href="/edit_request/{{request_no}}" class="btn btn-xs mb-1 btn-warning"><i class='mdi mdi-lead-pencil me-1'></i>Edit Request</a>
-                                            <button type="button" class="btn btn-xs mb-1 btn-info" data-bs-toggle="modal" data-bs-target="#manage_member_modal"><i class='mdi mdi-account-edit me-1'></i>Manage Member</button>
-                                            <button type="button" class="btn btn-xs mb-1 btn-info" data-bs-toggle="modal" data-bs-target="#manage_vendor_modal"><i class='mdi mdi-briefcase-edit me-1'></i>Manage Vendor</button>
-                                            <button type="button" class="btn btn-xs mb-1 btn-info" data-bs-toggle="modal" data-bs-target="#manage_category_modal"><i class='mdi mdi-puzzle-edit me-1'></i>Manage Category</button>
-                                            <button type="button" class="btn btn-xs mb-1 btn-dark" data-bs-toggle="modal" data-bs-target="#hold_modal"><i class='uil-pause me-1'></i>Hold</button>
-                                            <button type="button" class="btn btn-xs mb-1 btn-success" data-bs-toggle="modal" data-bs-target="#complete_modal"><i class='mdi mdi-check-all me-1'></i>Complete</button>
-                                            <button type="button" class="btn btn-xs mb-1 btn-danger" data-bs-toggle="modal" data-bs-target="#cancel_modal"><i class='mdi mdi-cancel me-1'></i>Cancel</button>
-                                              {% if members|length > 1 %}
-                                              <hr>
-                                              <button type="button" class="btn btn-xs mb-1 btn-outline-danger" onclick="leave_request()"><i class='uil-sign-out-alt me-1'></i>Leave</button>
+                                              <button type="button" class="btn btn-xs mb-1 btn-success" data-bs-toggle="modal" data-bs-target="#accept_modal"><i class='uil-check me-1'></i>Accept</button>
+                                              <button type="button" class="btn btn-xs mb-1 btn-danger" data-bs-toggle="modal" data-bs-target="#reject_modal"><i class='uil-times me-1'></i>Reject</button>
+                                            {% elif req.status == 'On Hold' or req.status == 'In Progress' %}
+                                              {% if not is_member %}
+                                                <button type="button" class="btn btn-xs mb-1 btn-outline-success" onclick="join_request()"><i class='uil-sign-in-alt me-1'></i>Join</button>
+                                              {% else %}
+                                                <a href="/edit_request/{{request_no}}" class="btn btn-xs mb-1 btn-warning"><i class='mdi mdi-lead-pencil me-1'></i>Edit Request</a>
+                                                <div class="btn-group">
+                                                    <button type="button" class="btn btn-xs mb-1 btn-info" data-bs-toggle="modal" data-bs-target="#manage_member_modal"><i class='mdi mdi-account-edit me-1'></i>Member</button>
+                                                    <button type="button" class="btn btn-xs mb-1 btn-info" data-bs-toggle="modal" data-bs-target="#manage_vendor_modal"><i class='mdi mdi-briefcase-edit me-1'></i>Vendor</button>
+                                                    <button type="button" class="btn btn-xs mb-1 btn-info" data-bs-toggle="modal" data-bs-target="#manage_category_modal"><i class='mdi mdi-puzzle-edit me-1'></i>Category</button>
+                                                </div>
+                                                {% if req.status == 'On Hold' %}
+                                                  <button type="button" class="btn btn-xs mb-1 btn-primary" data-bs-toggle="modal" data-bs-target="#start_work_modal"><i class='uil-play me-1'></i>Start Work</button>
+                                                {% elif req.status == 'In Progress' %}
+                                                  <button type="button" class="btn btn-xs mb-1 btn-dark" data-bs-toggle="modal" data-bs-target="#hold_modal"><i class='uil-pause me-1'></i>Hold</button>
+                                                {% endif %}
+                                                <button type="button" class="btn btn-xs mb-1 btn-success" data-bs-toggle="modal" data-bs-target="#complete_modal"><i class='mdi mdi-check-all me-1'></i>Complete</button>
+                                                <button type="button" class="btn btn-xs mb-1 btn-danger" data-bs-toggle="modal" data-bs-target="#cancel_modal"><i class='mdi mdi-cancel me-1'></i>Cancel</button>
+                                                {% if req.mc and not req.is_breakdown %}
+                                                  <button type="button" class="btn btn-xs mb-1 btn-orange" data-bs-toggle="modal" data-bs-target="#breakdown_modal"><i class='mdi mdi-alert-decagram me-1'></i>Breakdown</button>
+                                                {% elif req.is_breakdown %}
+                                                  <button type="button" class="btn btn-xs mb-1 btn-outline-success" data-bs-toggle="modal" data-bs-target="#remove_breakdown_modal"><i class='mdi mdi-check-decagram me-1'></i>Remove Breakdown</button>
+                                                {% endif %}
+                                                <hr>
+                                                <button type="button" class="btn btn-xs mb-1 btn-outline-danger" onclick="leave_request()"><i class='uil-sign-out-alt me-1'></i>Leave</button>
                                               {% endif %}
                                             {% elif req.status == 'Complete' or req.status == 'Canceled' %}
                                               {% if user.is_staff %}
-                                                <button type="button" class="btn btn-xs mb-1 btn-info" data-bs-toggle="modal" data-bs-target="#rework_modal"><i class='uil-redo me-1'></i>Admin Rework</button>
-                                                <button type="button" class="btn btn-xs mb-1 btn-outline-danger" onclick="leave_request()"><i class='uil-sign-out-alt me-1'></i>Admin Leave</button>
+                                                <button type="button" class="btn btn-xs mb-1 btn-info" data-bs-toggle="modal" data-bs-target="#rework_modal"><i class='uil-redo me-1'></i>Rework</button>
+                                                {% if is_member %}
+                                                <hr>
+                                                <button type="button" class="btn btn-xs mb-1 btn-outline-danger" onclick="leave_request()"><i class='uil-sign-out-alt me-1'></i>Leave</button>
+                                                {% endif %}
                                               {% elif is_member %}
                                                 <button type="button" class="btn btn-xs mb-1 btn-info" data-bs-toggle="modal" data-bs-target="#rework_modal"><i class='uil-redo me-1'></i>Rework</button>
                                               {% else %}
@@ -807,7 +845,7 @@
                                               {% endif %}
                                             {% endif %}
                                             {% if req.status == 'Rejected' %}
-                                            <p class="text-center">There is no function for this request.</p>
+                                              <p class="text-center">There is no function for this request.</p>
                                             {% endif %}
                                         </div>
                                     </div>
@@ -1067,6 +1105,9 @@
                               <label class="form-label">Spare Parts Changed</label>
                               <textarea class="form-control" name="complete_spare_parts" id="complete_spare_parts" rows="5">{{req.spare_parts|default_if_none:""}}</textarea>
                           </div>
+                          {% if req.is_breakdown %}
+                          <p class="text-center text-danger font-12 mt-1">** This request has a breakdown machine, complete this will remove breakdown status. **</p>
+                          {% endif %}
                       </div>
                       <div class="modal-footer">
                           <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
@@ -1089,6 +1130,9 @@
                               <label class="form-label">Cancel Reason</label>
                               <textarea class="form-control" name="cancel_reason" id="cancel_reason" rows="5"></textarea>
                           </div>
+                          {% if req.is_breakdown %}
+                          <p class="text-center text-danger font-12 mt-1">** This request has a breakdown machine, cancel this will remove breakdown status. **</p>
+                          {% endif %}
                       </div>
                       <div class="modal-footer">
                           <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
@@ -1111,6 +1155,42 @@
                       <div class="modal-footer">
                           <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
                           <button type="button" class="btn btn-info" onclick="rework_request()">Confirm</button>
+                      </div>
+                  </div>
+              </div>
+          </div>
+          <!-- Breakdown -->
+          <div id="breakdown_modal" class="modal fade" tabindex="-1" role="dialog">
+              <div class="modal-dialog">
+                  <div class="modal-content">
+                      <div class="modal-header modal-colored-header bg-orange">
+                          <h4 class="modal-title"><i class='mdi mdi-alert-decagram me-1'></i>Breakdown</h4>
+                          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                      </div>
+                      <div class="modal-body">
+                          <h5 class="mt-3 mb-3 text-center">Are you sure that you want to set this request's machine as breakdown ?</h5>
+                      </div>
+                      <div class="modal-footer">
+                          <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
+                          <button type="button" class="btn btn-orange" onclick="set_breakdown()">Confirm</button>
+                      </div>
+                  </div>
+              </div>
+          </div>
+          <!-- Remove Breakdown -->
+          <div id="remove_breakdown_modal" class="modal fade" tabindex="-1" role="dialog">
+              <div class="modal-dialog">
+                  <div class="modal-content">
+                      <div class="modal-header modal-colored-header bg-success">
+                          <h4 class="modal-title"><i class='mdi mdi-check-decagram me-1'></i>Remove Breakdown</h4>
+                          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                      </div>
+                      <div class="modal-body">
+                          <h5 class="mt-3 mb-3 text-center">Are you sure that you want to remove the breakdown status ?</h5>
+                      </div>
+                      <div class="modal-footer">
+                          <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
+                          <button type="button" class="btn btn-success" onclick="remove_breakdown()">Confirm</button>
                       </div>
                   </div>
               </div>
@@ -1540,6 +1620,34 @@
             var req_id = $("#req_id").val();
             $.ajax({
               url: '/rework_request/',
+              data: {
+                'req_id': req_id,
+              },
+              dataType: 'json',
+              success: function (data) {
+                location.reload();
+              }
+            });
+          }
+
+          function set_breakdown(){
+            var req_id = $("#req_id").val();
+            $.ajax({
+              url: '/set_breakdown/',
+              data: {
+                'req_id': req_id,
+              },
+              dataType: 'json',
+              success: function (data) {
+                location.reload();
+              }
+            });
+          }
+
+          function remove_breakdown(){
+            var req_id = $("#req_id").val();
+            $.ajax({
+              url: '/remove_breakdown/',
               data: {
                 'req_id': req_id,
               },
