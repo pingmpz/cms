@@ -26,6 +26,7 @@ urlpatterns = [
     path('request_pending/<str:fsg>', views.request_pending, name='request_pending'),
     path('request_pv_pending/<str:fsg>', views.request_pv_pending, name='request_pv_pending'),
     path('request_all/<str:fsg>&<str:fstatus>&<str:ftype>', views.request_all, name='request_all'),
+    path('request_breakdown/<str:fsg>', views.request_breakdown, name='request_breakdown'),
     path('request_history/<str:fsg>&<str:fstatus>&<str:ftype>&<str:fstartdate>&<str:fstopdate>', views.request_history, name='request_history'),
     path('my_working_time/<str:fuser>&<str:fstartdate>&<str:fstopdate>', views.my_working_time, name='my_working_time'),
     path('cri_part_list/', views.cri_part_list, name='cri_part_list'),

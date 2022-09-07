@@ -63,6 +63,16 @@
         </li>
 
         <li class="side-nav-item">
+            <a href="/request_breakdown/MY" class="side-nav-link">
+                <i class="mdi mdi-alert-decagram-outline m-0"></i>
+                <span>Breakdown Request</span>
+                {% if all_page_data.breakdown_request_count != 0 %}
+                <span class="badge bg-danger rounded-pill float-end">{{all_page_data.breakdown_request_count}}</span>
+                {% endif %}
+            </a>
+        </li>
+
+        <li class="side-nav-item">
             <a data-bs-toggle="collapse" href="#report" class="side-nav-link">
                 <i class="uil-comment-chart-line m-0"></i>
                 <span>Report</span>

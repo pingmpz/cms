@@ -268,6 +268,13 @@ def all_page_data(request):
         all_reqs = Request.objects.filter(status='In Progress') | Request.objects.filter(status='On Hold')
     all_request_count = len(all_reqs)
 
+    breakdown_reqs = []
+    if is_in_section_group(request):
+        breakdown_reqs = Request.objects.filter(is_breakdown=True,sg=request.user.employee.section)
+    else :
+        breakdown_reqs = Request.objects.filter(is_breakdown=True)
+    breakdown_request_count = len(breakdown_reqs)
+
     cps = CriticalPart.objects.all()
     is_not_enough_cp = get_is_not_enough_cp(cps)
     sps = SplindlePart.objects.all()
@@ -278,6 +285,7 @@ def all_page_data(request):
         'pending_request_count': pending_request_count,
         'pv_pending_request_count': pv_pending_request_count,
         'all_request_count': all_request_count,
+        'breakdown_request_count': breakdown_request_count,
         'is_not_enough_cp': is_not_enough_cp,
         'is_not_enough_sp': is_not_enough_sp,
     }
@@ -383,6 +391,33 @@ def request_all(request, fsg, fstatus, ftype):
     }
     context['all_page_data'] = (all_page_data(request))
     return render(request, 'request_all.html', context)
+
+@login_required(login_url='/')
+def request_breakdown(request, fsg):
+    sgs = SectionGroup.objects.all()
+    reqs = []
+    if fsg == 'MY' and is_in_section_group(request):
+        fsg = request.user.employee.section
+    elif fsg == 'MY':
+        fsg = 'ALL'
+
+    reqs = Request.objects.filter(is_breakdown=True)
+    if fsg != 'ALL':
+        reqs = reqs.filter(sg=fsg)
+
+    is_members = get_is_members(reqs, request)
+    has_wts = get_has_wts(reqs)
+    has_mcdts = get_has_mcdts(reqs)
+    context = {
+        'sgs': sgs,
+        'fsg': fsg,
+        'reqs': reqs,
+        'is_members': is_members,
+        'has_wts': has_wts,
+        'has_mcdts': has_mcdts,
+    }
+    context['all_page_data'] = (all_page_data(request))
+    return render(request, 'request_breakdown.html', context)
 
 @login_required(login_url='/')
 def request_history(request, fsg, fstatus, ftype, fstartdate, fstopdate):
