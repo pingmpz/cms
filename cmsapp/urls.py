@@ -32,6 +32,7 @@ urlpatterns = [
     path('cri_part_list/', views.cri_part_list, name='cri_part_list'),
     path('spl_part_list/', views.spl_part_list, name='spl_part_list'),
     path('pwst_list/', views.pwst_list, name='pwst_list'),
+    path('mc_page/<str:mc_no>', views.mc_page, name='mc_page'),
     #-- Report
     path('report/summary/<str:fsg>', views.summary, name='summary'),
     path('report/q_obj/<str:fmcg>&<str:fyear>', views.report_q_obj, name='report_q_obj'),

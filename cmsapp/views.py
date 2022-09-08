@@ -544,6 +544,21 @@ def pwst_list(request):
     context['all_page_data'] = (all_page_data(request))
     return render(request, 'pwst_list.html', context)
 
+@login_required(login_url='/')
+def mc_page(request, mc_no):
+    mc = Machine.objects.get(mc_no=mc_no)
+    history_reqs = Request.objects.filter(mc=mc,status='Complete') | Request.objects.filter(mc=mc,status='Canceled')
+    active_reqs = Request.objects.filter(mc=mc,status='In Progress') | Request.objects.filter(mc=mc,status='On Hold')
+    pending_reqs = Request.objects.filter(mc=mc,status='Pending')
+    context = {
+        'mc': mc,
+        'history_reqs': history_reqs,
+        'active_reqs': active_reqs,
+        'pending_reqs': pending_reqs,
+    }
+    context['all_page_data'] = (all_page_data(request))
+    return render(request, 'mc_page.html', context)
+
 #----------------------------------- Report -----------------------------------#
 
 @login_required(login_url='/')

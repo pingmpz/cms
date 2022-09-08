@@ -90,7 +90,11 @@
                                           {% elif req.status == 'Canceled' %}<strong class="text-danger"><i class='uil-ban'></i> Canceled</strong>
                                           {% else %}{{req.status}}{% endif %}
                                         </td>
-                                        <td>{{req.mc.mc_no|default_if_none:""}}{{req.task.name|default_if_none:""}} {% if req.is_breakdown %}<i class="mdi mdi-alert-decagram text-danger"></i>{% endif %}</td>
+                                        <td>
+                                          <a href="/mc_page/{{req.mc.mc_no}}">{{req.mc.mc_no|default_if_none:""}}</a>
+                                          {{req.task.name|default_if_none:""}}
+                                          {% if req.is_breakdown %}<i class="mdi mdi-alert-decagram text-danger"></i>{% endif %}
+                                        </td>
                                         <td>{{req.reason|default_if_none:""}}</td>
                                         <td>{{req.description}}</td>
                                         <td>{{req.sg.name}}</td>

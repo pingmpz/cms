@@ -82,7 +82,7 @@
                                       <tr>
                                           <td>{{mc.section|default_if_none:""}}</td>
                                           <td>{{mc.mcg.name|default_if_none:""}}</td>
-                                          <td>{{mc.mc_no|default_if_none:""}}</td>
+                                          <td><a href="/mc_page/{{mc.mc_no}}">{{mc.mc_no|default_if_none:""}}</a></td>
                                           <td>
                                             {% if mc.is_active %}
                                             <i class='mdi mdi-check text-success'></i><span hidden>True</span>

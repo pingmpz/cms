@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+{% load static %}
+{% load extra %}
+
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <title>Machine / Device | C.C.S. Maintenance Service</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta content="A fully featured admin theme which can be used to build CRM, CMS, etc." name="description" />
+        <meta content="Coderthemes" name="author" />
+        <!-- App favicon -->
+        <link rel="shortcut icon" href="assets/images/favicon.ico">
+
+        <!-- App css -->
+        <link href="{% static "assets/css/icons.min.css" %}" rel="stylesheet" type="text/css" />
+        <link href="{% static "assets/css/app-modern.min.css" %}" rel="stylesheet" type="text/css" id="light-style" />
+        <link href="{% static "assets/css/app-modern-dark.min.css" %}" rel="stylesheet" type="text/css" id="dark-style" />
+
+        <!-- DataTable css -->
+        <link href="{% static "assets/css/vendor/dataTables.bootstrap5.css" %}" rel="stylesheet" type="text/css" />
+        <link href="{% static "assets/css/vendor/responsive.bootstrap5.css" %}" rel="stylesheet" type="text/css" />
+        <link href="{% static "assets/css/vendor/buttons.bootstrap5.css" %}" rel="stylesheet" type="text/css" />
+        <link href="{% static "assets/css/vendor/select.bootstrap5.css" %}" rel="stylesheet" type="text/css" />
+        <link href="{% static "assets/css/vendor/fixedHeader.bootstrap5.css" %}" rel="stylesheet" type="text/css" />
+        <link href="{% static "assets/css/vendor/fixedColumns.bootstrap5.css" %}" rel="stylesheet" type="text/css" />
+
+    </head>
+
+    <body class="loading" data-layout="detached" data-layout-config='{"leftSidebarCondensed":{% if request.user.employee.sidebar == 'Condensed' %}true{% else %}false{% endif %},"darkMode":{% if request.user.employee.scheme == 'Dark Mode' %}true{% else %}false{% endif %}, "showRightSidebarOnStart":false}'>
+
+        <!-- ========== Header Bar ========== -->
+        {% include 'header.html' %}
+
+        <div class="container-fluid">
+            <div class="wrapper">
+
+                <!-- ========== Left Sidebar ========== -->
+                {% include 'sidebar.html' %}
+
+                <!-- ========== Page Content ========== -->
+                <div class="content-page">
+                    <div class="content">
+
+                        <!-- ========== Inner Top Bar ========== -->
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="page-title-box">
+                                    <div class="page-title-right d-flex">
+                                        <a class="btn btn-warning" href="/edit/mc/{{mc.mc_no}}" title="Edit"><i class="mdi mdi-pencil"></i></a>
+                                    </div>
+                                    <h4 class="page-title"><i class="mdi mdi-cogs"></i> {{mc.mc_no}}</h4>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- ========== Main Content ========== -->
+                        <div class="row">
+                          <div class="col-12">
+                            <div class="card">
+                              <div class="card-body">
+                                <ul class="nav nav-tabs mb-3">
+                                  <li class="nav-item">
+                                      <a href="#detail" data-bs-toggle="tab" aria-expanded="false" class="nav-link active">
+                                          <i class="mdi mdi-home-variant d-md-none d-block"></i>
+                                          <span class="d-none d-md-block">Detail</span>
+                                      </a>
+                                  </li>
+                                  <li class="nav-item">
+                                      <a href="#history-tab" data-bs-toggle="tab" aria-expanded="true" class="nav-link">
+                                          <i class="mdi mdi-account-circle d-md-none d-block"></i>
+                                          <span class="d-none d-md-block">History {% if history_reqs %}({{history_reqs|length}}){% endif %}</span>
+                                      </a>
+                                  </li>
+                                  <li class="nav-item">
+                                      <a href="#active-tab" data-bs-toggle="tab" aria-expanded="false" class="nav-link">
+                                          <i class="mdi mdi-settings-outline d-md-none d-block"></i>
+                                          <span class="d-none d-md-block">Active {% if active_reqs %}({{active_reqs|length}}){% endif %}</span>
+                                      </a>
+                                  </li>
+                                  <li class="nav-item">
+                                      <a href="#pending-tab" data-bs-toggle="tab" aria-expanded="false" class="nav-link">
+                                          <i class="mdi mdi-settings-outline d-md-none d-block"></i>
+                                          <span class="d-none d-md-block">Pending {% if pending_reqs %}({{pending_reqs|length}}){% endif %}</span>
+                                      </a>
+                                  </li>
+                              </ul>
+
+                              <div class="tab-content">
+                                  <!-- Detail -->
+                                  <div class="tab-pane show active" id="detail-tab">
+                                    <div class="row">
+                                          <div class="col-6">
+                                            <div class="mb-0 row">
+                                              <p class="text-muted font-12 col-6 text-center">Created Date : {{mc.date_published}}</p>
+                                              <p class="text-muted font-12 col-6 text-center">Modified Date : {{mc.date_modified}}</p>
+                                            </div>
+
+                                            <div class="form-check form-checkbox-success mb-3">
+                                              <input type="checkbox" class="form-check-input" name="is_active" id="is_active" {% if mc.is_active %}checked{% endif %} disabled>
+                                              <label class="form-check-label" for="is_active">Is Active</label>
+                                            </div>
+
+                                            <div class="mb-3">
+                                                <label class="form-label">Machine / Device No</label>
+                                                <input class="form-control" type="text" name="mc_no" id="mc_no" value='{{mc.mc_no}}' readonly>
+                                            </div>
+
+                                            <div class="mb-3">
+                                                <label class="form-label">Section</label>
+                                                <input class="form-control" type="text" name="section" id="section" value='{{mc.section|default_if_none:""}}' readonly>
+                                            </div>
+
+                                            <div class="mb-3">
+                                                <label class="form-label">Machine Group</label>
+                                                <input class="form-control" type="text" name="mcg" id="mcg" value='{{mc.mcg.name|default_if_none:""}}' readonly>
+                                            </div>
+
+                                            <div class="mb-3">
+                                                <label class="form-label">Register No</label>
+                                                <input class="form-control" type="text" name="register_no" id="register_no" value='{{mc.register_no|default_if_none:""}}' readonly>
+                                            </div>
+
+                                            <div class="mb-3">
+                                                <label class="form-label">Asset No</label>
+                                                <input class="form-control" type="text" name="asset_no" id="asset_no" value='{{mc.asset_no|default_if_none:""}}' readonly>
+                                            </div>
+
+                                            <div class="mb-3">
+                                                <label class="form-label">Serial No</label>
+                                                <input class="form-control" type="text" name="serial_no" id="serial_no" value='{{mc.serial_no|default_if_none:""}}' readonly>
+                                            </div>
+
+                                            <div class="mb-3">
+                                                <label class="form-label">Manufacture</label>
+                                                <input class="form-control" type="text" name="manufacture" id="manufacture" value='{{mc.manufacture|default_if_none:""}}' readonly>
+                                            </div>
+
+                                            <div class="mb-3">
+                                                <label class="form-label">Model</label>
+                                                <input class="form-control" type="text" name="model" id="model" value='{{mc.model|default_if_none:""}}' readonly>
+                                            </div>
+
+                                          </div>
+                                          <div class="col-6">
+
+                                            <div class="mb-3">
+                                                <label class="form-label">Plant</label>
+                                                <input class="form-control" type="text" name="plant" id="plant" value='{{mc.plant|default_if_none:""}}' readonly>
+                                            </div>
+
+                                            <div class="mb-3">
+                                                <label class="form-label">Power</label>
+                                                <input class="form-control" type="text" name="power" id="power" value='{{mc.power|default_if_none:""}}' readonly>
+                                            </div>
+
+                                            <div class="mb-3">
+                                                <label class="form-label">Install Date</label>
+                                                <input class="form-control" type="date" name="install_date" id="install_date" value='{{mc.install_date|date:'Y-m-d'|default_if_none:""}}' readonly>
+                                            </div>
+
+                                            <div class="mb-3">
+                                                <label class="form-label">Capacity</label>
+                                                <textarea class="form-control" name="capacity" id="capacity" rows="5" readonly>{{mc.capacity|default_if_none:""}}</textarea>
+                                            </div>
+
+                                            <div class="mb-3">
+                                                <label class="form-label">Note</label>
+                                                <textarea class="form-control" name="note" id="note" rows="5" readonly>{{mc.note|default_if_none:""}}</textarea>
+                                            </div>
+
+                                          </div>
+                                        </div>
+                                  </div>
+                                  <!-- History -->
+                                  <div class="tab-pane active" id="history-tab">
+                                      <table id="history_request_table" class="table table-sm nowrap table-responsive row-border order-column w-100 small">
+                                        <thead>
+                                            <tr>
+                                                <th>Finish Date</th>
+                                                <th>Request Date</th>
+                                                <th>Request No</th>
+                                                <th>Type</th>
+                                                <th>Status</th>
+                                                <th>Reason</th>
+                                                <th>Description</th>
+                                                <th>Request To</th>
+                                                <th>Request By</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for req in history_reqs %}
+                                            <tr>
+                                                <td data-order="{{req.finish_datetime|date:"U"}}">{{req.finish_datetime}}</td>
+                                                <td data-order="{{req.request_date|date:"U"}}">{{req.request_date}}</td>
+                                                <td><a href="/request_page/{{req.req_no}}">{{req.req_no}}</a></td>
+                                                <td>{{req.type}}</td>
+                                                <td>
+                                                  {% if req.status == 'Pending' %}<strong class="text-warning"><i class='mdi mdi-clock-time-eight-outline'></i> Pending</strong>
+                                                  {% elif req.status == 'In Progress' %}<strong class="text-primary"><i class='mdi mdi-play'></i> In Progress</strong>
+                                                  {% elif req.status == 'On Hold' %}<strong class="text-dark"><i class='mdi mdi-pause'></i> On Hold</strong>
+                                                  {% elif req.status == 'Rejected' %}<strong class="text-danger"><i class='uil-times'></i> Rejected</strong>
+                                                  {% elif req.status == 'Complete' %}<strong class="text-success"><i class='mdi mdi-check-all'></i> Complete</strong>
+                                                  {% elif req.status == 'Canceled' %}<strong class="text-danger"><i class='uil-ban'></i> Canceled</strong>
+                                                  {% else %}{{req.status}}{% endif %}
+                                                </td>
+                                                <td>{{req.reason|default_if_none:""}}</td>
+                                                <td>{{req.description}}</td>
+                                                <td>{{req.sg.name}}</td>
+                                                <td>{{req.emp_id}} | {{req.name|title}} ({{req.section}})</td>
+                                            </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                      </table>
+                                  </div>
+                                  <!-- Active -->
+                                  <div class="tab-pane active" id="active-tab">
+                                    <table id="active_request_table" class="table table-sm nowrap table-responsive row-border order-column w-100 small">
+                                      <thead>
+                                          <tr>
+                                              <th>Request Date</th>
+                                              <th>Request No</th>
+                                              <th>Type</th>
+                                              <th>Status</th>
+                                              <th>Reason</th>
+                                              <th>Description</th>
+                                              <th>Request To</th>
+                                              <th>Request By</th>
+                                          </tr>
+                                      </thead>
+                                      <tbody>
+                                          {% for req in active_reqs %}
+                                          <tr>
+                                              <td data-order="{{req.request_date|date:"U"}}">{{req.request_date}}</td>
+                                              <td><a href="/request_page/{{req.req_no}}">{{req.req_no}}</a></td>
+                                              <td>{{req.type}}</td>
+                                              <td>
+                                                {% if req.status == 'Pending' %}<strong class="text-warning"><i class='mdi mdi-clock-time-eight-outline'></i> Pending</strong>
+                                                {% elif req.status == 'In Progress' %}<strong class="text-primary"><i class='mdi mdi-play'></i> In Progress</strong>
+                                                {% elif req.status == 'On Hold' %}<strong class="text-dark"><i class='mdi mdi-pause'></i> On Hold</strong>
+                                                {% elif req.status == 'Rejected' %}<strong class="text-danger"><i class='uil-times'></i> Rejected</strong>
+                                                {% elif req.status == 'Complete' %}<strong class="text-success"><i class='mdi mdi-check-all'></i> Complete</strong>
+                                                {% elif req.status == 'Canceled' %}<strong class="text-danger"><i class='uil-ban'></i> Canceled</strong>
+                                                {% else %}{{req.status}}{% endif %}
+                                              </td>
+                                              <td>{{req.reason|default_if_none:""}}</td>
+                                              <td>{{req.description}}</td>
+                                              <td>{{req.sg.name}}</td>
+                                              <td>{{req.emp_id}} | {{req.name|title}} ({{req.section}})</td>
+                                          </tr>
+                                          {% endfor %}
+                                      </tbody>
+                                    </table>
+                                  </div>
+                                  <!-- Pending -->
+                                  <div class="tab-pane active" id="pending-tab">
+                                    <table id="pending_request_table" class="table table-sm nowrap table-responsive row-border order-column w-100 small">
+                                      <thead>
+                                          <tr>
+                                              <th>Request Date</th>
+                                              <th>Request No</th>
+                                              <th>Type</th>
+                                              <th>Description</th>
+                                              <th>Request To</th>
+                                              <th>Request By</th>
+                                          </tr>
+                                      </thead>
+                                      <tbody>
+                                          {% for req in pending_reqs %}
+                                          <tr>
+                                              <td data-order="{{req.request_date|date:"U"}}">{{req.request_date}}</td>
+                                              <td><a href="/request_page/{{req.req_no}}">{{req.req_no}}</a></td>
+                                              <td>{{req.type}}</td>
+                                              <td>{{req.description}}</td>
+                                              <td>{{req.sg.name}}</td>
+                                              <td>{{req.emp_id}} | {{req.name|title}} ({{req.section}})</td>
+                                          </tr>
+                                          {% endfor %}
+                                      </tbody>
+                                    </table>
+                                  </div>
+                              </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                    </div>
+
+                    <!-- ========== Footer ========== -->
+                    {% include 'footer.html' %}
+
+                </div>
+            </div>
+        </div>
+
+        <!-- ========== Right Side Bar ========== -->
+
+        <!-- bundle -->
+        <script src="{% static "assets/js/vendor.min.js" %}"></script>
+        <script src="{% static "assets/js/app.min.js" %}"></script>
+        <script src="{% static "custom/custom.js" %}"></script>
+        <script src="{% static "custom/topsearch.js" %}"></script>
+        <!-- DataTable -->
+        <script src="{% static "assets/js/vendor/jquery.dataTables.min.js" %}"></script>
+        <script src="{% static "assets/js/vendor/dataTables.bootstrap5.js" %}"></script>
+        <script src="{% static "assets/js/vendor/dataTables.responsive.min.js" %}"></script>
+        <script src="{% static "assets/js/vendor/responsive.bootstrap5.min.js" %}"></script>
+        <script src="{% static "assets/js/vendor/dataTables.buttons.min.js" %}"></script>
+        <script src="{% static "assets/js/vendor/buttons.bootstrap5.min.js" %}"></script>
+        <script src="{% static "assets/js/vendor/buttons.html5.min.js" %}"></script>
+        <script src="{% static "assets/js/vendor/buttons.flash.min.js" %}"></script>
+        <script src="{% static "assets/js/vendor/buttons.print.min.js" %}"></script>
+        <script src="{% static "assets/js/vendor/dataTables.keyTable.min.js" %}"></script>
+        <script src="{% static "assets/js/vendor/dataTables.select.min.js" %}"></script>
+        <script src="{% static "assets/js/vendor/fixedColumns.bootstrap5.min.js" %}"></script>
+        <script src="{% static "assets/js/vendor/fixedHeader.bootstrap5.min.js" %}"></script>
+
+        <script>
+          //-- Prevent Back
+          window.addEventListener( "pageshow", function (event) {
+            if (event.persisted || (typeof window.performance != "undefined" && window.performance.navigation.type === 2)) window.location.reload();
+          });
+
+          var table = $('#history_request_table').DataTable( {
+              "order": [[ 0, "desc" ]],
+              'iDisplayLength': 25,
+              "scrollX": true,
+          });
+
+          $('#active_request_table').DataTable( {
+              "order": [[ 0, "asc" ]],
+              'iDisplayLength': 25,
+              "scrollX": true,
+          });
+
+          $('#pending_request_table').DataTable( {
+              "order": [[ 0, "asc" ]],
+              'iDisplayLength': 25,
+              "scrollX": true,
+          });
+
+          $( document ).ready(function() {
+              $("#history-tab").removeClass('active');
+              $("#active-tab").removeClass('active');
+              $("#pending-tab").removeClass('active');
+          });
+        </script>
+    </body>
+</html>

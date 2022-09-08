@@ -198,7 +198,7 @@
                                   <div class="card-body">
                                       <i class="mdi mdi-cogs float-end"></i>
                                       <h6 class="header-title mt-0">Machine & Device</h6>
-                                      <h3 class="my-2">&nbsp;&nbsp;&nbsp;{{req.mc.mc_no}}</h3>
+                                      <h3 class="my-2"><a href="/mc_page/{{req.mc.mc_no}}">&nbsp;&nbsp;&nbsp;{{req.mc.mc_no}}</a></h3>
                                       <p class="mb-0 text-muted small">Section: {{req.mc.section|default_if_none:"-"}}</p>
                                       <p class="mb-0 text-muted small">Machine Group: {{req.mc.mcg.name|default_if_none:"-"}}</p>
                                       <p class="mb-0 text-muted small">Register No: {{req.mc.register_no|default_if_none:"-"}}</p>
