@@ -26,6 +26,12 @@
         <link href="{% static "assets/css/vendor/fixedHeader.bootstrap5.css" %}" rel="stylesheet" type="text/css" />
         <!-- <link href="{% static "assets/css/vendor/fixedColumns.bootstrap5.css" %}" rel="stylesheet" type="text/css" /> -->
 
+        <style media="screen">
+          p {
+            margin-bottom: 0px;
+          }
+        </style>
+
     </head>
 
     <body class="loading" data-layout="detached" data-layout-config='{"leftSidebarCondensed":{% if request.user.employee.sidebar == 'Condensed' %}true{% else %}false{% endif %},"darkMode":{% if request.user.employee.scheme == 'Dark Mode' %}true{% else %}false{% endif %}, "showRightSidebarOnStart":false}'>
@@ -105,7 +111,7 @@
                                             {{req.task.name|default_if_none:""}}
                                             {% if req.is_breakdown %}<i class="mdi mdi-alert-decagram text-danger"></i>{% endif %}
                                           </td>
-                                          <td>{{req.description}}</td>
+                                          <td>{{req.description|linebreaks}}</td>
                                           <td>{{req.sg.name}}</td>
                                           <td>{{req.emp_id}} | {{req.name|title}} ({{req.section}})</td>
                                           <td class="text-center">

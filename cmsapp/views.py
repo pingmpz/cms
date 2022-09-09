@@ -711,6 +711,27 @@ def summary(request, fsg):
     return render(request, 'report/summary.html', context)
 
 @login_required(login_url='/')
+def pv_calendar(request, fsg):
+    sgs = SectionGroup.objects.all()
+    reqs = []
+    if fsg == 'MY' and is_in_section_group(request):
+        fsg = request.user.employee.section
+    elif fsg == 'MY':
+        fsg = 'ALL'
+
+    reqs = Request.objects.filter(type='Preventive')
+    if fsg != 'ALL':
+        reqs = reqs.filter(sg=fsg)
+
+    context = {
+        'sgs': sgs,
+        'fsg': fsg,
+        'reqs': reqs,
+    }
+    context['all_page_data'] = (all_page_data(request))
+    return render(request, 'report/pv_calendar.html', context)
+
+@login_required(login_url='/')
 def report_q_obj(request, fmcg, fyear):
     mcgs = MachineGroup.objects.all()
     if fmcg == 'FIRST':

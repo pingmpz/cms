@@ -25,6 +25,12 @@
         <link href="{% static "assets/css/vendor/fixedHeader.bootstrap5.css" %}" rel="stylesheet" type="text/css" />
         <link href="{% static "assets/css/vendor/fixedColumns.bootstrap5.css" %}" rel="stylesheet" type="text/css" />
 
+        <style media="screen">
+          p {
+            margin-bottom: 0px;
+          }
+        </style>
+
     </head>
 
     <body class="loading" data-layout="detached" data-layout-config='{"leftSidebarCondensed":{% if request.user.employee.sidebar == 'Condensed' %}true{% else %}false{% endif %},"darkMode":{% if request.user.employee.scheme == 'Dark Mode' %}true{% else %}false{% endif %}, "showRightSidebarOnStart":false}'>
@@ -61,7 +67,7 @@
                               <div class="card-body">
                                 <ul class="nav nav-tabs mb-3">
                                   <li class="nav-item">
-                                      <a href="#detail" data-bs-toggle="tab" aria-expanded="false" class="nav-link active">
+                                      <a href="#detail-tab" data-bs-toggle="tab" aria-expanded="false" class="nav-link active">
                                           <i class="mdi mdi-home-variant d-md-none d-block"></i>
                                           <span class="d-none d-md-block">Detail</span>
                                       </a>
@@ -205,7 +211,7 @@
                                                   {% else %}{{req.status}}{% endif %}
                                                 </td>
                                                 <td>{{req.reason|default_if_none:""}}</td>
-                                                <td>{{req.description}}</td>
+                                                <td>{{req.description|linebreaks}}</td>
                                                 <td>{{req.sg.name}}</td>
                                                 <td>{{req.emp_id}} | {{req.name|title}} ({{req.section}})</td>
                                             </tr>
@@ -244,7 +250,7 @@
                                                 {% else %}{{req.status}}{% endif %}
                                               </td>
                                               <td>{{req.reason|default_if_none:""}}</td>
-                                              <td>{{req.description}}</td>
+                                              <td>{{req.description|linebreaks}}</td>
                                               <td>{{req.sg.name}}</td>
                                               <td>{{req.emp_id}} | {{req.name|title}} ({{req.section}})</td>
                                           </tr>
@@ -271,7 +277,7 @@
                                               <td data-order="{{req.request_date|date:"U"}}">{{req.request_date}}</td>
                                               <td><a href="/request_page/{{req.req_no}}">{{req.req_no}}</a></td>
                                               <td>{{req.type}}</td>
-                                              <td>{{req.description}}</td>
+                                              <td>{{req.description|linebreaks}}</td>
                                               <td>{{req.sg.name}}</td>
                                               <td>{{req.emp_id}} | {{req.name|title}} ({{req.section}})</td>
                                           </tr>

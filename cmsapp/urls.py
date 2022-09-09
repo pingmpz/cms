@@ -35,6 +35,7 @@ urlpatterns = [
     path('mc_page/<str:mc_no>', views.mc_page, name='mc_page'),
     #-- Report
     path('report/summary/<str:fsg>', views.summary, name='summary'),
+    path('report/pv_calendar/<str:fsg>', views.pv_calendar, name='pv_calendar'),
     path('report/q_obj/<str:fmcg>&<str:fyear>', views.report_q_obj, name='report_q_obj'),
     path('report/mc_dt/<str:fsection>&<str:fmonth>', views.report_mc_dt, name='report_mc_dt'),
     #-- Master
