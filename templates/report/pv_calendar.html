@@ -34,9 +34,9 @@
             margin-bottom: 0px;
           }
 
-          .fc-event-main-frame {
-              white-space: normal;
-          }
+          .fc-day-grid-event > .fc-content {
+               white-space: normal;
+           }
         </style>
 
     </head>
@@ -80,7 +80,7 @@
                           <div class="col-12">
                             <div class="card">
                               <div class="card-body">
-                                <div id='calendar'></div>
+                                 <div id='calendar'></div>
                               </div>
                             </div>
                           </div>
@@ -128,19 +128,20 @@
             events: [
               {% for req in reqs %}
               {
-                title : '{{req.mc.mc_no}}\n{{req.req_no}}',
-                start : '{{req.request_date|date:"Y-m-d"}}',
-                end : '{{req.request_date|date:"Y-m-d"}}',
-                allDay : true,
-                textColor : '#000000',
-                // url : '/request_page/{{req.req_no}}',
-                {% if req.status == 'Pending' %}color : '#fecc00',
-                {% elif req.status == 'In Progress' %}color : '#3f81e7',
-                {% elif req.status == 'On Hold' %}color : '#343a40',
-                {% elif req.status == 'Rejected' %}color : '#e55353',
-                {% elif req.status == 'Complete' %}color : '#10c469',
-                {% elif req.status == 'Canceled' %}color : '#e55353',
+                title: '{% if req.mc %}{{req.mc.mc_no}}{% elif req.task %}{{req.task.name}}{% else %}{{req.req_no}}{% endif %}',
+                start: '{{req.request_date|date:"Y-m-d"}}',
+                end: '{{req.request_date|date:"Y-m-d"}}',
+                allDay: true,
+                textColor: '#000000',
+                url : '/request_page/{{req.req_no}}',
+                {% if req.status == 'Pending' %}color: '#fecc00',
+                {% elif req.status == 'In Progress' %}color: '#3f81e7',
+                {% elif req.status == 'On Hold' %}color: '#343a40',
+                {% elif req.status == 'Rejected' %}color: '#e55353',
+                {% elif req.status == 'Complete' %}color: '#10c469',
+                {% elif req.status == 'Canceled' %}color: '#e55353',
                 {% endif %}
+              },
               {% endfor %}
             ]
           });
