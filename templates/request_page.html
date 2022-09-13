@@ -284,7 +284,10 @@
 
                                 {% if req.is_breakdown %}
                                 <div class="alert alert-warning bg-orange text-white text-center border-0" role="alert">
-                                    <span class="blink"><i class='mdi mdi-alert-decagram me-1'></i><strong>{{req.mc.mc_no}}</strong> is breaking down !!!</span>
+                                    <h3 class="blink"><i class='mdi mdi-alert-decagram me-1'></i><strong>{{req.mc.mc_no}}</strong> is breaking down !!!</h3>
+                                    {% if req.breakdown_reason != "" %}
+                                    <p>{{req.breakdown_reason|default_if_none:""|linebreaks}}</p>
+                                    {% endif %}
                                 </div>
                                 {% endif %}
 
@@ -1169,6 +1172,10 @@
                       </div>
                       <div class="modal-body">
                           <h5 class="mt-3 mb-3 text-center">Are you sure that you want to set this request's machine as breakdown ?</h5>
+                          <div class="mb-0">
+                              <label class="form-label">Breakdown Reason</label>
+                              <textarea class="form-control" name="hold_reason" id="breakdown_reason" rows="5"></textarea>
+                          </div>
                       </div>
                       <div class="modal-footer">
                           <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
@@ -1632,10 +1639,12 @@
 
           function set_breakdown(){
             var req_id = $("#req_id").val();
+            var breakdown_reason = $("#breakdown_reason").val();
             $.ajax({
               url: '/set_breakdown/',
               data: {
                 'req_id': req_id,
+                'breakdown_reason': breakdown_reason,
               },
               dataType: 'json',
               success: function (data) {

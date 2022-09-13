@@ -1870,6 +1870,7 @@ def complete_request(request):
     req.cause = cause
     req.spare_parts = spare_parts
     req.is_breakdown = False
+    req.breakdown_reason = None
     req.finish_datetime = finish_datetime
     req.save()
     data = {
@@ -1883,6 +1884,7 @@ def cancel_request(request):
     req.status = 'Canceled'
     req.reason = cancel_reason
     req.is_breakdown = False
+    req.breakdown_reason = None
     req.finish_datetime = datetime.now()
     req.save()
     data = {
@@ -1901,8 +1903,10 @@ def rework_request(request):
 
 def set_breakdown(request):
     req_id = request.GET['req_id']
+    breakdown_reason = request.GET['breakdown_reason']
     req = Request.objects.get(id=req_id)
     req.is_breakdown = True
+    req.breakdown_reason = breakdown_reason
     req.save()
     data = {
     }
@@ -1912,6 +1916,7 @@ def remove_breakdown(request):
     req_id = request.GET['req_id']
     req = Request.objects.get(id=req_id)
     req.is_breakdown = False
+    req.breakdown_reason = None
     req.save()
     data = {
     }
