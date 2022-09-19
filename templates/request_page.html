@@ -985,11 +985,11 @@
                             <label class="form-label">Category</label>
                             <p class="text-muted font-12">Use 'CTRL' to select multiple item</p>
                             <select class="select2 form-control select2-multiple" data-toggle="select2" multiple="multiple" data-placeholder="Choose ..." id="accept_sub_cat_id_list">
-                                {% for sub_cat in sub_cats %}
+                                {% for isc in sub_cats %}
                                 {% if set_sc|index:forloop.counter0 != None %}
                                 <optgroup label="{{set_sc|index:forloop.counter0}}">
                                 {% endif %}
-                                <option value="{{sub_cat.id}}">▪️ {{sub_cat.name|title}}</option>
+                                <option value="{{isc.id}}">▪️ {{isc.name|title}}</option>
                                 {% if set_sc|index:forloop.counter1 != None %}
                                 </optgroup>
                                 {% endif %}

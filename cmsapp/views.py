@@ -921,6 +921,26 @@ def report_mc_dt(request, fsection, fmonth):
     context['all_page_data'] = (all_page_data(request))
     return render(request, 'report/mc_dt.html', context)
 
+@login_required(login_url='/')
+def report_cat(request, fsc):
+    sub_cats = SubCategory.objects.all().order_by('cat')
+    set_sc = get_set_sc(sub_cats)
+    sub_cat = None
+    if fsc == 'FIRST':
+        sub_cat = sub_cats[0]
+    else:
+        sub_cat = SubCategory.objects.get(id=fsc)
+    rscs = RequestSubCategory.objects.filter(sub_cat=sub_cat)
+    context = {
+        'sub_cats': sub_cats,
+        'set_sc': set_sc,
+        'fsc': fsc,
+        'sub_cat': sub_cat,
+        'rscs': rscs,
+    }
+    context['all_page_data'] = (all_page_data(request))
+    return render(request, 'report/cat.html', context)
+
 #----------------------------------- Master -----------------------------------#
 
 @login_required(login_url='/')
