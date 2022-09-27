@@ -1080,7 +1080,7 @@
           </div>
           <!-- Complete -->
           <div id="complete_modal" class="modal fade" tabindex="-1" role="dialog">
-              <div class="modal-dialog">
+              <div class="modal-dialog modal-lg">
                   <div class="modal-content">
                       <div class="modal-header modal-colored-header bg-success">
                           <h4 class="modal-title"><i class='mdi mdi-check-all me-1'></i>Complete</h4>
@@ -1098,18 +1098,21 @@
                           </div>
                           <div class="mb-3">
                               <label class="form-label">Corrective Action</label>
-                              <textarea class="form-control" name="complete_corrective_action" id="complete_corrective_action" rows="5">{{req.corrective_action|default_if_none:""}}</textarea>
+                              <textarea class="form-control" name="complete_corrective_action" id="complete_corrective_action" rows="4">{{req.corrective_action|default_if_none:""}}</textarea>
                           </div>
                           <div class="mb-1">
                               <label class="form-label">Cause</label>
-                              <textarea class="form-control" name="complete_cause" id="complete_cause" rows="5">{{req.cause|default_if_none:""}}</textarea>
+                              <textarea class="form-control" name="complete_cause" id="complete_cause" rows="4">{{req.cause|default_if_none:""}}</textarea>
                           </div>
                           <div class="mb-0">
                               <label class="form-label">Spare Parts Changed</label>
-                              <textarea class="form-control" name="complete_spare_parts" id="complete_spare_parts" rows="5">{{req.spare_parts|default_if_none:""}}</textarea>
+                              <textarea class="form-control" name="complete_spare_parts" id="complete_spare_parts" rows="4">{{req.spare_parts|default_if_none:""}}</textarea>
                           </div>
+                          {% if wt_len == 0 %}
+                          <p class="text-center text-danger font-14 mt-2 mb-0">** This request has no working time **</p>
+                          {% endif %}
                           {% if req.is_breakdown %}
-                          <p class="text-center text-danger font-12 mt-1">** This request has a breakdown machine, complete this will remove breakdown status. **</p>
+                          <p class="text-center text-danger font-14 mt-2">** This request has a breakdown machine, complete this will remove breakdown status. **</p>
                           {% endif %}
                       </div>
                       <div class="modal-footer">
