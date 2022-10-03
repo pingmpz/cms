@@ -93,6 +93,7 @@
                                           <th>Status</th>
                                           <th>Reason</th>
                                           <th>Machine/Device/Task</th>
+                                          <th>Manufacture</th>
                                           <th>Breakdown Reason</th>
                                           <th>Description</th>
                                           <th>Request To</th>
@@ -123,6 +124,7 @@
                                             {{req.task.name|default_if_none:""}}
                                             {% if req.is_breakdown %}<i class="mdi mdi-alert-decagram text-danger"></i>{% endif %}
                                           </td>
+                                          <td>{{req.mc.manufacture|default_if_none:""}}</td>
                                           <td>{{req.breakdown_reason|default_if_none:""|linebreaks}}</td>
                                           <td>{{req.description|linebreaks}}</td>
                                           <td>{{req.sg.name}}</td>
