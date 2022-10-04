@@ -30,6 +30,8 @@ class MachineGroup(models.Model):
 
 class Machine(models.Model):
     mc_no = models.CharField(max_length=50, primary_key=True)
+    sap_mc_no = models.CharField(max_length=50, null=True)
+    type = models.CharField(max_length=50, null=True)
     section = models.CharField(max_length=50, null=True)
     mcg = models.ForeignKey(MachineGroup, null=True, on_delete=models.SET_NULL)
     register_no = models.CharField(max_length=50, null=True)
@@ -40,6 +42,7 @@ class Machine(models.Model):
     plant = models.CharField(max_length=10, null=True)
     power = models.CharField(max_length=50, null=True)
     install_date = models.DateField(null=True)
+    location = models.CharField(max_length=50, null=True)
     capacity = models.TextField(max_length=1000, null=True)
     note = models.TextField(max_length=1000, null=True)
     is_active = models.BooleanField(default=True)
