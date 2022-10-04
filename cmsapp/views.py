@@ -1515,6 +1515,9 @@ def edit_mc_save(request):
     is_active = True if request.POST.get('is_active', False) == 'on' else False
     mc_no = request.POST['mc_no']
     mcg_id = request.POST['mcg_id']
+    sap_mc_no = request.POST['sap_mc_no'].strip()
+    type = request.POST['type'].strip()
+    section = request.POST['section'].strip()
     register_no = request.POST['register_no'].strip()
     asset_no = request.POST['asset_no'].strip()
     serial_no = request.POST['serial_no'].strip()
@@ -1522,6 +1525,7 @@ def edit_mc_save(request):
     model = request.POST['model'].strip()
     plant = request.POST['plant'].strip()
     power = request.POST['power'].strip()
+    location = request.POST['location'].strip()
     install_date = request.POST['install_date'] if request.POST['install_date'] != "" else None
     capacity = request.POST['capacity']
     note = request.POST['note']
@@ -1531,6 +1535,9 @@ def edit_mc_save(request):
     mc = Machine.objects.get(mc_no=mc_no)
     mc.is_active = is_active
     mc.mcg = mcg
+    mc.sap_mc_no = sap_mc_no
+    mc.type = type
+    mc.section = section
     mc.register_no = register_no
     mc.asset_no = asset_no
     mc.serial_no = serial_no
@@ -1538,6 +1545,7 @@ def edit_mc_save(request):
     mc.model = model
     mc.plant = plant
     mc.power = power
+    mc.location = location
     mc.install_date = install_date
     mc.capacity = capacity
     mc.note = note

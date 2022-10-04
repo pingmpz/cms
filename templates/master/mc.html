@@ -84,7 +84,7 @@
                                       <tr>
                                           <td>{{mc.section|default_if_none:""}}</td>
                                           <td>{{mc.mcg.name|default_if_none:""}}</td>
-                                          <td><a href="/mc_page/{{mc.mc_no}}">{{mc.mc_no|default_if_none:""}} {% if mc.sap_mc_no %}({{mc.sap_mc_no}}){% endif %}</a></td>
+                                          <td><a href="/mc_page/{{mc.mc_no}}">{{mc.mc_no}} {% if mc.sap_mc_no and mc.sap_mc_no != mc.mc_no %}({{mc.sap_mc_no}}){% endif %}</a></td>
                                           <td>{{mc.type|default_if_none:""}}</td>
                                           <td>
                                             {% if mc.is_active %}

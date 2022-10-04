@@ -71,18 +71,19 @@
                           <div class="col-12">
                             <div class="card">
                               <div class="card-body">
-                                <form action="/edit/mc_save/" method="POST" id="form">
+                                <form action="/edit_mc_save/" method="POST" id="form">
                                     {% csrf_token %}
                                     <div class="row">
-                                      <div class="col-6">
-                                        <div class="mb-0 row">
-                                          <p class="text-muted font-12 col-6 text-center">Created Date : {{mc.date_published}}</p>
-                                          <p class="text-muted font-12 col-6 text-center">Modified Date : {{mc.date_modified}}</p>
-                                        </div>
+                                      <div class="col-4">
 
-                                        <div class="form-check form-checkbox-success mb-3">
-                                          <input type="checkbox" class="form-check-input" name="is_active" id="is_active" {% if mc.is_active %}checked{% endif %}>
-                                          <label class="form-check-label" for="is_active">Is Active</label>
+                                        <div class="mb-0 row">
+                                          <div class="col-4">
+                                            <div class="form-check form-checkbox-success mb-3">
+                                              <input type="checkbox" class="form-check-input" name="is_active" id="is_active" {% if mc.is_active %}checked{% endif %}>
+                                              <label class="form-check-label" for="is_active">Is Active</label>
+                                            </div>
+                                          </div>
+                                          <p class="text-muted font-12 col-8 text-center">Created Date : {{mc.date_published}}<br>Modified Date : {{mc.date_modified}}</p>
                                         </div>
 
                                         <div class="mb-3">
@@ -91,8 +92,18 @@
                                         </div>
 
                                         <div class="mb-3">
+                                            <label class="form-label">SAP Machine No</label>
+                                            <input class="form-control" type="text" name="sap_mc_no" id="sap_mc_no" value='{{mc.sap_mc_no|default_if_none:""}}'>
+                                        </div>
+
+                                        <div class="mb-3">
+                                            <label class="form-label">Machine Type</label>
+                                            <input class="form-control" type="text" name="type" id="type" value='{{mc.type|default_if_none:""}}'>
+                                        </div>
+
+                                        <div class="mb-3">
                                             <label class="form-label">Section</label>
-                                            <input class="form-control" type="text" name="section" id="section" value='{{mc.section|default_if_none:""}}' readonly>
+                                            <input class="form-control" type="text" name="section" id="section" value='{{mc.section|default_if_none:""}}'>
                                         </div>
 
                                         <div class="mb-3">
@@ -104,7 +115,9 @@
                                               {% endfor %}
                                             </select>
                                         </div>
+                                      </div>
 
+                                      <div class="col-4">
                                         <div class="mb-3">
                                             <label class="form-label">Register No</label>
                                             <input class="form-control" type="text" name="register_no" id="register_no" value='{{mc.register_no|default_if_none:""}}'>
@@ -119,7 +132,6 @@
                                             <label class="form-label">Serial No</label>
                                             <input class="form-control" type="text" name="serial_no" id="serial_no" value='{{mc.serial_no|default_if_none:""}}'>
                                         </div>
-
                                         <div class="mb-3">
                                             <label class="form-label">Manufacture</label>
                                             <input class="form-control" type="text" name="manufacture" id="manufacture" value='{{mc.manufacture|default_if_none:""}}'>
@@ -130,9 +142,6 @@
                                             <input class="form-control" type="text" name="model" id="model" value='{{mc.model|default_if_none:""}}'>
                                         </div>
 
-                                      </div>
-                                      <div class="col-6">
-
                                         <div class="mb-3">
                                             <label class="form-label">Plant</label>
                                             <input class="form-control" type="text" name="plant" id="plant" value='{{mc.plant|default_if_none:""}}'>
@@ -141,6 +150,13 @@
                                         <div class="mb-3">
                                             <label class="form-label">Power</label>
                                             <input class="form-control" type="text" name="power" id="power" value='{{mc.power|default_if_none:""}}'>
+                                        </div>
+                                      </div>
+
+                                      <div class="col-4">
+                                        <div class="mb-3">
+                                            <label class="form-label">Location</label>
+                                            <input class="form-control" type="text" name="location" id="location" value='{{mc.location|default_if_none:""}}'>
                                         </div>
 
                                         <div class="mb-3">
@@ -192,7 +208,7 @@
 
           function save(){
             // Clear Validate
-            remove_valids(['mc_no','section','register_no','asset_no','serial_no','manufacture','model','plant','power','install_date','capacity','note']);
+            remove_valids(['mc_no','sap_mc_no','type','section','register_no','asset_no','serial_no','manufacture','model','plant','power','location','install_date','capacity','note']);
             set_text_emptys(['invalid_text']);
             // Function
             document.getElementById('form').submit();
