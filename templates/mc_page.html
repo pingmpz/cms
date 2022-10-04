@@ -96,7 +96,7 @@
                                   <!-- Detail -->
                                   <div class="tab-pane show active" id="detail-tab">
                                     <div class="row">
-                                          <div class="col-6">
+                                          <div class="col-4">
                                             <div class="mb-0 row">
                                               <p class="text-muted font-12 col-6 text-center">Created Date : {{mc.date_published}}</p>
                                               <p class="text-muted font-12 col-6 text-center">Modified Date : {{mc.date_modified}}</p>
@@ -113,6 +113,16 @@
                                             </div>
 
                                             <div class="mb-3">
+                                                <label class="form-label">SAP Machine No</label>
+                                                <input class="form-control" type="text" name="sap_mc_no" id="sap_mc_no" value='{{mc.sap_mc_no|default_if_none:""}}' readonly>
+                                            </div>
+
+                                            <div class="mb-3">
+                                                <label class="form-label">Machine Type</label>
+                                                <input class="form-control" type="text" name="type" id="type" value='{{mc.type|default_if_none:""}}' readonly>
+                                            </div>
+
+                                            <div class="mb-3">
                                                 <label class="form-label">Section</label>
                                                 <input class="form-control" type="text" name="section" id="section" value='{{mc.section|default_if_none:""}}' readonly>
                                             </div>
@@ -121,7 +131,9 @@
                                                 <label class="form-label">Machine Group</label>
                                                 <input class="form-control" type="text" name="mcg" id="mcg" value='{{mc.mcg.name|default_if_none:""}}' readonly>
                                             </div>
+                                          </div>
 
+                                          <div class="col-4">
                                             <div class="mb-3">
                                                 <label class="form-label">Register No</label>
                                                 <input class="form-control" type="text" name="register_no" id="register_no" value='{{mc.register_no|default_if_none:""}}' readonly>
@@ -136,7 +148,6 @@
                                                 <label class="form-label">Serial No</label>
                                                 <input class="form-control" type="text" name="serial_no" id="serial_no" value='{{mc.serial_no|default_if_none:""}}' readonly>
                                             </div>
-
                                             <div class="mb-3">
                                                 <label class="form-label">Manufacture</label>
                                                 <input class="form-control" type="text" name="manufacture" id="manufacture" value='{{mc.manufacture|default_if_none:""}}' readonly>
@@ -147,9 +158,6 @@
                                                 <input class="form-control" type="text" name="model" id="model" value='{{mc.model|default_if_none:""}}' readonly>
                                             </div>
 
-                                          </div>
-                                          <div class="col-6">
-
                                             <div class="mb-3">
                                                 <label class="form-label">Plant</label>
                                                 <input class="form-control" type="text" name="plant" id="plant" value='{{mc.plant|default_if_none:""}}' readonly>
@@ -158,6 +166,13 @@
                                             <div class="mb-3">
                                                 <label class="form-label">Power</label>
                                                 <input class="form-control" type="text" name="power" id="power" value='{{mc.power|default_if_none:""}}' readonly>
+                                            </div>
+                                          </div>
+
+                                          <div class="col-4">
+                                            <div class="mb-3">
+                                                <label class="form-label">Location</label>
+                                                <input class="form-control" type="text" name="location" id="location" value='{{mc.location|default_if_none:""}}' readonly>
                                             </div>
 
                                             <div class="mb-3">
