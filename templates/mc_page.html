@@ -98,13 +98,13 @@
                                     <div class="row">
                                           <div class="col-4">
                                             <div class="mb-0 row">
-                                              <p class="text-muted font-12 col-6 text-center">Created Date : {{mc.date_published}}</p>
-                                              <p class="text-muted font-12 col-6 text-center">Modified Date : {{mc.date_modified}}</p>
-                                            </div>
-
-                                            <div class="form-check form-checkbox-success mb-3">
-                                              <input type="checkbox" class="form-check-input" name="is_active" id="is_active" {% if mc.is_active %}checked{% endif %} disabled>
-                                              <label class="form-check-label" for="is_active">Is Active</label>
+                                              <div class="col-4">
+                                                <div class="form-check form-checkbox-success mb-3">
+                                                  <input type="checkbox" class="form-check-input" name="is_active" id="is_active" {% if mc.is_active %}checked{% endif %} disabled>
+                                                  <label class="form-check-label" for="is_active">Is Active</label>
+                                                </div>
+                                              </div>
+                                              <p class="text-muted font-12 col-8 text-center">Created Date : {{mc.date_published}}<br>Modified Date : {{mc.date_modified}}</p>
                                             </div>
 
                                             <div class="mb-3">
