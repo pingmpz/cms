@@ -1411,6 +1411,8 @@ def new_emp_save(request):
 
 def new_mc_save(request):
     mc_no = request.POST['mc_no'].strip()
+    sap_mc_no = request.POST['sap_mc_no'].strip()
+    type = request.POST['type'].strip()
     section = request.POST['section'].strip()
     mcg_id = request.POST['mcg_id']
     register_no = request.POST['register_no'].strip()
@@ -1423,12 +1425,13 @@ def new_mc_save(request):
     mcg = None
     if mcg_id != '-1':
         mcg = MachineGroup.objects.get(id=mcg_id)
+    location = request.POST['location'].strip()
     install_date = request.POST['install_date'] if request.POST['install_date'] != "" else None
     capacity = request.POST['capacity']
     note = request.POST['note']
-    mc_new = Machine(mc_no=mc_no,section=section,mcg=mcg,register_no=register_no,asset_no=asset_no,serial_no=serial_no,manufacture=manufacture,model=model,plant=plant,power=power,install_date=install_date,capacity=capacity,note=note)
+    mc_new = Machine(mc_no=mc_no,sap_mc_no=sap_mc_no,type=type,section=section,mcg=mcg,register_no=register_no,asset_no=asset_no,serial_no=serial_no,manufacture=manufacture,model=model,plant=plant,power=power,location=location,install_date=install_date,capacity=capacity,note=note)
     mc_new.save()
-    return redirect('/new/mc/')
+    return redirect('/mc_page/' + str(mc_no))
 
 def new_cp_save(request):
     name = request.POST['name'].strip()
