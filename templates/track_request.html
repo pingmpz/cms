@@ -76,7 +76,7 @@
                                         </td>
                                         <td>{{req.reason|default_if_none:""}}</td>
                                         <td>{{req.description}}</td>
-                                        <td>{{req.mc.mc_no|default_if_none:""}}{{req.task.name|default_if_none:""}}</td>
+                                        <td>{{req.mc.mc_no|default_if_none:""}}{{req.task.name|default_if_none:""}} {% if req.mc.mc_no and req.mc.sap_mc_no and mc.sap_mc_no != req.mc.mc_no %}({{req.mc.sap_mc_no}}){% endif %}</td>
                                         <td>{{req.emp_id}} | {{req.name|title}} ({{req.section}})</td>
                                     </tr>
                                     {% endfor %}
