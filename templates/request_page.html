@@ -953,7 +953,7 @@
                               {% if set_mc|index:forloop.counter0 != None %}
                               <optgroup label="{{set_mc|index:forloop.counter0}}">
                               {% endif %}
-                              <option value="{{mc.mc_no}}" {% if req.mc == mc %}selected{% endif %}>▪️ {{mc.mc_no}} {% if mc.sap_mc_no and mc.sap_mc_no != mc.mc_no %}({{.mc.sap_mc_no}}){% endif %}</option>
+                              <option value="{{mc.mc_no}}" {% if req.mc == mc %}selected{% endif %}>▪️ {{mc.mc_no}} {% if mc.sap_mc_no and mc.sap_mc_no != mc.mc_no %}({{mc.sap_mc_no}}){% endif %}</option>
                               {% if set_mc|index:forloop.counter1 != None %}
                               </optgroup>
                               {% endif %}
