@@ -97,7 +97,7 @@
                                           {% else %}{{req.status}}{% endif %}
                                         </td>
                                         <td>
-                                          <a href="/mc_page/{{req.mc.mc_no}}">{{req.mc.mc_no|default_if_none:""}}</a>
+                                          <a href="/mc_page/{{req.mc.mc_no}}">{{req.mc.mc_no|default_if_none:""}} {% if req.mc.sap_mc_no and mc.sap_mc_no != req.mc.mc_no %}({{req.mc.sap_mc_no}}){% endif %}</a>
                                           {{req.task.name|default_if_none:""}}
                                           {% if req.is_breakdown %}<i class="mdi mdi-alert-decagram text-danger"></i>{% endif %}
                                         </td>
