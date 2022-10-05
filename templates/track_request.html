@@ -44,7 +44,7 @@
                                   <small class="text-muted">Searchable: Employee ID, Machine No, Machine Section</small>
                                 </div>
                                 <br><br><hr>
-                                <table id="request_table" class="table table-sm nowrap dt-responsive row-border order-column w-100 small">
+                                <table id="request_table" class="table table-sm nowrap table-responsive dt-responsive row-border order-column w-100 small">
                                   <thead>
                                       <tr>
                                           <th>Request Date</th>
@@ -125,11 +125,11 @@
 
         <script>
           $('#request_table').DataTable( {
-              "order": [[ 0, "asc" ]],
-              'iDisplayLength': 100,
+              "order": [[ 0, "desc" ]],
+              'iDisplayLength': 12,
               "scrollX": true,
               searching: false,
-              paging: false,
+              paging: true,
               info: false,
               dom: 'Bfrtip',
               buttons: [
