@@ -24,10 +24,16 @@
         <link href="{% static "assets/css/vendor/fixedHeader.bootstrap5.css" %}" rel="stylesheet" type="text/css" />
         <!-- <link href="{% static "assets/css/vendor/fixedColumns.bootstrap5.css" %}" rel="stylesheet" type="text/css" /> -->
 
+        <style media="screen">
+          p {
+            margin-bottom: 0px;
+          }
+        </style>
+
     </head>
 
     <body class="loading authentication-bg bg-primary" data-layout-config='{"darkMode":false}'>
-        <div class="account-pages pt-2 pt-sm-5 pb-4 pb-sm-5">
+        <div class="pt-2 pt-sm-5 pb-4 pb-sm-5">
             <div class="container">
                 <div class="row justify-content-center">
                     <div class="col-12">
@@ -44,7 +50,7 @@
                                   <small class="text-muted">Searchable: Employee ID, Machine No, Machine Section</small>
                                 </div>
                                 <br><br><hr>
-                                <table id="request_table" class="table table-sm nowrap dt-responsive row-border order-column w-100 small">
+                                <table id="request_table" class="table table-sm nowrap table-responsive row-border order-column w-100 small">
                                   <thead>
                                       <tr>
                                           <th>Request Date</th>
@@ -52,7 +58,7 @@
                                           <th>Request No</th>
                                           <th>Request to</th>
                                           <th>Status</th>
-                                          <th>Reason</th>
+                                          <th>Reason/Corrective</th>
                                           <th>Description</th>
                                           <th>Machine/Device/Task</th>
                                           <th>Request By</th>
@@ -67,14 +73,14 @@
                                         <td>{{req.sg.name}}</td>
                                         <td>
                                           {% if req.status == 'Pending' %}<strong class="text-warning"><i class='mdi mdi-clock-time-eight-outline'></i> Pending</strong>
-                                          {% elif req.status == 'On Progress' %}<strong class="text-primary"><i class='mdi mdi-play'></i> On Progress</strong>
+                                          {% elif req.status == 'In Progress' %}<strong class="text-primary"><i class='mdi mdi-play'></i> In Progress</strong>
                                           {% elif req.status == 'On Hold' %}<strong class="text-dark"><i class='mdi mdi-pause'></i> On Hold</strong>
                                           {% elif req.status == 'Rejected' %}<strong class="text-danger"><i class='uil-times'></i> Rejected</strong>
                                           {% elif req.status == 'Complete' %}<strong class="text-success"><i class='mdi mdi-check-all'></i> Complete</strong>
                                           {% elif req.status == 'Canceled' %}<strong class="text-danger"><i class='uil-ban'></i> Canceled</strong>
                                           {% else %}{{req.status}}{% endif %}
                                         </td>
-                                        <td>{{req.reason|default_if_none:""}}</td>
+                                        <td>{{req.reason|default_if_none:""}}{{req.corrective_action|default_if_none:""}}</td>
                                         <td>{{req.description}}</td>
                                         <td>{{req.mc.mc_no|default_if_none:""}}{{req.task.name|default_if_none:""}} {% if req.mc.mc_no and req.mc.sap_mc_no and mc.sap_mc_no != req.mc.mc_no %}({{req.mc.sap_mc_no}}){% endif %}</td>
                                         <td>{{req.emp_id}} | {{req.name|title}} ({{req.section}})</td>
@@ -87,7 +93,7 @@
 
                             <div class="card-footer">
                               <div class="row mt-3">
-                                  <div class="col-12 text-center">
+                                  <div class="col-12 mb-3 text-center">
                                       <p class="text-muted">Back to<a href="/" class="text-muted ms-1"><b>First Page</b></a></p>
                                   </div>
                               </div>
