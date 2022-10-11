@@ -90,6 +90,7 @@ def logout_action(request):
 
 @login_required(login_url='/')
 def setting(request):
+    update_machine()
     users = []
     set_user = []
     if request.user.is_superuser or request.user.is_staff:
@@ -2158,20 +2159,53 @@ def set_target(request):
 ################################# File Reader ##################################
 
 def update_machine():
-    wb = load_workbook(filename = 'media/Printer.xlsx')
+    wb = load_workbook(filename = 'media/MC.xlsx')
     ws = wb.active
     skip_count = 2
     for i in range(ws.max_row + 1):
         if i < skip_count:
             continue
-        section = 'Printer'
-        mc_no = ws['C' + str(i)].value
-        manufacture = 'Ricoh'
-        model = ws['B' + str(i)].value
-        note = ws['D' + str(i)].value
-        print(mc_no,section,manufacture,model)
-        mc_new = Machine(mc_no=mc_no,section=section,manufacture=manufacture,model=model,note=note)
-        mc_new.save()
+        mc_no = (ws['C' + str(i)].value).strip()
+        section = (ws['A' + str(i)].value).strip()
+        mcg_no = str((ws['B' + str(i)].value)).strip() if ws['B' + str(i)].value != None else ""
+        mcg = MachineGroup.objects.get(name=mcg_no) if mcg_no != "" else None
+        is_active = ws['D' + str(i)].value
+        register_no = str((ws['E' + str(i)].value)).strip() if ws['E' + str(i)].value != None else ""
+        asset_no = str((ws['F' + str(i)].value)).strip() if ws['F' + str(i)].value != None else ""
+        manufacture = str((ws['G' + str(i)].value)).strip() if ws['G' + str(i)].value != None else ""
+        plant = str((ws['H' + str(i)].value)).strip() if ws['H' + str(i)].value != None else ""
+        model = str((ws['I' + str(i)].value)).strip() if ws['I' + str(i)].value != None else ""
+        serial_no = str((ws['J' + str(i)].value)).strip() if ws['J' + str(i)].value != None else ""
+        capacity = str((ws['K' + str(i)].value)).strip() if ws['K' + str(i)].value != None else ""
+        power = str((ws['L' + str(i)].value)).strip() if ws['L' + str(i)].value != None else ""
+        install_date = None if ws['M' + str(i)].value == "" else ws['M' + str(i)].value
+        note = str((ws['N' + str(i)].value)).strip() if ws['N' + str(i)].value != None else ""
+        sap_mc_no = str((ws['O' + str(i)].value)).strip() if ws['O' + str(i)].value != None else ""
+        location = str((ws['P' + str(i)].value)).strip() if ws['P' + str(i)].value != None else ""
+        type = str((ws['Q' + str(i)].value)).strip() if ws['Q' + str(i)].value != None else ""
+
+        if Machine.objects.filter(mc_no=mc_no).exists():
+            mc = Machine.objects.get(mc_no=mc_no)
+            mc.section = section
+            mc.mcg = mcg
+            mc.is_active = is_active
+            mc.register_no = register_no
+            mc.asset_no = asset_no
+            mc.manufacture = manufacture
+            mc.plant = plant
+            mc.model = model
+            mc.serial_no = serial_no
+            mc.capacity = capacity
+            mc.power = power
+            mc.install_date = install_date
+            mc.note = note
+            mc.sap_mc_no = sap_mc_no
+            mc.location = location
+            mc.type = type
+            mc.save()
+        else:
+            new_mc = Machine(mc_no=mc_no,section=section,mcg=mcg,is_active=is_active,register_no=register_no,asset_no=asset_no,manufacture=manufacture,plant=plant,model=model,serial_no=serial_no,capacity=capacity,power=power,install_date=install_date,note=note,sap_mc_no=sap_mc_no,location=location,type=type)
+            new_mc.save()
     return
 
 ################################ Other Function ################################
