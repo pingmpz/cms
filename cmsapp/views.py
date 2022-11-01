@@ -965,6 +965,13 @@ def master_mcg(request):
 @login_required(login_url='/')
 def master_mc(request):
     mcs = Machine.objects.all()
+    # for mc in mcs:
+    #     if mc.plant == 'A' or mc.plant == 'E':
+    #         mc.plant = 'CCSA'
+    #         mc.save()
+    #     elif mc.plant == 'P':
+    #         mc.plant = 'CCSP'
+    #         mc.save()
     context = {
         'mcs': mcs,
     }

@@ -106,6 +106,16 @@
                                                     </select>
                                                   </div>
 
+                                                  <div class="mb-3" id="mis_group">
+                                                    <div class="form-check mb-2">
+                                                    <input type="checkbox" class="form-check-input" id="computer_no_checkbox">
+                                                      <label class="form-check-label" for="computer_no_checkbox">Computer No <i class="mdi mdi-asterisk text-danger small"></i></label>
+                                                    </div>
+                                                    <p class="text-muted font-12 mb-0">* Uncheck the above checkbox if this request is not about computer.</p>
+                                                    <br>
+                                                    <input type="text" class="form-control" name="computer_no"  id="computer_no" autocomplete="off" placeholder="DTC0123 NB0123">
+                                                  </div>
+
                                                   <div class="mb-3">
                                                       <label class="form-label">Description <i class="mdi mdi-asterisk text-danger small"></i></label>
                                                       <textarea class="form-control" name="description" id="description" rows="5"></textarea>
@@ -202,6 +212,8 @@
             if (event.persisted || (typeof window.performance != "undefined" && window.performance.navigation.type === 2)) window.location.reload();
           });
 
+          toggle_mis_group();
+
           $('#emp_id').on("change", function() {
             var emp_id = $('#emp_id').val();
             if(emp_id.length >= 4){
@@ -228,7 +240,8 @@
             remove_valids(['emp_id','name','section','email','phone_no','ma_mc_no','ad_ser_mc_no','description']);
             set_text_emptys(['invalid_text']);
             // Function
-            if(validate_emp_id() && validate_name() && validate_section() && validate_email() && validate_phone_no() && validate_description()){
+            if(validate_emp_id() && validate_name() && validate_section() && validate_email() && validate_phone_no() && validate_description() && validate_computer_no()){
+              add_computer_no_to_description();
               document.getElementById('form').submit();
               $('#save_button').prop('disabled', true);
             }
@@ -322,6 +335,45 @@
               $(this).val($(this).val().replace(/[^\d].+/, ""));
               if((event.which < 48 || event.which > 57)) event.preventDefault();
           });
+
+
+          //-- MIS Specification
+          $('#sg_name').on("change", function() {
+            toggle_mis_group();
+          });
+
+          function toggle_mis_group(){
+            hide("mis_group");
+            $("#computer_no_checkbox").prop("checked", false);
+            var sg_name = $("#sg_name").val();
+            if(sg_name == "MIS"){
+              unhide("mis_group");
+              $("#computer_no_checkbox").prop("checked", true);
+            }
+          }
+
+          function validate_computer_no(){
+            var computer_no = $('#computer_no').val();
+            var sg_name = $("#sg_name").val();
+            if(sg_name == "MIS" && computer_no.trim() == "" && $("#computer_no_checkbox").is(":checked")){
+              invalid("computer_no");
+              set_text_value("invalid_text","Please fill 'Computer No' or uncheck the checkbox if is not about computer.");
+              return false;
+            } else {
+              valid("computer_no");
+              set_text_emptys("invalid_text");
+              return true;
+            }
+          }
+
+          function add_computer_no_to_description(){
+            var computer_no = $("#computer_no").val();
+            var description = $("#description").val();
+            var sg_name = $("#sg_name").val();
+            if(sg_name == "MIS" && $("#computer_no_checkbox").is(":checked")){
+              $("#description").val("[" + computer_no.trim() + "] " + description.trim());
+            }
+          }
         </script>
     </body>
 </html>
