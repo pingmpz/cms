@@ -18,6 +18,7 @@ urlpatterns = [
     path('new_request/<str:sg_name>', views.new_request, name='new_request'),
     path('new_request_success/<str:request_no>', views.new_request_success, name='new_request_success'),
     path('new_pv_request/', views.new_pv_request, name='new_pv_request'),
+    path('new_pv_request_ma/', views.new_pv_request_ma, name='new_pv_request_ma'),
     path('request_page/<str:request_no>', views.request_page, name='request_page'),
     path('req/<str:request_id>', views.req, name='req'),
     path('edit_request/<str:request_no>', views.edit_request, name='edit_request'),
@@ -28,15 +29,15 @@ urlpatterns = [
     path('request_all/<str:fsg>&<str:fstatus>&<str:ftype>', views.request_all, name='request_all'),
     path('request_breakdown/<str:fsg>', views.request_breakdown, name='request_breakdown'),
     path('request_history/<str:fsg>&<str:fstatus>&<str:ftype>&<str:fstartdate>&<str:fstopdate>', views.request_history, name='request_history'),
-    path('my_working_time/<str:fuser>&<str:fstartdate>&<str:fstopdate>', views.my_working_time, name='my_working_time'),
     path('cri_part_list/', views.cri_part_list, name='cri_part_list'),
     path('spl_part_list/', views.spl_part_list, name='spl_part_list'),
     path('pwst_list/', views.pwst_list, name='pwst_list'),
     path('mc_page/<str:mc_no>', views.mc_page, name='mc_page'),
     #-- Report
     path('report/summary/<str:fsg>', views.summary, name='summary'),
-    path('report/pv_calendar/<str:fsg>', views.pv_calendar, name='pv_calendar'),
+    path('report/pv_calendar/<str:fmcg>&<str:fyear>', views.pv_calendar, name='pv_calendar'),
     path('report/q_obj/<str:fmcg>&<str:fyear>', views.report_q_obj, name='report_q_obj'),
+    path('report/working_time/<str:fuser>&<str:fstartdate>&<str:fstopdate>', views.working_time, name='working_time'),
     path('report/mc_dt/<str:fsection>&<str:fmonth>', views.report_mc_dt, name='report_mc_dt'),
     path('report/cat/<str:fsc>', views.report_cat, name='report_cat'),
     #-- Master
@@ -71,6 +72,7 @@ urlpatterns = [
     path('setting_save/', views.setting_save, name='setting_save'),
     path('new_request_save/', views.new_request_save, name='new_request_save'),
     path('new_pv_request_save/', views.new_pv_request_save, name='new_pv_request_save'),
+    path('new_pv_request_ma_save/', views.new_pv_request_ma_save, name='new_pv_request_ma_save'),
     path('edit_request_save/', views.edit_request_save, name='edit_request_save'),
     #-- New Data
     path('new_emp_save/', views.new_emp_save, name='new_emp_save'),
@@ -133,6 +135,8 @@ urlpatterns = [
     path('set_target/', views.set_target, name='set_target'),
     #-- File
     path('file_save/', views.file_save, name='file_save'),
-
+    #-- API
+    path('api/get_emp_work_time/<str:emp_id>&<str:start_date>&<str:end_date>', views.api_get_emp_work_time, name='api_get_emp_work_time'),
+    #-- ETC
     url(r'^media/(?P<path>.*)$', serve, {'document_root': settings.MEDIA_ROOT, }),
 ]+ static(settings.MEDIA_URL, serve, document_root=settings.MEDIA_ROOT)

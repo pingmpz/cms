@@ -26,19 +26,6 @@
         <link href="{% static "assets/css/vendor/fixedHeader.bootstrap5.css" %}" rel="stylesheet" type="text/css" />
         <!-- <link href="{% static "assets/css/vendor/fixedColumns.bootstrap5.css" %}" rel="stylesheet" type="text/css" /> -->
 
-        <!-- Calendar -->
-        <link href="{% static "assets/css/vendor/fullcalendar.min.css" %}" rel="stylesheet" type="text/css" />
-
-        <style media="screen">
-          p {
-            margin-bottom: 0px;
-          }
-
-          .fc-day-grid-event > .fc-content {
-               white-space: normal;
-           }
-        </style>
-
     </head>
 
     <body class="loading" data-layout="detached" data-layout-config='{"leftSidebarCondensed":{% if request.user.employee.sidebar == 'Condensed' %}true{% else %}false{% endif %},"darkMode":{% if request.user.employee.scheme == 'Dark Mode' %}true{% else %}false{% endif %}, "showRightSidebarOnStart":false}'>
@@ -61,12 +48,19 @@
                             <div class="col-12">
                                 <div class="page-title-box">
                                     <div class="page-title-right d-flex">
-                                      &nbsp;&nbsp;&nbsp;<p class="pt-1 pb-1 mb-0 small">Section</p>&nbsp;&nbsp;&nbsp;
-                                      <select class="form-control form-control-sm" id="fsg" style="width:80px !important;">
-                                          {% for sg in sgs %}
-                                          <option value="{{sg.name}}" {% if fsg == sg.name %}selected{% endif %}>{{sg.name}}</option>
+                                      &nbsp;&nbsp;&nbsp;<p class="pt-1 pb-1 mb-0 small">Year</p>&nbsp;&nbsp;&nbsp;
+                                      <select class="form-control form-control-sm" id="fyear">
+                                        {% for year in years %}
+                                        <option value="{{year}}" {% if fyear == year %}selected{% endif %}>{{year}}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</option>
+                                        {% endfor %}
+                                      </select>
+                                      &nbsp;&nbsp;&nbsp;<p class="pt-1 pb-1 mb-0 small">Machine&nbsp;Group</p>&nbsp;&nbsp;&nbsp;
+                                      <select class="form-control form-control-sm" id="fmcg">
+                                          <option value="ALL" {% if fmcg == 'ALL' %}selected{% endif %}>ALL</option>
+                                          <option value="NONE" {% if fmcg == 'NONE' %}selected{% endif %}>NONE</option>
+                                          {% for mcg in mcgs %}
+                                          <option value="{{mcg.id}}" {% if fmcg|add:"0" == mcg.id %}selected{% endif %}>{{mcg.name}}</option>
                                           {% endfor %}
-                                          <option value="ALL" {% if fsg == 'ALL' %}selected{% endif %}>All</option>
                                       </select>
                                       <button type="button" class="btn btn-sm btn-link py-0" style="height:30px" onclick="window.scrollTo(0,document.body.scrollHeight);"><i class='mdi mdi-chevron-double-down'></i></a>
                                     </div>
@@ -80,7 +74,45 @@
                           <div class="col-12">
                             <div class="card">
                               <div class="card-body">
-                                 <div id='calendar'></div>
+                                 <!-- <div id='calendar'></div> -->
+                                 <table id="req_table" class="table table-sm nowrap row-border order-column w-100 small">
+                                  <thead>
+                                      <tr>
+                                          <th width="16%">Machine</th>
+                                          <td width="7%">January</td>
+                                          <td width="7%">February</td>
+                                          <td width="7%">March</td>
+                                          <td width="7%">April</td>
+                                          <td width="7%">May</td>
+                                          <td width="7%">June</td>
+                                          <td width="7%">July</td>
+                                          <td width="7%">August</td>
+                                          <td width="7%">September</td>
+                                          <td width="7%">October</td>
+                                          <td width="7%">November</td>
+                                          <td width="7%">December</td>
+                                      </tr>
+                                  </thead>
+                                  <tbody>
+                                      {% for months in mcs_months %}
+                                      <tr>
+                                          <th><a href="/mc_page/{{mc_nos|index:forloop.counter0}}" target="_blank">{{mc_nos|index:forloop.counter0}}</a></th>
+                                          {% if months|index:0 == 'Y'%}<td class="bg-success text-success">X</td>{% else %}<td></td>{% endif %}
+                                          {% if months|index:1 == 'Y'%}<td class="bg-success text-success">X</td>{% else %}<td></td>{% endif %}
+                                          {% if months|index:2 == 'Y'%}<td class="bg-success text-success">X</td>{% else %}<td></td>{% endif %}
+                                          {% if months|index:3 == 'Y'%}<td class="bg-success text-success">X</td>{% else %}<td></td>{% endif %}
+                                          {% if months|index:4 == 'Y'%}<td class="bg-success text-success">X</td>{% else %}<td></td>{% endif %}
+                                          {% if months|index:5 == 'Y'%}<td class="bg-success text-success">X</td>{% else %}<td></td>{% endif %}
+                                          {% if months|index:6 == 'Y'%}<td class="bg-success text-success">X</td>{% else %}<td></td>{% endif %}
+                                          {% if months|index:7 == 'Y'%}<td class="bg-success text-success">X</td>{% else %}<td></td>{% endif %}
+                                          {% if months|index:8 == 'Y'%}<td class="bg-success text-success">X</td>{% else %}<td></td>{% endif %}
+                                          {% if months|index:9 == 'Y'%}<td class="bg-success text-success">X</td>{% else %}<td></td>{% endif %}
+                                          {% if months|index:10 == 'Y'%}<td class="bg-success text-success">X</td>{% else %}<td></td>{% endif %}
+                                          {% if months|index:11 == 'Y'%}<td class="bg-success text-success">X</td>{% else %}<td></td>{% endif %}
+                                      </tr>
+                                      {% endfor %}
+                                  </tbody>
+                                </table>
                               </div>
                             </div>
                           </div>
@@ -116,47 +148,32 @@
         <script src="{% static "assets/js/vendor/dataTables.select.min.js" %}"></script>
         <script src="{% static "assets/js/vendor/fixedColumns.bootstrap5.min.js" %}"></script>
         <script src="{% static "assets/js/vendor/fixedHeader.bootstrap5.min.js" %}"></script>
-        <!-- Calendar -->
-        <script src="{% static "assets/js/vendor/jquery-ui.min.js" %}"></script>
-        <script src="{% static "assets/js/vendor/fullcalendar.min.js" %}"></script>
 
         <script type="text/javascript">
 
-          var calendarEl = document.getElementById('calendar');
-          var calendar = new FullCalendar.Calendar(calendarEl, {
-            initialView: 'dayGridMonth',
-            events: [
-              {% for req in reqs %}
-              {
-                title: '{% if req.mc %}{{req.mc.mc_no}}{% elif req.task %}{{req.task.name}}{% else %}{{req.req_no}}{% endif %}',
-                start: '{{req.request_date|date:"Y-m-d"}}',
-                end: '{{req.request_date|date:"Y-m-d"}}',
-                allDay: true,
-                textColor: '#000000',
-                url : '/request_page/{{req.req_no}}',
-                {% if req.status == 'Pending' %}color: '#fecc00',
-                {% elif req.status == 'In Progress' %}color: '#3f81e7',
-                {% elif req.status == 'On Hold' %}color: '#343a40',
-                {% elif req.status == 'Rejected' %}color: '#e55353',
-                {% elif req.status == 'Complete' %}color: '#10c469',
-                {% elif req.status == 'Canceled' %}color: '#e55353',
-                {% endif %}
-              },
-              {% endfor %}
-            ]
-          });
-
-          $( document ).ready(function() {
-              calendar.render();
-          });
-
-          $('#fsg').change(function() {
-            filter();
+          var table = $('#req_table').DataTable( {
+              "order": [[ 0, "asc" ]],
+              'iDisplayLength': 25,
+              "scrollX": true,
           });
 
           function filter(){
             var fsg = $("#fsg").val();
             window.location.href = "/report/pv_calendar/" + fsg;
+          }
+
+          $('#fmcg').change(function() {
+            filter();
+          });
+
+          $('#fyear').change(function() {
+            filter();
+          });
+
+          function filter(){
+            var fmcg = $("#fmcg").val();
+            var fyear = $("#fyear").val();
+            window.location.href = "/report/pv_calendar/" + fmcg + "&" + fyear;
           }
         </script>
 

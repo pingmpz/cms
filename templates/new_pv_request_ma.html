@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+{% load static %}
+{% load extra %}
+
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <title>New Preventive Request (MA) | C.C.S. Maintenance Service</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta content="A fully featured admin theme which can be used to build CRM, CMS, etc." name="description" />
+        <meta content="Coderthemes" name="author" />
+        <!-- App favicon -->
+        <link rel="shortcut icon" href="assets/images/favicon.ico">
+
+        <!-- App css -->
+        <link href="{% static "assets/css/icons.min.css" %}" rel="stylesheet" type="text/css" />
+        <link href="{% static "assets/css/app-modern.min.css" %}" rel="stylesheet" type="text/css" id="light-style" />
+        <link href="{% static "assets/css/app-modern-dark.min.css" %}" rel="stylesheet" type="text/css" id="dark-style" />
+    </head>
+
+    <body class="loading" data-layout="detached" data-layout-config='{"leftSidebarCondensed":{% if request.user.employee.sidebar == 'Condensed' %}true{% else %}false{% endif %},"darkMode":{% if request.user.employee.scheme == 'Dark Mode' %}true{% else %}false{% endif %}, "showRightSidebarOnStart":false}'>
+
+        <!-- ========== Header Bar ========== -->
+        {% include 'header.html' %}
+
+        <div class="container-fluid">
+            <div class="wrapper">
+
+                <!-- ========== Left Sidebar ========== -->
+                {% include 'sidebar.html' %}
+
+                <!-- ========== Page Content ========== -->
+                <div class="content-page">
+                    <div class="content">
+
+                        <!-- ========== Inner Top Bar ========== -->
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="page-title-box">
+                                    <div class="page-title-right d-flex">
+                                        <button type="button" class="btn btn-success ms-2" id="save_button" onclick="save()" title="Save"><i class="mdi mdi-content-save"></i></button>
+                                    </div>
+                                    <h4 class="page-title"><i class="uil-comment-plus"></i> New Preventive Request (MA)</h4>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- ========== Main Content ========== -->
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <div class="row">
+                                          <!-- ========== Left Content ========== -->
+                                          <div class="col-xl-12">
+                                            <form action="/new_pv_request_ma_save/" method="POST" id="form">
+                                            {% csrf_token %}
+                                                <div class="mb-3">
+                                                  <label class="form-label">Request Date</label>
+                                                  <input type="date" class="form-control" name="req_date" id="req_date">
+                                                </div>
+
+                                                <div class="row">
+                                                  <div class="col-6">
+                                                    <div class="row">
+                                                      <div class="col-1">
+                                                        <label class="form-label"></label>
+                                                      </div>
+                                                      <div class="col-5">
+                                                        <label class="form-label">Machine</label>
+                                                      </div>
+                                                      <div class="col-6">
+                                                        <label class="form-label">Description</label>
+                                                      </div>
+                                                    </div>
+                                                  </div>
+                                                  <div class="col-6">
+                                                    <div class="row">
+                                                      <div class="col-1">
+                                                        <label class="form-label"></label>
+                                                      </div>
+                                                      <div class="col-5">
+                                                        <label class="form-label">Machine</label>
+                                                      </div>
+                                                      <div class="col-6">
+                                                        <label class="form-label">Description</label>
+                                                      </div>
+                                                    </div>
+                                                  </div>
+                                                </div>
+
+                                                <div class="row">
+                                                  {% for i in size %}
+                                                  <div class="col-6">
+                                                    <div class="row">
+                                                      <div class="col-1 my-1 pt-2 px-0">
+                                                        <label class="form-label float-end"><b>{{forloop.counter}}</b></label>
+                                                      </div>
+                                                      <div class="col-5 my-1">
+                                                        <select class="form-control select2" data-toggle="select2" name="mc_no_{{forloop.counter0}}" id="mc_no_{{forloop.counter0}}">
+                                                          <option value="None"></option>
+                                                          {% for mc in mcs %}
+                                                          {% if set_mc|index:forloop.counter0 != None %}
+                                                          <optgroup label="{{set_mc|index:forloop.counter0}}">
+                                                          {% endif %}
+                                                          <option value="{{mc.mc_no}}">▪️ {{mc.mc_no}}</option>
+                                                          {% if set_mc|index:forloop.counter1 != None %}
+                                                          </optgroup>
+                                                          {% endif %}
+                                                          {% endfor %}
+                                                        </select>
+                                                      </div>
+                                                      <div class="col-6 my-1">
+                                                        <textarea class="form-control" name="desc_{{forloop.counter0}}" id="desc_{{forloop.counter0}}" rows="1"></textarea>
+                                                      </div>
+                                                    </div>
+                                                  </div>
+                                                  {% endfor %}
+                                                </div>
+                                            </form>
+                                          </div>
+
+                                          <p class="text-danger text-center small mb-4" id="invalid_text"></p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- ========== Footer ========== -->
+                    {% include 'footer.html' %}
+
+                </div>
+
+            </div>
+        </div>
+
+        <!-- ========== Right Side Bar ========== -->
+
+        <!-- bundle -->
+        <script src="{% static "assets/js/vendor.min.js" %}"></script>
+        <script src="{% static "assets/js/app.min.js" %}"></script>
+        <script src="{% static "custom/custom.js" %}"></script>
+        <script src="{% static "custom/topsearch.js" %}"></script>
+        <!-- plugin js -->
+        <script src="{% static "assets/js/vendor/dropzone.min.js" %}"></script>
+        <!-- init js -->
+        <script src="{% static "assets/js/ui/component.fileupload.js" %}"></script>
+        <script>
+        //-- Prevent Back
+        window.addEventListener( "pageshow", function (event) {
+          if (event.persisted || (typeof window.performance != "undefined" && window.performance.navigation.type === 2)) window.location.reload();
+        });
+
+        function save(){
+          // Clear Validate
+          remove_valids(['req_date']);
+          set_text_emptys(['invalid_text']);
+          // Function
+          if(validate_req_date()){
+            document.getElementById('form').submit();
+            $('#save_button').prop('disabled', true);
+          }
+        }
+
+        function validate_req_date(){
+          var req_date = $('#req_date').val();
+          if(req_date == ""){
+            invalid("req_date");
+            set_text_value("invalid_text","Please fill 'Request Date'.");
+            return false;
+          } else {
+            valid("req_date");
+            set_text_emptys("invalid_text");
+            return true;
+          }
+        }
+
+        </script>
+    </body>
+</html>

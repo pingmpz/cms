@@ -89,7 +89,9 @@
                                                       <div class="col-6">
                                                         <div class="mb-3">
                                                           <label class="form-label">Phone No <i class="mdi mdi-asterisk text-danger small"></i></label>
-                                                          <input type="text" class="form-control" name="phone_no"  id="phone_no" autocomplete="off">
+                                                          <br>
+                                                          <small>* Please use company internal phone no</small>
+                                                          <input type="text" class="form-control" name="phone_no"  id="phone_no" autocomplete="off" maxlength="5">
                                                         </div>
                                                       </div>
 
@@ -237,7 +239,7 @@
 
           function save(){
             // Clear Validate
-            remove_valids(['emp_id','name','section','email','phone_no','ma_mc_no','ad_ser_mc_no','description']);
+            remove_valids(['emp_id','name','section','email','phone_no','ma_mc_no','ad_ser_mc_no','computer_no','description']);
             set_text_emptys(['invalid_text']);
             // Function
             if(validate_emp_id() && validate_name() && validate_section() && validate_email() && validate_phone_no() && validate_description() && validate_computer_no()){
@@ -332,8 +334,10 @@
           });
 
           $("#phone_no").on("keypress keyup blur",function (event) {
-              $(this).val($(this).val().replace(/[^\d].+/, ""));
-              if((event.which < 48 || event.which > 57)) event.preventDefault();
+              $(this).val($(this).val().replace(/[^*\d].+/, ""));
+              if ((event.which < 48 || event.which > 57) && event.which !== 42) {
+                  event.preventDefault();
+              }
           });
 
 

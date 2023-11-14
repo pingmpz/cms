@@ -102,7 +102,7 @@
                                           <!-- <td>{{user.employee.auto_add}}</td> -->
                                           <!-- <td>{{user.last_login|default_if_none:""}}</td> -->
                                           <!-- <td>{% if user.is_superuser %}Super Administrator{% elif user.is_staff %}Administrator{% else %}-{% endif %}</td> -->
-                                          <td><a href='/my_working_time/{{user.username}}&2022-03-01&TODAY' target='_blank'>Here</a></td>
+                                          <td><a href='/report/working_time/{{user.username}}&LASTWEEK&TODAY' target='_blank'>Here</a></td>
                                       </tr>
                                       {% endfor %}
                                   </tbody>

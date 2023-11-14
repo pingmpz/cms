@@ -61,8 +61,8 @@
                                       </select>
                                       &nbsp;&nbsp;&nbsp;<p class="pt-1 pb-1 mb-0 small">Status</p>&nbsp;&nbsp;&nbsp;
                                       <select class="form-control form-control-sm" id="fstatus" style="width:110px !important;">
-                                          <option value="PROGRESS" {% if fstatus == 'PROGRESS' %}selected{% endif %}>In Progress</option>
-                                          <option value="HOLD" {% if fstatus == 'HOLD' %}selected{% endif %}>On Hold</option>
+                                          <option value="IN PROGRESS" {% if fstatus == 'IN PROGRESS' %}selected{% endif %}>In Progress</option>
+                                          <option value="ON HOLD" {% if fstatus == 'ON HOLD' %}selected{% endif %}>On Hold</option>
                                           <option value="ALL" {% if fstatus == 'ALL' %}selected{% endif %}>All</option>
                                       </select>
                                       &nbsp;&nbsp;&nbsp;<p class="pt-1 pb-1 mb-0 small">Section</p>&nbsp;&nbsp;&nbsp;
@@ -106,7 +106,7 @@
                                   <tbody>
                                       {% for req in reqs %}
                                       <tr>
-                                          <td data-order="{{req.request_date|date:"U"}}">{{req.request_date}}</td>
+                                          <td data-order="">{{req.request_date}}</td>
                                           <td><a href="/request_page/{{req.req_no}}">{{req.req_no}}</a></td>
                                           <td>{{req.type}}</td>
                                           <td>

@@ -1,5 +1,7 @@
-<!DOCTYPE html>
 {% load static %}
+{% load extra %}
+
+<!DOCTYPE html>
 
 <html lang="en">
     <head>
@@ -47,7 +49,7 @@
                                         <input type="text" class="form-control form-control-sm" id="search_text" placeholder="Search.." value="{{search_text}}">
                                         <button class="input-group-text btn-primary" type="button" onclick="search()"><span class="mdi mdi-magnify"></span></button>
                                   </div>
-                                  <small class="text-muted">Searchable: Employee ID, Machine No, Machine Section</small>
+                                  <small class="text-muted">Employee ID, Machine No, Request To</small>
                                 </div>
                                 <br><br><hr>
                                 <table id="request_table" class="table table-sm nowrap table-responsive row-border order-column w-100 small">
@@ -60,7 +62,7 @@
                                           <th>Status</th>
                                           <th>Reason/Corrective</th>
                                           <th>Description</th>
-                                          <th>Machine/Device/Task</th>
+                                          <th>Machine/Device/Task/File</th>
                                           <th>Request By</th>
                                       </tr>
                                   </thead>
@@ -82,7 +84,16 @@
                                         </td>
                                         <td>{{req.reason|default_if_none:""}}{{req.corrective_action|default_if_none:""}}</td>
                                         <td>{{req.description}}</td>
-                                        <td>{{req.mc.mc_no|default_if_none:""}}{{req.task.name|default_if_none:""}} {% if req.mc.mc_no and req.mc.sap_mc_no and mc.sap_mc_no != req.mc.mc_no %}({{req.mc.sap_mc_no}}){% endif %}</td>
+                                        <td>
+                                          {{req.mc.mc_no|default_if_none:""}}
+                                          {{req.task.name|default_if_none:""}} 
+                                          {% if req.mc.mc_no and req.mc.sap_mc_no and mc.sap_mc_no != req.mc.mc_no %}
+                                            ({{req.mc.sap_mc_no}})
+                                          {% endif %}
+                                          {% if req.sg.name == 'QS' %}
+                                          <a href="/media/request/{{req.req_no}}/{{files|index:forloop.counter0}}" class="text-muted fw-bold">{{files|index:forloop.counter0}}</a>
+                                          {% endif %}
+                                        </td>
                                         <td>{{req.emp_id}} | {{req.name|title}} ({{req.section}})</td>
                                     </tr>
                                     {% endfor %}

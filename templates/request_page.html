@@ -375,9 +375,11 @@
                                         <div class="float-end">
                                             <i class="mdi mdi-check-all widget-icon bg-light-lighten rounded-circle text-white"></i>
                                         </div>
-                                        <p class="text-uppercase mb-0"><b><u>Corrective Action</u></b>{{req.corrective_action|default_if_none:"-"|linebreaks}}</p>
                                         <p class="text-uppercase mb-0"><b><u>Cause</u></b>{{req.cause|default_if_none:"-"|linebreaks}}</p>
+                                        <p class="text-uppercase mb-0"><b><u>Correction & Corrective Action</u></b>{{req.correction|default_if_none:"-"|linebreaks}}</p>
                                         <p class="text-uppercase mb-0"><b><u>Spare Parts Changed</u></b>{{req.spare_parts|default_if_none:"-"|linebreaks}}</p>
+                                        <!-- <p class="text-uppercase mb-0"><b><u>Corrective Action</u></b>{{req.corrective_action|default_if_none:"-"|linebreaks}}</p> -->
+                                        <p class="text-uppercase mb-0"><b><u>Documents</u></b>{{req.documents|default_if_none:"-"|linebreaks}}</p>
                                     </div>
                                 </div>
                                 {% endif %}
@@ -854,7 +856,11 @@
                                               {% endif %}
                                             {% endif %}
                                             {% if req.status == 'Rejected' %}
+                                              {% if user.is_staff %}
+                                                <button type="button" class="btn btn-xs mb-1 btn-info" data-bs-toggle="modal" data-bs-target="#rework_modal"><i class='uil-redo me-1'></i>Rework</button>
+                                              {% else %}
                                               <p class="text-center">There is no function for this request.</p>
+                                              {% endif %}
                                             {% endif %}
                                         </div>
                                     </div>
@@ -1103,16 +1109,24 @@
                               {% endif %}
                           </div>
                           <div class="mb-3">
-                              <label class="form-label">Corrective Action</label>
-                              <textarea class="form-control" name="complete_corrective_action" id="complete_corrective_action" rows="4">{{req.corrective_action|default_if_none:""}}</textarea>
+                            <label class="form-label">Cause</label>
+                            <textarea class="form-control" name="complete_cause" id="complete_cause" rows="4">{{req.cause|default_if_none:""}}</textarea>
                           </div>
                           <div class="mb-1">
-                              <label class="form-label">Cause</label>
-                              <textarea class="form-control" name="complete_cause" id="complete_cause" rows="4">{{req.cause|default_if_none:""}}</textarea>
+                            <label class="form-label">Correction  && Corrective Action</label>
+                            <textarea class="form-control" name="complete_cause" id="complete_correction" rows="4">{{req.correction|default_if_none:""}}</textarea>
                           </div>
-                          <div class="mb-0">
+                          <div class="mb-3">
                               <label class="form-label">Spare Parts Changed</label>
                               <textarea class="form-control" name="complete_spare_parts" id="complete_spare_parts" rows="4">{{req.spare_parts|default_if_none:""}}</textarea>
+                          </div>
+                          <!-- <div class="mb-3">
+                            <label class="form-label">Corrective Action</label>
+                            <textarea class="form-control" name="complete_corrective_action" id="complete_corrective_action" rows="4">{{req.corrective_action|default_if_none:""}}</textarea>
+                          </div> -->
+                          <div class="mb-3">
+                            <label class="form-label" >Documents</label>
+                            <textarea class="form-control" name="complete_documents" id="complete_documents" rows="4">{{req.documents|default_if_none:""}}</textarea>
                           </div>
                           {% if wt_len == 0 %}
                           <p class="text-center text-danger font-14 mt-2 mb-0">** This request has no working time **</p>
@@ -1142,6 +1156,7 @@
                               <label class="form-label">Cancel Reason</label>
                               <textarea class="form-control" name="cancel_reason" id="cancel_reason" rows="5"></textarea>
                           </div>
+                          <p>All working time and all costing will be deleted.</p>
                           {% if req.is_breakdown %}
                           <p class="text-center text-danger font-12 mt-1">** This request has a breakdown machine, cancel this will remove breakdown status. **</p>
                           {% endif %}
@@ -1596,18 +1611,22 @@
           function complete_request(){
             var req_id = $("#req_id").val();
             var finish_datetime = $("#complete_finish_datetime").val();
-            var corrective_action = $("#complete_corrective_action").val();
-            var cause = $("#complete_cause").val();
+            var correction = $("#complete_correction").val();
             var spare_parts = $("#complete_spare_parts").val();
-
+            var cause = $("#complete_cause").val();
+            var corrective_action = $("#complete_corrective_action").val();
+            var documents = $("#complete_documents").val();
             $.ajax({
               url: '/complete_request/',
               data: {
                 'req_id': req_id,
                 'finish_datetime': finish_datetime,
-                'corrective_action': corrective_action,
-                'cause': cause,
+                
+                'correction': correction,
                 'spare_parts': spare_parts,
+                'cause': cause,
+                'corrective_action': corrective_action,
+                'documents': documents,
               },
               dataType: 'json',
               success: function (data) {

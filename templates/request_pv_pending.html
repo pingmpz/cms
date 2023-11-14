@@ -76,7 +76,7 @@
                                 <table id="request_table" class="table table-sm nowrap table-responsive row-border order-column w-100 small">
                                   <thead>
                                       <tr>
-                                          <th>Request Date</th>
+                                          <th>Plan Month</th>
                                           <th>Request No</th>
                                           <!-- <th>Type</th> -->
                                           <!-- <th>Status</th> -->
@@ -90,7 +90,7 @@
                                   <tbody>
                                       {% for req in reqs %}
                                       <tr>
-                                          <td data-order="{{req.request_date|date:"U"}}">{{req.request_date}}</td>
+                                          <td data-order="{{req.request_date|date:'U'}}">{{req.request_date|date:"M Y"}}</td>
                                           <td><a href="/request_page/{{req.req_no}}">{{req.req_no}}</a></td>
                                           <!-- <td>{{req.type}}</td>
                                           <td>

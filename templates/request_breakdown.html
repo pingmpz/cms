@@ -95,7 +95,7 @@
                                   <tbody>
                                       {% for req in reqs %}
                                       <tr>
-                                          <td data-order="{{req.request_date|date:"U"}}">{{req.request_date}}</td>
+                                          <td data-order="{{req.request_date|date:'U'}}">{{req.request_date}}</td>
                                           <td><a href="/request_page/{{req.req_no}}">{{req.req_no}}</a></td>
                                           <td>{{req.type}}</td>
                                           <td>

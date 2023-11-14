@@ -1,6 +1,9 @@
 from django.shortcuts import render, redirect
 from django.http import JsonResponse
+from django.http import HttpResponse
+import requests
 from dateutil import parser
+import json
 # Authenticate
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
@@ -33,6 +36,7 @@ from .models import SectionGroup, Employee, MachineGroup, Machine, Task, Vendor,
 
 HOST_URL = 'http://129.1.100.185:8200/'
 TEMPLATE_REQUEST = 'email_templates/request.html'
+NEW_PV_REQUEST_MA_SIZE = 20
 
 ################################# Authenticate #################################
 
@@ -45,15 +49,27 @@ def first_page(request):
 
 def track_request(request, search_text):
     reqs = []
+    files = []
     if search_text != '0':
-        mcs = Machine.objects.filter(mc_no__icontains=search_text) | Machine.objects.filter(sap_mc_no__icontains=search_text) | Machine.objects.filter(section__icontains=search_text)
-        reqs = Request.objects.filter(type="User Request",emp_id=search_text).order_by('-request_date') | Request.objects.filter(type="User Request",mc__in=mcs).order_by('-request_date')
+        # mcs = Machine.objects.filter(mc_no__icontains=search_text) | Machine.objects.filter(sap_mc_no__icontains=search_text) | Machine.objects.filter(section__icontains=search_text)
+        # reqs = Request.objects.filter(type="User Request",emp_id=search_text).order_by('-request_date') | Request.objects.filter(type="User Request",mc__in=mcs).order_by('-request_date')
+        reqs = Request.objects.filter(type="User Request")
+        reqs = reqs.filter(emp_id=search_text) | reqs.filter(mc__mc_no__icontains=search_text) | reqs.filter(type="User Request",sg__name=search_text)
+        reqs = reqs.order_by('-request_date')
         reqs = reqs[:100]
+        for req in reqs:
+            xfiles = File.objects.filter(req=req)
+            if len(xfiles) >= 1:
+                xfile = xfiles[0]
+                files.append(xfile.file_name)
+            else:
+                files.append("")
     else:
         search_text = ""
     context = {
         'search_text': search_text,
         'reqs': reqs,
+        'files': files,
     }
     return render(request, 'track_request.html', context)
 
@@ -96,6 +112,11 @@ def setting(request):
     if request.user.is_superuser or request.user.is_staff:
         users = sort_user_by_section(User.objects.all())
         set_user = get_set_user(users)
+    # emps = Employee.objects.all()
+    # for emp in emps:
+    #     if emp.section == 'S-STDH':
+    #         emp.section = 'STDH'
+    #         emp.save()
     context = {
         'users': users,
         'set_user': set_user,
@@ -138,6 +159,18 @@ def new_pv_request(request):
     }
     context['all_page_data'] = (all_page_data(request))
     return render(request, 'new_pv_request.html', context)
+
+def new_pv_request_ma(request):
+    mcs = Machine.objects.filter(is_active=True).order_by('section')
+    set_mc = get_set_mc(mcs)
+    size = [''] * NEW_PV_REQUEST_MA_SIZE
+    context = {
+        'mcs': mcs,
+        'set_mc': set_mc,
+        'size': size,
+    }
+    context['all_page_data'] = (all_page_data(request))
+    return render(request, 'new_pv_request_ma.html', context)
 
 @login_required(login_url='/')
 def request_page(request, request_no):
@@ -362,7 +395,7 @@ def request_all(request, fsg, fstatus, ftype):
         fsg = 'ALL'
     status = None
     if fstatus != 'ALL':
-        status = 'On ' + fstatus.capitalize()
+        status = fstatus.title()
     type = 'ALL'
     if ftype == 'PV':
         type = 'Preventive'
@@ -370,6 +403,7 @@ def request_all(request, fsg, fstatus, ftype):
         type = 'User Request'
 
     reqs = Request.objects.filter(status='In Progress')  | Request.objects.filter(status='On Hold')
+
     if fsg != 'ALL':
         reqs = reqs.filter(sg=fsg)
     if fstatus != 'ALL':
@@ -380,6 +414,7 @@ def request_all(request, fsg, fstatus, ftype):
     is_members = get_is_members(reqs, request)
     has_wts = get_has_wts(reqs)
     has_mcdts = get_has_mcdts(reqs)
+
     context = {
         'sgs': sgs,
         'fsg': fsg,
@@ -438,7 +473,7 @@ def request_history(request, fsg, fstatus, ftype, fstartdate, fstopdate):
     if fstopdate == "TODAY":
         fstopdate = datetime.today().strftime('%Y-%m-%d')
 
-    reqs = Request.objects.filter(status='Rejected',finish_datetime__date__range=[fstartdate, fstopdate]) | Request.objects.filter(status='Complete',finish_datetime__date__range=[fstartdate, fstopdate]) | Request.objects.filter(status='Canceled',finish_datetime__date__range=[fstartdate, fstopdate])
+    reqs = Request.objects.filter(status='Rejected',request_date__range=[fstartdate, fstopdate]) | Request.objects.filter(status='Complete',request_date__range=[fstartdate, fstopdate]) | Request.objects.filter(status='Canceled',request_date__range=[fstartdate, fstopdate])
     if fsg != 'ALL':
         reqs = reqs.filter(sg=fsg)
     if fstatus != 'ALL':
@@ -463,47 +498,6 @@ def request_history(request, fsg, fstatus, ftype, fstartdate, fstopdate):
     }
     context['all_page_data'] = (all_page_data(request))
     return render(request, 'request_history.html', context)
-
-@login_required(login_url='/')
-def my_working_time(request, fuser, fstartdate, fstopdate):
-    if fuser == "ME":
-        user = request.user
-    else:
-        user = User.objects.get(username=fuser)
-    if fstartdate == "LASTWEEK":
-        fstartdate = (datetime.today() - timedelta(days=7)).strftime('%Y-%m-%d')
-    if fstopdate == "TODAY":
-        fstopdate = datetime.today().strftime('%Y-%m-%d')
-    d0 = datetime.strptime(fstartdate, '%Y-%m-%d')
-    d1 = datetime.strptime(fstopdate, '%Y-%m-%d')
-    days = (d1 - d0).days
-    wt_data = [0] * (days + 1)
-    cat_data = [0] * (days + 1)
-    i = 0
-    while i <= days:
-        date = (datetime.strptime(fstopdate, '%Y-%m-%d') - timedelta(days=(days - i))).strftime('%Y-%m-%d')
-        cat_data[i] = (datetime.strptime(fstopdate, '%Y-%m-%d') - timedelta(days=(days - i))).strftime('%d %b')
-        time = 0
-        wts = OperatorWorkingTime.objects.filter(user=user,start_datetime__date=date)
-        for wt in wts:
-            time = time + (wt.stop_datetime - wt.start_datetime).total_seconds() / 60
-        wt_data[i] = time
-        i = i + 1
-    wts = OperatorWorkingTime.objects.filter(user=user,start_datetime__date__range=[fstartdate, fstopdate])
-    durations = [] # Minute
-    for wt in wts:
-        durations.append(int((wt.stop_datetime - wt.start_datetime).total_seconds() / 60))
-    context = {
-        'fuser': fuser,
-        'fstartdate': fstartdate,
-        'fstopdate': fstopdate,
-        'cat_data': cat_data,
-        'wt_data': wt_data,
-        'wts': wts,
-        'durations': durations,
-    }
-    context['all_page_data'] = (all_page_data(request))
-    return render(request, 'my_working_time.html', context)
 
 @login_required(login_url='/')
 def cri_part_list(request):
@@ -712,22 +706,48 @@ def summary(request, fsg):
     return render(request, 'report/summary.html', context)
 
 @login_required(login_url='/')
-def pv_calendar(request, fsg):
-    sgs = SectionGroup.objects.all()
+def pv_calendar(request, fmcg, fyear):
+    mcgs = MachineGroup.objects.all()
+    years = get_years()
+    sg = SectionGroup.objects.get(name='MA')
     reqs = []
-    if fsg == 'MY' and is_in_section_group(request):
-        fsg = request.user.employee.section
-    elif fsg == 'MY':
-        fsg = 'ALL'
-
-    reqs = Request.objects.filter(type='Preventive')
-    if fsg != 'ALL':
-        reqs = reqs.filter(sg=fsg)
-
+    if fyear == 'THISYEAR':
+        fyear = datetime.today().strftime('%Y')
+    reqs = Request.objects.filter(type='Preventive',sg=sg,request_date__year=fyear).exclude(status='Canceled').exclude(status='Rejected').order_by('mc') 
+    mcs = []
+    mcs_months = []
+    months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
+    nmonths = ['01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12']
+    for req in reqs:
+        if req.mc and req.mc not in mcs:
+            if fmcg == 'ALL':
+                mcs.append(req.mc)
+            if fmcg == 'NONE':
+                if req.mc.mcg == None:
+                    mcs.append(req.mc)
+            else:
+                mcg = MachineGroup.objects.get(id=fmcg)
+                if req.mc.mcg == mcg:
+                    mcs.append(req.mc)
+    mc_nos = []
+    for mc in mcs:
+        mc_nos.append(mc.mc_no)
+        xreqs = reqs.filter(mc=mc)
+        mc_months = []
+        for nmonth in nmonths:
+            freqs = xreqs.filter(request_date__month=nmonth)
+            if freqs:
+                mc_months.append('Y')
+            else:
+                mc_months.append('N')
+        mcs_months.append(mc_months)
     context = {
-        'sgs': sgs,
-        'fsg': fsg,
-        'reqs': reqs,
+        'mcgs': mcgs,
+        'years': years,
+        'fmcg': fmcg,
+        'fyear': fyear,
+        'mc_nos': mc_nos,
+        'mcs_months': mcs_months,
     }
     context['all_page_data'] = (all_page_data(request))
     return render(request, 'report/pv_calendar.html', context)
@@ -850,6 +870,54 @@ def report_q_obj(request, fmcg, fyear):
     }
     context['all_page_data'] = (all_page_data(request))
     return render(request, 'report/q_obj.html', context)
+
+@login_required(login_url='/')
+def working_time(request, fuser, fstartdate, fstopdate):
+    users = sort_user_by_section(User.objects.filter(is_active=True))
+    set_user = get_set_user(users)
+    user = None
+    if fuser == "MY":
+        user = request.user
+        fuser = user.username
+    else:
+        user = User.objects.get(username=fuser)
+    if fstartdate == "LASTWEEK":
+        fstartdate = (datetime.today() - timedelta(days=7)).strftime('%Y-%m-%d')
+    if fstopdate == "TODAY":
+        fstopdate = datetime.today().strftime('%Y-%m-%d')
+    d0 = datetime.strptime(fstartdate, '%Y-%m-%d')
+    d1 = datetime.strptime(fstopdate, '%Y-%m-%d')
+    days = (d1 - d0).days
+    wt_data = [0] * (days + 1)
+    cat_data = [0] * (days + 1)
+    i = 0
+    while i <= days:
+        date = (datetime.strptime(fstopdate, '%Y-%m-%d') - timedelta(days=(days - i))).strftime('%Y-%m-%d')
+        cat_data[i] = (datetime.strptime(fstopdate, '%Y-%m-%d') - timedelta(days=(days - i))).strftime('%d %b')
+        time = 0
+        wts = OperatorWorkingTime.objects.filter(user=user,start_datetime__date=date)
+        for wt in wts:
+            time = time + (wt.stop_datetime - wt.start_datetime).total_seconds() / 60
+        wt_data[i] = time
+        i = i + 1
+    wts = OperatorWorkingTime.objects.filter(user=user,start_datetime__date__range=[fstartdate, fstopdate])
+    durations = [] # Minute
+    for wt in wts:
+        durations.append(int((wt.stop_datetime - wt.start_datetime).total_seconds() / 60))
+    context = {
+        'fuser': fuser,
+        'user': user,
+        'users': users,
+        'set_user': set_user,
+        'fstartdate': fstartdate,
+        'fstopdate': fstopdate,
+        'cat_data': cat_data,
+        'wt_data': wt_data,
+        'wts': wts,
+        'durations': durations,
+    }
+    context['all_page_data'] = (all_page_data(request))
+    return render(request, 'report/working_time.html', context)
 
 @login_required(login_url='/')
 def report_mc_dt(request, fsection, fmonth):
@@ -1026,6 +1094,7 @@ def master_sg(request):
 @login_required(login_url='/')
 def master_mg(request):
     mgs = MailGroup.objects.all()
+    custom_script()
     context = {
         'mgs': mgs,
     }
@@ -1360,6 +1429,34 @@ def new_pv_request_save(request):
     if request.user.employee.pv_created == 'Request Page':
         return redirect('/request_page/' + request_new.req_no)
     return redirect('/new_pv_request/')
+
+def new_pv_request_ma_save(request):
+    request_date = request.POST['req_date']
+    mc_no_list, desc_list = [], []
+    size = [''] * NEW_PV_REQUEST_MA_SIZE
+    for idx, i in enumerate(size):
+        mc_no = request.POST['mc_no_' + str(idx)] if request.POST['mc_no_' + str(idx)] != 'None' else None
+        desc = (request.POST['desc_' + str(idx)]).strip()
+        if mc_no != None:
+            mc_no_list.append(mc_no)
+            desc_list.append(desc)
+    for idx, mc_no in enumerate(mc_no_list):
+        task = None
+        mc = Machine.objects.get(mc_no=mc_no)
+        description = desc_list[idx]
+        type = 'Preventive'
+        status = 'Pending'
+        sg = SectionGroup.objects.get(name='MA')
+        emp_id = request.user.username
+        name = request.user.employee.name
+        section = request.user.employee.section
+        email = request.user.email
+        phone_no = request.user.employee.phone_no
+        request_new = Request(emp_id=emp_id,name=name,section=section,email=email,phone_no=phone_no,sg=sg,type=type,status=status,request_date=request_date,description=description,mc=mc,task=task)
+        request_new.save()
+        request_new.req_no = create_req_no(request_new.id)
+        request_new.save()
+    return redirect('/new_pv_request_ma/')
 
 def edit_request_save(request):
     token = request.POST['token']
@@ -1899,15 +1996,19 @@ def start_work_request(request):
 def complete_request(request):
     req_id = request.GET['req_id']
     finish_datetime = datetime.now() if request.GET['finish_datetime'] == "" else request.GET['finish_datetime']
-    corrective_action = request.GET['corrective_action']
-    cause = request.GET['cause']
+    correction = request.GET['correction']
     spare_parts = request.GET['spare_parts']
+    cause = request.GET['cause']
+    # corrective_action = request.GET['corrective_action']
+    documents = request.GET['documents']
     req = Request.objects.get(id=req_id)
     req.status = 'Complete'
     req.reason = None
-    req.corrective_action = corrective_action
-    req.cause = cause
+    req.correction = correction
     req.spare_parts = spare_parts
+    req.cause = cause
+    # req.corrective_action = corrective_action
+    req.documents = documents
     req.is_breakdown = False
     req.breakdown_reason = None
     req.finish_datetime = finish_datetime
@@ -1926,6 +2027,10 @@ def cancel_request(request):
     req.breakdown_reason = None
     req.finish_datetime = datetime.now()
     req.save()
+    OperatorWorkingTime.objects.filter(req=req).delete()
+    VendorWorkingTime.objects.filter(req=req).delete()
+    MachineDowntime.objects.filter(req=req).delete()
+    Costing.objects.filter(req=req).delete()
     data = {
     }
     return JsonResponse(data)
@@ -2215,6 +2320,15 @@ def update_machine():
             new_mc.save()
     return
 
+def custom_script():
+    reqs = Request.objects.filter(status='Canceled')
+    for req in reqs:
+        OperatorWorkingTime.objects.filter(req=req).delete()
+        VendorWorkingTime.objects.filter(req=req).delete()
+        MachineDowntime.objects.filter(req=req).delete()
+        Costing.objects.filter(req=req).delete()
+    return
+
 ################################ Other Function ################################
 
 def add_front_zero(str):
@@ -2295,7 +2409,8 @@ def get_mail_group(sg, is_cc):
     list = []
     mgs = MailGroup.objects.filter(sg=sg,is_cc=is_cc)
     for mg in mgs:
-        list.append(mg.user.email)
+        if mg.user.is_active:
+            list.append(mg.user.email)
     return list
 
 def get_is_members(reqs, request):
@@ -2430,6 +2545,19 @@ def get_is_not_enough_sp(sps):
             return True
     return False
 
+##################################### API ####################################
+
+def api_get_emp_work_time(request, emp_id, start_date, end_date):
+    work_time = 0
+    is_emp_exist = User.objects.filter(username=emp_id)
+    if is_emp_exist:
+        work_time = 99
+    result = {
+        'work_time': work_time,
+    }
+    data = json.dumps(result)
+    return HttpResponse(data, content_type='application/json')
+
 ##################################### Email ####################################
 
 class EmailThread(threading.Thread):
@@ -2453,5 +2581,5 @@ def send_email(subject, email_content, send_to, cc_to):
 def send_line(token, req):
     #-- Line
     line = Line(token)
-    line.send_msg('\n New Request: ' + req.req_no + '\n Request Link: ' + HOST_URL + 'req/' + str(req.id)  + '\n Request By: ' + str(req.emp_id) + ' | ' + req.name + '\n Phone No: ' + req.phone_no + '\n Description: ' + req.description)
+    line.send_msg(f'\n New Request: {req.req_no}\n Request Link: {HOST_URL}req/{str(req.id)}\n Request By:{str(req.emp_id)} | {req.name} ({req.section})\n Phone No: {req.phone_no}\n Description: {req.description}')
     return

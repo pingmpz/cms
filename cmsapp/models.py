@@ -148,9 +148,13 @@ class Request(models.Model):
     status = models.CharField(max_length=20) # Pending, Rejected, In Progress, On Hold, Complete, Canceled
     reason = models.TextField(max_length=1000, null=True)
     description = models.TextField(max_length=1000)
-    corrective_action = models.TextField(max_length=1000, null=True)
-    cause = models.TextField(max_length=1000, null=True)
+
+    correction = models.TextField(max_length=1000, null=True)
     spare_parts = models.TextField(max_length=1000, null=True)
+    cause = models.TextField(max_length=1000, null=True)
+    corrective_action = models.TextField(max_length=1000, null=True)
+    documents = models.TextField(max_length=1000, null=True)
+
     is_breakdown = models.BooleanField(default=False)
     breakdown_reason = models.TextField(max_length=1000, null=True)
     date_modified = models.DateTimeField(auto_now=True)
